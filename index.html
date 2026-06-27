@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>KORVIL - Site</title>
 <style>
-:root{--verde:#008080;--preto:#000;}
+:root{--verde:#008080;--preto:#000;--zap:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, Helvetica, sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:var(--preto);color:#fff;overflow:hidden;}
 .top{position:fixed;top:0;left:0;right:0;height:70px;background:var(--verde);color:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;z-index:10;font-weight:700;}
@@ -18,15 +18,73 @@ body{background:var(--preto);color:#fff;overflow:hidden;}
 .menu .t{font-weight:bold;margin-top:8px;font-size:16px;}
 .menu .sub{padding-left:35px;font-size:14px;color:#ddd;}
 .menu .sub2{padding-left:50px;font-size:13px;color:#bbb;}
+.menu .zap{margin:15px 20px;padding:12px;background:var(--zap);color:#000;border-radius:8px;text-align:center;font-weight:bold;}
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:none;z-index:100;}
 .overlay.ativo{display:block;}
 .tela{position:absolute;top:70px;left:0;right:0;bottom:0;overflow-y:auto;padding:20px;display:none;background:var(--preto);}
 .tela.ativa{display:block;text-align:center;}
 h1{color:var(--verde);font-size:22px;margin:15px 0;}
 p{color:#ccc;font-size:14px;}
+.btn-zap{display:inline-block;margin-top:15px;padding:12px 25px;background:var(--zap);color:#000;text-decoration:none;border-radius:8px;font-weight:bold;}
 </style>
 </head>
 <body>
 
 <div class="top">você está em KORVIL - Site
-<button onclick="alert('Sistema Online')">
+<button onclick="alert('Sistema Online')">online</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="menu" id="menu">
+<div class="fechar" onclick="toggleMenu()">×</div>
+
+<a class="t" onclick="abrir('inicio')">^ Início</a>
+<a class="sub" onclick="abrir('kalma');toggleMenu()">K-ALMA</a>
+<a class="sub" onclick="abrir('kafortunado');toggleMenu()">K-AFORTUNADO</a>
+<a class="sub" onclick="abrir('ktp');toggleMenu()">K-TP</a>
+
+<a class="t" style="margin-top:15px;">^ Sistema K</a>
+<a class="sub" onclick="abrir('kstore');toggleMenu()">K- Store</a>
+<a class="sub2" onclick="abrir('artigos');toggleMenu()">Artigos & Acessórios Esportivos</a>
+<a class="sub2" onclick="abrir('suplementos');toggleMenu()">Suplementos & Produtos Alimentares</a>
+
+<a class="sub" onclick="abrir('vestuarios');toggleMenu()">^ Vestuários</a>
+<a class="sub2" onclick="abrir('fitness');toggleMenu()">Roupas Fitness</a>
+
+<a href="https://wa.me/551399768098?text=Ol%C3%A1%20KORVIL" target="_blank" class="zap">Falar no WhatsApp</a>
+
+<a style="margin-top:10px;color:#666;">( ? )</a>
+</div>
+
+<div id="inicio" class="tela ativa">
+  <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" style="width:90%; max-width:400px; margin:25px auto 10px auto; display:block; border-radius:12px;" onerror="this.style.display='none';document.getElementById('logoErro').style.display='block';">
+  <div id="logoErro" style="display:none;color:#ff5555;margin:25px;">Erro ao carregar logo. Verifique se o arquivo é: logo-korvil.png</div>
+  <h1>CENTRAL KORVIL</h1>
+  <p style="color:#aaa;">Clique no X para abrir/fechar o menu.</p>
+  <a href="https://wa.me/551399768098?text=Quero%20saber%20mais%20sobre%20KORVIL" target="_blank" class="btn-zap">Falar com Atendimento</a>
+</div>
+
+<div id="kalma" class="tela"><h1>K-ALMA</h1><p>Conteúdo da página K-ALMA</p></div>
+<div id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><p>Conteúdo da página K-AFORTUNADO</p></div>
+<div id="ktp" class="tela"><h1>K-TP</h1><p>Conteúdo da página K-TP</p></div>
+<div id="kstore" class="tela"><h1>K-Store</h1><p>Conteúdo da K-Store</p></div>
+<div id="artigos" class="tela"><h1>Artigos & Acessórios Esportivos</h1></div>
+<div id="suplementos" class="tela"><h1>Suplementos & Produtos Alimentares</h1></div>
+<div id="vestuarios" class="tela"><h1>Vestuarios</h1></div>
+<div id="fitness" class="tela"><h1>Roupas Fitness</h1></div>
+
+<script>
+function abrir(id){
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+  document.getElementById(id).classList.add('ativa');
+}
+function toggleMenu(){
+  document.getElementById('menu').classList.toggle('ativo');
+  document.getElementById('overlay').classList.toggle('ativo');
+}
+document.addEventListener('DOMContentLoaded',()=>{toggleMenu()});
+</script>
+
+</body>
+</html>
