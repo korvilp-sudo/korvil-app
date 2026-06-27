@@ -1,113 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-TP | Projeto TRANSFORMAÇÃO 2026</title>
-<style>
-:root{--c:#00f5ff; --c2:#8b5cf6; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#bbb;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-body{background:#000;color:var(--text);overflow-x:hidden;font-size:15px;line-height:1.6;}
-
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-@keyframes glow{0%,100%{box-shadow:0 0 8px var(--c);}50%{box-shadow:0 0 15px var(--c);}}
-
-.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;padding:0 15px;z-index:100;animation:fadeIn.5s;}
-.btn-voltar{background:transparent;border:1px solid var(--c);color:var(--c);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;}
-.logo{color:var(--c);font-weight:700;font-size:17px;letter-spacing:1px;}
-
-.wrap{padding:75px 18px 90px;max-width:680px;margin:auto;animation:fadeIn.6s;}
-h1{color:var(--c);font-size:24px;margin-bottom:6px;font-weight:700;text-align:center;text-shadow:0 0 10px var(--c);}
-.sub{color:var(--text2);font-size:13px;text-align:center;margin-bottom:20px;}
-h2{color:var(--text);font-size:18px;margin:24px 0 12px 0;font-weight:700;border-left:3px solid var(--c);padding-left:10px;}
-h3{color:var(--c);font-size:15px;margin:12px 0 6px 0;font-weight:600;}
-p{color:var(--text2);font-size:14px;line-height:1.6;}
-
-.hero{background:linear-gradient(135deg,#0b0b0b 0%,#111 100%);border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;}
-.badge{display:inline-block;background:#111;border:1px solid var(--c);color:var(--c);padding:4px 10px;border-radius:20px;font-size:11px;margin:4px;}
-.hero h2{font-size:20px;color:var(--c);margin:8px 0;border:0;padding:0;}
-.destaque{color:var(--c);font-weight:700;}
-
-.card{background:#0b0b0b;border:1px solid #1a1a1a;border-radius:10px;padding:16px;margin-bottom:12px;transition:.2s;}
-.card:hover{border-color:var(--c);}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-@media(max-width:500px){.grid{grid-template-columns:1fr;}}
-
-.tabela{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}
-.tabela th,.tabela td{border:1px solid #222;padding:8px;text-align:center;}
-.tabela th{background:#111;color:var(--c);font-weight:600;}
-.tabela tr:nth-child(even){background:#0b0b0b;}
-
-.fases{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.fase{background:#0b0b0b;border:1px solid #222;border-radius:8px;padding:12px;}
-.fase h4{color:var(--c);font-size:13px;margin-bottom:4px;}
-.fase ul{list-style:none;font-size:12px;color:var(--text2);}
-.fase li{padding:3px 0;}
-.fase li:before{content:'✓ ';color:var(--c);}
-
-.metodologias{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;}
-.metodo{background:#0b0b0b;border:1px solid #222;border-radius:8px;padding:12px;}
-.metodo.num{font-size:24px;color:var(--c);font-weight:700;}
-.metodo h4{font-size:13px;margin:4px 0;}
-.metodo p{font-size:11px;color:var(--text2);}
-
-.btn{display:inline-block;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;text-align:center;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;transition:.2s;margin-top:10px;width:100%;}
-.btn:hover{filter:brightness(1.1);box-shadow:0 0 15px var(--c);}
-.btn.sec{background:#222;color:var(--text);font-size:13px;padding:10px;}
-
-.planos{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.plano{background:#0b0b0b;border:1px solid #222;border-radius:10px;padding:14px;}
-.plano.destaque{border-color:var(--c);box-shadow:0 0 15px rgba(0,245,255,.2);}
-.plano h3{font-size:16px;color:var(--c);text-align:center;margin-bottom:8px;}
-.plano.preco{font-size:22px;color:var(--text);font-weight:700;text-align:center;margin:8px 0;}
-.plano ul{list-style:none;font-size:12px;color:var(--text2);}
-.plano li{padding:4px 0;}
-.plano li:before{content:'✓ ';color:var(--c);}
-
-.menu-lateral{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#060606;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:65px;}
-.menu-lateral.ativo{left:0;}
-.menu-lateral a{display:block;color:var(--text);padding:14px 18px;text-decoration:none;border-bottom:1px solid #111;font-size:14px;font-weight:600;cursor:pointer;}
-.menu-lateral a:hover{background:#111;color:var(--c);}
-.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:none;z-index:100;}
-.overlay.ativo{display:block;}
-
-.pato{position:fixed;bottom:18px;right:18px;width:52px;height:52px;background:#0b0b0b;border:1px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:99;cursor:pointer;}
-.pato svg{width:24px;height:24px;fill:var(--c);}
-
-/* K-AI EM BAIXO */
-.kai-box{position:fixed;bottom:18px;left:18px;z-index:98;}
-.kai-bolha{width:52px;height:52px;background:#0b0b0b;border:1px solid var(--c);border-radius:50%;cursor:pointer;animation:glow 2s infinite;display:flex;align-items:center;justify-content:center;}
-.kai-bolha::after{content:'';width:12px;height:12px;background:var(--c);border-radius:50%;}
-.kai-conteudo{display:none;position:absolute;bottom:60px;left:0;width:220px;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border:1px solid #333;border-radius:10px;padding:10px;}
-.kai-box.expandido.kai-conteudo{display:block;animation:fadeIn.3s;}
-.kai-title{color:var(--c);font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
-.kai-dot{width:6px;height:6px;background:var(--c);border-radius:50%;animation:glow 2s infinite;}
-.kai-msg{color:var(--text2);font-size:12px;line-height:1.4;min-height:18px;}
-.kai-menu{margin-top:8px;border-top:1px solid #222;padding-top:6px;}
-.kai-menu button{width:100%;background:transparent;border:0;color:var(--text2);padding:6px 0;font-size:11px;text-align:left;cursor:pointer;}
-.kai-menu button:hover{color:var(--c);}
-
-.tag{background:#111;border:1px solid #333;color:var(--text2);padding:3px 8px;border-radius:5px;font-size:11px;display:inline-block;margin:2px;}
-.lista{list-style:none;padding:0;}
-.lista li{color:var(--text2);font-size:13px;padding:6px 0;border-bottom:1px solid #111;}
-.lista li:before{content:'✓ ';color:var(--c);font-weight:bold;margin-right:6px;}
-.rodape{margin-top:30px;padding-top:15px;border-top:1px solid #222;font-size:11px;color:var(--text2);text-align:center;}
-.rodape a{color:var(--c);text-decoration:none;}
-</style>
-</head>
-<body>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  <button class="btn-voltar" onclick="toggleMenu()">MENU</button>
-  <div class="logo">K-TP</div>
-  <a href="../../index.html" class="btn-voltar">SAIR</a>
-</div>
-
-<!-- OVERLAY + MENU -->
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-<div class="menu-lateral" id="menu">
-  <a onclick="scrollTo('sobre');toggleMenu()">Sobre</a>
   <a onclick="scrollTo('horarios');toggleMenu()">Horários</a>
   <a onclick="scrollTo('fases');toggleMenu()">4 Fases</a>
   <a onclick="scrollTo('planos');toggleMenu()">Planos</a>
@@ -119,7 +9,217 @@ p{color:var(--text2);font-size:14px;line-height:1.6;}
 
   <!-- HERO -->
   <div class="hero" id="sobre">
-    <div class="badge">ACADEMIA PARTICULAR 24H</div>
+    <div class="badge">ACADEMIA PARTICULAR 24H</div><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-TP | Inscrição Projeto TRANSFORMAÇÃO</title>
+<style>
+:root{--c:#00f5ff; --c2:#8b5cf6; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#bbb; --erro:#ff3b30;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:#000;color:var(--text);overflow-x:hidden;font-size:15px;line-height:1.6;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px var(--c);}50%{box-shadow:0 0 15px var(--c);}}
+
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;padding:0 15px;z-index:100;}
+.btn-voltar{background:transparent;border:1px solid var(--c);color:var(--c);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;}
+.logo{color:var(--c);font-weight:700;font-size:17px;letter-spacing:1px;}
+
+.wrap{padding:75px 18px 90px;max-width:680px;margin:auto;animation:fadeIn.6s;}
+h1{color:var(--c);font-size:24px;margin-bottom:6px;font-weight:700;text-align:center;text-shadow:0 0 10px var(--c);}
+h2{color:var(--text);font-size:18px;margin:24px 0 12px 0;font-weight:700;border-left:3px solid var(--c);padding-left:10px;}
+h3{color:var(--c);font-size:15px;margin:12px 0 6px 0;font-weight:600;}
+p{color:var(--text2);font-size:14px;line-height:1.6;}
+label{display:block;color:var(--text2);font-size:13px;margin-bottom:6px;font-weight:600;}
+input,select,textarea{width:100%;background:#0b0b0b;border:1px solid #333;color:var(--text);padding:10px;border-radius:6px;font-size:14px;margin-bottom:12px;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c);box-shadow:0 0 8px rgba(0,245,255,.2);}
+input.erro,select.erro{border-color:var(--erro);}
+.erro-text{color:var(--erro);font-size:11px;margin-top:-8px;margin-bottom:8px;display:none;}
+.aviso{background:#111;border-left:3px solid var(--c);padding:12px;border-radius:6px;margin:12px 0;font-size:13px;color:var(--text2);}
+
+.card{background:#0b0b0b;border:1px solid #1a1a1a;border-radius:10px;padding:16px;margin-bottom:12px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:500px){.grid{grid-template-columns:1fr;}}
+
+.tabela{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}
+.tabela th,.tabela td{border:1px solid #222;padding:8px;text-align:center;}
+.tabela th{background:#111;color:var(--c);font-weight:600;}
+
+.planos{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.plano{background:#0b0b0b;border:1px solid #222;border-radius:10px;padding:14px;}
+.plano.destaque{border-color:var(--c);box-shadow:0 0 15px rgba(0,245,255,.2);}
+.plano h3{font-size:16px;color:var(--c);text-align:center;margin-bottom:8px;}
+.plano.preco{font-size:22px;color:var(--text);font-weight:700;text-align:center;margin:8px 0;}
+.plano ul{list-style:none;font-size:12px;color:var(--text2);}
+.plano li{padding:4px 0;}
+.plano li:before{content:'✓ ';color:var(--c);}
+
+.checkbox-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.checkbox-item{background:#0b0b0b;border:1px solid #333;border-radius:6px;padding:8px 12px;font-size:12px;cursor:pointer;transition:.2s;}
+.checkbox-item input{display:none;}
+.checkbox-item.ativo{background:rgba(0,245,255,.1);border-color:var(--c);color:var(--c);}
+
+.btn{display:inline-block;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;text-align:center;padding:14px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;transition:.2s;margin-top:10px;width:100%;border:0;cursor:pointer;}
+.btn:hover{filter:brightness(1.1);box-shadow:0 0 15px var(--c);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+.qr-box{text-align:center;padding:12px;background:#0b0b0b;border:1px solid #222;border-radius:8px;margin:12px 0;}
+.qr-box img{max-width:180px;width:100%;border-radius:6px;}
+
+.menu-lateral{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#060606;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:65px;}
+.menu-lateral.ativo{left:0;}
+.menu-lateral a{display:block;color:var(--text);padding:14px 18px;text-decoration:none;border-bottom:1px solid #111;font-size:14px;font-weight:600;cursor:pointer;}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:none;z-index:100;}
+.overlay.ativo{display:block;}
+
+.pato{position:fixed;bottom:18px;right:18px;width:52px;height:52px;background:#0b0b0b;border:1px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:99;cursor:pointer;}
+.pato svg{width:24px;height:24px;fill:var(--c);}
+
+.kai-box{position:fixed;bottom:18px;left:18px;z-index:98;}
+.kai-bolha{width:52px;height:52px;background:#0b0b0b;border:1px solid var(--c);border-radius:50%;cursor:pointer;animation:glow 2s infinite;display:flex;align-items:center;justify-content:center;}
+.kai-bolha::after{content:'';width:12px;height:12px;background:var(--c);border-radius:50%;}
+.kai-conteudo{display:none;position:absolute;bottom:60px;left:0;width:220px;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border:1px solid #333;border-radius:10px;padding:10px;}
+.kai-box.expandido.kai-conteudo{display:block;animation:fadeIn.3s;}
+.kai-title{color:var(--c);font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.kai-dot{width:6px;height:6px;background:var(--c);border-radius:50%;animation:glow 2s infinite;}
+.kai-msg{color:var(--text2);font-size:12px;line-height:1.4;min-height:18px;}
+.tag{background:#111;border:1px solid #333;color:var(--text2);padding:3px 8px;border-radius:5px;font-size:11px;display:inline-block;margin:2px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="btn-voltar" onclick="toggleMenu()">MENU</button>
+  <div class="logo">K-TP INSCRIÇÃO</div>
+  <a href="../../index.html" class="btn-voltar">SAIR</a>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="menu-lateral" id="menu">
+  <a onclick="scrollTo('planos');toggleMenu()">Planos</a>
+  <a onclick="scrollTo('form');toggleMenu()">Formulário</a>
+  <a onclick="scrollTo('horarios');toggleMenu()">Horários</a>
+</div>
+
+<div class="wrap">
+
+  <!-- PLANOS E VALORES -->
+  <h2 id="planos">Planos e Valores</h2>
+  <div class="planos">
+    <div class="plano destaque">
+      <h3>ONLINE</h3>
+      <div class="preco">R$60<span style="font-size:13px;">/mês</span></div>
+      <p style="text-align:center;font-size:12px;margin-bottom:8px;">Matrícula: R$50,00</p>
+      <ul>
+        <li>Treinos personalizados</li>
+        <li>Acompanhamento diário</li>
+        <li>Ajustes e evolução</li>
+        <li>Suporte via aplicativo</li>
+      </ul>
+    </div>
+    <div class="plano">
+      <h3>PRESENCIAL</h3>
+      <p style="text-align:center;font-size:12px;margin-bottom:8px;">Matrícula: R$50,00</p>
+      <ul>
+        <li>1x semana: R$60,00</li>
+        <li>2x semana: R$80,00</li>
+        <li>3x semana: R$100,00</li>
+        <li>4x semana: R$130,00</li>
+        <li>5x semana: R$150,00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px;text-align:center;">
+    <h3>AULA AVULSA</h3>
+    <p style="font-size:20px;color:var(--c);font-weight:700;">R$20,00</p>
+  </div>
+
+  <div class="aviso">
+    <strong>Pagamento:</strong> 1º mês = R$50,00 matrícula + mensalidade escolhida. 
+    2º mês em diante só a mensalidade até dezembro/2026.
+    <br><strong>Pix:</strong> korvilloja@gmail.com | <strong>Ou:</strong> Débito/Crédito à vista | Dinheiro
+  </div>
+
+  <div class="qr-box">
+    <p style="font-size:12px;margin-bottom:8px;"><strong>Pix - QR Code</strong></p>
+    <img src="QR_CODE_URL_AQUI" alt="QR Code Pix korvilloja@gmail.com">
+  </div>
+
+  <!-- FORMULARIO -->
+  <h2 id="form">Formulário de Participação</h2>
+  <form id="formKTP">
+
+    <!-- PARTE 1 -->
+    <h3>PARTE 1 - DADOS OBRIGATÓRIOS</h3>
+    <label>Nome Completo *</label>
+    <input type="text" id="nome" required>
+    <div class="erro-text" id="err-nome">Preencha seu nome completo</div>
+
+    <label>Plano Escolhido *</label>
+    <select id="plano" required>
+      <option value="">Selecione...</option>
+      <option value="Online R$60">Online R$60/mês</option>
+      <option value="Presencial 1x R$60">Presencial 1x semana R$60</option>
+      <option value="Presencial 2x R$80">Presencial 2x semana R$80</option>
+      <option value="Presencial 3x R$100">Presencial 3x semana R$100</option>
+      <option value="Presencial 4x R$130">Presencial 4x semana R$130</option>
+      <option value="Presencial 5x R$150">Presencial 5x semana R$150</option>
+    </select>
+    <div class="erro-text" id="err-plano">Selecione um plano</div>
+
+    <label>Forma de Pagamento 1º Mês *</label>
+    <select id="pagamento" required>
+      <option value="">Selecione...</option>
+      <option value="Pix korvilloja@gmail.com">Pix korvilloja@gmail.com</option>
+      <option value="Débito/Crédito à vista">Débito/Crédito à vista</option>
+      <option value="Dinheiro">Dinheiro</option>
+    </select>
+    <div class="erro-text" id="err-pagamento">Selecione a forma de pagamento</div>
+
+    <div class="grid">
+      <div>
+        <label>Dias de Treino *</label>
+        <select id="dias" required>
+          <option value="">Seg à Sex</option>
+          <option value="Seg, Qua, Sex">Seg, Qua, Sex</option>
+          <option value="Ter, Qui">Ter, Qui</option>
+          <option value="Seg à Sex">Seg à Sex</option>
+        </select>
+        <div class="erro-text" id="err-dias">Selecione os dias</div>
+      </div>
+      <div>
+        <label>Horário *</label>
+        <select id="horario" required>
+          <option value="">Selecione...</option>
+          <option value="06h">06h</option><option value="07h">07h</option><option value="08h">08h</option>
+          <option value="09h">09h</option><option value="10h">10h</option><option value="16h">16h</option>
+          <option value="17h">17h</option><option value="18h">18h</option><option value="19h">19h</option>
+          <option value="20h">20h</option><option value="21h">21h</option><option value="22h">22h</option>
+          <option value="23h">23h</option><option value="00h">00h</option><option value="01h">01h</option>
+          <option value="02h">02h</option><option value="03h">03h</option><option value="04h">04h</option>
+          <option value="05h">05h</option>
+        </select>
+        <div class="erro-text" id="err-horario">Selecione o horário</div>
+      </div>
+    </div>
+
+    <label>Objetivo * <span style="font-size:11px;color:var(--text2);">Pode marcar mais de um</span></label>
+    <div class="checkbox-group" id="objetivos">
+      <label class="checkbox-item"><input type="checkbox" value="Ganho de peso"> Ganho de peso</label>
+      <label class="checkbox-item"><input type="checkbox" value="Emagrecimento"> Emagrecimento</label>
+      <label class="checkbox-item"><input type="checkbox" value="Definição muscular"> Definição muscular</label>
+      <label class="checkbox-item"><input type="checkbox" value="Condicionamento físico"> Condicionamento</label>
+      <label class="checkbox-item"><input type="checkbox" value="Saúde"> Saúde</label>
+      <label class="checkbox-item"><input type="checkbox" value="Reabilitação"> Reabilitação</label>
+    </div>
+    <div class="erro-text" id="err-objetivos">Marque pelo menos 1 objetivo</div>
+
+    <div class="grid">
+      <div>
+        <label>Data de Nascimento *</label>
+        <input type="date" id="nasc
     <div class="badge">11 ANOS 2026</div>
     <h1>K-TP</h1>
     <h2>PROJETO TRANSFORMAÇÃO</h2>
