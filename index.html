@@ -12,24 +12,32 @@ body{background:var(--bg);color:#fff;overflow-x:hidden;}
 .topbar .menu-btn{position:absolute;left:15px;background:transparent;border:1px solid var(--c);color:var(--c);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:bold;}
 .topbar .logo{color:var(--c);font-weight:800;font-size:18px;letter-spacing:1px;}
 .wrap{padding:80px 15px 100px;max-width:700px;margin:auto;}
-h1{color:var(--c);font-size:20px;margin-bottom:20px;font-weight:700;}
-.card{background:var(--card);border:1px solid var(--c);border-radius:12px;padding:20px;margin-bottom:15px;cursor:pointer;transition:.2s;}
+h1{color:var(--c);font-size:20px;margin-bottom:20px;font-weight:700;text-align:center;}
+h2{color:#fff;font-size:18px;margin:20px 0 10px 0;font-weight:700;}
+h3{color:var(--c);font-size:16px;margin:15px 0 8px 0;font-weight:700;}
+h4{color:#fff;font-size:15px;margin-bottom:8px;}
+.card{background:var(--card);border:1px solid var(--c);border-radius:12px;padding:20px;margin-bottom:15px;cursor:pointer;transition:.2s;text-align:left;}
 .card:active{transform:scale(.98);}
 .card h2{font-size:18px;margin-bottom:6px;color:#fff;font-weight:700;}
 .card p{font-size:14px;color:#aaa;line-height:1.5;}
 .tela{display:none;}
 .tela.ativa{display:block;}
+.sub-aba{background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:15px;margin-bottom:10px;}
+.sub-aba ul{list-style:none;padding-left:0;}
+.sub-aba li{color:#bbb;font-size:13px;padding:6px 0;border-bottom:1px solid #111;}
+.sub-aba li:last-child{border:0;}
 .pato{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:var(--bg);border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:99;box-shadow:0 0 10px var(--c);}
 .pato svg{width:30px;height:30px;fill:var(--c);}
 .menu-lateral{position:fixed;top:0;left:-280px;width:280px;height:100%;background:#050505;border-right:1px solid var(--c);z-index:101;transition:left .3s;padding-top:70px;}
 .menu-lateral.ativo{left:0;}
-.menu-lateral a{display:block;color:#fff;padding:15px 20px;text-decoration:none;border-bottom:1px solid #111;font-size:15px;}
+.menu-lateral a{display:block;color:#fff;padding:15px 20px;text-decoration:none;border-bottom:1px solid #111;font-size:15px;font-weight:700;}
 .menu-lateral a:active{background:#111;}
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:none;z-index:100;}
 .overlay.ativo{display:block;}
-.btn{margin-top:12px;display:block;background:var(--c);color:#000;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold;}
+.btn{margin-top:12px;display:block;background:var(--c);color:#000;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px;}
 .btn.voltar{background:#333;color:#fff;}
 .logo-central{width:90%; max-width:400px; margin:0 auto 20px auto; display:block; border-radius:12px;}
+.tag{background:#111;border:1px solid var(--c);color:var(--c);padding:4px 10px;border-radius:6px;font-size:12px;display:inline-block;margin:3px;}
 </style>
 </head>
 <body>
@@ -41,12 +49,11 @@ h1{color:var(--c);font-size:20px;margin-bottom:20px;font-weight:700;}
 
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <div class="menu-lateral" id="menu">
-<a onclick="abrirTela('central');toggleMenu()">CENTRAL KORVIL</a>
-<a onclick="abrirTela('cursos');toggleMenu()">CURSOS</a>
-<a onclick="abrirTela('negocios');toggleMenu()">NEGÓCIOS</a>
-<a onclick="abrirTela('servicos');toggleMenu()">SERVIÇOS</a>
-<a onclick="abrirTela('ktp');toggleMenu()">K-TP</a>
 <a onclick="abrirTela('kalma');toggleMenu()">K-ALMA</a>
+<a onclick="abrirTela('kafortunado');toggleMenu()">K-AFORTUNADO</a>
+<a onclick="abrirTela('ktp');toggleMenu()">K-TP</a>
+<a onclick="abrirTela('sistema');toggleMenu()">SISTEMA K</a>
+<a onclick="abrirTela('central');toggleMenu()">CENTRAL KORVIL</a>
 </div>
 
 <div class="wrap">
@@ -54,77 +61,162 @@ h1{color:var(--c);font-size:20px;margin-bottom:20px;font-weight:700;}
 <div id="central" class="tela ativa">
   <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
   <h1>CENTRAL KORVIL</h1>
-<div class="card" onclick="abrirTela('cursos')">
+  <div class="card" onclick="abrirTela('humano')">
+    <h2>1. DESENVOLVIMENTO HUMANO</h2>
+    <p>Cursos, Treinamento, Saúde e Beleza</p>
+  </div>
+  <div class="card" onclick="abrirTela('negocios')">
+    <h2>2. NEGÓCIOS</h2>
+    <p>Parcerias com profissionais KORVIL</p>
+  </div>
+  <div class="card" onclick="abrirTela('servicos')">
+    <h2>3. SERVIÇOS</h2>
+    <p>Concertos, Consultoria, Atendimento</p>
+  </div>
+</div>
+
+<!-- 1. DESENVOLVIMENTO HUMANO -->
+<div id="humano" class="tela">
+<h1>1. DESENVOLVIMENTO HUMANO</h1>
+
 <h2>CURSOS</h2>
-<p>Formação profissional completa</p>
+<div class="sub-aba">
+  <h4>ÁREAS: TECNOLOGIAS</h4>
+  <ul><li>Manutenção de Celular</li></ul>
 </div>
-<div class="card" onclick="abrirTela('negocios')">
-<h2>NEGÓCIOS</h2>
-<p>Criação e desenvolvimento de empresas</p>
-</div>
-<div class="card" onclick="abrirTela('servicos')">
-<h2>SERVIÇOS</h2>
-<p>Contratação de profissionais</p>
-</div>
+<div class="sub-aba">
+  <h4>EDUCAÇÃO FÍSICA</h4>
+  <ul><li>Bacharelado</li></ul>
 </div>
 
-<div id="cursos" class="tela">
-<h1>CURSOS</h1>
-<div class="card">
-<h2>Formação KORVIL Digital</h2>
-<p>1 Ano Completo | 4 Fases | 11 Módulos | 220 Aulas PDF + Vídeo</p>
-<div style="color:var(--c);font-weight:bold;margin:8px 0;">R$ 197/mês</div>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Formação%20KORVIL">Matricular no Whats</a>
+<h2>TREINAMENTO PERSONALIZADO</h2>
+<div class="sub-aba">
+  <h4>EMPREENDEDORISMO E FINANÇAS</h4>
+  <ul><li>Negócio Próprio</li></ul>
 </div>
-<div class="card">
-<h2>K-ALMA</h2>
-<p>Base mental e estratégica KORVIL</p>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-ALMA">Acessar</a>
+
+<h2>SAÚDE E BELEZA</h2>
+<div class="sub-aba">
+  <ul>
+    <li>K-TH Terapia Holística</li>
+    <li>Cabeleireiro Unissex</li>
+  </ul>
 </div>
+
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Desenvolvimento%20Humano">Falar no Whats</a>
 <a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
 </div>
 
+<!-- 2. NEGÓCIOS -->
 <div id="negocios" class="tela">
-<h1>NEGÓCIOS</h1>
-<div class="card">
-<h2>K-TP | Projeto 11 Anos</h2>
-<p>Sistema de gestão para escolas e empresas. 11 anos de conteúdo.</p>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-TP">Falar no Whats</a>
+<h1>2. NEGÓCIOS</h1>
+<div class="sub-aba">
+  <h4>PARCERIAS COM PROFISSIONAIS</h4>
+  <p style="color:#bbb;font-size:13px;margin-bottom:10px;">Todos os profissionais relacionados às áreas dos setores KORVIL:</p>
+  <span class="tag">Tecnologia</span><span class="tag">Educação Física</span><span class="tag">Empreendedorismo</span><span class="tag">Finanças</span><span class="tag">Saúde</span><span class="tag">Beleza</span><span class="tag">Design</span><span class="tag">Tráfego</span>
 </div>
-<div class="card">
-<h2>Site + Tráfego PRO</h2>
-<p>Montamos sua empresa no digital do zero</p>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Negócios">Contratar</a>
-</div>
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Parceria%20KORVIL">Falar no Whats</a>
 <a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
 </div>
 
+<!-- 3. SERVIÇOS -->
 <div id="servicos" class="tela">
-<h1>SERVIÇOS</h1>
-<div class="card">
-<h2>Profissionais KORVIL</h2>
-<p>Design, Tráfego Pago, Criação de Sites, Edição de Vídeo</p>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Serviços">Contratar</a>
+<h1>3. SERVIÇOS</h1>
+<div class="sub-aba">
+  <h4>1. CONCERTOS DE CELULAR</h4>
+  <p style="color:#bbb;font-size:13px;">Troca de tela, bateria, software e manutenção geral.</p>
 </div>
-<div class="card">
-<h2>KAI | IA Assistente</h2>
-<p>Dúvidas 24h. Suporte e vendas automático no Whats</p>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Falar%20com%20KAI">Falar com KAI</a>
+<div class="sub-aba">
+  <h4>2. TREINAMENTO PERSONALIZADO</h4>
+  <p style="color:#bbb;font-size:13px;">Acompanhamento individual KORVIL.</p>
 </div>
+<div class="sub-aba">
+  <h4>3. CONSULTORIA DE EMPREENDEDORISMO E FINANÇAS</h4>
+  <p style="color:#bbb;font-size:13px;">Plano pra abrir e escalar seu negócio.</p>
+</div>
+<div class="sub-aba">
+  <h4>4. ATENDIMENTO DE SAÚDE E BELEZA</h4>
+  <p style="color:#bbb;font-size:13px;">K-TH Terapia Holística e Cabeleireiro Unissex.</p>
+</div>
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Serviços%20KORVIL">Contratar</a>
 <a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
 </div>
 
+<!-- 4. SISTEMA K -->
+<div id="sistema" class="tela">
+<h1>SISTEMA K</h1>
+<h2>SERVIÇOS GERAIS PROFISSIONAIS</h2>
+<div class="sub-aba">
+  <ul>
+    <li>Eletricista</li>
+    <li>Carpinteiro</li>
+    <li>Faxineira</li>
+    <li>Encanador</li>
+    <li>Pintor</li>
+    <li>Pedreiro</li>
+  </ul>
+</div>
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Serviços%20Gerais%20K">Contratar Profissional</a>
+<a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
+</div>
+
+<!-- 5. K-TP -->
 <div id="ktp" class="tela">
 <h1>K-TP</h1>
-<div class="card"><p>Projeto Transformação 11 Anos. Plataforma completa de gestão.</p></div>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-TP">Falar no Whats</a>
+<div class="sub-aba">
+  <h4>PROJETO TRANSFORMAÇÃO</h4>
+  <p style="color:#bbb;font-size:13px;">11 Anos de conteúdo. Plataforma completa de gestão para escolas, empresas e negócios KORVIL.</p>
+  <ul style="margin-top:10px;">
+    <li>Sistema de Gestão</li>
+    <li>Conteúdo Estratégico</li>
+    <li>Formação de Equipe</li>
+  </ul>
+</div>
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-TP%20Transformação">Falar no Whats</a>
 <a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
 </div>
 
+<!-- 6. K-AFORTUNADO -->
+<div id="kafortunado" class="tela">
+<h1>K-AFORTUNADO</h1>
+<div class="sub-aba">
+  <h4>CONSULTORIA DE EMPREENDEDORISMO E FINANÇAS</h4>
+  <p style="color:#bbb;font-size:13px;">Estratégias pra você abrir, escalar e lucrar no digital KORVIL.</p>
+  <ul style="margin-top:10px;">
+    <li>Plano de Negócio</li>
+    <li>Gestão Financeira</li>
+    <li>Tráfego e Vendas</li>
+  </ul>
+</div>
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20Consultoria%20K-AFORTUNADO">Agendar Consultoria</a>
+<a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
+</div>
+
+<!-- 7. K-ALMA -->
 <div id="kalma" class="tela">
 <h1>K-ALMA</h1>
-<div class="card"><p>Conteúdo exclusivo de mentalidade, estratégia e base KORVIL.</p></div>
-<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-ALMA">Falar no Whats</a>
+<h2>SAÚDE</h2>
+<div class="sub-aba">
+  <ul>
+    <li>Terapeuta Holístico</li>
+    <li>Dentista</li>
+    <li>Fisioterapeuta</li>
+    <li>Médico</li>
+  </ul>
+</div>
+
+<h2>BELEZA</h2>
+<div class="sub-aba">
+  <ul>
+    <li>Cabeleireiro Unissex</li>
+    <li>Barbeiro</li>
+    <li>Esteticista</li>
+    <li>Manicure e Pedicure</li>
+    <li>Designer de Sobrancelhas</li>
+  </ul>
+</div>
+
+<a class="btn" href="https://api.whatsapp.com/send?phone=5513997690898&text=Quero%20K-ALMA%20Saúde%20e%20Beleza">Agendar Atendimento</a>
 <a class="btn voltar" onclick="abrirTela('central')">Voltar</a>
 </div>
 
