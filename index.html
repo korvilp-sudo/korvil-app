@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+"Tecnologia.",
+"Educação.",
+"Consultoria.",
+"Parcerias.",
+"Ao seu lado.",
+"Resultado KORVIL.",
+"Fale agora.",
+"Impulso KORVIL.",
+"Atendimento rápido.",
+"Confiança KORVIL.",<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -49,13 +58,14 @@ p{color:var(--text2);font-size:14px;line-height:1.6;}
 .pato:hover{box-shadow:0 0 12px var(--c);}
 .pato svg{width:24px;height:24px;fill:var(--c);}
 
-/* ===== K-AI DISCRETO ===== */
-.kai-box{position:fixed;bottom:20px;left:18px;z-index:98;transition:.3s;}
-.kai-bolha{width:14px;height:14px;background:var(--c);border-radius:50%;cursor:pointer;animation:glow 2s infinite;}
-.kai-box.expandido.kai-bolha{animation:none;}
-.kai-conteudo{display:none;width:220px;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;}
+/* ===== K-AI EM BAIXO ===== */
+.kai-box{position:fixed;bottom:18px;left:18px;z-index:98;transition:.3s;}
+.kai-bolha{width:52px;height:52px;background:#0b0b0b;border:1px solid var(--c);border-radius:50%;cursor:pointer;animation:glow 2s infinite;display:flex;align-items:center;justify-content:center;}
+.kai-bolha::after{content:'';width:12px;height:12px;background:var(--c);border-radius:50%;}
+.kai-conteudo{display:none;position:absolute;bottom:60px;left:0;width:220px;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border:1px solid #333;border-radius:10px;padding:10px;}
 .kai-box.expandido.kai-conteudo{display:block;animation:fadeIn.3s;}
-.kai-title{color:var(--c);font-size:11px;font-weight:600;margin-bottom:6px;}
+.kai-title{color:var(--c);font-size:11px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.kai-dot{width:6px;height:6px;background:var(--c);border-radius:50%;animation:glow 2s infinite;}
 .kai-msg{color:var(--text2);font-size:12px;line-height:1.4;min-height:18px;}
 .kai-menu{margin-top:8px;border-top:1px solid #222;padding-top:6px;}
 .kai-menu button{width:100%;background:transparent;border:0;color:var(--text2);padding:6px 0;font-size:11px;text-align:left;cursor:pointer;}
@@ -81,11 +91,11 @@ p{color:var(--text2);font-size:14px;line-height:1.6;}
   <a onclick="abrirTela('central');toggleMenu()">CENTRAL KORVIL</a>
 </div>
 
-<!-- K-AI DISCRETO -->
+<!-- K-AI EM BAIXO ESQUERDA -->
 <div class="kai-box" id="kaiBox">
   <div class="kai-bolha" onclick="toggleKai()"></div>
   <div class="kai-conteudo">
-    <div class="kai-title">K-AI</div>
+    <div class="kai-title"><div class="kai-dot"></div>K-AI ASSISTENTE</div>
     <div class="kai-msg" id="kaiMsg"></div>
     <div class="kai-menu">
       <button onclick="abrirTela('kai');toggleKai();falar('Assistente KORVIL.')">Assistente</button>
@@ -177,57 +187,67 @@ p{color:var(--text2);font-size:14px;line-height:1.6;}
 <div class="pato" onclick="abrirTela('central')"><svg viewBox="0 0 24 24"><path d="M20 3H4c-1.1 0-2.9-2 2v11c0 1.1.9 2 2 2h3l3 3 3-3h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H6l-2 2V5h16v11z"/></svg></div>
 
 <script>
-/* ===== MENSAGENS CURTAS ===== */
 const mensagens = [
-"Profissionais KORVIL online.",
-"KORVIL em 11 anos.",
-"Manutenção de Celular.",
-"Negócio Próprio aqui.",
-"Terapia Holística K-TH.",
-"Cabeleireiro Unissex.",
-"Eletricista disponível.",
-"Projeto TRANSFORMAÇÃO.",
-"Consultoria Financeira.",
-"Médico e Dentista.",
-"Barbeiro e Esteticista.",
-"Sistema K ativo.",
-"K-AFORTUNADO aberto.",
-"K-ALMA base mental.",
-"Educação Física.",
-"Tráfego com Profissionais.",
-"Design KORVIL.",
-"Empreendedorismo real.",
-"Finanças controladas.",
-"Atendimento agora.",
-"Saúde e Beleza.",
-"Treinamento KORVIL.",
-"Ecossistema completo.",
-"Futuro é KORVIL.",
-"220 Aulas.",
-"Profissionais top.",
-"R$197 por mês.",
-"Whats: 13997690898.",
-"Comece hoje.",
-"Sorteios K-AFORTUNADO.",
-"Todas as áreas.",
-"KORVIL cuida.",
-"Central atende.",
-"Negócios lucram.",
-"Serviços gerais.",
-"K-AI 24h.",
-"Profissionais certificados.",
-"Beleza KORVIL.",
-"Saúde primeiro.",
-"Tecnologia.",
-"Educação.",
-"Consultoria.",
-"Parcerias.",
-"Ao seu lado.",
-"Resultado KORVIL.",
-"Fale agora.",
-"Impulso KORVIL.",
-"Atendimento rápido.",
-"Confiança KORVIL.",
+"Profissionais KORVIL online.","KORVIL em 11 anos.","Manutenção de Celular.",
+"Negócio Próprio aqui.","Terapia Holística K-TH.","Cabeleireiro Unissex.",
+"Eletricista disponível.","Projeto TRANSFORMAÇÃO.","Consultoria Financeira.",
+"Médico e Dentista.","Barbeiro e Esteticista.","Sistema K ativo.",
+"K-AFORTUNADO aberto.","K-ALMA base mental.","Educação Física.",
+"Tráfego com Profissionais.","Design KORVIL.","Empreendedorismo real.",
+"Finanças controladas.","Atendimento agora.","Saúde e Beleza.",
+"Treinamento KORVIL.","Ecossistema completo.","Futuro é KORVIL.",
+"220 Aulas.","Profissionais top.","R$197 por mês.",
+"Whats: 13997690898.","Comece hoje.","Sorteios K-AFORTUNADO.",
+"Todas as áreas.","KORVIL cuida.","Central atende.",
+"Negócios lucram.","Serviços gerais.","K-AI 24h.",
+"Profissionais certificados.","Beleza KORVIL.","Saúde primeiro.",
+"Tecnologia.","Educação.","Consultoria.","Parcerias.",
+"Ao seu lado.","Resultado KORVIL.","Fale agora.",
+"Impulso KORVIL.","Atendimento rápido.","Confiança KORVIL.",
+"Mude seu jogo.","Entre hoje."
+];
+
+let indice = Math.floor(Math.random() * mensagens.length);
+const msgEl = document.getElementById('kaiMsg');
+const kaiBox = document.getElementById('kaiBox');
+
+function falar(texto){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.lang = 'pt-BR'; utter.rate = 1; utter.pitch = 1;
+    window.speechSynthesis.speak(utter);
+  }
+}
+
+function trocarMensagem(){
+  if(kaiBox.classList.contains('expandido')){
+    msgEl.textContent = mensagens[indice];
+    indice = (indice + 1) % mensagens.length;
+  }
+}
+setInterval(trocarMensagem, 15000);
+
+function toggleKai(){
+  kaiBox.classList.toggle('expandido');
+  if(kaiBox.classList.contains('expandido')){
+    trocarMensagem();
+  }
+}
+
+function abrirTela(id){
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+  document.getElementById(id).classList.add('ativa');
+  window.scrollTo(0,0);
+}
+function toggleMenu(){
+  document.getElementById('menu').classList.toggle('ativo');
+  document.getElementById('overlay').classList.toggle('ativo');
+}
+</script>
+
+</body>
+</html>
 "Mude seu jogo.",
 "Entre hoje."
 ];
