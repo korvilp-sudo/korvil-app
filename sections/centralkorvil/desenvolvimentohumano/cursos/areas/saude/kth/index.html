@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TH v10 | Korvil</title>
+<title>K-TH v11 | Korvil</title>
 <style>
   :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--ok:#00ff88;--err:#ff3366;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35)}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -11,10 +11,10 @@
   header{position:sticky;top:0;z-index:999;background:rgba(6,7,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 .topbar{display:flex;align-items:center;gap:12px;padding:10px 12px}
 .logo{font-weight:900;font-size:18px;color:var(--neon)}
-.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start} /* FIX 1: COLA NO TOPO */
-  @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 auto 0;transform:translateX(-100%);transition:.3s;z-index:998;background:var(--panel);width:88%;border-right:1px solid var(--border);max-height:calc(100vh - 52px)}} /* FIX 2: TIREI HEIGHT 100% */
-  aside{position:sticky;top:52px;overflow:auto;padding:12px} /* FIX 3: SEM HEIGHT */
-  main{padding:0;margin:0} /* SEM ESPAÇO */
+.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start} /* FIX: COLA NO TOPO */
+  @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 auto 0;transform:translateX(-100%);transition:.3s;z-index:998;background:var(--panel);width:88%;border-right:1px solid var(--border);max-height:calc(100vh - 52px)}}
+  aside{position:sticky;top:52px;overflow:auto;padding:12px} /* FIX: SEM HEIGHT 100% */
+  main{padding:0;margin:0}
 .menu-btn{display:none;padding:8px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--neon)}
   @media(max-width:1100px){.menu-btn{display:block}}
 .overlay{display:none;position:fixed;inset:0;background:#0008;z-index:997}
@@ -46,12 +46,14 @@
 .video-wrap{position:relative;padding-top:56.25%;background:#000;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .content{padding:14px}
+.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:8px}
+.breadcrumb b{color:var(--neon)}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .chip{font-size:11px;padding:6px 10px;border:1px solid var(--neon);border-radius:999px;color:var(--neon);background:#0b0e15}
 .chip.gray{border-color:var(--border);color:var(--muted)}
 .content h2{font-size:18px;color:var(--neon);margin:0 0 10px;text-shadow:var(--glow)}
 .tema-nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-.tema-btn{padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+.tema-btn{padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
 .tema-btn.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow)}
 .tema-btn.completed{border-color:var(--ok);color:var(--ok)}
 .pagina-nav{display:flex;gap:6px;margin:10px 0}
@@ -60,7 +62,6 @@
 .pagina{margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#0b0e15}
 .pagina h4{font-size:15px;color:var(--neon);margin:0 0 8px}
 .pagina p{font-size:13px;color:var(--muted);margin:0}
-.aviso{margin-top:10px;padding:10px;border-left:3px solid var(--neon);background:#0a0d14;color:var(--muted);font-size:12px}
 .avaliacao{margin-top:16px;padding:16px;border:2px solid var(--neon);border-radius:12px;background:#0a0f14;box-shadow:var(--glow)}
 .avaliacao h3{font-size:15px;color:var(--neon);margin:0 0 8px}
 .avaliacao p{font-size:12px;color:var(--muted);margin:0 0 10px}
@@ -94,7 +95,7 @@
   <aside id="sidebar">
     <div class="course-title">
       <h1>K-TH Formação Profissional</h1>
-      <div class="stat">11 Módulos • 220 Aulas • 1.100 Temas</div>
+      <div class="stat">11 Módulos • 55 Aulas • 275 Temas</div>
     </div>
     <div id="menuModulos"></div>
   </aside>
@@ -120,7 +121,7 @@
         <div class="content" id="conteudoAula">
           <div class="chips"><span class="chip">Selecione uma Aula</span></div>
           <h2>Bem-vindo ao K-TH</h2>
-          <p>Regra: Conclua 5 Páginas > Faça Avaliação 70% > Libera Próxima Aula. Sem limite de tentativas.</p>
+          <p>Regra: Conclua 5 Páginas > Tema 5 Página 5 = Avaliação 70% > Libera Próxima Aula. Sem limite de tentativas.</p>
         </div>
         <div class="navfooter">
           <button class="btn" id="btnAnt" disabled>← Aula Anterior</button>
@@ -133,7 +134,7 @@
 </div>
 
 <script>
-// DADOS COMPLETOS COM TÍTULOS
+// DADOS COMPLETOS COM TÍTULOS DE TODOS OS TEMAS
 const DADOS={
  1:{nome:"Módulo 1: Massoterapia Profissional",video:"j3PdVh1j7e0",aulas:[
     {nome:"Aula 1: História da Massoterapia",temas:["Tema 1: Origens da Massoterapia","Tema 2: Evolução Histórica","Tema 3: Grandes Mestres","Tema 4: Massoterapia no Brasil","Tema 5: Tendências Atuais"]},
@@ -167,7 +168,7 @@ const QUESTOES={
 };
 for(let i=3;i<=11;i++){QUESTOES[i]=QUESTOES[1]}
 
-let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_v10')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_temas_v10')||'{}')};
+let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_v11')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_temas_v11')||'{}')};
 const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 
 function montarMenu(){
@@ -188,14 +189,14 @@ function carregarAula(id){
   const mod=DADOS[m];const aulaObj=mod.aulas[a-1];
   $('#videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${mod.video}" allowfullscreen></iframe>`;
   let nav='';aulaObj.temas.forEach((t,i)=>{const ok=estado.temasOK[id]?.includes(i+1);nav+=`<button class="tema-btn ${i===0?'active':''} ${ok?'completed':''}" data-t="${i+1}">${t}</button>`});
-  $('#conteudoAula').innerHTML=`<div class="chips"><span class="chip">M${m}-A${a}</span><span class="chip gray">${aulaObj.nome}</span></div><h2>M${m}-A${a} – ${aulaObj.nome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;
+  $('#conteudoAula').innerHTML=`<div class="breadcrumb">Localização: <b>${mod.nome}</b> > <b>${aulaObj.nome}</b> > <b id="bcTema">${aulaObj.temas[0]}</b> > <b id="bcPag">Página 1: Objetivo</b></div><div class="chips"><span class="chip">${mod.nome}</span><span class="chip gray">${aulaObj.nome}</span></div><h2>${mod.nome} > ${aulaObj.nome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;
   $$('.tema-btn').forEach(b=>b.onclick=()=>trocarTema(+b.dataset.t));renderPagina();
   $$('.aula').forEach(x=>x.classList.remove('active'));$(`[data-id="${id}"]`).classList.add('active');
   const idx=(m-1)*5+(a-1);$('#btnAnt').disabled=idx===0;$('#btnProx').disabled=true;$('#btnConcluir').disabled=true;if(window.innerWidth<1100)toggleMenu(false);
 }
 
-function trocarTema(t){estado.tema=t;estado.pagina=1;estado.respostas={};$$('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));renderPagina()}
-function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));renderPagina()}
+function trocarTema(t){estado.tema=t;estado.pagina=1;estado.respostas={};$$('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));const[m,a]=estado.aula.replace('M','').split('-A').map(Number);$('#bcTema').innerText=DADOS[m].aulas[a-1].temas[t-1];renderPagina()}
+function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));const tit=['Objetivo','Materiais','Preparação','Execução','Finalização'];$('#bcPag').innerText=`Página ${p}: ${tit[p-1]}`;renderPagina()}
 function renderPagina(){
   const[m,a]=estado.aula.replace('M','').split('-A').map(Number);
   const mod=DADOS[m];const aulaObj=mod.aulas[a-1];const temaNome=aulaObj.temas[estado.tema-1];
@@ -206,7 +207,7 @@ function renderPagina(){
     if(p===5&&estado.tema===5&&!estado.concluidas.includes(estado.aula)){
       extra=`<div class="avaliacao"><h3>📝 Exercício de Avaliação: ${temaNome}</h3><p>Acerte 70% ou mais para liberar a próxima aula. Sem limite de tentativas.</p><div id="q"></div><button class="btn primary" id="env">Enviar Avaliação</button><div id="res"></div></div>`;
     }
-    html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><p>[CONTEÚDO] Módulo ${m}: ${mod.nome} | Aula ${a}: ${aulaObj.nome} | ${temaNome} | Página ${p} – ${tit[p-1]}.</p>${extra}</div>`;
+    html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><p>[CONTEÚDO] ${mod.nome} | ${aulaObj.nome} | ${temaNome} | Página ${p} – ${tit[p-1]}.</p>${extra}</div>`;
   }
   let btns='<div class="pagina-nav">';for(let p=1;p<=5;p++){btns+=`<button class="p-btn ${p===estado.pagina?'active':''}" data-p="${p}">${p}</button>`}btns+='</div>';
   $('#paginaArea').innerHTML=btns+html;
@@ -228,14 +229,14 @@ function corrigir(){
   $('#res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO':'REPROVADO'}: ${ac}/${qs.length} acertos = ${pct}%</div>${ok?'<button class="btn primary" id="prox">Próxima Aula →</button>':'<button class="btn primary" id="ref">Refazer Avaliação</button>'}`;
   if(ok){
     estado.temasOK[estado.aula]=estado.temasOK[estado.aula]||[];if(!estado.temasOK[estado.aula].includes(5))estado.temasOK[estado.aula].push(5);
-    localStorage.setItem('kth_temas_v10',JSON.stringify(estado.temasOK));
+    localStorage.setItem('kth_temas_v11',JSON.stringify(estado.temasOK));
     $('#btnProx').disabled=false;$('#btnConcluir').disabled=false;
   }else{
     $('#ref').onclick=()=>{estado.respostas={};$('#res').innerHTML='';carregarQuestoes(m)}
   }
   $('#prox').onclick=proximaAula;
 }
-function concluirAula(){if(!estado.aula)return;if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('kth_v10',JSON.stringify(estado.concluidas));montarMenu()}
+function concluirAula(){if(!estado.aula)return;if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('kth_v11',JSON.stringify(estado.concluidas));montarMenu()}
 function proximaAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx<54)carregarAula(`M${Math.floor((idx+1)/5)+1}-A${(idx+1)%5+1}`)}
 function anteriorAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx>0)carregarAula(`M${Math.floor((idx-1)/5)+1}-A${(idx-1)%5+1}`)}
 function abrirTab(n){$$('.tab').forEach(t=>t.classList.remove('active'));$('#tab'+n).classList.add('active');$('#tab-cronograma').style.display=n==='Cron'?'block':'none';$('#tab-aula').style.display=n==='Aula'?'block':'none'}
