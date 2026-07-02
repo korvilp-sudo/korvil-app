@@ -3,184 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-TP | Projeto Transformação KORVIL</title>
+<title>K-TP | Inscrição Projeto Transformação</title>
 <style>
 :root{--c:#00f5ff; --c2:#00d4e6; --bg:#000; --bg2:#0a0a0a; --text:#fff; --text2:#aaa; --ok:#00ff88;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-body{background:var(--bg);color:var(--text);overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);}
+.wrap{max-width:800px;margin:auto;padding:20px 16px 120px;animation:fadeIn.5s;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-@keyframes glow{0%,100%{box-shadow:0 0 10px var(--c)30;}50%{box-shadow:0 0 25px var(--c)60;}}
-.wrap{max-width:900px;margin:auto;padding:20px 16px 100px;animation:fadeIn.5s;}
-.header{text-align:center;margin-bottom:30px;padding-top:10px;}
-/* LOGO ESTILO KORVIL - IGUAL A DA CENTRAL */
 .logo-korvil{width:85%; max-width:340px; margin:0 auto 15px auto; display:block; border-radius:12px; filter:drop-shadow(0 0 15px var(--c));}
-.sub{color:var(--text2);font-size:14px;margin-top:6px;font-weight:600;}
-h1{font-size:24px;margin:20px 0 10px;font-weight:800;text-align:center;}
-h2{font-size:18px;color:var(--c);margin:25px 0 12px;font-weight:700;}
-.grid{display:grid;grid-template-columns:1fr;gap:14px;}
-@media(min-width:700px){.grid{grid-template-columns:1fr 1fr;}}
-.card{background:var(--bg2);border:1px solid #1f1f1f;border-radius:14px;padding:18px;transition:.3s;position:relative;overflow:hidden;}
-.card:hover{border-color:var(--c);transform:translateY(-4px);animation:glow 2s infinite;}
-.tag-preco{position:absolute;top:14px;right:14px;background:var(--c);color:#000;padding:6px 10px;border-radius:8px;font-weight:900;font-size:12px;}
-.card h3{font-size:17px;margin-bottom:8px;}
-.card p{color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:12px;}
-.beneficios{list-style:none;margin:10px 0;}
-.beneficios li{color:var(--text2);font-size:13px;padding:4px 0;padding-left:20px;position:relative;}
-.beneficios li::before{content:'✓';position:absolute;left:0;color:var(--ok);font-weight:900;}
-.btn{display:block;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;text-align:center;padding:14px 16px;border-radius:10px;text-decoration:none;font-weight:900;font-size:15px;transition:.2s;border:0;cursor:pointer;width:100%;margin-top:10px;}
-.btn:active{transform:scale(.97);}
-.btn.sec{background:#222;color:var(--text);}
-.btn.sec:active{background:#333;}
-.table-box{background:var(--bg2);border:1px solid #1f1f1f;border-radius:12px;padding:16px;margin-top:20px;overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th,td{border:1px solid #222;padding:10px;text-align:left;}
-th{background:#111;color:var(--c);font-weight:700;}
-td{color:var(--text2);}
-input,textarea,select{width:100%;padding:12px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;font-size:14px;margin-top:4px;}
-label{font-size:13px;color:var(--text2);font-weight:600;display:block;margin-top:10px;}
-.modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);padding:16px;}
-.modal.ativo{display:flex;}
-.modal-box{background:var(--bg2);border:2px solid var(--c);border-radius:14px;padding:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:fadeIn.3s;}
-.modal-box h2{color:var(--c);margin-bottom:14px;}
-.fechar{position:absolute;top:10px;right:14px;font-size:24px;color:var(--text2);cursor:pointer;}
-.fechar:hover{color:var(--c);}
-.nota{color:var(--text2);font-size:12px;text-align:center;margin-top:20px;}
+.header{text-align:center;margin-bottom:20px;}
+.sub{color:var(--text2);font-size:14px;font-weight:600;}
+h1{font-size:22px;margin:20px 0 10px;font-weight:800;text-align:center;color:var(--c);}
+h2{font-size:16px;color:var(--c);margin:20px 0 10px;font-weight:700;border-bottom:1px solid #222;padding-bottom:6px;}
+.card{background:var(--bg2);border:1px solid #1f1f1f;border-radius:12px;padding:16px;margin-bottom:12px;}
+label{font-size:13px;color:var(--text2);font-weight:600;display:block;margin-top:12px;}
+input,textarea,select{width:100%;padding:12px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;font-size:14px;margin-top:4px;outline:none;}
+input:focus,select:focus{border-color:var(--c);box-shadow:0 0 8px var(--c)30;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.check-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.check-item{background:#111;border:1px solid #222;border-radius:8px;padding:10px;cursor:pointer;transition:.2s;font-size:13px;}
+.check-item input{display:none;}
+.check-item.ativo{border-color:var(--c);background:var(--c)15;color:var(--c);font-weight:700;}
+.plano-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;}
+.plano-table th,td{border:1px solid #222;padding:10px;text-align:left;}
+.plano-table th{background:#111;color:var(--c);}
+.plano-select{cursor:pointer;transition:.2s;}
+.plano-select:hover{background:#111;}
+.plano-select.ativo{background:var(--c)15;border:2px solid var(--c);}
+.horarios{display:none;margin-top:10px;}
+.horarios.ativo{display:block;}
+.btn{display:block;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;text-align:center;padding:16px;border-radius:10px;text-decoration:none;font-weight:900;font-size:15px;border:0;cursor:pointer;width:100%;margin-top:20px;}
+.btn:disabled{background:#333;color:#666;cursor:not-allowed;}
+.nota{color:var(--text2);font-size:12px;text-align:center;margin-top:15px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="header">
-    <!-- LOGO NO TOPO IGUAL KORVIL -->
     <img src="images/Logo%20K-TP.png" alt="Logo K-TP" class="logo-korvil"> 
-    <div class="sub">PROJETO TRANSFORMAÇÃO KORVIL | 11 ANOS</div>
+    <div class="sub">PROJETO TRANSFORMAÇÃO KORVIL | FICHA DE INSCRIÇÃO</div>
   </div>
 
-  <h1>ESCOLHA SUA TRANSFORMAÇÃO</h1>
-  <div class="grid">
-    <div class="card">
-      <div class="tag-preco">R$197/mês</div>
-      <h3>K-TP ESSENCIAL</h3>
-      <p>Pra quem quer começar com o pé direito. Corpo, mente e resultado.</p>
-      <ul class="beneficios">
-        <li>Treino Personalizado Online</li>
-        <li>Plano Alimentar Base</li>
-        <li>Acompanhamento WhatsApp 2x/sem</li>
-        <li>Acesso Comunidade KORVIL</li>
-      </ul>
-      <button class="btn" onclick="abrirWhats('K-TP ESSENCIAL R$197')">Quero o ESSENCIAL</button>
-    </div>
-
-    <div class="card">
-      <div class="tag-preco">R$397/mês</div>
-      <h3>K-TP PREMIUM</h3>
-      <p>Resultado acelerado com acompanhamento 1 a 1 com Profissional.</p>
-      <ul class="beneficios">
-        <li>Tudo do ESSENCIAL +</li>
-        <li>Treino Presencial 3x/sem</li>
-        <li>Nutrição Individualizada</li>
-        <li>Anamnese Completa Mensal</li>
-        <li>Suporte Diário WhatsApp</li>
-      </ul>
-      <button class="btn" onclick="abrirWhats('K-TP PREMIUM R$397')">Quero o PREMIUM</button>
-    </div>
-
-    <div class="card">
-      <div class="tag-preco">R$797/mês</div>
-      <h3>K-TP MASTER</h3>
-      <p>Transformação total. Elite KORVIL. Corpo de atleta em 12 semanas.</p>
-      <ul class="beneficios">
-        <li>Tudo do PREMIUM +</li>
-        <li>Treino 5x/sem + Fisio</li>
-        <li>Check-up K-TH Terapia</li>
-        <li>Consultoria K-AFORTUNADO</li>
-        <li>Protocolo 100% Personalizado</li>
-      </ul>
-      <button class="btn" onclick="abrirWhats('K-TP MASTER R$797')">Quero o MASTER</button>
-    </div>
-
-    <div class="card">
-      <div class="tag-preco">R$49</div>
-      <h3>ANAMNESE AVULSA</h3>
-      <p>Avaliação profissional completa. Entenda seu corpo antes de treinar.</p>
-      <ul class="beneficios">
-        <li>Avaliação Física Completa</li>
-        <li>Relatório PDF em 48h</li>
-        <li>Orientações Iniciais</li>
-      </ul>
-      <button class="btn sec" onclick="abrirAnamnese()">Fazer Anamnese</button>
-    </div>
-  </div>
-
-  <h2>TABELA DE ANAMNESE PROFISSIONAL KORVIL</h2>
-  <div class="table-box">
-    <table>
-      <tr><th>DADO</th><th>PREENCHIMENTO</th></tr>
-      <tr><td>Nome Completo</td><td>_____________________</td></tr>
-      <tr><td>Idade / Sexo</td><td>____ anos / _______</td></tr>
-      <tr><td>Peso / Altura</td><td>____ kg / ____ m</td></tr>
-      <tr><td>Objetivo Principal</td><td>Emagrecer / Hipertrofia / Saúde</td></tr>
-      <tr><td>Lesões / Doenças</td><td>_____________________</td></tr>
-      <tr><td>Medicamentos</td><td>_____________________</td></tr>
-      <tr><td>Frequência Treino</td><td>____x por semana</td></tr>
-      <tr><td>Restrição Alimentar</td><td>_____________________</td></tr>
-      <tr><td>Profissional Resp.</td><td>_____________________</td></tr>
-      <tr><td>Data / Assinatura</td><td>___/___/___</td></tr>
+  <h1>1. ESCOLHA SEU PLANO</h1>
+  <div class="card">
+    <table class="plano-table">
+      <tr><th>PLANO</th><th>TIPO</th><th>VALOR</th></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'K-TP ONLINE ESSENCIAL', 197)"><td>K-TP ESSENCIAL</td><td>Online</td><td>R$197/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'K-TP PRESENCIAL ESSENCIAL', 297)"><td>K-TP ESSENCIAL</td><td>Presencial 3x/sem</td><td>R$297/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'K-TP ONLINE PREMIUM', 397)"><td>K-TP PREMIUM</td><td>Online</td><td>R$397/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'K-TP PRESENCIAL PREMIUM', 497)"><td>K-TP PREMIUM</td><td>Presencial 5x/sem</td><td>R$497/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'K-TP MASTER', 797)"><td>K-TP MASTER</td><td>Presencial + Fisio</td><td>R$797/mês</td></tr>
     </table>
-  </div>
-  <p class="nota">*Anamnese obrigatória antes de iniciar qualquer protocolo K-TP. LGPD: Dados sigilosos.</p>
-</div>
+    <input type="hidden" id="plano_escolhido">
+    <input type="hidden" id="valor_plano">
 
-<div class="modal" id="modalAnamnese">
-  <div class="modal-box">
-    <span class="fechar" onclick="fecharAnamnese()">×</span>
-    <h2>ANAMNESE K-TP</h2>
-    <label>Nome Completo<input id="an_nome"></label>
-    <label>Idade<input id="an_idade" type="number"></label>
-    <label>Sexo<select id="an_sexo"><option>M</option><option>F</option></select></label>
-    <label>Peso kg<input id="an_peso" type="number"></label>
-    <label>Altura m<input id="an_altura" step="0.01"></label>
-    <label>Objetivo<select id="an_obj"><option>Emagrecer</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select></label>
-    <label>Lesões ou Doenças<textarea id="an_lesao" rows="2"></textarea></label>
-    <label>WhatsApp com DDD<input id="an_whats"></label>
-    <button class="btn" onclick="enviarAnamnese()">Enviar Anamnese no WhatsApp</button>
+    <div id="horariosBox" class="horarios">
+      <label>2. ESCOLHA DIAS E HORÁRIOS</label>
+      <div class="check-group" id="diasHorarios"></div>
+    </div>
   </div>
+
+  <h2>3. DADOS PESSOAIS</h2>
+  <div class="card">
+    <label>Nome Completo<input id="nome" required></label>
+    <div class="grid2">
+      <label>CPF<input id="cpf" placeholder="000.000.000-00" maxlength="14"></label>
+      <label>Data Nascimento<input id="nasc" type="date" onchange="calcIdade()"></label>
+    </div>
+    <div class="grid2">
+      <label>Idade<input id="idade" readonly></label>
+      <label>Sexo<select id="sexo"><option>M</option><option>F</option><option>Outro</option></select></label>
+    </div>
+    <label>Email<input id="email" type="email"></label>
+    <label>WhatsApp com DDD<input id="whats" placeholder="13 9xxxx-xxxx"></label>
+  </div>
+
+  <h2>4. ENDEREÇO</h2>
+  <div class="card">
+    <label>CEP<input id="cep" placeholder="00000-000" maxlength="9" onblur="buscaCEP()"></label>
+    <div class="grid2">
+      <label>Rua<input id="rua"></label>
+      <label>Número<input id="numero" type="number"></label>
+    </div>
+    <label>Bairro<input id="bairro"></label>
+    <label>Cidade/UF<input id="cidade" value="Bertioga - SP" readonly></label>
+  </div>
+
+  <h2>5. OBJETIVOS K-TP [PODE MARCAR +1]</h2>
+  <div class="card">
+    <div class="check-group" id="objetivos">
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Emagrecer">Emagrecer</div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Hipertrofia">Hipertrofia</div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Condicionamento">Condicionamento</div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Reabilitação">Reabilitação</div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Performance">Performance</div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Saúde Mental">Saúde Mental</div>
+    </div>
+  </div>
+
+  <h2>6. AVALIAÇÃO PROFISSIONAL DE ACADEMIA</h2>
+  <div class="card">
+    <label>Nível Atual</label>
+    <div class="check-group">
+      <div class="check-item" onclick="selectNivel(this)"><input type="radio" name="nivel" value="Iniciante">Iniciante</div>
+      <div class="check-item" onclick="selectNivel(this)"><input type="radio" name="nivel" value="Praticante">Praticante</div>
+      <div class="check-item" onclick="selectNivel(this)"><input type="radio" name="nivel" value="Intermediário">Intermediário</div>
+      <div class="check-item" onclick="selectNivel(this)"><input type="radio" name="nivel" value="Atleta">Atleta</div>
+    </div>
+    
+    <div class="grid2">
+      <label>Peso kg<input id="peso" type="number"></label>
+      <label>Altura m<input id="altura" step="0.01"></label>
+    </div>
+    <label>Lesões/Doenças/Restrições<textarea id="lesao" rows="2" placeholder="Ex: Joelho, coluna, pressão alta..."></textarea></label>
+    <label>Medicamentos em uso<textarea id="med" rows="2"></textarea></label>
+    <label>Frequência que treina hoje<textarea id="freq" rows="2" placeholder="Ex: 0x semana, 3x semana..."></textarea></label>
+  </div>
+
+  <button class="btn" id="btnEnviar" onclick="enviarWhats()" disabled>CONFIRMAR INSCRIÇÃO E ENVIAR NO WHATSAPP</button>
+  <p class="nota">*Ao enviar você concorda com LGPD KORVIL. Dados sigilosos.</p>
 </div>
 
 <script>
-const WHATS_NUMBER = '5513997690898'; // SEU NUMERO KORVIL
-const MESSENGER_LINK = 'https://m.me/korvil'; // TROCA PELO SEU @MESSENGER
+const WHATS_NUMBER = '5513997690898';
+let planoAtivo = false;
 
-function abrirWhats(plano){
-  const texto = encodeURIComponent(`Ola KORVIL! Tenho interesse no ${plano}. Quero iniciar meu K-TP agora.`);
-  const appLink = `https://wa.me/55${WHATS_NUMBER}?text=${texto}`; // Pega Business ou Normal
-  const webLink = `https://web.whatsapp.com/send?phone=55${WHATS_NUMBER}&text=${texto}`;
-  const newWindow = window.open(appLink, '_blank');
-  setTimeout(()=>{ 
-    if(!newWindow || newWindow.closed || typeof newWindow.closed=='undefined'){ 
-      window.open(webLink, '_blank'); 
-      setTimeout(()=>{window.open(MESSENGER_LINK,'_blank')}, 1500);
-    }
-  }, 1500);
+const horariosOnline = ['Seg a Sex 6h-22h', 'Sáb 8h-12h', 'Flexível WhatsApp'];
+const horariosPresencial = ['Seg Qua Sex 7h', 'Seg Qua Sex 18h', 'Ter Qui 7h', 'Ter Qui 19h', 'Sáb 9h'];
+
+function selectPlano(el, nome, valor){
+  document.querySelectorAll('.plano-select').forEach(r=>r.classList.remove('ativo'));
+  el.classList.add('ativo');
+  document.getElementById('plano_escolhido').value = nome;
+  document.getElementById('valor_plano').value = valor;
+  planoAtivo = true;
+  document.getElementById('horariosBox').classList.add('ativo');
+  const box = document.getElementById('diasHorarios');
+  box.innerHTML = '';
+  const lista = nome.includes('PRESENCIAL') || nome.includes('MASTER') ? horariosPresencial : horariosOnline;
+  lista.forEach(h=>{
+    box.innerHTML += `<div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="${h}">${h}</div>`;
+  });
+  validarForm();
 }
 
-function abrirAnamnese(){document.getElementById('modalAnamnese').classList.add('ativo');}
-function fecharAnamnese(){document.getElementById('modalAnamnese').classList.remove('ativo');}
+function toggleCheck(div){div.classList.toggle('ativo'); const input=div.querySelector('input'); input.checked=!input.checked; validarForm();}
+function selectNivel(div){document.querySelectorAll('[name=nivel]').forEach(i=>i.closest('.check-item').classList.remove('ativo')); div.classList.add('ativo'); div.querySelector('input').checked=true; validarForm();}
 
-function enviarAnamnese(){
-  const n=document.getElementById('an_nome').value;
-  const i=document.getElementById('an_idade').value;
-  const s=document.getElementById('an_sexo').value;
-  const p=document.getElementById('an_peso').value;
-  const a=document.getElementById('an_altura').value;
-  const o=document.getElementById('an_obj').value;
-  const l=document.getElementById('an_lesao').value;
-  const w=document.getElementById('an_whats').value;
-  if(!n||!w){alert('Preencha Nome e WhatsApp');return;}
-  const msg=`*K-TP - NOVA ANAMNESE*\n\n*CLIENTE:* ${n}\n*IDADE:* ${i} | *SEXO:* ${s}\n*PESO:* ${p}kg | *ALTURA:* ${a}m\n*OBJETIVO:* ${o}\n*LESOES/DOENCAS:* ${l||'Nenhuma'}\n*CONTATO:* ${w}\n\nCliente preencheu anamnese pelo site K-TP.`;
-  const texto = encodeURIComponent(msg);
-  window.open(`https://wa.me/55${WHATS_NUMBER}?text=${texto}`, '_blank');
-  fecharAnamnese();
-  alert('Anamnese enviada! Retornaremos em até 2h no WhatsApp.');
+function calcIdade(){
+  const nasc = new Date(document.getElementById('nasc').value);
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const m = hoje.getMonth() - nasc.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+  document.getElementById('idade').value = idade > 0 ? idade : '';
+  validarForm();
+}
+
+async function buscaCEP(){
+  const cep=document.getElementById('cep').value.replace(/\D/g,'');
+  if(cep.length!==8)return;
+  try{
+    const res=await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const d=await res.json();
+    if(!d.erro){ document.getElementById('rua').value=d.logradouro; document.getElementById('bairro').value=d.bairro; }
+  }catch(e){}
+}
+
+document.getElementById('cpf').addEventListener('input', e=>{
+  let v=e.target.value.replace(/\D/g,'');
+  v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value=v; validarForm();
+});
+
+function validarForm(){
+  const req = document.getElementById('nome').value && document.getElementById('cpf').value && document.getElementById('whats').value && planoAtivo;
+  document.getElementById('btnEnviar').disabled = !req;
+}
+
+function coletarChecks(id){
+  return [...document.querySelectorAll(`#${id} .check-item.ativo input`)].map(i=>i.value).join(', ') || 'Nenhum';
+}
+
+function enviarWhats(){
+  const dados = {
+    plano: document.getElementById('plano_escolhido').value,
+    valor: document.getElementById('valor_plano').value,
+    horarios: coletarChecks('diasHorarios'),
+    nome: document.getElementById('nome').value,
+    cpf: document.getElementById('cpf').value,
+    nasc: document.getElementById('nasc').value,
+    idade: document.getElementById('idade').value,
+    sexo: document.getElementById('sexo').value,
+    email: document.getElementById('email').value,
+    whats: document.getElementById('whats').value,
+    cep: document.getElementById('cep').value,
+    rua: document.getElementById('rua').value,
+    numero: document.getElementById('numero').value,
+    bairro: document.getElementById('bairro').value,
+    objetivos: coletarChecks('objetivos'),
+    nivel: document.querySelector('[name=nivel]:checked')?.value || 'Não informado',
+    peso: document.getElementById('peso').value,
+    altura: document.getElementById('altura').value,
+    lesao: document.getElementById('lesao').value || 'Nenhuma',
+    med: document.getElementById('med').value || 'Nenhum',
+    freq: document.getElementById('freq').value || 'Nenhuma'
+  };
+
+  const msg = `*K-TP - NOVA INSCRIÇÃO*\n\n*PLANO:* ${dados.plano} | R$${dados.valor}\n*HORARIOS:* ${dados.horarios}\n\n*DADOS PESSOAIS:*\nNome: ${dados.nome}\nCPF: ${dados.cpf}\nNasc: ${dados.nasc} | Idade: ${dados.idade}\nSexo: ${dados.sexo}\nEmail: ${dados.email}\nWhats: ${dados.whats}\n\n*ENDERECO:*\nCEP: ${dados.cep}\n${dados.rua}, ${dados.numero} - ${dados.bairro}\n\n*OBJETIVOS:* ${dados.objetivos}\n\n*AVALIACAO PROFISSIONAL:*\nNivel: ${dados.nivel}\nPeso: ${dados.peso}kg | Altura: ${dados.altura}m\nLesoes: ${dados.lesao}\nMedicamentos: ${dados.med}\nFrequencia Atual: ${dados.freq}\n\nCliente preencheu ficha K-TP pelo site.`;
+  
+  window.open(`https://wa.me/55${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  alert('Inscrição enviada! Retornaremos em até 2h no WhatsApp para confirmar.');
 }
 </script>
 </body>
