@@ -66,7 +66,7 @@ p{color:var(--text2);font-size:14px;line-height:1.7;}
 <nav class="menu-lateral" id="menu">
   <a onclick="abrirTela('kalma');toggleMenu()">K-ALMA</a>
   <a onclick="abrirTela('kafortunado');toggleMenu()">K-AFORTUNADO</a>
-  <a onclick="irParaKTP();toggleMenu()">K-TP</a> <!-- MUDANÇA 1 -->
+  <a onclick="irParaKTP();toggleMenu()">K-TP</a>
   <a onclick="abrirTela('sistema');toggleMenu()">SISTEMA K</a>
   <a onclick="abrirTela('central');toggleMenu()">CENTRAL KORVIL</a>
 </nav>
@@ -136,17 +136,17 @@ p{color:var(--text2);font-size:14px;line-height:1.7;}
 
 <script>
 const WHATS_NUMBER = '5513997690898';
-const KTP_URL = '/k-tp/'; // MUDANÇA 2: COLOCA O LINK DA PASTA K-TP AQUI
+const KTP_URL = '/sections/ktp/'; // FIX: AGORA É SECTIONS/KTP/
 let textoWhats = '';
 const cube = document.getElementById("cubeKAI");
 const kaiMenu = document.getElementById("kaiMenu");
 
-function irParaKTP(){ // MUDANÇA 3: FUNÇÃO NOVA PRA REDIRECIONAR
+function irParaKTP(){
   window.location.href = KTP_URL;
 }
 
 function abrirTela(id){
-  if(id==='ktp'){irParaKTP();return;} // MUDANÇA 4: BLOQUEIA A TELA FALSA
+  if(id==='ktp'){irParaKTP();return;}
   document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
   document.getElementById(id).classList.add('ativa');
   window.scrollTo({top:0, behavior:'smooth'});
