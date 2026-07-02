@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-TP | Inscrição Projeto Transformação</title>
+<title>K-TP | Projeto Transformação 2026</title>
 <style>
 :root{--c:#00f5ff; --c2:#00d4e6; --bg:#000; --bg2:#0a0a0a; --text:#fff; --text2:#aaa; --ok:#00ff88;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
@@ -21,49 +21,69 @@ input,textarea,select{width:100%;padding:12px;background:#1a1a1a;border:1px soli
 input:focus,select:focus{border-color:var(--c);box-shadow:0 0 8px var(--c)30;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .check-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
-.check-item{background:#111;border:1px solid #222;border-radius:8px;padding:10px;cursor:pointer;transition:.2s;font-size:13px;}
+.check-item{background:#111;border:1px solid #222;border-radius:8px;padding:10px;cursor:pointer;transition:.2s;font-size:13px;text-align:center;}
 .check-item input{display:none;}
 .check-item.ativo{border-color:var(--c);background:var(--c)15;color:var(--c);font-weight:700;}
 .plano-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;}
-.plano-table th,td{border:1px solid #222;padding:10px;text-align:left;}
+.plano-table th,td{border:1px solid #222;padding:8px;text-align:left;}
 .plano-table th{background:#111;color:var(--c);}
 .plano-select{cursor:pointer;transition:.2s;}
 .plano-select:hover{background:#111;}
 .plano-select.ativo{background:var(--c)15;border:2px solid var(--c);}
-.horarios{display:none;margin-top:10px;}
-.horarios.ativo{display:block;}
+.aviso{color:#ff5555;font-size:12px;font-weight:700;text-align:center;margin-top:8px;}
 .btn{display:block;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;text-align:center;padding:16px;border-radius:10px;text-decoration:none;font-weight:900;font-size:15px;border:0;cursor:pointer;width:100%;margin-top:20px;}
 .btn:disabled{background:#333;color:#666;cursor:not-allowed;}
 .nota{color:var(--text2);font-size:12px;text-align:center;margin-top:15px;}
+.pix-box{background:#111;border:1px solid var(--c);border-radius:8px;padding:12px;margin-top:12px;text-align:center;}
+.pix-box b{color:var(--c);}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="header">
     <img src="images/Logo%20K-TP.png" alt="Logo K-TP" class="logo-korvil"> 
-    <div class="sub">PROJETO TRANSFORMAÇÃO KORVIL | FICHA DE INSCRIÇÃO</div>
+    <div class="sub">K-TP TREINAMENTO PERSONALIZADO | 11 ANOS | 2026</div>
   </div>
 
-  <h1>1. ESCOLHA SEU PLANO</h1>
+  <h1>1. ESCOLHA SEU PLANO K-TP</h1>
   <div class="card">
     <table class="plano-table">
-      <tr><th>PLANO</th><th>TIPO</th><th>VALOR</th></tr>
-      <tr class="plano-select" onclick="selectPlano(this, 'K-TP ONLINE ESSENCIAL', 197)"><td>K-TP ESSENCIAL</td><td>Online</td><td>R$197/mês</td></tr>
-      <tr class="plano-select" onclick="selectPlano(this, 'K-TP PRESENCIAL ESSENCIAL', 297)"><td>K-TP ESSENCIAL</td><td>Presencial 3x/sem</td><td>R$297/mês</td></tr>
-      <tr class="plano-select" onclick="selectPlano(this, 'K-TP ONLINE PREMIUM', 397)"><td>K-TP PREMIUM</td><td>Online</td><td>R$397/mês</td></tr>
-      <tr class="plano-select" onclick="selectPlano(this, 'K-TP PRESENCIAL PREMIUM', 497)"><td>K-TP PREMIUM</td><td>Presencial 5x/sem</td><td>R$497/mês</td></tr>
-      <tr class="plano-select" onclick="selectPlano(this, 'K-TP MASTER', 797)"><td>K-TP MASTER</td><td>Presencial + Fisio</td><td>R$797/mês</td></tr>
+      <tr><th>TIPO</th><th>DESCRIÇÃO</th><th>VALOR</th></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'AULA AVULSA ONLINE', 20, 'online')"><td>ONLINE</td><td>Seg à Sex | Acompanhamento WhatsApp | 1 Semana</td><td>R$20,00</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'AULA AVULSA PRESENCIAL', 20, 'presencial')"><td>PRESENCIAL</td><td>Seg à Sex | 1 Treino | 7 vagas</td><td>R$20,00</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL ONLINE', 60, 'online')"><td>MENSAL ONLINE</td><td>Seg à Sex | Acompanhamento Diário</td><td>R$60,00/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL 1x SEMANA', 60, 'presencial')"><td>PRESENCIAL 1x</td><td>1x por semana</td><td>R$60,00/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL 2x SEMANA', 80, 'presencial')"><td>PRESENCIAL 2x</td><td>2x por semana</td><td>R$80,00/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL 3x SEMANA', 100, 'presencial')"><td>PRESENCIAL 3x</td><td>3x por semana</td><td>R$100,00/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL 4x SEMANA', 130, 'presencial')"><td>PRESENCIAL 4x</td><td>4x por semana</td><td>R$130,00/mês</td></tr>
+      <tr class="plano-select" onclick="selectPlano(this, 'MENSAL 5x SEMANA', 150, 'presencial')"><td>PRESENCIAL 5x</td><td>5x por semana</td><td>R$150,00/mês</td></tr>
     </table>
     <input type="hidden" id="plano_escolhido">
     <input type="hidden" id="valor_plano">
+    <input type="hidden" id="tipo_plano">
+    <div id="matriculaBox" class="pix-box" style="display:none;">
+      <b>MATRÍCULA NOVO ALUNO: R$50,00</b><br>
+      PIX: korvilloja@gmail.com
+    </div>
 
-    <div id="horariosBox" class="horarios">
-      <label>2. ESCOLHA DIAS E HORÁRIOS</label>
+    <div id="horariosBox" style="display:none;margin-top:15px;">
+      <label>2. ESCOLHA DIA E HORÁRIO | SEG À SEX | 7 VAGAS POR HORÁRIO</label>
+      <div class="aviso">Bloqueado: 11h às 15h</div>
       <div class="check-group" id="diasHorarios"></div>
     </div>
   </div>
 
-  <h2>3. DADOS PESSOAIS</h2>
+  <h2>3. ESCOLHA SEU OBJETIVO [PODE MARCAR +1]</h2>
+  <div class="card">
+    <div class="check-group" id="objetivos">
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="MANUTENÇÃO">1. MANUTENÇÃO<br><small>Reabilitação, cuidados</small></div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="RESISTÊNCIA">2. RESISTÊNCIA<br><small>Cardio, disposição</small></div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="FORÇA">3. FORÇA<br><small>Fortalecer membros</small></div>
+      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="HIPERTROFIA">4. HIPERTROFIA<br><small>Construção muscular</small></div>
+    </div>
+  </div>
+
+  <h2>4. DADOS PESSOAIS</h2>
   <div class="card">
     <label>Nome Completo<input id="nome" required></label>
     <div class="grid2">
@@ -72,33 +92,21 @@ input:focus,select:focus{border-color:var(--c);box-shadow:0 0 8px var(--c)30;}
     </div>
     <div class="grid2">
       <label>Idade<input id="idade" readonly></label>
-      <label>Sexo<select id="sexo"><option>M</option><option>F</option><option>Outro</option></select></label>
+      <label>Público<select id="publico"><option>Adultos</option><option>Jovens</option><option>Idosos</option><option>Crianças</option><option>Praticantes</option><option>Atletas</option></select></label>
     </div>
     <label>Email<input id="email" type="email"></label>
-    <label>WhatsApp com DDD<input id="whats" placeholder="13 9xxxx-xxxx"></label>
+    <label>WhatsApp 13 9xxxx-xxxx<input id="whats" value="13997690898"></label>
   </div>
 
-  <h2>4. ENDEREÇO</h2>
+  <h2>5. ENDEREÇO</h2>
   <div class="card">
-    <label>CEP<input id="cep" placeholder="00000-000" maxlength="9" onblur="buscaCEP()"></label>
+    <label>CEP<input id="cep" placeholder="11250-527" maxlength="9" onblur="buscaCEP()"></label>
     <div class="grid2">
       <label>Rua<input id="rua"></label>
       <label>Número<input id="numero" type="number"></label>
     </div>
     <label>Bairro<input id="bairro"></label>
     <label>Cidade/UF<input id="cidade" value="Bertioga - SP" readonly></label>
-  </div>
-
-  <h2>5. OBJETIVOS K-TP [PODE MARCAR +1]</h2>
-  <div class="card">
-    <div class="check-group" id="objetivos">
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Emagrecer">Emagrecer</div>
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Hipertrofia">Hipertrofia</div>
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Condicionamento">Condicionamento</div>
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Reabilitação">Reabilitação</div>
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Performance">Performance</div>
-      <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Saúde Mental">Saúde Mental</div>
-    </div>
   </div>
 
   <h2>6. AVALIAÇÃO PROFISSIONAL DE ACADEMIA</h2>
@@ -115,32 +123,34 @@ input:focus,select:focus{border-color:var(--c);box-shadow:0 0 8px var(--c)30;}
       <label>Peso kg<input id="peso" type="number"></label>
       <label>Altura m<input id="altura" step="0.01"></label>
     </div>
-    <label>Lesões/Doenças/Restrições<textarea id="lesao" rows="2" placeholder="Ex: Joelho, coluna, pressão alta..."></textarea></label>
-    <label>Medicamentos em uso<textarea id="med" rows="2"></textarea></label>
-    <label>Frequência que treina hoje<textarea id="freq" rows="2" placeholder="Ex: 0x semana, 3x semana..."></textarea></label>
+    <label>Objetivos Físicos<textarea id="objfis" rows="2" placeholder="Ganho de peso, Emagrecimento, Definição, Saúde, Reabilitação, Condicionamento"></textarea></label>
+    <label>Lesões/Doenças/Restrições<textarea id="lesao" rows="2"></textarea></label>
   </div>
 
-  <button class="btn" id="btnEnviar" onclick="enviarWhats()" disabled>CONFIRMAR INSCRIÇÃO E ENVIAR NO WHATSAPP</button>
-  <p class="nota">*Ao enviar você concorda com LGPD KORVIL. Dados sigilosos.</p>
+  <button class="btn" id="btnEnviar" onclick="enviarWhats()" disabled>CONFIRMAR INSCRIÇÃO K-TP</button>
+  <p class="nota">KORVIL LTDA | CNPJ: 00.000.000/0001-00 | @KORVIL.OFICIAL | rua Projetada B1, nº 103 - Vicente de Carvalho II | CEP 11250-527</p>
 </div>
 
 <script>
 const WHATS_NUMBER = '5513997690898';
 let planoAtivo = false;
 
-const horariosOnline = ['Seg a Sex 6h-22h', 'Sáb 8h-12h', 'Flexível WhatsApp'];
-const horariosPresencial = ['Seg Qua Sex 7h', 'Seg Qua Sex 18h', 'Ter Qui 7h', 'Ter Qui 19h', 'Sáb 9h'];
+const horariosPresencial = ['06h','07h','08h','09h','10h','16h','17h','18h','19h','20h','21h','22h','23h','00h','01h','02h','03h','04h','05h'];
+const horariosOnline = ['Seg à Sex - Acompanhamento WhatsApp'];
 
-function selectPlano(el, nome, valor){
+function selectPlano(el, nome, valor, tipo){
   document.querySelectorAll('.plano-select').forEach(r=>r.classList.remove('ativo'));
   el.classList.add('ativo');
   document.getElementById('plano_escolhido').value = nome;
   document.getElementById('valor_plano').value = valor;
+  document.getElementById('tipo_plano').value = tipo;
   planoAtivo = true;
-  document.getElementById('horariosBox').classList.add('ativo');
+  document.getElementById('horariosBox').style.display = 'block';
+  document.getElementById('matriculaBox').style.display = 'block';
+  
   const box = document.getElementById('diasHorarios');
   box.innerHTML = '';
-  const lista = nome.includes('PRESENCIAL') || nome.includes('MASTER') ? horariosPresencial : horariosOnline;
+  const lista = tipo === 'presencial' ? horariosPresencial : horariosOnline;
   lista.forEach(h=>{
     box.innerHTML += `<div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="${h}">${h}</div>`;
   });
@@ -189,12 +199,13 @@ function enviarWhats(){
   const dados = {
     plano: document.getElementById('plano_escolhido').value,
     valor: document.getElementById('valor_plano').value,
+    tipo: document.getElementById('tipo_plano').value,
     horarios: coletarChecks('diasHorarios'),
     nome: document.getElementById('nome').value,
     cpf: document.getElementById('cpf').value,
     nasc: document.getElementById('nasc').value,
     idade: document.getElementById('idade').value,
-    sexo: document.getElementById('sexo').value,
+    publico: document.getElementById('publico').value,
     email: document.getElementById('email').value,
     whats: document.getElementById('whats').value,
     cep: document.getElementById('cep').value,
@@ -205,15 +216,14 @@ function enviarWhats(){
     nivel: document.querySelector('[name=nivel]:checked')?.value || 'Não informado',
     peso: document.getElementById('peso').value,
     altura: document.getElementById('altura').value,
-    lesao: document.getElementById('lesao').value || 'Nenhuma',
-    med: document.getElementById('med').value || 'Nenhum',
-    freq: document.getElementById('freq').value || 'Nenhuma'
+    objfis: document.getElementById('objfis').value || 'Nenhum',
+    lesao: document.getElementById('lesao').value || 'Nenhuma'
   };
 
-  const msg = `*K-TP - NOVA INSCRIÇÃO*\n\n*PLANO:* ${dados.plano} | R$${dados.valor}\n*HORARIOS:* ${dados.horarios}\n\n*DADOS PESSOAIS:*\nNome: ${dados.nome}\nCPF: ${dados.cpf}\nNasc: ${dados.nasc} | Idade: ${dados.idade}\nSexo: ${dados.sexo}\nEmail: ${dados.email}\nWhats: ${dados.whats}\n\n*ENDERECO:*\nCEP: ${dados.cep}\n${dados.rua}, ${dados.numero} - ${dados.bairro}\n\n*OBJETIVOS:* ${dados.objetivos}\n\n*AVALIACAO PROFISSIONAL:*\nNivel: ${dados.nivel}\nPeso: ${dados.peso}kg | Altura: ${dados.altura}m\nLesoes: ${dados.lesao}\nMedicamentos: ${dados.med}\nFrequencia Atual: ${dados.freq}\n\nCliente preencheu ficha K-TP pelo site.`;
+  const msg = `*K-TP - NOVA INSCRIÇÃO 2026*\n\n*PLANO:* ${dados.plano} | R$${dados.valor}\n*TIPO:* ${dados.tipo}\n*HORARIO:* ${dados.horarios}\n*MATRÍCULA:* R$50,00 NOVO ALUNO | PIX: korvilloja@gmail.com\n*DADOS PESSOAIS:*\nNome: ${dados.nome}\nCPF: ${dados.cpf}\nNasc: ${dados.nasc} | Idade: ${dados.idade}\nPublico: ${dados.publico}\nEmail: ${dados.email}\nWhats: ${dados.whats}\n\n*ENDERECO:*\nCEP: ${dados.cep}\n${dados.rua}, ${dados.numero} - ${dados.bairro} | Bertioga-SP\n*OBJETIVO K-TP:* ${dados.objetivos}\n\n*AVALIACAO PROFISSIONAL:*\nNivel: ${dados.nivel}\nPeso: ${dados.peso}kg | Altura: ${dados.altura}m\nObjetivos Fisicos: ${dados.objfis}\nLesoes: ${dados.lesao}\n\n*CONTATO KORVIL:* 13 99769-0898 | @KORVIL.OFICIAL`;
   
   window.open(`https://wa.me/55${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-  alert('Inscrição enviada! Retornaremos em até 2h no WhatsApp para confirmar.');
+  alert('Ficha K-TP enviada! Pague a matrícula PIX korvilloja@gmail.com e confirme no WhatsApp.');
 }
 </script>
 </body>
