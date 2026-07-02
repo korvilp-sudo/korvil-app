@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-TH | Korvil</title>
 <style>
-  :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--neon-2:#00e5ff;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35);--ok:#00ff88;--err:#ff3366}
+  :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--neon-2:#00e5ff;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35)}
   *{box-sizing:border-box}
   body{margin:0;background:radial-gradient(1200px 600px at 10% -10%, #0a0f1a 0%, var(--bg) 60%);color:var(--text);font:14px/1.6 Inter,Arial}
   header{position:sticky;top:0;z-index:20;background:rgba(6,7,11,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
@@ -28,6 +28,9 @@
 .fase-head h3{margin:0;color:var(--neon);font-size:15px}
 .fase-body{display:none;padding:12px 16px;color:var(--muted)}
 .fase.open.fase-body{display:block}
+.mes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.mes{padding:10px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;text-align:center;font-size:13px}
+.mes b{display:block;color:var(--neon)}
 .course-title{padding:8px 8px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
 .course-title h1{font-size:16px;margin:0;color:var(--neon);text-shadow:var(--glow)}
 .stat{font-size:12px;color:var(--muted);margin-top:4px}
@@ -39,40 +42,25 @@
 .aula:hover{border-color:var(--neon)}
 .aula.active{border-color:var(--neon);background:#0f1622;box-shadow:var(--glow)}
 .aula.locked{opacity:.4;pointer-events:none}
-.aula.completed{border-color:var(--ok);background:#0a1a14}
 .player{margin:16px;border:1px solid var(--border);border-radius:14px;background:var(--card);overflow:hidden}
 .video-wrap{position:relative;padding-top:56.25%;background:#000;border-bottom:1px solid var(--border)}
 .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .content{padding:22px}
 .content h2{margin:0 0 8px;font-size:20px;color:var(--neon);text-shadow:var(--glow)}
-.content h3{margin:12px 0 8px;font-size:16px;color:var(--neon-2)}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .chip{font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);background:#0b0e15}
 .chip.neon{border-color:var(--neon);color:var(--neon)}
 .tema-nav{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 .tema-btn{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600}
 .tema-btn.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow)}
-.tema-btn.completed{border-color:var(--ok);color:var(--ok)}
 .pagina{margin-top:16px;padding:16px;border:1px dashed var(--border);border-radius:10px;background:#0b0e15}
 .pagina h4{margin:0 0 8px;color:var(--neon)}
 .pagina-nav{display:flex;gap:8px;margin-top:12px}
 .p-btn{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600}
 .p-btn.active{border-color:var(--neon);color:var(--neon)}
-.avaliacao{margin-top:20px;padding:20px;border:2px solid var(--neon);border-radius:12px;background:#0a0f14;box-shadow:var(--glow)}
-.avaliacao h3{color:var(--neon);margin-top:0}
-.questao{margin:16px 0;padding:14px;border:1px solid var(--border);border-radius:8px;background:#0b0e15}
-.questao p{margin:0 0 10px;font-weight:600}
-.opcao{display:block;margin:8px 0;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#0a0d14;cursor:pointer}
-.opcao:hover{border-color:var(--neon)}
-.opcao.correta{border-color:var(--ok);background:#0a1a14}
-.opcao.errada{border-color:var(--err);background:#1a0a0f}
-.resultado{margin-top:12px;padding:12px;border-radius:8px;font-weight:700;text-align:center}
-.resultado.aprovado{background:#0a1a14;color:var(--ok);border:1px solid var(--ok)}
-.resultado.reprovado{background:#1a0a0f;color:var(--err);border:1px solid var(--err)}
 .navfooter{display:flex;gap:10px;justify-content:space-between;padding:14px 16px;border-top:1px solid var(--border);background:#0b0e15}
 .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:#0a0d14;color:var(--text);font-weight:800;cursor:pointer}
 .btn.primary{background:linear-gradient(90deg,var(--neon),var(--neon-2));color:#001012;border:0;box-shadow:var(--glow)}
-.btn.ok{background:var(--ok);color:#001012;border:0}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .aviso{font-size:12px;color:var(--muted);margin-top:8px;border-left:2px solid var(--neon);padding-left:8px}
 </style>
@@ -105,35 +93,81 @@
 
     <div id="tab-cronograma" class="timeline">
       <h2 class="ano-title">Cronograma Anual K-TH</h2>
+
       <div class="fase open">
         <div class="fase-head" onclick="this.parentElement.classList.toggle('open')">
-          <h3>Janeiro e Fevereiro | Fase 1 – Formação Básica</h3><span>Módulo 1 e 2</span>
+          <h3>Janeiro e Fevereiro | Fase 1 – Formação Básica</h3><span>M1 M2</span>
         </div>
-        <div class="fase-body"><p><strong>Módulo 1:</strong> Massoterapia Profissional | <strong>Módulo 2:</strong> Cuidador de Idosos</p></div>
+        <div class="fase-body">
+          <div class="mes-grid">
+            <div class="mes"><b>Janeiro</b>Módulo 1</div>
+            <div class="mes"><b>Fevereiro</b>Módulo 2</div>
+            <div class="mes"><b>---</b>---</div>
+          </div>
+          <p><strong>Módulos:</strong> M1 Massoterapia Profissional | M2 Cuidador de Idosos</p>
+        </div>
       </div>
+
       <div class="fase">
         <div class="fase-head" onclick="this.parentElement.classList.toggle('open')">
-          <h3>Março a Maio | Fase 2 – Formação em Cuidados</h3><span>Módulo 3, 4 e 5</span>
+          <h3>Março a Maio | Fase 2 – Formação em Cuidados</h3><span>M3 M4 M5</span>
         </div>
-        <div class="fase-body"><p><strong>Módulo 3:</strong> Terapias Holísticas | <strong>Módulo 4:</strong> Primeiros Socorros | <strong>Módulo 5:</strong> Cuidador Infantil</p></div>
+        <div class="fase-body">
+          <div class="mes-grid">
+            <div class="mes"><b>Março</b>Módulo 3</div>
+            <div class="mes"><b>Abril</b>Módulo 4</div>
+            <div class="mes"><b>Maio</b>Módulo 5</div>
+          </div>
+          <p><strong>Módulos:</strong> M3 Terapias Holísticas | M4 Primeiros Socorros | M5 Cuidador Infantil</p>
+        </div>
       </div>
+
       <div class="fase">
         <div class="fase-head" onclick="this.parentElement.classList.toggle('open')">
-          <h3>Junho a Agosto | Fase 3 – Desenvolvimento Profissional</h3><span>Módulo 6, 7 e 8</span>
+          <h3>Junho a Agosto | Fase 3 – Desenvolvimento Profissional</h3><span>M6 M7 M8</span>
         </div>
-        <div class="fase-body"><p><strong>Módulo 6:</strong> Clínica SPA | <strong>Módulo 7:</strong> Estética Corporal | <strong>Módulo 8:</strong> Educação em Saúde</p></div>
+        <div class="fase-body">
+          <div class="mes-grid">
+            <div class="mes"><b>Junho</b>Módulo 6</div>
+            <div class="mes"><b>Julho</b>Módulo 7</div>
+            <div class="mes"><b>Agosto</b>Módulo 8</div>
+          </div>
+          <p><strong>Módulos:</strong> M6 Clínica SPA | M7 Estética Corporal | M8 Educação em Saúde</p>
+        </div>
       </div>
+
       <div class="fase">
         <div class="fase-head" onclick="this.parentElement.classList.toggle('open')">
-          <h3>Setembro a Novembro | Fase 4 – Formação Empreendedora</h3><span>Módulo 9, 10 e 11</span>
+          <h3>Setembro a Novembro | Fase 4 – Formação Empreendedora</h3><span>M9 M10 M11</span>
         </div>
-        <div class="fase-body"><p><strong>Módulo 9:</strong> Atendimento Humanizado | <strong>Módulo 10:</strong> Empreendedorismo | <strong>Módulo 11:</strong> Prática Supervisionada</p></div>
+        <div class="fase-body">
+          <div class="mes-grid">
+            <div class="mes"><b>Setembro</b>Módulo 9</div>
+            <div class="mes"><b>Outubro</b>Módulo 10</div>
+            <div class="mes"><b>Novembro</b>Módulo 11</div>
+          </div>
+          <p><strong>Módulos:</strong> M9 Atendimento Humanizado | M10 Empreendedorismo | M11 Prática Supervisionada</p>
+        </div>
       </div>
+
       <div class="fase">
         <div class="fase-head" onclick="this.parentElement.classList.toggle('open')">
           <h3>Dezembro – Conclusão e Certificados</h3><span>Encerramento</span>
         </div>
-        <div class="fase-body"><ul style="margin:0;padding-left:18px"><li>Revisão | Avaliações Finais | Projeto | Certificados | Formatura</li></ul></div>
+        <div class="fase-body">
+          <ul style="margin:0;padding-left:18px">
+            <li>Revisão geral de todos os módulos</li>
+            <li>Recuperação de atividades pendentes</li>
+            <li>Avaliação teórica final</li>
+            <li>Avaliação prática final</li>
+            <li>Entrega do projeto final</li>
+            <li>Emissão dos certificados de cada módulo concluído</li>
+            <li>Emissão do Certificado de Conclusão do K-TH</li>
+            <li>Emissão do histórico de formação</li>
+            <li>Cerimônia de formatura</li>
+            <li>Cadastro no banco de profissionais KORVIL</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -143,11 +177,11 @@
         <div class="content" id="conteudoAula">
           <div class="chips"><span class="chip neon">Selecione uma Aula</span></div>
           <h2>Bem-vindo ao K-TH</h2>
-          <p>Estrutura: Módulo > Aula > 5 Temas > 5 Páginas > Avaliação 70% para avançar.</p>
+          <p>Estrutura: 4 Fases > 11 Módulos > 5 Aulas > 5 Temas > 5 Páginas. Cada nível com Vídeo + Texto.</p>
         </div>
         <div class="navfooter">
           <button class="btn" id="btnAnt" onclick="anteriorAula()" disabled>← Aula Anterior</button>
-          <button class="btn primary" id="btnConcluir" onclick="concluirAula()" disabled>✓ Concluir Aula</button>
+          <button class="btn primary" onclick="concluirAula()">✓ Concluir Aula</button>
           <button class="btn primary" id="btnProx" onclick="proximaAula()" disabled>Próxima Aula →</button>
         </div>
       </div>
@@ -163,80 +197,30 @@ const VIDEOS_MODULO = {
  10: 'fG8T0wH1YvE', 11: 'L8QJ7J2fQvQ'
 };
 
-// ESTRUTURA COMPLETA NOMEADA: 11 MÓDULOS x 5 AULAS x 5 TEMAS
 const MODULOS = [
-  {id:1,nome:"Módulo 1: Massoterapia Profissional",aulas:[
-    {nome:"Aula 1: História da Massoterapia",temas:["Tema 1: Origens da Massoterapia","Tema 2: Evolução Histórica","Tema 3: Grandes Mestres","Tema 4: Massoterapia no Brasil","Tema 5: Tendências Atuais"]},
-    {nome:"Aula 2: Anatomia Básica",temas:["Tema 1: Sistema Muscular","Tema 2: Sistema Esquelético","Tema 3: Sistema Circulatório","Tema 4: Sistema Nervoso","Tema 5: Pele e Tecidos"]},
-    {nome:"Aula 3: Biossegurança",temas:["Tema 1: Normas de Higiene","Tema 2: EPIs e Proteção","Tema 3: Desinfecção","Tema 4: Descarte de Resíduos","Tema 5: Prevenção de Riscos"]},
-    {nome:"Aula 4: Anamnese",temas:["Tema 1: Entrevista Inicial","Tema 2: Histórico de Saúde","Tema 3: Contraindicações","Tema 4: Ficha do Cliente","Tema 5: Conduta Ética"]},
-    {nome:"Aula 5: Massagem Relaxante",temas:["Tema 1: Técnicas Básicas","Tema 2: Manobras de Deslizamento","Tema 3: Amassamento","Tema 4: Percussão","Tema 5: Finalização"]}
-  ]},
-  {id:2,nome:"Módulo 2: Cuidador de Idosos",aulas:[
-    {nome:"Aula 1: Envelhecimento",temas:["Tema 1: Processo de Envelhecer","Tema 2: Aspectos Biológicos","Tema 3: Aspectos Psicológicos","Tema 4: Aspectos Sociais","Tema 5: Mitos e Verdades"]},
-    {nome:"Aula 2: Higiene",temas:["Tema 1: Banho no Leito","Tema 2: Higiene Bucal","Tema 3: Troca de Roupas","Tema 4: Cuidados com a Pele","Tema 5: Prevenção de Escaras"]},
-    {nome:"Aula 3: Alimentação",temas:["Tema 1: Dieta do Idoso","Tema 2: Hidratação","Tema 3: Dificuldade de Deglutição","Tema 4: Dietas Especiais","Tema 5: Rotina Alimentar"]},
-    {nome:"Aula 4: Mobilização",temas:["Tema 1: Mudança de Decúbito","Tema 2: Transferência","Tema 3: Deambulação","Tema 4: Uso de Andador","Tema 5: Prevenção de Quedas"]},
-    {nome:"Aula 5: Administração de Medicamentos",temas:["Tema 1: Tipos de Medicamentos","Tema 2: Vias de Administração","Tema 3: Horários e Doses","Tema 4: Efeitos Colaterais","Tema 5: Limites Legais"]}
-  ]},
-  {id:3,nome:"Módulo 3: Terapias Holísticas",aulas:[{nome:"Aula 1: Introdução",temas:["Tema 1: Conceito Holístico","Tema 2: Corpo Mente Espírito","Tema 3: Energia Vital","Tema 4: Equilíbrio","Tema 5: Princípios"]},
-    {nome:"Aula 2: Terapias Complementares",temas:["Tema 1: O que são","Tema 2: Principais Tipos","Tema 3: Indicações","Tema 4: Contraindicações","Tema 5: Integração"]},
-    {nome:"Aula 3: Energia Vital",temas:["Tema 1: Conceito de Qi","Tema 2: Canais Energéticos","Tema 3: Bloqueios","Tema 4: Harmonização","Tema 5: Prática"]},
-    {nome:"Aula 4: Chakras",temas:["Tema 1: Os 7 Chakras","Tema 2: Funções","Tema 3: Desequilíbrios","Tema 4: Técnicas","Tema 5: Ativação"]},
-    {nome:"Aula 5: Cromoterapia",temas:["Tema 1: Cores e Frequências","Tema 2: Aplicações","Tema 3: Protocolos","Tema 4: Materiais","Tema 5: Prática"]}]},
-  {id:4,nome:"Módulo 4: Primeiros Socorros",aulas:[{nome:"Aula 1: Emergências",temas:["Tema 1: Avaliação Inicial","Tema 2: Sinais Vitais","Tema 3: Prioridades","Tema 4: Acionar SAMU","Tema 5: Segurança"]},
-    {nome:"Aula 2: RCP",temas:["Tema 1: Reconhecer PCR","Tema 2: Compressões","Tema 3: Ventilação","Tema 4: DEA","Tema 5: Prática"]},
-    {nome:"Aula 3: Engasgo",temas:["Tema 1: Identificar Engasgo","Tema 2: Manobra Heimlich","Tema 3: Bebês","Tema 4: Cuidados","Tema 5: Prática"]},
-    {nome:"Aula 4: Queimaduras",temas:["Tema 1: Tipos","Tema 2: Graus","Tema 3: Primeiros Cuidados","Tema 4: O que não fazer","Tema 5: Encaminhamento"]},
-    {nome:"Aula 5: Hemorragias",temas:["Tema 1: Tipos","Tema 2: Compressão","Tema 3: Torniquete","Tema 4: Choque","Tema 5: Conduta"]}]},
-  {id:5,nome:"Módulo 5: Cuidador Infantil",aulas:[{nome:"Aula 1: Desenvolvimento",temas:["Tema 1: Etapas","Tema 2: 0 a 2 anos","Tema 3: 2 a 5 anos","Tema 4: 6 a 12 anos","Tema 5: Sinais de Alerta"]},
-    {nome:"Aula 2: Higiene",temas:["Tema 1: Banho","Tema 2: Troca de Fraldas","Tema 3: Higiene Bucal","Tema 4: Unhas","Tema 5: Rotina"]},
-    {nome:"Aula 3: Alimentação",temas:["Tema 1: Aleitamento","Tema 2: Introdução Alimentar","Tema 3: Cardápio","Tema 4: Engasgo","Tema 5: Hidratação"]},
-    {nome:"Aula 4: Sono",temas:["Tema 1: Necessidade","Tema 2: Ambiente","Tema 3: Rotina","Tema 4: Cólicas","Tema 5: Segurança"]},
-    {nome:"Aula 5: Recreação",temas:["Tema 1: Brincadeiras","Tema 2: Estimulação","Tema 3: Limites","Tema 4: Criatividade","Tema 5: Socialização"]}]},
-  {id:6,nome:"Módulo 6: Clínica SPA",aulas:[{nome:"Aula 1: Recepção",temas:["Tema 1: Primeiro Contato","Tema 2: Agendamento","Tema 3: Acolhimento","Tema 4: Ficha","Tema 5: Despedida"]},
-    {nome:"Aula 2: Organização",temas:["Tema 1: Ambiente","Tema 2: Materiais","Tema 3: Agenda","Tema 4: Estoque","Tema 5: Limpeza"]},
-    {nome:"Aula 3: Agendamentos",temas:["Tema 1: Sistema","Tema 2: Remarcação","Tema 3: Cancelamento","Tema 4: Lista Espera","Tema 5: Pontualidade"]},
-    {nome:"Aula 4: Atendimento Humanizado",temas:["Tema 1: Empatia","Tema 2: Escuta","Tema 3: Comunicação","Tema 4: Sigilo","Tema 5: Ética"]},
-    {nome:"Aula 5: Biossegurança",temas:["Tema 1: Higienização","Tema 2: EPIs","Tema 3: Toalhas","Tema 4: Maca","Tema 5: Protocolos"]}]},
-  {id:7,nome:"Módulo 7: Estética Corporal",aulas:[{nome:"Aula 1: Relaxamento",temas:["Tema 1: Ambiente SPA","Tema 2: Música","Tema 3: Aromas","Tema 4: Iluminação","Tema 5: Condução"]},
-    {nome:"Aula 2: SPA",temas:["Tema 1: Conceito","Tema 2: Serviços","Tema 3: Roteiro","Tema 4: Produtos","Tema 5: Experiência"]},
-    {nome:"Aula 3: Protocolos Corporais",temas:["Tema 1: Esfoliação","Tema 2: Envolvimento","Tema 3: Hidratação","Tema 4: Drenagem","Tema 5: Sequência"]},
-    {nome:"Aula 4: Bem-estar",temas:["Tema 1: Conceito","Tema 2: Qualidade Vida","Tema 3: Equilíbrio","Tema 4: Autocuidado","Tema 5: Resultados"]},
-    {nome:"Aula 5: Atendimento",temas:["Tema 1: Consulta","Tema 2: Anamnese Estética","Tema 3: Indicação","Tema 4: Pacote","Tema 5: Fidelização"]}]},
-  {id:8,nome:"Módulo 8: Educação em Saúde",aulas:[{nome:"Aula 1: Hábitos Saudáveis",temas:["Tema 1: Conceito","Tema 2: Alimentação","Tema 3: Atividade Física","Tema 4: Sono","Tema 5: Lazer"]},
-    {nome:"Aula 2: Alimentação",temas:["Tema 1: Pirâmide","Tema 2: Água","Tema 3: Ultraprocessados","Tema 4: Planejamento","Tema 5: Dicas"]},
-    {nome:"Aula 3: Sono",temas:["Tema 1: Importância","Tema 2: Higiene Sono","Tema 3: Insônia","Tema 4: Rotina","Tema 5: Ambiente"]},
-    {nome:"Aula 4: Exercícios",temas:["Tema 1: Benefícios","Tema 2: Tipos","Tema 3: Frequência","Tema 4: Motivação","Tema 5: Segurança"]},
-    {nome:"Aula 5: Estresse",temas:["Tema 1: O que é","Tema 2: Sinais","Tema 3: Manejo","Tema 4: Relaxamento","Tema 5: Ajuda"]}]},
-  {id:9,nome:"Módulo 9: Atendimento Humanizado",aulas:[{nome:"Aula 1: Comunicação",temas:["Tema 1: Verbal","Tema 2: Não Verbal","Tema 3: Escuta Ativa","Tema 4: Feedback","Tema 5: Assertividade"]},
-    {nome:"Aula 2: Empatia",temas:["Tema 1: Conceito","Tema 2: Prática","Tema 3: Limites","Tema 4: Conexão","Tema 5: Cuidado"]},
-    {nome:"Aula 3: Inteligência Emocional",temas:["Tema 1: Autoconsciência","Tema 2: Autorregulação","Tema 3: Empatia","Tema 4: Habilidades Sociais","Tema 5: Motivação"]},
-    {nome:"Aula 4: Ética",temas:["Tema 1: Princípios","Tema 2: Sigilo","Tema 3: Limites","Tema 4: Responsabilidade","Tema 5: Código"]},
-    {nome:"Aula 5: Liderança",temas:["Tema 1: Perfil","Tema 2: Equipe","Tema 3: Motivação","Tema 4: Gestão","Tema 5: Exemplo"]}]},
-  {id:10,nome:"Módulo 10: Empreendedorismo",aulas:[{nome:"Aula 1: Abrir Negócio",temas:["Tema 1: Plano","Tema 2: CNPJ","Tema 3: Local","Tema 4: Investimento","Tema 5: Burocracia"]},
-    {nome:"Aula 2: Marketing",temas:["Tema 1: Posicionamento","Tema 2: Público","Tema 3: Canais","Tema 4: Conteúdo","Tema 5: Estratégia"]},
-    {nome:"Aula 3: Vendas",temas:["Tema 1: Abordagem","Tema 2: Necessidade","Tema 3: Proposta","Tema 4: Fechamento","Tema 5: Pós-venda"]},
-    {nome:"Aula 4: Atendimento",temas:["Tema 1: Experiência","Tema 2: Diferencial","Tema 3: Follow-up","Tema 4: CRM","Tema 5: Encantamento"]},
-    {nome:"Aula 5: Precificação",temas:["Tema 1: Custos","Tema 2: Concorrência","Tema 3: Valor","Tema 4: Pacotes","Tema 5: Lucro"]}]},
-  {id:11,nome:"Módulo 11: Prática Supervisionada",aulas:[{nome:"Aula 1: Estudos de Caso",temas:["Tema 1: Análise","Tema 2: Diagnóstico","Tema 3: Plano","Tema 4: Execução","Tema 5: Resultado"]},
-    {nome:"Aula 2: Simulações",temas:["Tema 1: Roteiro","Tema 2: Papéis","Tema 3: Prática","Tema 4: Feedback","Tema 5: Ajuste"]},
-    {nome:"Aula 3: Atendimento Supervisionado",temas:["Tema 1: Observação","Tema 2: Execução","Tema 3: Supervisão","Tema 4: Correção","Tema 5: Aprovação"]},
-    {nome:"Aula 4: Protocolos Completos",temas:["Tema 1: Passo a Passo","Tema 2: Materiais","Tema 3: Tempo","Tema 4: Avaliação","Tema 5: Registro"]},
-    {nome:"Aula 5: Avaliação Prática",temas:["Tema 1: Critérios","Tema 2: Desempenho","Tema 3: Ética","Tema 4: Técnica","Tema 5: Aprovação"]}]}
+  {id:1,nome:"M1 – Massoterapia Profissional",aulas:["História da Massoterapia","Anatomia Básica","Biossegurança","Anamnese","Massagem Relaxante"]},
+  {id:2,nome:"M2 – Cuidador de Idosos",aulas:["Envelhecimento","Higiene","Alimentação","Mobilização","Administração de medicamentos"]},
+  {id:3,nome:"M3 – Terapias Holísticas",aulas:["Introdução","Terapias Complementares","Energia Vital","Chakras","Cromoterapia"]},
+  {id:4,nome:"M4 – Primeiros Socorros",aulas:["Emergências","RCP","Engasgo","Queimaduras","Hemorragias"]},
+  {id:5,nome:"M5 – Cuidador Infantil",aulas:["Desenvolvimento infantil","Higiene","Alimentação","Sono","Recreação"]},
+  {id:6,nome:"M6 – Clínica, SPA e Bem-estar",aulas:["Recepção","Organização","Agendamentos","Atendimento Humanizado","Biossegurança"]},
+  {id:7,nome:"M7 – Estética Corporal",aulas:["Relaxamento","SPA","Protocolos corporais","Bem-estar","Atendimento"]},
+  {id:8,nome:"M8 – Educação em Saúde",aulas:["Hábitos saudáveis","Alimentação","Sono","Exercícios","Estresse"]},
+  {id:9,nome:"M9 – Atendimento Humanizado",aulas:["Comunicação","Empatia","Inteligência emocional","Ética","Liderança"]},
+  {id:10,nome:"M10 – Empreendedorismo",aulas:["Abrir negócio","Marketing","Vendas","Atendimento","Precificação"]},
+  {id:11,nome:"M11 – Prática Supervisionada",aulas:["Estudos de caso","Simulações","Atendimento supervisionado","Protocolos completos","Avaliação prática"]},
 ];
 
-let aulaAtual = null; let temaAtual = 1; let paginaAtual = 1; let avaliacaoAberta = false;
-let concluidas = JSON.parse(localStorage.getItem('kth_avaliacao')||'[]');
-let temasConcluidos = JSON.parse(localStorage.getItem('kth_temas')||'{}');
+let aulaAtual = null; let temaAtual = 1; let paginaAtual = 1;
+let concluidas = JSON.parse(localStorage.getItem('kth_fases')||'[]');
 
 function montarMenu(){
   const wrap=document.getElementById('menuModulos');
   MODULOS.forEach(m=>{
     const div=document.createElement('div');div.className='modulo';div.id='mod'+m.id;
     let aulasHTML='';
-    m.aulas.forEach((aulaObj,i)=>{
-      aulasHTML+=`<div class="aula locked" data-id="M${m.id}-A${i+1}" onclick="carregarAula('M${m.id}-A${i+1}')">${i+1}. ${aulaObj.nome}</div>`;
+    m.aulas.forEach((nomeAula,i)=>{
+      aulasHTML+=`<div class="aula locked" data-id="M${m.id}-A${i+1}" onclick="carregarAula('M${m.id}-A${i+1}')">${i+1}. ${nomeAula}</div>`;
     });
     div.innerHTML=`<div class="modulo-head" onclick="document.getElementById('mod${m.id}').classList.toggle('open')">${m.nome}<span>0/5</span></div><div class="aulas">${aulasHTML}</div>`;
     wrap.appendChild(div);
@@ -245,79 +229,82 @@ function montarMenu(){
 }
 
 function carregarAula(id){
-  aulaAtual=id;temaAtual=1;paginaAtual=1;avaliacaoAberta=false;abrirTab('aula');
+  aulaAtual=id;temaAtual=1;paginaAtual=1;abrirTab('aula');
   const [m,a]=id.replace('M','').split('-A').map(Number);
   const modulo=MODULOS[m-1];
-  const aulaObj=modulo.aulas[a-1];
   const videoId=VIDEOS_MODULO[m];
 
   document.getElementById('videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
 
   let nav='';
-  aulaObj.temas.forEach((nomeTema,i)=>{
-    const concluido = temasConcluidos[id]?.includes(i+1);
-    nav+=`<button class="tema-btn ${i+1===1?'active':''} ${concluido?'completed':''}" onclick="trocarTema(${i+1})">Tema ${i+1}: ${nomeTema}</button>`;
-  });
+  for(let t=1;t<=5;t++){nav+=`<button class="tema-btn ${t===1?'active':''}" onclick="trocarTema(${t})">Tema ${t}</button>`;}
 
   document.getElementById('conteudoAula').innerHTML=`
     <div class="chips">
-      <span class="chip neon">${modulo.nome}</span>
-      <span class="chip">${aulaObj.nome}</span>
-      <span class="chip" id="chipTema">Tema 1 de 5</span>
-      <span class="chip" id="chipPagina">Página 1 de 5</span>
+      <span class="chip neon">${id}</span>
+      <span class="chip">${modulo.aulas[a-1]}</span>
+      <span class="chip">Tema 1 de 5</span>
+      <span class="chip">Página 1 de 5</span>
     </div>
-    <h2>${modulo.nome}</h2>
-    <h3>${aulaObj.nome}</h3>
+    <h2>${id} – ${modulo.aulas[a-1]}</h2>
     <div class="tema-nav" id="temaNav">${nav}</div>
-    <div id="paginaArea"></div>`;
+    <div id="paginaArea"></div>
+    <div class="aviso">Vídeo exemplo Módulo ${m}. Troque VIDEOS_MODULO[${m}] pelo seu.</div>`;
 
   renderPagina();
   document.querySelectorAll('.aula').forEach(x=>x.classList.remove('active'));
   document.querySelector(`[data-id="${id}"]`)?.classList.add('active');
   const idx=getIndexAula(id);
   document.getElementById('btnAnt').disabled=idx===0;
-  document.getElementById('btnProx').disabled=true;
-  document.getElementById('btnConcluir').disabled=true;
+  document.getElementById('btnProx').disabled=idx===54;
   if(window.innerWidth<1100) toggleMenu(false);
 }
 
 function trocarTema(t){
-  temaAtual=t;paginaAtual=1;avaliacaoAberta=false;
+  temaAtual=t;paginaAtual=1;
   document.querySelectorAll('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));
-  document.getElementById('chipTema').innerText=`Tema ${t} de 5`;
-  document.getElementById('chipPagina').innerText=`Página 1 de 5`;
+  document.querySelectorAll('.chip')[2].innerText=`Tema ${t} de 5`;
+  document.querySelectorAll('.chip')[3].innerText=`Página 1 de 5`;
   renderPagina();
 }
 
 function trocarPagina(p){
   paginaAtual=p;
   document.querySelectorAll('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));
-  document.getElementById('chipPagina').innerText=`Página ${p} de 5`;
+  document.querySelectorAll('.chip')[3].innerText=`Página ${p} de 5`;
   renderPagina();
 }
 
 function renderPagina(){
   const titulos=['Objetivo','Materiais','Preparação','Execução','Finalização'];
-  const [m,a]=aulaAtual.replace('M','').split('-A').map(Number);
-  const modulo=MODULOS[m-1];
-  const aulaObj=modulo.aulas[a-1];
-  const nomeTema=aulaObj.temas[temaAtual-1];
-
   let paginas='';
   for(let p=1;p<=5;p++){
-    let conteudoExtra='';
-    if(p===5 && temaAtual===5){
-      conteudoExtra=`<div class="avaliacao" id="avaliacaoBox">
-        <h3>📝 Avaliação do Tema 5: ${nomeTema}</h3>
-        <p>Assinale a alternativa correta. Mínimo 70% para liberar a próxima aula.</p>
-        <div id="questoesArea"></div>
-        <button class="btn primary" onclick="corrigirAvaliacao()">Enviar Avaliação</button>
-        <div id="resultadoArea"></div>
-      </div>`;
-    }
     paginas+=`<div class="pagina" style="display:${p===paginaAtual?'block':'none'}">
-      <h4>Página ${p}: ${titulos[p-1]}</h4>
+      <h4>Página ${p} – ${titulos[p-1]}</h4>
       <div class="video-wrap" style="margin:12px 0">
-        <iframe src="https://www.youtube.com/embed/${VIDEOS_MODULO[m]}" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/${VIDEOS_MODULO[Number(aulaAtual.split('-')[0].replace('M',''))]}" allowfullscreen></iframe>
       </div>
-      <p><strong>${modulo.nome
+      <p>[CONTEÚDO] ${aulaAtual} | Tema ${temaAtual} | Página ${p} – ${titulos[p-1]}.</p>
+      <p>Substitua este texto pelo material real do K-TH.</p>
+    </div>`;
+  }
+  let btns='<div class="pagina-nav">';
+  for(let p=1;p<=5;p++){btns+=`<button class="p-btn ${p===paginaAtual?'active':''}" onclick="trocarPagina(${p})">${p}</button>`;}
+  btns+='</div>';
+  document.getElementById('paginaArea').innerHTML=`${btns}${paginas}`;
+}
+
+function proximaAula(){const idx=getIndexAula(aulaAtual);if(idx<54) carregarAula(getIdAula(idx+1));}
+function anteriorAula(){const idx=getIndexAula(aulaAtual);if(idx>0) carregarAula(getIdAula(idx-1));}
+function concluirAula(){if(!aulaAtual) return;if(!concluidas.includes(aulaAtual)) concluidas.push(aulaAtual);localStorage.setItem('kth_fases',JSON.stringify(concluidas));atualizarTravas();alert('Aula concluída!');}
+function atualizarTravas(){let liberada=true;for(let i=0;i<55;i++){const id=getIdAula(i);const el=document.querySelector(`[data-id="${id}"]`);if(!el) continue;if(liberada){el.classList.remove('locked')}else{el.classList.add('locked')}if(!concluidas.includes(id)) liberada=false;}
+  MODULOS.forEach(m=>{const feitas=concluidas.filter(x=>x.startsWith('M'+m.id+'-')).length;const head=document.querySelector('#mod'+m.id+'.modulo-head span');if(head) head.innerText=`${feitas}/5`;});}
+function getIndexAula(id){const [m,a]=id.replace('M','').split('-A').map(Number);return (m-1)*5+(a-1);}
+function getIdAula(idx){const m=Math.floor(idx/5)+1;const a=(idx%5)+1;return `M${m}-A${a}`;}
+function abrirTab(nome,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn?.classList.add('active');document.getElementById('tab-cronograma').style.display=nome==='cronograma'?'block':'none';document.getElementById('tab-aula').style.display=nome==='aula'?'block':'none';}
+function toggleMenu(force){const s=document.getElementById('sidebar');const o=document.getElementById('overlay');const show=force===undefined?!s.classList.contains('open'):force;if(show){s.classList.add('open');s.style.transform='translateX(0)';o.classList.add('show')}else{s.classList.remove('open');s.style.transform='translateX(-100%)';o.classList.remove('show');}}
+
+montarMenu();
+</script>
+</body>
+</html>
