@@ -13,12 +13,12 @@ header{position:sticky;top:0;background:#06070b;border-bottom:1px solid var(--bo
 .wrap{display:grid;grid-template-columns:340px 1fr}
 @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 0 0;width:88%;background:var(--panel);transform:translateX(-100%);transition:.3s;z-index:998}}
 aside{height:calc(100vh - 52px);position:sticky;top:52px;overflow:auto;padding:12px}
-main{padding:0;margin:0;display:flex;flex-direction:column} /* MUDANÇA 1: COLADO NO TOPO */
+main{padding:0;margin:0} /* PRONTO. SEM FLEX. SEM ESPAÇO */
 .menu-btn{display:none;padding:8px;border:1px solid var(--border);background:#0a0d14;color:var(--neon);border-radius:8px}
 @media(max-width:1100px){.menu-btn{display:block}}
 .overlay{display:none;position:fixed;inset:0;background:#0008;z-index:997}
 .overlay.show{display:block}
-.tabs{display:flex;gap:8px;padding:0;margin:0;border-bottom:1px solid var(--border)} /* MUDANÇA 2: SEM PADDING */
+.tabs{display:flex;gap:8px;padding:10px;border-bottom:1px solid var(--border)}
 .tab{padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-weight:700;cursor:pointer}
 .tab.active{border-color:var(--neon);color:var(--neon)}
 .course-title{border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px}
