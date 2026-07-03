@@ -3,161 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL Login</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<title>KORVIL ACCESS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--c:#00FFFF;--bg:#000}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:radial-gradient(#001111,#000);color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
-.card{background:rgba(0,0,0,.8);border:2px solid var(--c);border-radius:12px;padding:20px;width:100%;max-width:420px;max-height:95vh;overflow-y:auto;box-shadow:0 0 20px var(--c);animation:fadeInUp.6s;position:relative}
-.card::before{content:'';position:absolute;inset:-2px;border-radius:12px;background:conic-gradient(from 0deg,var(--c),transparent,var(--c));animation:spin 4s linear infinite;z-index:-1}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1}}@keyframes spin{to{transform:rotate(360deg)}}
-h2{text-align:center;margin-bottom:12px;text-shadow:0 0 10px var(--c)}
-h4{color:var(--c);font-size:12px;margin:10px 0 6px;border-bottom:1px solid #222;padding-bottom:4px}
-.tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:10px;border:1px solid var(--c);background:transparent;color:var(--c);cursor:pointer;border-radius:8px;font-weight:700;transition:.3s;font-size:13px}
-.tab.active{background:var(--c);color:#000}
-.form{display:none;flex-direction:column;gap:10px}
+:root{--c:#00FFFF;--c2:#A8FFE6}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
+canvas#particles{position:fixed;inset:0;z-index:0}
+.words-bg{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.word{position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards}
+.type1{animation:fadeInOut 5s}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.type2{animation:pulseWord 5s}@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+.type3{animation:slideLeft 5s}@keyframes slideLeft{0%{opacity:0;transform:translateX(-100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(50px)}}
+.type4{animation:slideRight 5s}@keyframes slideRight{0%{opacity:0;transform:translateX(100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(-50px)}}
+.type5{animation:typing 5s steps(30)}@keyframes typing{0%{opacity:0;width:0;overflow:hidden;border-right:2px solid var(--c)}5%{opacity:1}70%{width:100%;border-right:2px solid var(--c)}90%{border-right:transparent}100%{opacity:0;width:100%}}
+.card{background:rgba(0,0,0,.65);backdrop-filter:blur(30px);border-radius:24px;padding:35px;width:90%;max-width:460px;position:relative;z-index:10;animation:fadeInUp .8s;box-shadow:0 0 60px rgba(0,255,255,.3)}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.logo-area{display:flex;justify-content:center;margin-bottom:25px}
+.logo-img{max-width:300px;width:100%;height:auto;object-fit:contain;z-index:10;filter:drop-shadow(0 0 35px var(--c));animation:pulseLogo 2s ease-in-out infinite}
+@keyframes pulseLogo{0%,100%{transform:scale(1);filter:drop-shadow(0 0 35px var(--c))}50%{transform:scale(1.07);filter:drop-shadow(0 0 55px var(--c2))}}
+.tabs{display:flex;gap:12px;margin-bottom:25px}
+.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s;letter-spacing:1px}
+.tab:hover{background:rgba(0,255,255,.1);border-color:var(--c)}
+.tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c);transform:scale(1.03)}
+.form{display:none;flex-direction:column;gap:16px;animation:slideIn .5s}
 .form.active{display:flex}
-input,select{padding:12px;border:1px solid #333;background:#111;color:#fff;border-radius:8px;outline:none;font-size:14px;transition:.3s}
-input:focus,select:focus{border-color:var(--c);box-shadow:0 0 10px var(--c)}
-.btn{padding:12px;border:none;background:var(--c);color:#000;font-weight:bold;border-radius:8px;cursor:pointer;font-size:14px;transition:.3s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px var(--c)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.checkbox{display:flex;align-items:center;gap:8px;font-size:12px;color:#aaa}
-.checkbox input{width:18px;height:18px;accent-color:var(--c)}
-.error{color:#f55;font-size:12px;text-align:center;animation:shake.3s}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.ok{color:#5f5;font-size:12px;text-align:center}
-.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px}
 .input-wrap{position:relative}
-.loader{border:2px solid #000;border-top:2px solid var(--c);border-radius:50%;width:14px;height:14px;animation:spin.8s linear infinite;display:inline-block;margin-right:6px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input{width:100%;padding:16px 50px 16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;transition:.3s;font-size:16px;font-weight:600}
+input::placeholder{color:rgba(0,255,255,.7)}
+input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px rgba(0,255,255,.5);transform:scale(1.02)}
+.eye-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:24px;height:24px;cursor:pointer;transition:.3s;stroke:var(--c);fill:none;stroke-width:2}
+.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 0 35px var(--c)}
+.row{display:flex;gap:12px}
+.btn-small{padding:0 18px;font-size:13px}
+.error{color:#ff3366;text-align:center;font-weight:700}
+.ok{color:#00ff88;text-align:center;font-weight:700}
+.loader{border:3px solid #000;border-top:3px solid #000;border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+<canvas id="particles"></canvas>
+<div class="words-bg" id="wordsBg"></div>
+
 <div class="card">
-  <h2>KORVIL</h2>
+  <div class="logo-area">
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-img">
+  </div>
+
   <div class="tabs">
-    <button class="tab active" onclick="showTab('login')">Entrar</button>
-    <button class="tab" onclick="showTab('cadastro')">Cadastro</button>
+    <button class="tab active" onclick="showTab('login')">ENTRAR</button>
+    <button class="tab" onclick="showTab('cadastro')">NOVO USUÁRIO</button>
   </div>
 
   <form id="login" class="form active">
-    <input type="email" id="loginEmail" placeholder="E-mail" required>
+    <div class="input-wrap"><input type="email" id="loginEmail" placeholder="Digite seu E-mail" required></div>
     <div class="input-wrap">
-      <input type="password" id="loginPass" placeholder="Senha" required>
-      <span class="eye" onclick="toggleEye('loginPass')">👁️</span>
+      <input type="password" id="loginPass" placeholder="Digite sua Senha" required>
+      <svg class="eye-icon" onclick="toggleEye('loginPass', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
-    <button class="btn" type="submit" id="btnLogin">Entrar</button>
-    <div id="msgLogin"></div>
+    <button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div>
   </form>
 
   <form id="cadastro" class="form">
-    <h4>DADOS PESSOAIS</h4>
-    <input type="text" id="nome" placeholder="Nome completo *" required>
-    <input type="email" id="email" placeholder="E-mail *" required>
-    <div class="grid2">
-      <input type="text" id="cpf" placeholder="CPF *" maxlength="14" required>
-      <input type="text" id="rg" placeholder="RG">
+    <div class="input-wrap"><input type="text" id="nome" placeholder="Nome completo" required></div>
+    <div class="input-wrap"><input type="email" id="email" placeholder="E-mail" required></div>
+    <div class="input-wrap"><input type="text" id="cpf" placeholder="CPF 000.000.000-00" maxlength="14" required></div>
+    <div class="row">
+      <div class="input-wrap" style="flex:2"><input type="text" id="cep" placeholder="CEP 00000-000" maxlength="9" required></div>
+      <button type="button" class="btn btn-small" onclick="buscarCep()">BUSCAR</button>
     </div>
-    <div class="grid2">
-      <input type="date" id="nascimento" placeholder="Nascimento">
-      <select id="sexo"><option value="">Sexo</option><option>Masculino</option><option>Feminino</option><option>Prefiro não dizer</option></select>
-    </div>
-
-    <h4>CONTATO</h4>
-    <div class="grid2">
-      <input type="text" id="whatsapp" placeholder="Whatsapp *" maxlength="15" required>
-      <input type="text" id="telefone" placeholder="Telefone Fixo">
-    </div>
-
-    <h4>ENDEREÇO</h4>
-    <div style="display:flex;gap:8px">
-      <input type="text" id="cep" placeholder="CEP *" maxlength="9" required>
-      <button type="button" class="btn" style="padding:0 12px;flex-shrink:0" onclick="buscarCep()">Buscar</button>
-    </div>
-    <input type="text" id="rua" placeholder="Rua" readonly>
-    <div class="grid2">
-      <input type="text" id="numero" placeholder="Nº *" required>
-      <input type="text" id="complemento" placeholder="Complemento">
-    </div>
-    <div class="grid2">
-      <input type="text" id="bairro" placeholder="Bairro" readonly>
-      <input type="text" id="cidade" placeholder="Cidade" readonly>
-    </div>
-    <input type="text" id="estado" placeholder="UF" readonly maxlength="2">
-
-    <h4>PROFISSIONAL</h4>
-    <input type="text" id="profissao" placeholder="Profissão">
-    <input type="text" id="empresa" placeholder="Empresa">
-    <select id="origem"><option value="">Como conheceu o KORVIL?</option><option>Instagram</option><option>Google</option><option>Indicação</option><option>WhatsApp</option><option>Outro</option></select>
-
-    <h4>SEGURANÇA</h4>
+    <div class="input-wrap"><input type="text" id="rua" placeholder="Rua" readonly></div>
+    <div class="input-wrap"><input type="text" id="bairro" placeholder="Bairro" readonly></div>
+    <div class="input-wrap"><input type="text" id="whatsapp" placeholder="Whatsapp (00) 00000-0000" maxlength="15" required></div>
     <div class="input-wrap">
-      <input type="password" id="pass" placeholder="Senha *" required>
-      <span class="eye" onclick="toggleEye('pass')">👁️</span>
+      <input type="password" id="pass" placeholder="Crie uma Senha" required>
+      <svg class="eye-icon" onclick="toggleEye('pass', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
     <div class="input-wrap">
-      <input type="password" id="pass2" placeholder="Repetir Senha *" required>
-      <span class="eye" onclick="toggleEye('pass2')">👁️</span>
+      <input type="password" id="pass2" placeholder="Repita a Senha" required>
+      <svg class="eye-icon" onclick="toggleEye('pass2', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
-    <label class="checkbox">
-      <input type="checkbox" id="lgpd" required>
-      <span>Aceito os Termos de Uso *</span>
-    </label>
-    
-    <button class="btn" type="submit" id="btnCadastro">Cadastrar</button>
-    <div id="msgCadastro"></div>
+    <button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button><div id="msgCadastro"></div>
   </form>
 </div>
 
 <script>
-netlifyIdentity.init();
-netlifyIdentity.on('init', user => { if(user) window.location.href = "app.html"; });
+// SUAS CHAVES DO SUPABASE
+const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-function showTab(t){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));
-  document.querySelector(`[onclick="showTab('${t}')"]`).classList.add('active');
-  document.getElementById(t).classList.add('active');
-}
-function toggleEye(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password'}
+/* PALAVRAS KORVIL */
+const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','K-TP','K-AFORTUNADO','K-ALMA','MARKETING DIGITAL','LIBERDADE FINANCEIRA','COMUNIDADE K','EXCLUSIVO','APP KORVIL','CRM K','RESULTADOS','MENTORIA','FRANQUIAS','VIP','INOVAÇÃO','NETWORKING'];
+const wordsBg = document.getElementById('wordsBg');
+const animacoes = ['type1','type2','type3','type4','type5'];
+function spawnWordBlock(){for(let i=0; i<20; i++){const w = document.createElement('div');w.className = 'word ' + animacoes[Math.floor(Math.random()*5)];w.innerText = palavras[Math.floor(Math.random()*palavras.length)];w.style.left = Math.random()*85 + '%';w.style.top = Math.random()*85 + '%';w.style.fontSize = (14 + Math.random()*4) + 'px';w.style.animationDelay = (Math.random()*0.5) + 's';wordsBg.appendChild(w);setTimeout(()=>w.remove(), 5000);}}
+setInterval(spawnWordBlock, 1500);spawnWordBlock();
+
+/* PARTÍCULAS */
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+let pts=[];for(let i=0;i<25;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.15,dy:(Math.random()-.5)*.15});
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';
+pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;
+if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
+draw();
+
+function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));event.target.classList.add('active');document.getElementById(t).classList.add('active');}
+function toggleEye(id, icon){const i=document.getElementById(id);i.type = i.type==='password' ? 'text' : 'password';}
+function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
+function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
+
 cpf.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
-rg.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1})$/,'$1-$2');
 cep.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2');
 whatsapp.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
-telefone.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{4})(\d)/,'$1-$2');
-async function buscarCep(){const v=cep.value.replace(/\D/g,'');if(v.length!==8)return msg('CEP inválido','error','msgCadastro');const r=await fetch(`https://viacep.com.br/ws/${v}/json/`).then(x=>x.json());if(r.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=r.logradouro;bairro.value=r.bairro;cidade.value=r.localidade;estado.value=r.uf;}
-const validaCpf=v=>{v=v.replace(/\D/g,'');if(v.length!==11||/^(\d)\1{10}$/.test(v))return 0;let s=0;for(let i=0;i<9;i++)s+=v[i]*(10-i);let d=11-(s%11);d=d>9?0:d;if(d!=v[9])return 0;s=0;for(let i=0;i<10;i++)s+=v[i]*(11-i);d=11-(s%11);d=d>9?0:d;return d==v[10]}
-function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 
+async function buscarCep(){const cepVal=cep.value.replace(/\D/g,'');if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());if(res.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=res.logradouro;bairro.value=res.bairro;}
+
+// CADASTRO REAL
 cadastro.onsubmit=async e=>{
   e.preventDefault();
-  if(!lgpd.checked)return msg('Aceite os termos para continuar','error','msgCadastro');
-  const btn=btnCadastro;btn.disabled=1;btn.innerHTML='<span class="loader"></span>Cadastrando...';
-  if(!validaCpf(cpf.value))return msg('CPF inválido','error','msgCadastro'),btn.disabled=0,btn.innerHTML='Cadastrar';
-  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro'),btn.disabled=0,btn.innerHTML='Cadastrar';
-  const data={name:nome.value,cpf:cpf.value.replace(/\D/g,''),rg:rg.value.replace(/\D/g,''),nascimento:nascimento.value,sexo:sexo.value,whatsapp:whatsapp.value.replace(/\D/g,''),telefone:telefone.value.replace(/\D/g,''),cep:cep.value,rua:rua.value,numero:numero.value,complemento:complemento.value,bairro:bairro.value,cidade:cidade.value,estado:estado.value,profissao:profissao.value,empresa:empresa.value,origem:origem.value,lgpd:true};
-  try{
-    await netlifyIdentity.signup(email.value,pass.value,data);
-    msg('Cadastro OK! Confirme seu e-mail e faça login.','ok','msgCadastro');
-  }catch(err){
-    msg(err.message.includes('already')?'E-mail já cadastrado. Use a tela de login.':err.message,'error','msgCadastro');
-  }
-  btn.disabled=0;btn.innerHTML='Cadastrar';
+  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
+  loading(btnCadastro,true);
+  const { data, error } = await supabase.auth.signUp({
+    email: email.value,
+    password: pass.value,
+    options: { data: { full_name: nome.value, cpf: cpf.value, cep: cep.value, rua: rua.value, bairro: bairro.value, whatsapp: whatsapp.value }}
+  })
+  if(error){msg(error.message,'error','msgCadastro')}
+  else{msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');cadastro.reset();}
+  loading(btnCadastro,false);
 }
 
+// LOGIN REAL
 login.onsubmit=async e=>{
   e.preventDefault();
-  const btn=btnLogin;btn.disabled=1;btn.innerHTML='<span class="loader"></span>Entrando...';
-  try{
-    await netlifyIdentity.login(loginEmail.value,loginPass.value,true);
-    window.location.href="app.html"; // <- ESSA É A LINHA QUE JOGA PRO APP
-  }catch(err){
-    msg('E-mail ou senha inválidos','error','msgLogin');
-  }
-  btn.disabled=0;btn.innerHTML='Entrar';
+  loading(btnLogin,true);
+  const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail.value, password: loginPass.value })
+  if(error){msg('E-mail ou senha inválidos','error','msgLogin')}
+  else{window.location.href="https://korvilp-sudo.github.io/korvil-site/";}
+  loading(btnLogin,false);
 }
 </script>
 </body>
