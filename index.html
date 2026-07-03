@@ -1,11 +1,3 @@
-Fechado chefe ✅ Voltamos pro ChatGPT.
-
-*ATENÇÃO:* Apaga aquela chave que você mandou antes. Ela já foi exposta aqui. Vai em `platform.openai.com` > `API keys` > `Revoke` nela agora.
-
-Aqui está o código 100% com ChatGPT `gpt-4o-mini` = Mais barato da OpenAI.
-
-*CÓDIGO COMPLETO COM CHATGPT*
-Só trocar `SUA_CHAVE_OPENAI_AQUI` pela sua chave nova
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,66 +6,89 @@ Só trocar `SUA_CHAVE_OPENAI_AQUI` pela sua chave nova
 <meta name="theme-color" content="#000">
 <title>KORVIL APP</title>
 <style>
-:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
+:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --card2:#111; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 @keyframes spin3d{0%{transform:rotateX(-20deg) rotateY(0deg);}100%{transform:rotateX(-20deg) rotateY(360deg);}}
+
 .topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(0,0,0,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:center;z-index:100;animation:fadeIn.3s;}
-.menu-btn{position:absolute;left:14px;background:transparent;border:1.5px solid var(--c);color:var(--c);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;}
+.menu-btn{position:absolute;left:14px;background:transparent;border:1.5px solid var(--c);color:var(--c);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;transition:.2s;}
 .menu-btn:active{background:var(--c);color:#000;}
 .logo{color:var(--c);font-weight:900;font-size:17px;letter-spacing:1.5px;text-shadow:0 0 10px var(--c);}
 .icon-top{position:absolute;right:14px;display:flex;gap:12px;}
-.icon-top svg{width:22px;height:22px;stroke:var(--c);cursor:pointer;}
+.icon-top svg{width:22px;height:22px;stroke:var(--c);cursor:pointer;transition:.2s;}
+.icon-top svg:active{filter:drop-shadow(0 0 6px var(--c));}
+
 .wrap{padding:70px 16px 110px;max-width:700px;margin:auto;animation:fadeIn.4s;}
 h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;}
 h2{font-size:16px;font-weight:700;margin:0 0 8px;}
 h4{color:var(--c);font-size:13px;margin:0 0 6px;font-weight:700;}
+p{color:var(--text2);font-size:14px;line-height:1.7;}
+
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
-.btn-app{background:var(--c);border:1.5px solid var(--c);border-radius:14px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;box-shadow:0 0 12px var(--c)30;}
-.btn-app svg{width:28px;height:28px;stroke:#000;fill:none;stroke-width:2;}
-.btn-app span{font-size:11px;font-weight:800;color:#000;text-align:center;}
-.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;}
+.btn-app{background:transparent;border:1.5px solid var(--borda);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
+.btn-app:active{border-color:var(--c);transform:scale(.96);box-shadow:0 0 12px var(--c)30;}
+.btn-app img{width:100%;height:60px;object-fit:contain;border-radius:8px;background:#111;}
+.btn-app span{font-size:11px;font-weight:800;color:var(--text);text-align:center;line-height:1.2;}
+
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
+.card:active{border-color:var(--c);box-shadow:0 0 15px var(--c)30;}
+.card p{color:var(--text2);font-size:13px;margin-top:4px;}
+
 .tela{display:none;animation:fadeIn.3s;}
 .tela.ativa{display:block;}
 .sub-aba{background:var(--card);border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:10px;}
+.sub-aba ul{list-style:none;padding-left:0;}
 .sub-aba li{color:var(--text2);font-size:14px;padding:8px 0;border-bottom:1px solid #151515;cursor:pointer;}
-.btn{display:block;background:var(--c);color:#000;text-align:center;padding:14px 16px;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;width:100%;}
+.sub-aba li:last-child{border:0;}
+.sub-aba li:hover{color:var(--c);}
+
+.btn{display:block;background:var(--c);color:#000;text-align:center;padding:14px 16px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;transition:.2s;border:0;cursor:pointer;margin-top:14px;width:100%;}
+.btn:active{transform:scale(.97);filter:brightness(1.2);}
 .btn.voltar{background:#222;color:var(--text);width:auto;display:inline-block;padding:12px 18px;margin-right:10px;}
+
 .menu-lateral{position:fixed;top:0;left:-280px;width:270px;height:100%;background:#080808;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:70px;}
 .menu-lateral.ativo{left:0;}
-.menu-lateral a{display:block;color:var(--text);padding:16px 20px;text-decoration:none;border-bottom:1px solid #111;font-size:15px;font-weight:600;cursor:pointer;}
+.menu-lateral a{display:block;color:var(--text);padding:16px 20px;text-decoration:none;border-bottom:1px solid #111;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;}
+.menu-lateral a:active{background:#111;color:var(--c);padding-left:24px;}
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:none;z-index:100;backdrop-filter:blur(4px);}
 .overlay.ativo{display:block;}
+
 .logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;}
-iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;}
+iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;}
+
 .modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
 .modal.ativo{display:flex;}
-.modal-box{background:#0a0a0a;border:2px solid var(--c);border-radius:14px;padding:22px;width:92%;max-width:400px;}
-.modal-box input{width:100%;padding:14px;margin:8px 0;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#fff;font-size:15px;}
+.modal-box{background:#0a0a0a;border:2px solid var(--c);border-radius:14px;padding:22px;width:92%;max-width:400px;animation:fadeIn.3s;box-shadow:0 0 25px var(--c)30;}
+.modal-box input{width:100%;padding:14px;margin:8px 0;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#fff;font-size:15px;outline:none;}
+.modal-box input:focus{border-color:var(--c);box-shadow:0 0 10px var(--c);}
+
 .kai-footer{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 16px;z-index:98;pointer-events:none;}
 .scene{width:66px;height:66px;perspective:700px;flex-shrink:0;position:relative;pointer-events:auto;}
-.cube{width:66px;height:66px;position:relative;transform-style:preserve-3d;animation:spin3d 7s linear infinite;cursor:pointer;}
+.cube{width:66px;height:66px;position:relative;transform-style:preserve-3d;animation:spin3d 7s linear infinite;cursor:pointer;transition:transform.4s;}
 .cube-face{position:absolute;width:66px;height:66px;background:linear-gradient(145deg,var(--c),var(--c2));border:2px solid var(--c);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;border-radius:8px;box-shadow:0 8px 25px var(--c)90;user-select:none;}
 .front{transform:rotateY(0deg) translateZ(33px);}.back{transform:rotateY(180deg) translateZ(33px);}
 .right{transform:rotateY(90deg) translateZ(33px);}.left{transform:rotateY(-90deg) translateZ(33px);}
 .top{transform:rotateX(90deg) translateZ(33px);}.bottom{transform:rotateX(-90deg) translateZ(33px);}
-.message-box{max-width:240px;padding:14px;background:rgba(0,245,255,.15);border:2px solid var(--c);border-radius:12px;color:#fff;font-size:13px;font-weight:600;backdrop-filter:blur(8px);min-height:52px;display:flex;align-items:center;position:relative;pointer-events:auto;}
-.message-box::after{content:'';position:absolute;right:-12px;top:50%;transform:translateY(-50%);border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:12px solid var(--c);}
-.kai-menu-box{position:absolute;bottom:75px;right:0;width:270px;height:380px;background:rgba(5,5,5,.98);border:2px solid var(--c);border-radius:12px;padding:0;display:none;z-index:99;backdrop-filter:blur(12px);pointer-events:auto;flex-direction:column;overflow:hidden;}
-.kai-menu-box.ativo{display:flex;}
+.message-box{max-width:240px;padding:14px;background:rgba(0,245,255,.15);border:2px solid var(--c);border-radius:12px;color:#fff;font-size:13px;font-weight:600;backdrop-filter:blur(8px);animation:fadeIn.4s;min-height:52px;display:flex;align-items:center;position:relative;pointer-events:auto;box-shadow:0 0 15px var(--c)20;}
+.message-box::after{content:'';position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:12px solid var(--c);filter:drop-shadow(0 0 5px var(--c));}
+
+.kai-menu-box{position:absolute;bottom:75px;right:0;width:270px;height:380px;background:rgba(5,5,5,.98);border:2px solid var(--c);border-radius:12px;padding:0;display:none;z-index:99;backdrop-filter:blur(12px);pointer-events:auto;box-shadow:0 0 20px var(--c)40;flex-direction:column;overflow:hidden;}
+.kai-menu-box.ativo{display:flex;animation:fadeIn.25s;}
 .kai-head{padding:12px;background:var(--c);color:#000;font-weight:800;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
 .kai-head svg{width:18px;height:18px;stroke:#000;cursor:pointer;}
 .kai-chat{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
 .kai-msg{background:#111;border:1px solid #222;border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text2);max-width:85%;}
 .kai-msg.bot{background:rgba(0,245,255,.1);border-color:var(--c);color:var(--text);}
-.kai-msg.user{background:#1a1a1a;border-color:#333;margin-left:auto;}
 .kai-input{display:flex;gap:6px;padding:10px;border-top:1px solid #222;background:#0a0a0a;}
 .kai-input input{flex:1;padding:10px;background:#111;border:1.5px solid #222;border-radius:8px;color:#fff;font-size:13px;outline:none;}
+.kai-input input:focus{border-color:var(--c);}
 .kai-input button{padding:10px 14px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:800;cursor:pointer;}
 </style>
 </head>
 <body>
+
 <div class="topbar">
   <button class="menu-btn" onclick="toggleMenu()">MENU</button>
   <div class="logo">KORVIL</div>
@@ -82,6 +97,7 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </div>
 </div>
+
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <nav class="menu-lateral" id="menu">
   <a onclick="abrirTela('kalma');toggleMenu()">K-ALMA</a>
@@ -90,33 +106,85 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   <a onclick="abrirTela('sistema');toggleMenu()">SISTEMA K</a>
   <a onclick="abrirTela('central');toggleMenu()">CENTRAL KORVIL</a>
 </nav>
+
 <main class="wrap">
   <section id="central" class="tela ativa">
     <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
     <h1>CENTRAL KORVIL</h1>
+
     <div class="grid-4">
-      <div class="btn-app" onclick="abrirTela('sistema')"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg><span>Sistema K</span></div>
-      <div class="btn-app" onclick="irParaKTP()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>K-TP</span></div>
-      <div class="btn-app" onclick="abrirTela('kafortunado')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg><span>K-AFORTUNADO</span></div>
-      <div class="btn-app" onclick="abrirTela('kalma')"><svg viewBox="0 0 24 24"><path d="M12 21s-6-4.35-6-10a6 6 0 0 1 12 0c0 5.65-6 10-6 10z"/></svg><span>K-ALMA</span></div>
+      <div class="btn-app" onclick="abrirTela('sistema')">
+        <img src="sections/sistema/images/logosistemak.png" alt="Sistema K" onerror="this.style.display='none'">
+        <span>Sistema K</span>
+      </div>
+      <div class="btn-app" onclick="irParaKTP()">
+        <img src="sections/ktp/images/logoktp.png" alt="K-TP" onerror="this.style.display='none'">
+        <span>K-TP</span>
+      </div>
+      <div class="btn-app" onclick="abrirTela('kafortunado')">
+        <img src="sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO" onerror="this.style.display='none'">
+        <span>K-AFORTUNADO</span>
+      </div>
+      <div class="btn-app" onclick="abrirTela('kalma')">
+        <img src="sections/kalma/images/logokalma.png" alt="K-ALMA" onerror="this.style.display='none'">
+        <span>K-ALMA</span>
+      </div>
     </div>
+
     <div class="card" onclick="abrirTela('humano')"><h2>1. DESENVOLVIMENTO HUMANO</h2><p>Cursos, Treinamento, Saude e Beleza</p></div>
     <div class="card" onclick="abrirTela('negocios')"><h2>2. NEGOCIOS</h2><p>Parcerias com Profissionais</p></div>
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
   </section>
-  <section id="humano" class="tela"><h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2><div class="sub-aba"><h4>AREAS</h4><h4>Tecnologias:</h4><ul><li>1. Manutencao de Celular</li></ul><h4>Educacao Fisica Bacharelado:</h4><ul><li>1. Treinamento Personalizado</li></ul><h4>Empreendedorismo:</h4><ul><li>1. Negocio Proprio</li></ul><h4>Saude:</h4><ul><li onclick="irParaKTH()">1. K-TH Terapia Holistica →</li></ul><h4>Beleza:</h4><ul><li>1. Cabeleireiro Unissex</li></ul></div><button class="btn" onclick="abrirWhats('Cursos KORVIL - Desenvolvimento Humano')">Falar com Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+
+  <section id="humano" class="tela">
+    <h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2>
+    <div class="sub-aba">
+      <h4>AREAS</h4>
+      <h4>Tecnologias:</h4><ul><li>1. Manutencao de Celular</li></ul>
+      <h4>Educacao Fisica Bacharelado:</h4><ul><li>1. Treinamento Personalizado</li></ul>
+      <h4>Empreendedorismo:</h4><ul><li>1. Negocio Proprio</li></ul>
+      <h4>Saude:</h4><ul><li onclick="irParaKTH()">1. K-TH Terapia Holistica →</li></ul>
+      <h4>Beleza:</h4><ul><li>1. Cabeleireiro Unissex</li></ul>
+    </div>
+    <button class="btn" onclick="abrirWhats('Cursos KORVIL - Desenvolvimento Humano')">Falar com Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
   <section id="negocios" class="tela"><h1>NEGOCIOS</h1><div class="sub-aba"><h4>PARCERIAS COM PROFISSIONAIS</h4><p>Profissionais das areas KORVIL.</p></div><button class="btn" onclick="abrirWhats('Parcerias KORVIL - Negocios')">Falar com Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="servicos" class="tela"><h1>SERVICOS</h1><div class="sub-aba"><h4>1. CONCERTOS DE CELULAR</h4><p>Profissionais tecnicos.</p></div><div class="sub-aba"><h4>2. TREINAMENTO</h4><p>Profissionais KORVIL.</p></div><div class="sub-aba"><h4>3. CONSULTORIA</h4><p>Profissionais em Financas.</p></div><div class="sub-aba"><h4>4. SAUDE E BELEZA</h4><p>Profissionais da area.</p></div><button class="btn" onclick="abrirWhats('Servicos KORVIL - Servicos')">Contratar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="sistema" class="tela"><h1>SISTEMA K</h1><h2>SERVICOS GERAIS PROFISSIONAIS</h2><div class="sub-aba"><ul><li>Eletricista</li><li>Carpinteiro</li><li>Faxineira</li><li>Encanador</li><li>Pintor</li><li>Pedreiro</li></ul></div><button class="btn" onclick="abrirWhats('Sistema K - Servicos Gerais')">Contratar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><div class="sub-aba"><h4>CONSULTORIA FINANCEIRA</h4><p>Profissionais em estrategia.</p></div><button class="btn" onclick="abrirWhats('K-AFORTUNADO - Consultoria Financeira')">Agendar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kalma" class="tela"><h1>K-ALMA</h1><h2>SAUDE</h2><div class="sub-aba"><ul><li>Terapeuta Holistico</li><li>Dentista</li><li>Fisioterapeuta</li><li>Medico</li></ul></div><h2>BELEZA</h2><div class="sub-aba"><ul><li>Cabeleireiro Unissex</li><li>Barbeiro</li><li>Esteticista</li><li>Manicure</li><li>Sobrancelhas</li></ul></div><button class="btn" onclick="abrirWhats('K-ALMA - Saude e Beleza')">Agendar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+
   <section id="kai-assistente" class="tela"><h1>K-AI ASSISTENTE</h1><div class="card"><p>Eu sou o K-AI. Clique no meu cubo para abrir o chat e tirar dúvidas sobre KORVIL 24h.</p></div><button class="btn" onclick="abrirWhats('K-AI - Assistente Virtual')">Falar com K-AI no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kai-sobre" class="tela"><h1>SOBRE O KORVIL</h1><div class="card"><h4>11 ANOS DE KORVIL</h4><p><b>Sistema K:</b> Servicos Gerais</p><p><b>K-TP:</b> Projeto Transformacao</p><p><b>K-AFORTUNADO:</b> Financas</p><p><b>K-ALMA:</b> Saude e Beleza</p><p><b>Cursos:</b> Tecnologia, Educacao Fisica, Empreendedorismo</p></div><button class="btn" onclick="abrirWhats('KORVIL - Sobre')">Falar sobre KORVIL no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kai-politica" class="tela"><h1>POLITICA E PRIVACIDADE</h1><div class="card"><p><b>KORVIL LTDA</b></p><p>LGPD: Seus dados sao usados so para contato. Nao vendemos dados. Whats oficial: 13997690898</p></div><button class="btn" onclick="abrirWhats('KORVIL - Politica e Privacidade')">Duvidas no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="ktp-iframe" class="tela"><h1>K-TP PROJETO TRANSFORMAÇÃO</h1><iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-site/sections/ktp/"></iframe><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="kth-iframe" class="tela"><h1>K-TH TERAPIA HOLÍSTICA</h1><iframe class="korvil-frame" src="sections/centralkorvil/desenvolvimentohumano/cursos/areas/saude/kth/"></iframe><button class="btn voltar" onclick="abrirTela('humano')">Voltar</button></section>
+
+  <section id="ktp-iframe" class="tela">
+    <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
+    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-site/sections/ktp/"></iframe>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="kth-iframe" class="tela">
+    <h1>K-TH TERAPIA HOLÍSTICA</h1>
+    <iframe class="korvil-frame" src="sections/centralkorvil/desenvolvimentohumano/cursos/areas/saude/kth/"></iframe>
+    <button class="btn voltar" onclick="abrirTela('humano')">Voltar</button>
+  </section>
 </main>
-<div class="modal" id="modal"><div class="modal-box"><h2 class="logo">KORVIL</h2><input id="nome" placeholder="Seu Nome Completo" required><input id="whats" placeholder="Seu WhatsApp com DDD" required><input id="cep" placeholder="CEP" onblur="buscaCEP()"><input id="rua" placeholder="Rua e Numero"><button class="btn" onclick="enviarWhats()">Enviar para WhatsApp 13997690898</button><button class="btn voltar" onclick="fecharForm()">Cancelar</button></div></div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 class="logo">KORVIL</h2>
+    <input id="nome" placeholder="Seu Nome Completo" required>
+    <input id="whats" placeholder="Seu WhatsApp com DDD" required>
+    <input id="cep" placeholder="CEP" onblur="buscaCEP()">
+    <input id="rua" placeholder="Rua e Numero">
+    <button class="btn" onclick="enviarWhats()">Enviar para WhatsApp 13997690898</button>
+    <button class="btn voltar" onclick="fecharForm()">Cancelar</button>
+  </div>
+</div>
+
 <footer class="kai-footer">
   <div class="message-box" id="cubeMessage">Clique no cubo K-AI</div>
   <div class="scene" id="cubeScene">
@@ -127,14 +195,19 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     </div>
     <div class="kai-menu-box" id="kaiMenu">
       <div class="kai-head">K-AI ASSISTENTE <svg onclick="toggleKaiMenu()" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
-      <div class="kai-chat" id="kaiChat"><div class="kai-msg bot">Olá! Sou o K-AI. Pergunte sobre KORVIL, cursos, Sistema K, K-TP, K-ALMA, K-AFORTUNADO, Whats 13997690898.</div></div>
-      <div class="kai-input"><input id="kaiInput" placeholder="Pergunte sobre KORVIL..." onkeydown="if(event.key==='Enter') enviarKai()"><button onclick="enviarKai()">Enviar</button></div>
+      <div class="kai-chat" id="kaiChat">
+        <div class="kai-msg bot">Olá! Sou o K-AI. Pergunte sobre KORVIL, cursos, Sistema K, K-TP, K-ALMA, K-AFORTUNADO, Whats 13997690898.</div>
+      </div>
+      <div class="kai-input">
+        <input id="kaiInput" placeholder="Pergunte sobre KORVIL..." onkeydown="if(event.key==='Enter') enviarKai()">
+        <button onclick="enviarKai()">Enviar</button>
+      </div>
     </div>
   </div>
 </footer>
+
 <script>
 const WHATS_NUMBER = '5513997690898';
-const OPENAI_KEY = 'SUA_CHAVE_OPENAI_AQUI'; // Pega em: https://platform.openai.com/api-keys
 let textoWhats = '';
 const cube = document.getElementById("cubeKAI");
 const kaiMenu = document.getElementById("kaiMenu");
@@ -150,7 +223,7 @@ function fecharForm(){ document.getElementById('modal').classList.remove('ativo'
 async function buscaCEP(){ const cep=document.getElementById('cep').value.replace(/\D/g,''); if(cep.length!==8)return; try{ const res=await fetch(`https://viacep.com.br/ws/${cep}/json/`); const d=await res.json(); if(!d.erro){ document.getElementById('rua').value=d.logradouro; }}catch(e){} }
 function enviarWhats(){ const nome=document.getElementById('nome').value; const whats=document.getElementById('whats').value; const cep=document.getElementById('cep').value; const rua=document.getElementById('rua').value; if(!nome||!whats){alert('Preencha Nome e WhatsApp');return;} const msg=`*KORVIL - ${textoWhats}*\n\n*DADOS DO CLIENTE:*\nNome: ${nome}\nWhats: ${whats}\nCEP: ${cep}\nRua: ${rua}\n\nOla, vim do site KORVIL e quero atendimento.`; const texto = encodeURIComponent(msg); const appLink = `https://wa.me/55${WHATS_NUMBER}?text=${texto}`; const webLink = `https://web.whatsapp.com/send?phone=55${WHATS_NUMBER}&text=${texto}`; const newWindow = window.open(appLink, '_blank'); setTimeout(()=>{ if(!newWindow || newWindow.closed || typeof newWindow.closed=='undefined'){ window.open(webLink, '_blank'); }}, 500); fecharForm(); }
 
-const baseKORVIL = `Você é K-AI, assistente virtual do KORVIL. KORVIL tem 11 anos. Setores: 1.Sistema K: Eletricista, Carpinteiro, Faxineira, Encanador, Pintor, Pedreiro. 2.K-TP: Projeto Transformacao. 3.K-AFORTUNADO: Consultoria Financeira. 4.K-ALMA: Saude - Terapeuta Holistico, Dentista, Fisioterapeuta, Medico. Beleza - Cabeleireiro Unissex, Barbeiro, Esteticista, Manicure, Sobrancelhas. Cursos: Manutencao Celular, Treinamento Personalizado, Negocio Proprio, K-TH Terapia Holistica, Cabeleireiro. Whats oficial: 13997690898. Regra: Só fale de KORVIL. Resposta curta, 2 a 3 linhas, PT-BR. Se perguntarem preço/valor, responda: Fale no Whats 13997690898.`;
+const baseKORVIL = `Você é K-AI, assistente virtual do KORVIL. KORVIL tem 11 anos. Setores: 1.Sistema K: Eletricista, Carpinteiro, Faxineira, Encanador, Pintor, Pedreiro. 2.K-TP: Projeto Transformacao. 3.K-AFORTUNADO: Consultoria Financeira. 4.K-ALMA: Saude - Terapeuta Holistico, Dentista, Fisioterapeuta, Medico. Beleza - Cabeleireiro Unissex, Barbeiro, Esteticista, Manicure, Sobrancelhas. Cursos: Manutencao Celular, Treinamento Personalizado, Negocio Proprio, K-TH Terapia Holistica, Cabeleireiro. Whats oficial: 13997690898. Seja direto, em PT-BR, 2 a 3 linhas.`;
 
 function addMsg(text, who='bot'){
   const div=document.createElement('div');
@@ -164,26 +237,20 @@ async function enviarKai(){
   const input=document.getElementById('kaiInput');
   const txt=input.value.trim();
   if(!txt) return;
-  if(OPENAI_KEY==='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'){ addMsg('Cola sua chave OpenAI no código primeiro.'); return; }
   addMsg(txt,'user');
   input.value='';
   addMsg('Pensando...','bot');
   try{
     const res = await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer SUA_CHAVE_OPENAI_AQUI'},
       body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:baseKORVIL},{role:'user',content:txt}],max_tokens:150,temperature:0.7})
     });
-    const data = await res.json();
-    kaiChat.lastChild.remove();
+    const data = await res.json(); kaiChat.lastChild.remove();
     addMsg(data.choices[0].message.content);
-  }catch(e){
-    kaiChat.lastChild.remove();
-    addMsg('K-AI offline agora. Chame no Whats 13997690898.');
-  }
+  }catch(e){ kaiChat.lastChild.remove(); addMsg('K-AI offline. Chame no Whats 13997690898.'); }
 }
-
-const mensagensKAI = ["KORVIL 11 anos","Profissionais online","Manutencao Celular","Negocio Proprio","K-TH Terapia","Cabeleireiro Unissex","Eletricista 24h","K-TP Projeto","K-AFORTUNADO Financas","K-ALMA Saude","Whats 13997690898","K-AI 24h"];
-let msgIndex = Math.floor(Math.random() * mensagensKAI.length);
-const messageBox = document.getElementById("cubeMessage");
-function trocarMensagem(){messageBox.textContent = mensagensKAI[msgIndex];ms
+document.getElementById("cubeKAI").onclick = toggleKaiMenu;
+</script>
+</body>
+</html>
