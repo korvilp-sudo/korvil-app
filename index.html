@@ -28,17 +28,22 @@ canvas#particles{position:fixed;inset:0;z-index:0}
 .tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c);transform:scale(1.03)}
 .form{display:none;flex-direction:column;gap:16px;animation:slideIn .5s}
 .form.active{display:flex}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 .input-wrap{position:relative}
 input{width:100%;padding:16px 50px 16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;transition:.3s;font-size:16px;font-weight:600}
 input::placeholder{color:rgba(0,255,255,.7)}
 input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px rgba(0,255,255,.5);transform:scale(1.02)}
 .eye-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:24px;height:24px;cursor:pointer;transition:.3s;stroke:var(--c);fill:none;stroke-width:2}
-.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3)}
+.eye-icon:hover{transform:translateY(-50%) scale(1.2);stroke:var(--c2);filter:drop-shadow(0 0 8px var(--c))}
+.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3);display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:hover{transform:translateY(-3px);box-shadow:0 0 35px var(--c)}
+.btn:active{transform:scale(.97)}
 .row{display:flex;gap:12px}
 .btn-small{padding:0 18px;font-size:13px}
-.error{color:#ff3366;text-align:center;font-weight:700}
-.ok{color:#00ff88;text-align:center;font-weight:700}
+.error{color:#ff3366;text-align:center;font-weight:700;animation:shake .4s}
+.ok{color:#00ff88;text-align:center;font-weight:700;animation:pop .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pop{0%{transform:scale(.8)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .loader{border:3px solid #000;border-top:3px solid #000;border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
@@ -53,8 +58,8 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('login')">ENTRAR</button>
-    <button class="tab" onclick="showTab('cadastro')">NOVO USUÁRIO</button>
+    <button class="tab active" onclick="showTab('login', this)">ENTRAR</button>
+    <button class="tab" onclick="showTab('cadastro', this)">NOVO USUÁRIO</button>
   </div>
 
   <form id="login" class="form active">
@@ -96,7 +101,7 @@ const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 /* PALAVRAS KORVIL */
-const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','K-TP','K-AFORTUNADO','K-ALMA','MARKETING DIGITAL','LIBERDADE FINANCEIRA','COMUNIDADE K','EXCLUSIVO','APP KORVIL','CRM K','RESULTADOS','MENTORIA','FRANQUIAS','VIP','INOVAÇÃO','NETWORKING'];
+const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','K-TP','K-AFORTUNADO','K-ALMA','MARKETING DIGITAL','LIBERDADE FINANCEIRA','COMUNIDADE K','EXCLUSIVO','APP KORVIL','CRM K','RESULTADOS','MENTORIA','FRANQUIAS','VIP'];
 const wordsBg = document.getElementById('wordsBg');
 const animacoes = ['type1','type2','type3','type4','type5'];
 function spawnWordBlock(){for(let i=0; i<20; i++){const w = document.createElement('div');w.className = 'word ' + animacoes[Math.floor(Math.random()*5)];w.innerText = palavras[Math.floor(Math.random()*palavras.length)];w.style.left = Math.random()*85 + '%';w.style.top = Math.random()*85 + '%';w.style.fontSize = (14 + Math.random()*4) + 'px';w.style.animationDelay = (Math.random()*0.5) + 's';wordsBg.appendChild(w);setTimeout(()=>w.remove(), 5000);}}
@@ -110,38 +115,66 @@ function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00
 pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;
 if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
+window.addEventListener('resize', ()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;})
 
-function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));event.target.classList.add('active');document.getElementById(t).classList.add('active');}
-function toggleEye(id, icon){const i=document.getElementById(id);i.type = i.type==='password' ? 'text' : 'password';}
+function showTab(t, btn){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(t).classList.add('active');
+}
+function toggleEye(id, icon){
+  const i=document.getElementById(id);
+  i.type = i.type==='password' ? 'text' : 'password';
+}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
+
+const cpf = document.getElementById('cpf');
+const cep = document.getElementById('cep');
+const whatsapp = document.getElementById('whatsapp');
+const rua = document.getElementById('rua');
+const bairro = document.getElementById('bairro');
+const pass = document.getElementById('pass');
+const pass2 = document.getElementById('pass2');
+const btnCadastro = document.getElementById('btnCadastro');
+const btnLogin = document.getElementById('btnLogin');
 
 cpf.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
 cep.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2');
 whatsapp.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
 
-async function buscarCep(){const cepVal=cep.value.replace(/\D/g,'');if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());if(res.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=res.logradouro;bairro.value=res.bairro;}
+async function buscarCep(){
+  const cepVal=cep.value.replace(/\D/g,'');
+  if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');
+  const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());
+  if(res.erro)return msg('CEP não encontrado','error','msgCadastro');
+  rua.value=res.logradouro;bairro.value=res.bairro;
+}
 
 // CADASTRO REAL
-cadastro.onsubmit=async e=>{
+document.getElementById('cadastro').onsubmit=async e=>{
   e.preventDefault();
   if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
   loading(btnCadastro,true);
   const { data, error } = await supabase.auth.signUp({
-    email: email.value,
+    email: document.getElementById('email').value,
     password: pass.value,
-    options: { data: { full_name: nome.value, cpf: cpf.value, cep: cep.value, rua: rua.value, bairro: bairro.value, whatsapp: whatsapp.value }}
+    options: { data: { full_name: document.getElementById('nome').value, cpf: cpf.value, cep: cep.value, rua: rua.value, bairro: bairro.value, whatsapp: whatsapp.value }}
   })
   if(error){msg(error.message,'error','msgCadastro')}
-  else{msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');cadastro.reset();}
+  else{msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');document.getElementById('cadastro').reset();}
   loading(btnCadastro,false);
 }
 
 // LOGIN REAL
-login.onsubmit=async e=>{
+document.getElementById('login').onsubmit=async e=>{
   e.preventDefault();
   loading(btnLogin,true);
-  const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail.value, password: loginPass.value })
+  const { data, error } = await supabase.auth.signInWithPassword({ 
+    email: document.getElementById('loginEmail').value, 
+    password: document.getElementById('loginPass').value 
+  })
   if(error){msg('E-mail ou senha inválidos','error','msgLogin')}
   else{window.location.href="https://korvilp-sudo.github.io/korvil-site/";}
   loading(btnLogin,false);
