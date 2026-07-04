@@ -5,94 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <title>KORVIL ACCESS</title>
-<script src="https://korvilp-sudo.github.io/korvil-app/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
-
 canvas#particles{position:fixed;inset:0;z-index:0}
-
 .words-bg{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.word{
-  position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;
-  letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);
-  animation-fill-mode:forwards;
-}
-
-.type1{animation:fadeInOut 5s}
-@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
-.type2{animation:pulseWord 5s}
-@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
-.type3{animation:slideLeft 5s}
-@keyframes slideLeft{0%{opacity:0;transform:translateX(-100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(50px)}}
-.type4{animation:slideRight 5s}
-@keyframes slideRight{0%{opacity:0;transform:translateX(100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(-50px)}}
-.type5{animation:typing 5s steps(30)}
-@keyframes typing{0%{opacity:0;width:0;overflow:hidden;border-right:2px solid var(--c)}5%{opacity:1}70%{width:100%;border-right:2px solid var(--c)}90%{border-right:transparent}100%{opacity:0;width:100%}}
-
-.card{
-  background:rgba(0,0,0,.65);backdrop-filter:blur(30px);
-  border-radius:24px;padding:35px;width:90%;max-width:460px;
-  position:relative;z-index:10;animation:fadeInUp .8s;
-  box-shadow:0 0 60px rgba(0,255,255,.3)
-}
+.word{position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards}
+.type1{animation:fadeInOut 5s}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.type2{animation:pulseWord 5s}@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+.type3{animation:slideLeft 5s}@keyframes slideLeft{0%{opacity:0;transform:translateX(-100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(50px)}}
+.type4{animation:slideRight 5s}@keyframes slideRight{0%{opacity:0;transform:translateX(100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(-50px)}}
+.type5{animation:typing 5s steps(30)}@keyframes typing{0%{opacity:0;width:0;overflow:hidden;border-right:2px solid var(--c)}5%{opacity:1}70%{width:100%;border-right:2px solid var(--c)}90%{border-right:transparent}100%{opacity:0;width:100%}}
+.card{background:rgba(0,0,0,.65);backdrop-filter:blur(30px);border-radius:24px;padding:35px;width:90%;max-width:460px;position:relative;z-index:10;animation:fadeInUp .8s;box-shadow:0 0 60px rgba(0,255,255,.3)}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
 .logo-area{display:flex;justify-content:center;margin-bottom:25px}
-.logo-img{
-  max-width:300px;width:100%;height:auto;object-fit:contain;z-index:10;
-  filter:drop-shadow(0 0 35px var(--c));
-  animation:pulseLogo 2s ease-in-out infinite
-}
+.logo-img{max-width:300px;width:100%;height:auto;object-fit:contain;z-index:10;filter:drop-shadow(0 0 35px var(--c));animation:pulseLogo 2s ease-in-out infinite}
 @keyframes pulseLogo{0%,100%{transform:scale(1);filter:drop-shadow(0 0 35px var(--c))}50%{transform:scale(1.07);filter:drop-shadow(0 0 55px var(--c2))}}
-
 .tabs{display:flex;gap:12px;margin-bottom:25px}
-.tab{
-  flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);
-  color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;
-  transition:.4s;letter-spacing:1px
-}
+.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s;letter-spacing:1px}
 .tab:hover{background:rgba(0,255,255,.1);border-color:var(--c)}
-.tab.active{
-  background:linear-gradient(135deg,var(--c),var(--c2));color:#000;
-  border-color:var(--c);box-shadow:0 0 25px var(--c);transform:scale(1.03)
-}
-
+.tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c);transform:scale(1.03)}
 .form{display:none;flex-direction:column;gap:16px;animation:slideIn .5s}
-.form.active{display:flex}
-@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-
+.form.active{display:flex}@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 .input-wrap{position:relative}
-input{
-  width:100%;padding:16px 50px 16px 18px;border:2px solid rgba(0,255,255,.4);
-  background:rgba(0,0,0,.85);color:#fff;border-radius:12px;
-  outline:none;transition:.3s;font-size:16px;font-weight:600
-}
+input{width:100%;padding:16px 50px 16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;transition:.3s;font-size:16px;font-weight:600}
 input::placeholder{color:rgba(0,255,255,.7)}
-input:focus{
-  border-color:var(--c);background:rgba(0,0,0,.95);
-  box-shadow:0 0 25px rgba(0,255,255,.5);transform:scale(1.02)
-}
-
-.eye-icon{
-  position:absolute;right:16px;top:50%;transform:translateY(-50%);
-  width:24px;height:24px;cursor:pointer;transition:.3s;
-  stroke:var(--c);fill:none;stroke-width:2
-}
+input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px rgba(0,255,255,.5);transform:scale(1.02)}
+.eye-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:24px;height:24px;cursor:pointer;transition:.3s;stroke:var(--c);fill:none;stroke-width:2}
 .eye-icon:hover{transform:translateY(-50%) scale(1.2);stroke:var(--c2);filter:drop-shadow(0 0 8px var(--c))}
-
-.btn{
-  padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));
-  color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;
-  transition:.3s;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3);
-  display:flex;align-items:center;justify-content:center;gap:8px
-}
+.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;transition:.3s;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3);display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:hover{transform:translateY(-3px);box-shadow:0 0 35px var(--c)}
 .btn:active{transform:scale(.97)}
 .row{display:flex;gap:12px}
 .btn-small{padding:0 18px;font-size:13px;box-shadow:0 0 15px rgba(0,255,255,.2)}
-
 .error{color:#ff3366;text-align:center;font-weight:700;animation:shake .4s}
 .ok{color:#00ff88;text-align:center;font-weight:700;animation:pop .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
@@ -119,10 +66,7 @@ input:focus{
     <div class="input-wrap"><input type="email" id="loginEmail" placeholder="Digite seu E-mail" required></div>
     <div class="input-wrap">
       <input type="password" id="loginPass" placeholder="Digite sua Senha" required>
-      <svg class="eye-icon" onclick="toggleEye('loginPass', this)" viewBox="0 0 24 24">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+      <svg class="eye-icon" onclick="toggleEye('loginPass', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
     <button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div>
   </form>
@@ -140,43 +84,26 @@ input:focus{
     <div class="input-wrap"><input type="text" id="whatsapp" placeholder="Whatsapp (00) 00000-0000" maxlength="15" required></div>
     <div class="input-wrap">
       <input type="password" id="pass" placeholder="Crie uma Senha" required>
-      <svg class="eye-icon" onclick="toggleEye('pass', this)" viewBox="0 0 24 24">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+      <svg class="eye-icon" onclick="toggleEye('pass', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
     <div class="input-wrap">
       <input type="password" id="pass2" placeholder="Repita a Senha" required>
-      <svg class="eye-icon" onclick="toggleEye('pass2', this)" viewBox="0 0 24 24">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+      <svg class="eye-icon" onclick="toggleEye('pass2', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </div>
     <button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button><div id="msgCadastro"></div>
   </form>
 </div>
 
 <script>
-netlifyIdentity.init();
+// 1. COLA SUAS CHAVES DO SUPABASE AQUI
+const SUPABASE_URL = 'https://xxxxxx.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzIxxxxxxxxxxxxxxxxxxxxxxxxx'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-const palavras = [
-  'DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE',
-  'LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO',
-  'K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA',
-  'MARKETING DIGITAL','EDUCAÇÃO','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS',
-  'FRANQUIAS','PLATAFORMA','NETWORKING','MENTORIA','GESTÃO','SUPORTE',
-  'COMUNIDADE K','EVENTOS','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS',
-  'K-CONECTA','K-NETWORK','TRÁFEGO PAGO','COPYWRITING','FUNIL DE VENDAS',
-  'LIDERANÇA','PRODUTIVIDADE','METAS','PERFORMANCE','ATENDIMENTO',
-  'PALESTRAS','WORKSHOPS','WEBINARS','PODCAST','YOUTUBE K','LIVE K',
-  'APP KORVIL','CRM K','ÁREA DO ALUNO','BIBLIOTECA K','CERTIFICADOS',
-  'EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO',
-  'LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'
-];
+const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO','K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA','MARKETING DIGITAL','EDUCAÇÃO','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','NETWORKING','MENTORIA','GESTÃO','SUPORTE','COMUNIDADE K','EVENTOS','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRÁFEGO PAGO','COPYWRITING','FUNIL DE VENDAS','LIDERANÇA','PRODUTIVIDADE','METAS','PERFORMANCE','ATENDIMENTO','PALESTRAS','WORKSHOPS','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','ÁREA DO ALUNO','BIBLIOTECA K','CERTIFICADOS','EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'];
 
 const wordsBg = document.getElementById('wordsBg');
 const animacoes = ['type1','type2','type3','type4','type5'];
-
 function spawnWordBlock(){
   for(let i=0; i<20; i++){
     const w = document.createElement('div');
@@ -227,43 +154,46 @@ cpf.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{3})(
 cep.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2');
 whatsapp.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
 
-function validaCpf(cpf){cpf=cpf.replace(/\D/g,'');if(cpf.length!==11)return false;return true}
+// CADASTRO SUPABASE
+cadastro.onsubmit=async e=>{
+  e.preventDefault();
+  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
+  loading(btnCadastro,true);
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: pass.value,
+    options: { data: {
+      full_name:nome.value, cpf:cpf.value, cep:cep.value, rua:rua.value, 
+      bairro:bairro.value, whatsapp:whatsapp.value
+    }}
+  });
+  if(error){msg(error.message,'error','msgCadastro')}
+  else{msg('Cadastro realizado! Confirma no e-mail.','ok','msgCadastro'); cadastro.reset();}
+  loading(btnCadastro,false);
+}
 
+// LOGIN SUPABASE + REDIRECIONA PRO APP
+login.onsubmit=async e=>{
+  e.preventDefault();
+  loading(btnLogin,true);
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: loginEmail.value,
+    password: loginPass.value
+  });
+  if(error){msg('E-mail ou senha inválidos','error','msgLogin')}
+  else{
+    window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html";
+  }
+  loading(btnLogin,false);
+}
+
+// BUSCAR CEP
 async function buscarCep(){
   const cepVal=cep.value.replace(/\D/g,'');
   if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');
   const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());
   if(res.erro)return msg('CEP não encontrado','error','msgCadastro');
   rua.value=res.logradouro;bairro.value=res.bairro;
-}
-
-cadastro.onsubmit=async e=>{
-  e.preventDefault();
-  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
-  if(!validaCpf(cpf.value))return msg('CPF inválido','error','msgCadastro');
-  loading(btnCadastro,true);
-  const data={full_name:nome.value,name:nome.value,cpf:cpf.value.replace(/\D/g,''),cep:cep.value.replace(/\D/g,''),rua:rua.value,bairro:bairro.value,whatsapp:whatsapp.value.replace(/\D/g,'')};
-  try{
-    await netlifyIdentity.signup(email.value,pass.value,data);
-    msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');
-    cadastro.reset();
-  }catch(err){
-    if(err.message.includes('already registered'))msg('E-mail já cadastrado. Use a tela de login.','error','msgCadastro');
-    else msg(err.message,'error','msgCadastro');
-  }
-  loading(btnCadastro,false);
-}
-
-login.onsubmit=async e=>{
-  e.preventDefault();
-  loading(btnLogin,true);
-  try{
-    await netlifyIdentity.login(loginEmail.value,loginPass.value,true);
-    window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html"; // REDIRECT CORRIGIDO
-  }catch(err){
-    msg('E-mail ou senha inválidos','error','msgLogin');
-  }
-  loading(btnLogin,false);
 }
 </script>
 </body>
