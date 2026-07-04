@@ -112,7 +112,20 @@ const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO','K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA','MARKETING DIGITAL','EDUCAÇÃO','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','NETWORKING','MENTORIA','GESTÃO','SUPORTE','COMUNIDADE K','EVENTOS','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRÁFEGO PAGO','COPYWRITING','FUNIL DE VENDAS','LIDERANÇA','PRODUTIVIDADE','METAS','PERFORMANCE','ATENDIMENTO','PALESTRAS','WORKSHOPS','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','ÁREA DO ALUNO','BIBLIOTECA K','CERTIFICADOS','EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'];
+const palavras = [
+  'DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE',
+  'LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO',
+  'K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA',
+  'MARKETING DIGITAL','EDUCAÇÃO','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS',
+  'FRANQUIAS','PLATAFORMA','NETWORKING','MENTORIA','GESTÃO','SUPORTE',
+  'COMUNIDADE K','EVENTOS','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS',
+  'K-CONECTA','K-NETWORK','TRÁFEGO PAGO','COPYWRITING','FUNIL DE VENDAS',
+  'LIDERANÇA','PRODUTIVIDADE','METAS','PERFORMANCE','ATENDIMENTO',
+  'PALESTRAS','WORKSHOPS','WEBINARS','PODCAST','YOUTUBE K','LIVE K',
+  'APP KORVIL','CRM K','ÁREA DO ALUNO','BIBLIOTECA K','CERTIFICADOS',
+  'EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO',
+  'LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'
+];
 
 const wordsBg = document.getElementById('wordsBg');
 const animacoes = ['type1','type2','type3','type4','type5'];
@@ -177,7 +190,7 @@ async function buscarCep(){
   rua.value=res.logradouro;bairro.value=res.bairro;
 }
 
-// CADASTRO SUPABASE
+// CADASTRO SUPABASE - CORRIGIDO
 cadastro.onsubmit=async e=>{
   e.preventDefault();
   if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
@@ -186,13 +199,13 @@ cadastro.onsubmit=async e=>{
   const { error } = await supabase.auth.signUp({
     email: email.value,
     password: pass.value,
-    options: { data: {full_name:nome.value, cpf:cpf.value.replace(/\D/g,''), cep:cep.value.replace(/\D/g,''), rua:rua.value, numero:numero.value, complemento:complemento.value, bairro:bairro.value, whatsapp:whatsapp.value.replace(/\D/g,'')}}
+    options: { data: {full_name:nome.value, cpf:cpf.value.replace(/\D/g,''), cep:cep.value.replace(/\D/g,''), rua:rua.value, bairro:bairro.value, whatsapp:whatsapp.value.replace(/\D/g,'')}}
   });
   if(error){msg(error.message,'error','msgCadastro')} else{msg('Cadastro realizado!','ok','msgCadastro'); cadastro.reset();}
   loading(btnCadastro,false);
 }
 
-// LOGIN SUPABASE - REDIRECIONA PRA APP.HTML
+// LOGIN SUPABASE - CORRIGIDO
 login.onsubmit=async e=>{
   e.preventDefault();
   loading(btnLogin,true);
