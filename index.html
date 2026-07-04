@@ -53,11 +53,11 @@ input:focus{border-color:var(--c);box-shadow:0 0 15px rgba(0,255,255,.4)}
   </div>
 
   <div class="tabs">
-    <button class="tab" onclick="showTab(event,'login')">ENTRAR</button>
-    <button class="tab active" onclick="showTab(event,'cadastro')">NOVO USUÁRIO</button>
+    <button class="tab active" onclick="showTab(event,'login')">ENTRAR</button>
+    <button class="tab" onclick="showTab(event,'cadastro')">NOVO USUÁRIO</button>
   </div>
 
-  <form id="login" class="form">
+  <form id="login" class="form active">
     <div class="input-wrap"><input type="email" id="loginEmail" placeholder="E-mail" required></div>
     <div class="input-wrap">
       <input type="password" id="loginPass" placeholder="Senha" required>
@@ -66,7 +66,7 @@ input:focus{border-color:var(--c);box-shadow:0 0 15px rgba(0,255,255,.4)}
     <button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div>
   </form>
 
-  <form id="cadastro" class="form active">
+  <form id="cadastro" class="form">
     <div class="input-wrap"><input type="text" id="nome" placeholder="Nome completo" required></div>
     <div class="input-wrap"><input type="email" id="email" placeholder="E-mail" required></div>
     <div class="input-wrap"><input type="text" id="cpf" placeholder="CPF 000.000.000-0" maxlength="14" required></div>
