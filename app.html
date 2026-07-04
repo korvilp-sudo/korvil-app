@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -106,23 +105,23 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
 <main class="wrap">
   <section id="central" class="tela ativa">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
     <h3 class="sectitle">SETORES:</h3>
     <div class="grid-4">
       <div class="btn-app" onclick="abrirTela('sistema')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/sistemak/images/logosistemak.png" alt="Sistema K">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/sistemak/images/logosistemak.png" alt="Sistema K">
         <span>Sistema K</span>
       </div>
       <div class="btn-app" onclick="irParaKTP()">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/ktp/images/logoktp.png" alt="K-TP">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/ktp/images/logoktp.png" alt="K-TP">
         <span>K-TP</span>
       </div>
       <div class="btn-app" onclick="abrirTela('kafortunado')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
         <span>K-AFORTUNADO</span>
       </div>
       <div class="btn-app" onclick="abrirTela('kalma')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
         <span>K-ALMA</span>
       </div>
     </div>
@@ -158,13 +157,13 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
   <section id="ktp-iframe" class="tela">
     <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
-    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-site/sections/ktp/"></iframe>
+    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/"></iframe>
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
 
   <section id="kth-iframe" class="tela">
     <h1>K-TH TERAPIA HOLÍSTICA</h1>
-    <iframe class="korvil-frame" src="sections/centralkorvil/desenvolvimentohumano/cursos/areas/saude/kth/"></iframe>
+    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/desenvolvimentohumano/cursos/areas/saude/kth/"></iframe>
     <button class="btn voltar" onclick="abrirTela('humano')">Voltar</button>
   </section>
 </main>
@@ -189,4 +188,31 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
       <div class="cube-face right">K-AI</div><div class="cube-face left">K-AI</div>
       <div class="cube-face top">K-AI</div><div class="cube-face bottom">K-AI</div>
     </div>
-    <div class="kai-menu-box" id="kai
+    <div class="kai-menu-box" id="kaiMenu">
+      <div class="kai-head">K-AI MENU <svg onclick="toggleKAI()" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      <button class="kai-menu-btn" onclick="abrirTela('kai-assistente')">K-AI Assistente</button>
+      <button class="kai-menu-btn" onclick="abrirTela('kai-sobre')">Sobre o KORVIL</button>
+      <button class="kai-menu-btn" onclick="abrirTela('kai-politica')">Política e Privacidade</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('menu').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
+function abrirTela(id){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');window.scrollTo(0,0);}
+function irParaKTP(){abrirTela('ktp-iframe');}
+function irParaKTH(){abrirTela('kth-iframe');}
+function abrirWhats(msg){document.getElementById('modal').classList.add('ativo');}
+function fecharForm(){document.getElementById('modal').classList.remove('ativo');}
+function enviarWhats(){
+  const n=document.getElementById('nome').value, w=document.getElementById('whats').value;
+  if(!n||!w)return alert('Preencha Nome e WhatsApp');
+  const link=`https://wa.me/5513997690898?text=${encodeURIComponent('KORVIL: '+n+' - '+w)}`;
+  window.open(link,'_blank');fecharForm();
+}
+function buscaCEP(){}
+function toggleKAI(){document.getElementById('kaiMenu').classList.toggle('ativo');}
+document.getElementById('cubeKAI').onclick=toggleKAI;
+</script>
+</body>
+</html>
