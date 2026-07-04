@@ -104,7 +104,7 @@ cadastro.onsubmit=async e=>{
   loading(btnCadastro,false);
 }
 
-// LOGIN SUPABASE + REDIRECIONA PRO APP
+// LOGIN SUPABASE + REDIRECIONA PRO APP.HTML
 login.onsubmit=async e=>{
   e.preventDefault();loading(btnLogin,true);
   const { data, error } = await supabase.auth.signInWithPassword({email: loginEmail.value, password: loginPass.value});
