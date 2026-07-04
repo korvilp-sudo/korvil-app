@@ -3,94 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <title>KORVIL ACCESS</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2.110.0/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
-body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
-canvas#particles{position:fixed;inset:0;z-index:0}
-.words-bg{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.word{position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards;}
-.type1{animation:fadeInOut 5s}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
-.card{background:rgba(0,0,0,.65);backdrop-filter:blur(30px);border-radius:24px;padding:35px;width:90%;max-width:460px;position:relative;z-index:10;animation:fadeInUp .8s;box-shadow:0 0 60px rgba(0,255,255,.3)}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.logo-area{display:flex;justify-content:center;margin-bottom:25px}
-.logo-img{max-width:300px;width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 0 35px var(--c));animation:pulseLogo 2s ease-in-out infinite}
-@keyframes pulseLogo{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+:root{--c:#00FFFF;--c2:#A8FFE6}*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI'}body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+.card{background:rgba(0,0,0,.65);backdrop-filter:blur(30px);border-radius:24px;padding:35px;width:90%;max-width:460px;box-shadow:0 0 60px rgba(0,255,255,.3)}
+.logo-img{max-width:300px;width:100%;filter:drop-shadow(0 0 35px var(--c))}
 .tabs{display:flex;gap:12px;margin-bottom:25px}
-.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
-.tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c)}
+.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900}
+.tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000}
 .form{display:none;flex-direction:column;gap:16px}
 .form.active{display:flex}
-input{width:100%;padding:16px 50px 16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;font-size:16px;font-weight:600}
+input{width:100%;padding:16px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;font-size:16px}
 .btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer}
-.error{color:#ff3366;text-align:center;font-weight:700}
-.ok{color:#00ff88;text-align:center;font-weight:700}
+.error{color:#ff3366;text-align:center}.ok{color:#00ff88;text-align:center}
 </style>
 </head>
 <body>
-<canvas id="particles"></canvas>
-<div class="words-bg" id="wordsBg"></div>
-
 <div class="card">
-  <div class="logo-area">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-img">
-  </div>
-
+  <div style="text-align:center;margin-bottom:25px"><img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" class="logo-img"></div>
   <div class="tabs">
     <button class="tab active" onclick="showTab(event,'login')">ENTRAR</button>
     <button class="tab" onclick="showTab(event,'cadastro')">NOVO USUÁRIO</button>
   </div>
-
-  <form id="login" class="form active">
-    <div class="input-wrap"><input type="email" id="loginEmail" placeholder="Digite seu E-mail" required></div>
-    <div class="input-wrap"><input type="password" id="loginPass" placeholder="Digite sua Senha" required></div>
-    <button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div>
-  </form>
-
-  <form id="cadastro" class="form">
-    <div class="input-wrap"><input type="text" id="nome" placeholder="Nome completo" required></div>
-    <div class="input-wrap"><input type="email" id="email" placeholder="E-mail" required></div>
-    <div class="input-wrap"><input type="password" id="pass" placeholder="Crie uma Senha" required></div>
-    <div class="input-wrap"><input type="password" id="pass2" placeholder="Repita a Senha" required></div>
-    <button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button><div id="msgCadastro"></div>
-  </form>
+  <form id="login" class="form active"><input type="email" id="loginEmail" placeholder="Digite seu E-mail" required><input type="password" id="loginPass" placeholder="Digite sua Senha" required><button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div></form>
+  <form id="cadastro" class="form"><input type="text" id="nome" placeholder="Nome completo" required><input type="email" id="email" placeholder="E-mail" required><input type="password" id="pass" placeholder="Crie uma Senha" required><input type="password" id="pass2" placeholder="Repita a Senha" required><button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button><div id="msgCadastro"></div></form>
 </div>
-
 <script>
 const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// SE JÁ ESTIVER LOGADO JÁ REDIRECIONA
+// SE JÁ ESTIVER LOGADO JÁ MANDA PRA HOME
 supabase.auth.getSession().then(({ data: { session }}) => {
-  if(session) window.location.href = "https://korvilp-sudo.github.io/korvil-site/"
+  if(session) window.location.href = "https://korvilp-sudo.github.io/korvil-site/app.html"
 })
 
-const wordsBg = document.getElementById('wordsBg');
 function showTab(e,t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));e.target.classList.add('active');document.getElementById(t).classList.add('active');}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
-function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
 
-// CADASTRO
-cadastro.onsubmit=async e=>{
-  e.preventDefault();
-  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
-  loading(btnCadastro,true);
-  const { error } = await supabase.auth.signUp({email: email.value, password: pass.value, options: { data: {full_name:nome.value}}}) 
-  if(error)msg(error.message,'error','msgCadastro');else{msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');cadastro.reset();}
-  loading(btnCadastro,false);
+document.getElementById('cadastro').onsubmit=async e=>{
+  e.preventDefault();if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
+  const {error}=await supabase.auth.signUp({email:email.value,password:pass.value,options:{data:{full_name:nome.value}}});
+  if(error)msg(error.message,'error','msgCadastro');else msg('Cadastro OK! Verifique e-mail','ok','msgCadastro');cadastro.reset();
 }
 
-// LOGIN
-login.onsubmit=async e=>{
+document.getElementById('login').onsubmit=async e=>{
   e.preventDefault();
-  loading(btnLogin,true);
-  const { error } = await supabase.auth.signInWithPassword({ email: loginEmail.value, password: loginPass.value })
-  if(error)msg('E-mail ou senha inválidos','error','msgLogin');else window.location.href="https://korvilp-sudo.github.io/korvil-site/";
-  loading(btnLogin,false);
+  const {error}=await supabase.auth.signInWithPassword({email:loginEmail.value,password:loginPass.value});
+  if(error)msg('E-mail ou senha inválidos','error','msgLogin');else window.location.href="https://korvilp-sudo.github.io/korvil-site/app.html";
 }
-</script>
-</body>
-</html>
+</script></body></html>
