@@ -39,9 +39,9 @@ const SUPABASE_URL = 'https://XXXXX.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzIXXXXXXXXXXXXXXXXXXXX'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// 2. TRAVA: SE NÃO ESTIVER LOGADO VOLTA PRO LOGIN
+// 2. TRAVA: SE NÃO ESTIVER LOGADO VOLTA PRO INDEX
 supabase.auth.getSession().then(({ data: { session }})=>{
-  if(!session){window.location.href="https://korvilp-sudo.github.io/korvil-site/"}
+  if(!session){window.location.href="https://korvilp-sudo.github.io/korvil-app/"}
 })
 </script>
 
@@ -82,7 +82,7 @@ supabase.auth.getSession().then(({ data: { session }})=>{
 <script>
 function toggleMenu(){document.getElementById('menu').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirTela(id){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');window.scrollTo(0,0);}
-async function sair(){await supabase.auth.signOut();window.location.href="https://korvilp-sudo.github.io/korvil-site/";}
+async function sair(){await supabase.auth.signOut();window.location.href="https://korvilp-sudo.github.io/korvil-app/";}
 </script>
 </body>
 </html>
