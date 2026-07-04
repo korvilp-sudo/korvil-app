@@ -95,7 +95,7 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
 </div>
 
 <script>
-// SUPABASE
+// SUPABASE CONFIG
 const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -114,7 +114,9 @@ function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00
 pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
 
+// CORRIGIDO: AGORA PASSA O EVENT
 function showTab(e,t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));e.target.classList.add('active');document.getElementById(t).classList.add('active');}
+
 function toggleEye(id, icon){const i=document.getElementById(id);if(i.type==='password'){i.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}else{i.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
@@ -126,6 +128,7 @@ function validaCpf(cpf){cpf=cpf.replace(/\D/g,'');if(cpf.length!==11)return fals
 
 async function buscarCep(){const cepVal=cep.value.replace(/\D/g,'');if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());if(res.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=res.logradouro;bairro.value=res.bairro;}
 
+// CADASTRO SUPABASE
 cadastro.onsubmit=async e=>{
   e.preventDefault();
   if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
@@ -139,6 +142,7 @@ cadastro.onsubmit=async e=>{
   loading(btnCadastro,false);
 }
 
+// LOGIN SUPABASE + REDIRECIONA
 login.onsubmit=async e=>{
   e.preventDefault();
   loading(btnLogin,true);
