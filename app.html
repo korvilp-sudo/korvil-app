@@ -23,7 +23,7 @@ h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;color:var(--
 .card-app{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;}
 .card-app p{color:var(--text2);font-size:13px;margin-top:4px;}
 .tela{display:none}.tela.ativa{display:block;}
-.menu-lateral{position:fixed;top:0;left:-280px;width:270px;height:100%;background:#080808;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:70px;}
+.menu-lateral{position:fixed;top:0;left:-280px;width:270px;height:100%;background:#080808;border-right:1px solid #222;z-index:101;transition:left .3s ease;padding-top:70px;}
 .menu-lateral.ativo{left:0;}
 .menu-lateral a{display:block;color:var(--text);padding:16px 20px;text-decoration:none;border-bottom:1px solid #111;font-weight:600;cursor:pointer;}
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:none;z-index:100;}
@@ -35,8 +35,8 @@ h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;color:var(--
 <body>
 <script>
 // 1. COLA SUAS CHAVES DO SUPABASE AQUI
-const SUPABASE_URL = 'https://XXXXX.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzIXXXXXXXXXXXXXXXXXXXX'
+const SUPABASE_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
+const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // 2. TRAVA: SE NÃO ESTIVER LOGADO VOLTA PRO INDEX
@@ -60,7 +60,7 @@ supabase.auth.getSession().then(({ data: { session }})=>{
 </nav>
 <main class="wrap">
   <section id="central" class="tela ativa">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" class="logo-central">
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/logo-korvil.png" class="logo-central">
     <h1>CENTRAL KORVIL</h1>
     <div class="grid-4">
       <div class="btn-app" onclick="abrirTela('sistema')"><img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/sistemak/images/logosistemak.png"><span>Sistema K</span></div>
