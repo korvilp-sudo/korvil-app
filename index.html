@@ -65,12 +65,12 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
 
 <div class="card">
   <div class="logo-area">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-img">
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-img">
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('login', this)">ENTRAR</button>
-    <button class="tab" onclick="showTab('cadastro', this)">NOVO USUÁRIO</button>
+    <button class="tab active" onclick="showTab('login')">ENTRAR</button>
+    <button class="tab" onclick="showTab('cadastro')">NOVO USUÁRIO</button>
   </div>
 
   <form id="login" class="form active">
@@ -91,7 +91,7 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
       <button type="button" class="btn btn-small" onclick="buscarCep()">BUSCAR</button>
     </div>
     <div class="input-wrap"><input type="text" id="rua" placeholder="Rua" readonly></div>
-    <div class="row"><div class="input-wrap" style="flex:1"><input type="text" id="numero" placeholder="N°" required></div><div class="input-wrap" style="flex:2"><input type="text" id="complemento" placeholder="Complemento"></div></div>
+    <!-- CAMPO N° REMOVIDO -->
     <div class="input-wrap"><input type="text" id="bairro" placeholder="Bairro" readonly></div>
     <div class="input-wrap"><input type="text" id="whatsapp" placeholder="Whatsapp (00) 00000-0000" maxlength="15" required></div>
     <div class="input-wrap">
@@ -142,10 +142,10 @@ pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+
 if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
 
-function showTab(t, el){
+function showTab(t){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
+  event.target.classList.add('active'); // VOLTEI PRO EVENT.TARGET IGUAL AO ORIGINAL
   document.getElementById(t).classList.add('active');
 }
 
@@ -186,19 +186,22 @@ cadastro.onsubmit=async e=>{
   const { error } = await supabase.auth.signUp({
     email: email.value,
     password: pass.value,
-    options: { data: {full_name:nome.value, cpf:cpf.value.replace(/\D/g,''), cep:cep.value.replace(/\D/g,''), rua:rua.value, numero:numero.value, complemento:complemento.value, bairro:bairro.value, whatsapp:whatsapp.value.replace(/\D/g,'')}}
+    options: { data: {full_name:nome.value,name:nome.value,cpf:cpf.value.replace(/\D/g,''),cep:cep.value.replace(/\D/g,''),rua:rua.value,bairro:bairro.value,whatsapp:whatsapp.value.replace(/\D/g,'')}}
   });
-  if(error){msg(error.message,'error','msgCadastro')} else{msg('Cadastro realizado!','ok','msgCadastro'); cadastro.reset();}
+  if(error){
+    if(error.message.includes('already registered'))msg('E-mail já cadastrado. Use a tela de login.','error','msgCadastro');
+    else msg(error.message,'error','msgCadastro')
+  } else{msg('Cadastro realizado!','ok','msgCadastro'); cadastro.reset();}
   loading(btnCadastro,false);
 }
 
-// LOGIN SUPABASE - REDIRECIONA PRA APP.HTML
+// LOGIN SUPABASE
 login.onsubmit=async e=>{
   e.preventDefault();
   loading(btnLogin,true);
   const { data, error } = await supabase.auth.signInWithPassword({email: loginEmail.value, password: loginPass.value});
   if(error){msg('E-mail ou senha inválidos','error','msgLogin')} 
-  else{window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html";}
+  else{window.location.href="https://korvilp-sudo.github.io/korvil-app/";}
   loading(btnLogin,false);
 }
 </script>
