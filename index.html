@@ -86,6 +86,9 @@ input:focus{border-color:var(--c);box-shadow:0 0 25px rgba(0,255,255,.5)}
 </div>
 
 <script>
+// ESPERA O DOM CARREGAR PRIMEIRO
+document.addEventListener('DOMContentLoaded', function() {
+
 const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -103,8 +106,8 @@ function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00
 pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
 
-function trocarTab(t, el){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById(t).classList.add('active');}
-function mostrarSenha(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';}
+window.trocarTab = function(t, el){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById(t).classList.add('active');}
+window.mostrarSenha = function(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
 
@@ -112,7 +115,7 @@ document.getElementById('cpf').oninput=e=>e.target.value=e.target.value.replace(
 document.getElementById('cep').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2');
 document.getElementById('whatsapp').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
 
-async function buscarCep(){
+window.buscarCep = async function(){
   const cep=document.getElementById('cep').value.replace(/\D/g,'');
   if(cep.length!==8)return msg('CEP inválido','error','msgCadastro');
   const res=await fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r=>r.json());
@@ -124,21 +127,21 @@ async function buscarCep(){
 document.getElementById('cadastro').addEventListener('submit', async e=>{
   e.preventDefault();
   const btn=document.getElementById('btnCadastro');
-  if(document.getElementById('pass').value!==document.getElementById('pass2').value)return msg('Senhas diferentes','error','msgCadastro');
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('pass').value;
+  if(pass!==document.getElementById('pass2').value)return msg('Senhas diferentes','error','msgCadastro');
   loading(btn,true);
-  const {error} = await supabase.auth.signUp({
-    email: document.getElementById('email').value,
-    password: document.getElementById('pass').value,
-    options: { data: {
-      full_name:document.getElementById('nome').value, 
-      cpf:document.getElementById('cpf').value.replace(/\D/g,''), 
-      cep:document.getElementById('cep').value.replace(/\D/g,''), 
-      rua:document.getElementById('rua').value, 
-      bairro:document.getElementById('bairro').value, 
-      whatsapp:document.getElementById('whatsapp').value.replace(/\D/g,'')
-    }}
+  
+  const {error: signUpError} = await supabase.auth.signUp({
+    email: email,
+    password: pass,
+    options: { data: {full_name:document.getElementById('nome').value, cpf:document.getElementById('cpf').value.replace(/\D/g,''), cep:document.getElementById('cep').value.replace(/\D/g,''), rua:document.getElementById('rua').value, bairro:document.getElementById('bairro').value, whatsapp:document.getElementById('whatsapp').value.replace(/\D/g,'')}}
   });
-  if(error){msg(error.message,'error','msgCadastro')} else{msg('Cadastro realizado!','ok','msgCadastro');document.getElementById('cadastro').reset();}
+  
+  if(signUpError){msg(signUpError.message,'error','msgCadastro'); loading(btn,false); return;}
+  const {error: loginError} = await supabase.auth.signInWithPassword({email: email, password: pass});
+  if(loginError){msg('Cadastro ok, mas erro ao logar','error','msgCadastro')} 
+  else{window.location.href="https://korvilp-sudo.github.io/korvil-app/";}
   loading(btn,false);
 });
 
@@ -146,14 +149,13 @@ document.getElementById('login').addEventListener('submit', async e=>{
   e.preventDefault();
   const btn=document.getElementById('btnLogin');
   loading(btn,true);
-  const {error} = await supabase.auth.signInWithPassword({
-    email: document.getElementById('loginEmail').value, 
-    password: document.getElementById('loginPass').value
-  });
+  const {error} = await supabase.auth.signInWithPassword({email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value});
   if(error){msg('E-mail ou senha inválidos','error','msgLogin')} 
   else{window.location.href="https://korvilp-sudo.github.io/korvil-app/";}
   loading(btn,false);
 });
+
+}); // FIM DO DOMContentLoaded
 </script>
 </body>
 </html>
