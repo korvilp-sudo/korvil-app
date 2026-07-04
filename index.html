@@ -95,7 +95,7 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
 </div>
 
 <script>
-// CONFIG SUPABASE
+// 1. CONFIG SUPABASE - TROQUEI O NETLIFY
 const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_mxSUhUD_wTPpcoLqBbM6nQ_jNFsnbET'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -130,7 +130,7 @@ pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+
 if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
 
-function showTab(e,t){ // CORRIGIDO: passei o event
+function showTab(e,t){ // 2. CONSERTEI O EVENT
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));
   e.target.classList.add('active');
@@ -160,7 +160,7 @@ async function buscarCep(){
   rua.value=res.logradouro;bairro.value=res.bairro;
 }
 
-// CADASTRO SUPABASE
+// 3. CADASTRO SUPABASE
 cadastro.onsubmit=async e=>{
   e.preventDefault();
   if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
@@ -171,11 +171,11 @@ cadastro.onsubmit=async e=>{
     options: { data: { full_name:nome.value, cpf:cpf.value.replace(/\D/g,''), cep:cep.value.replace(/\D/g,''), rua:rua.value, bairro:bairro.value, whatsapp:whatsapp.value.replace(/\D/g,'') }
   })
   if(error)msg(error.message,'error','msgCadastro');
-  else{msg('Cadastro realizado!','ok','msgCadastro');cadastro.reset();}
+  else{msg('Cadastro realizado! Verifique seu e-mail.','ok','msgCadastro');cadastro.reset();}
   loading(btnCadastro,false);
 }
 
-// LOGIN SUPABASE
+// 4. LOGIN SUPABASE
 login.onsubmit=async e=>{
   e.preventDefault();
   loading(btnLogin,true);
