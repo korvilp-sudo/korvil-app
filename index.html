@@ -75,7 +75,7 @@ input:focus{border-color:var(--c);background:rgba(0,0,0,.95);box-shadow:0 0 25px
 
 <script>
 // 1. COLA SUAS CHAVES DO SUPABASE AQUI
-const SUPABASE_URL = 'https://XXXXX.supabase.co'
+const SUPABASE_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzIXXXXXXXXXXXXXXXXXXXX'
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
@@ -90,21 +90,26 @@ function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.rem
 function toggleEye(id, icon){const i=document.getElementById(id);if(i.type==='password'){i.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}else{i.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
+
 cpf.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
 cep.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2');
 whatsapp.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
+function validaCpf(cpf){cpf=cpf.replace(/\D/g,'');if(cpf.length!==11)return false;return true}
+
+async function buscarCep(){const cepVal=cep.value.replace(/\D/g,'');if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());if(res.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=res.logradouro;bairro.value=res.bairro;}
 
 // CADASTRO SUPABASE
 cadastro.onsubmit=async e=>{
   e.preventDefault();
   if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
+  if(!validaCpf(cpf.value))return msg('CPF inválido','error','msgCadastro');
   loading(btnCadastro,true);
   const { error } = await supabase.auth.signUp({email: email.value,password: pass.value,options: { data: {full_name:nome.value, cpf:cpf.value, cep:cep.value, rua:rua.value, bairro:bairro.value, whatsapp:whatsapp.value}}});
   if(error){msg(error.message,'error','msgCadastro')} else{msg('Cadastro realizado! Confirma no e-mail.','ok','msgCadastro'); cadastro.reset();}
   loading(btnCadastro,false);
 }
 
-// LOGIN SUPABASE + REDIRECIONA PRO APP.HTML
+// LOGIN SUPABASE + REDIRECIONA PRO APP.HTML DO KORVIL-APP
 login.onsubmit=async e=>{
   e.preventDefault();loading(btnLogin,true);
   const { data, error } = await supabase.auth.signInWithPassword({email: loginEmail.value, password: loginPass.value});
@@ -112,15 +117,7 @@ login.onsubmit=async e=>{
   else{window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html";}
   loading(btnLogin,false);
 }
-
-// BUSCAR CEP
-async function buscarCep(){
-  const cepVal=cep.value.replace(/\D/g,'');
-  if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');
-  const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());
-  if(res.erro)return msg('CEP não encontrado','error','msgCadastro');
-  rua.value=res.logradouro;bairro.value=res.bairro;
-}
 </script>
 </body>
 </html>
+
