@@ -9,26 +9,41 @@
 :root{--c:#00FFFF;--c2:#A8FFE6}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
+
 canvas#particles{position:fixed;inset:0;z-index:0}
 .words-bg{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.word{position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards}
-.type1{animation:fadeInOut 5s}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
-.type2{animation:pulseWord 5s}@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
-.card{background:rgba(0,0,0,.75);backdrop-filter:blur(30px);border:2px solid rgba(0,255,255,.3);border-radius:24px;padding:30px;width:90%;max-width:460px;position:relative;z-index:10;box-shadow:0 0 60px rgba(0,255,255,.4)}
+.word{position:absolute;color:rgba(0,255,255,.25);font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 20px rgba(0,255,255,.5)}
+.type1{animation:fadeInOut 5s forwards}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.type2{animation:pulseWord 5s forwards}@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+
+.card{background:rgba(0,0,0,.75);backdrop-filter:blur(30px);border:2px solid rgba(0,255,255,.3);border-radius:24px;padding:30px;width:90%;max-width:460px;position:relative;z-index:10;animation:fadeInUp .8s;box-shadow:0 0 60px rgba(0,255,255,.4)}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
 .logo-area{display:flex;justify-content:center;margin-bottom:20px}
-.logo-img{max-width:280px;width:100%;height:120px;object-fit:contain;border-radius:12px;border:2px solid var(--c);filter:drop-shadow(0 0 25px var(--c))}
+.logo-img{max-width:280px;width:100%;height:120px;object-fit:contain;border-radius:12px;border:2px solid var(--c);filter:drop-shadow(0 0 25px var(--c));animation:pulseLogo 2s ease-in-out infinite}
+@keyframes pulseLogo{0%,100%{filter:drop-shadow(0 0 25px var(--c))}50%{filter:drop-shadow(0 0 40px var(--c2))}}
+
 .tabs{display:flex;gap:12px;margin-bottom:20px}
-.tab{flex:1;padding:14px;border:2px solid var(--c);background:transparent;color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:14px;letter-spacing:1px}
+.tab{flex:1;padding:14px;border:2px solid var(--c);background:transparent;color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:14px;letter-spacing:1px;transition:.3s}
+.tab:hover{background:rgba(0,255,255,.1)}
 .tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;box-shadow:0 0 20px var(--c)}
-.form{display:none;flex-direction:column;gap:14px}
-.form.active{display:flex}
+
+.form{display:none;flex-direction:column;gap:14px;animation:slideIn .5s}
+.form.active{display:flex}@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
 .input-wrap{position:relative}
-input{width:100%;padding:14px 45px 14px 16px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:10px;outline:none;font-size:15px;font-weight:600}
+input{width:100%;padding:14px 45px 14px 16px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:10px;outline:none;font-size:15px;font-weight:600;transition:.3s}
+input::placeholder{color:rgba(0,255,255,.6)}
 input:focus{border-color:var(--c);box-shadow:0 0 15px rgba(0,255,255,.4)}
-.eye-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;cursor:pointer;stroke:var(--c);fill:none;stroke-width:2}
-.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3)}
+
+.eye-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;cursor:pointer;stroke:var(--c);fill:none;stroke-width:2;transition:.3s}
+.eye-icon:hover{stroke:var(--c2)}
+
+.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;letter-spacing:1.5px;box-shadow:0 0 20px rgba(0,255,255,.3);transition:.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 30px var(--c)}
 .row{display:flex;gap:10px}
 .btn-small{padding:0 18px;font-size:13px;height:48px}
+
 .error{color:#ff3366;text-align:center;font-weight:700;font-size:14px}
 .ok{color:#00ff88;text-align:center;font-weight:700;font-size:14px}
 .loader{border:3px solid #000;border-top:3px solid #000;border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite;display:inline-block}
@@ -45,17 +60,17 @@ input:focus{border-color:var(--c);box-shadow:0 0 15px rgba(0,255,255,.4)}
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('login')">ENTRAR</button>
-    <button class="tab" onclick="showTab('cadastro')">NOVO USUÁRIO</button>
+    <button class="tab" onclick="showTab('login', this)">ENTRAR</button>
+    <button class="tab active" onclick="showTab('cadastro', this)">NOVO USUÁRIO</button>
   </div>
 
-  <form id="login" class="form active">
+  <form id="login" class="form">
     <div class="input-wrap"><input type="email" id="loginEmail" placeholder="Digite seu E-mail" required></div>
     <div class="input-wrap"><input type="password" id="loginPass" placeholder="Digite sua Senha" required><svg class="eye-icon" onclick="toggleEye('loginPass', this)" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
     <button class="btn" type="submit" id="btnLogin">ACESSAR</button><div id="msgLogin"></div>
   </form>
 
-  <form id="cadastro" class="form">
+  <form id="cadastro" class="form active">
     <div class="input-wrap"><input type="text" id="nome" placeholder="Nome completo" required></div>
     <div class="input-wrap"><input type="email" id="email" placeholder="E-mail" required></div>
     <div class="input-wrap"><input type="text" id="cpf" placeholder="CPF 000.000.000-00" maxlength="14" required></div>
@@ -77,14 +92,16 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','SISTEMA K','TECNOLOGIA','K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA','MARKETING DIGITAL','EDUCAÇÃO','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','NETWORKING','MENTORIA','GESTÃO','SUPORTE','COMUNIDADE K','EVENTOS','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRÁFEGO PAGO','COPYWRITING','FUNIL DE VENDAS','LIDERANÇA','PRODUTIVIDADE','METAS','PERFORMANCE','ATENDIMENTO','PALESTRAS','WORKSHOPS','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','ÁREA DO ALUNO','BIBLIOTECA K','CERTIFICADOS','EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'];
 const wordsBg = document.getElementById('wordsBg');const animacoes = ['type1','type2'];
-function spawnWordBlock(){for(let i=0; i<15; i++){const w = document.createElement('div');w.className = 'word ' + animacoes[Math.floor(Math.random()*2)];w.innerText = palavras[Math.floor(Math.random()*palavras.length)];w.style.left = Math.random()*85 + '%';w.style.top = Math.random()*85 + '%';w.style.fontSize = (14 + Math.random()*4) + 'px';w.style.animationDelay = (Math.random()*0.5) + 's';wordsBg.appendChild(w);setTimeout(()=>w.remove(), 5000);}}
-setInterval(spawnWordBlock, 2000);spawnWordBlock();
+function spawnWordBlock(){for(let i=0; i<8; i++){const w = document.createElement('div');w.className = 'word ' + animacoes[Math.floor(Math.random()*2)];w.innerText = palavras[Math.floor(Math.random()*palavras.length)];w.style.left = Math.random()*85 + '%';w.style.top = Math.random()*85 + '%';w.style.fontSize = (14 + Math.random()*4) + 'px';w.style.animationDelay = (Math.random()*0.5) + 's';wordsBg.appendChild(w);setTimeout(()=>w.remove(), 5000);}}
+spawnWordBlock();setInterval(spawnWordBlock, 1500);
+
 const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;let pts=[];
-for(let i=0;i<20;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.1,dy:(Math.random()-.5)*.1});
+for(let i=0;i<25;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.15,dy:(Math.random()-.5)*.15});
 function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}
 draw();
+window.onresize=()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
 
-function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));event.target.classList.add('active');document.getElementById(t).classList.add('active');}
+function showTab(t, el){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById(t).classList.add('active');}
 function toggleEye(id, icon){const i=document.getElementById(id);if(i.type==='password'){i.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}else{i.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}}
 function msg(t,cls,id){document.getElementById(id).innerHTML=`<p class="${cls}">${t}</p>`}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
@@ -95,8 +112,28 @@ whatsapp.oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').replace(/(\d
 function validaCpf(cpf){cpf=cpf.replace(/\D/g,'');if(cpf.length!==11)return false;return true}
 async function buscarCep(){const cepVal=cep.value.replace(/\D/g,'');if(cepVal.length!==8)return msg('CEP inválido','error','msgCadastro');const res=await fetch(`https://viacep.com.br/ws/${cepVal}/json/`).then(r=>r.json());if(res.erro)return msg('CEP não encontrado','error','msgCadastro');rua.value=res.logradouro;bairro.value=res.bairro;}
 
-cadastro.onsubmit=async e=>{e.preventDefault();if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');if(!validaCpf(cpf.value))return msg('CPF inválido','error','msgCadastro');loading(btnCadastro,true);const { error } = await supabase.auth.signUp({email: email.value,password: pass.value,options: { data: {full_name:nome.value, cpf:cpf.value, cep:cep.value, rua:rua.value, numero:numero.value, complemento:complemento.value, bairro:bairro.value, whatsapp:whatsapp.value}}});if(error){msg(error.message,'error','msgCadastro')} else{msg('Cadastro realizado!','ok','msgCadastro'); cadastro.reset();}loading(btnCadastro,false);}
-login.onsubmit=async e=>{e.preventDefault();loading(btnLogin,true);const { data, error } = await supabase.auth.signInWithPassword({email: loginEmail.value, password: loginPass.value});if(error){msg('E-mail ou senha inválidos','error','msgLogin')} else{window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html";}loading(btnLogin,false);}
+cadastro.onsubmit=async e=>{
+  e.preventDefault();
+  if(pass.value!==pass2.value)return msg('Senhas diferentes','error','msgCadastro');
+  if(!validaCpf(cpf.value))return msg('CPF inválido','error','msgCadastro');
+  loading(btnCadastro,true);
+  try{
+    const { error } = await supabase.auth.signUp({email: email.value,password: pass.value,options: { data: {full_name:nome.value, cpf:cpf.value, cep:cep.value, rua:rua.value, numero:numero.value, complemento:complemento.value, bairro:bairro.value, whatsapp:whatsapp.value}}});
+    if(error)throw error;
+    msg('Cadastro realizado!','ok','msgCadastro'); cadastro.reset();
+  }catch(err){msg(err.message,'error','msgCadastro')}
+  loading(btnCadastro,false);
+}
+
+login.onsubmit=async e=>{
+  e.preventDefault();loading(btnLogin,true);
+  try{
+    const { data, error } = await supabase.auth.signInWithPassword({email: loginEmail.value, password: loginPass.value});
+    if(error)throw error;
+    window.location.href="https://korvilp-sudo.github.io/korvil-app/app.html";
+  }catch(err){msg('E-mail ou senha inválidos','error','msgLogin')}
+  loading(btnLogin,false);
+}
 </script>
 </body>
 </html>
