@@ -158,8 +158,15 @@ input:focus{
 </div>
 
 <script>
-netlifyIdentity.init();
 
+// CONFIG SUPABASE - TUAS CHAVES
+const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  
+const wordsBg = document.getElementById('wordsBg');
+const animacoes = ['type1','type2','type3','type4','type5'];
+  
 const palavras = [
   'DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE',
   'LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO',
