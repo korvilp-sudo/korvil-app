@@ -1,112 +1,138 @@
-// ===== K-AI CEREBRO v1.0 =====
+// ===== K-AI CEREBRO v1.1 COM VOZ =====
 const KAI = {
 
-  // MEMORIA RAPIDA DO K-AI
+  // CONFIGURAÇÕES DE VOZ DO K-AI
+  configVoz: {
+    modo: "ilimitada", // "ilimitada" ou "limitada"
+    genero: "masculino", // "masculino" ou "feminino"
+    vozSelecionada: null // vai guardar a voz do navegador
+  },
+
   memoria: {
     nomeUsuario: "Paulo",
     ultimaPagina: "central"
   },
 
+  // INICIAR O K-AI E PEGAR AS VOZES DO NAVEGADOR
+  iniciar() {
+    this.carregarVozes();
+    // Quando as vozes carregarem
+    speechSynthesis.onvoiceschanged = () => this.carregarVozes();
+  },
+
+  carregarVozes() {
+    const vozes = speechSynthesis.getVoices();
+    // Procura voz masculina BR por padrão "Corvo robótico"
+    this.configVoz.vozSelecionada = vozes.find(v => 
+      v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')
+    ) || vozes.find(v => v.lang === 'pt-BR' && v.gender === 'male')
+      || vozes.find(v => v.lang === 'pt-BR'); // fallback
+  },
+
+  // FUNÇÃO PRA MUDAR A VOZ
+  mudarVoz(modo, genero) {
+    this.configVoz.modo = modo;
+    this.configVoz.genero = genero;
+    
+    const vozes = speechSynthesis.getVoices();
+    if (genero === "masculino") {
+      this.configVoz.vozSelecionada = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male'))
+        || vozes.find(v => v.lang === 'pt-BR' && v.gender === 'male')
+        || vozes.find(v => v.lang === 'pt-BR');
+    } else {
+      this.configVoz.vozSelecionada = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('female'))
+        || vozes.find(v => v.lang === 'pt-BR' && v.gender === 'female')
+        || vozes.find(v => v.lang === 'pt-BR');
+    }
+    
+    this.adicionarNaTela("kai", `Voz alterada para ${genero} - Modo ${modo}`);
+  },
+
   // FUNÇÃO PRINCIPAL: ENTENDER O COMANDO
   async entender(texto) {
     texto = texto.toLowerCase().trim();
-    this.adicionarNaTela("usuario", texto); // mostra o que você disse
+    this.adicionarNaTela("usuario", texto);
 
     let resposta = "";
 
-    // 1. COMANDOS DE NAVEGAÇÃO
-    if (texto.includes("vai para") || texto.includes("vá para") || texto.includes("abre") || texto.includes("ir para")) {
+    // COMANDO SECRETO PRA TROCAR VOZ
+    if (texto.includes("mudar voz para masculino")) {
+      this.mudarVoz(this.configVoz.modo, "masculino");
+      return;
+    }
+    if (texto.includes("mudar voz para feminino")) {
+      this.mudarVoz(this.configVoz.modo, "feminino");
+      return;
+    }
+    if (texto.includes("modo ilimitado")) {
+      this.mudarVoz("ilimitada", this.configVoz.genero);
+      return;
+    }
+    if (texto.includes("modo limitado")) {
+      this.mudarVoz("limitada", this.configVoz.genero);
+      return;
+    }
+
+    // 1. NAVEGAÇÃO
+    if (texto.includes("vai para") || texto.includes("abre")) {
       resposta = this.navegar(texto);
     }
-    
-    // 2. COMANDOS DE CRIAÇÃO
-    else if (texto.includes("cria") || texto.includes("faça") || texto.includes("gere")) {
+    // 2. CRIAÇÃO
+    else if (texto.includes("cria") || texto.includes("faça")) {
       resposta = await this.criar(texto);
     }
-
-    // 3. COMANDOS DE COPIA/ANALISE
-    else if (texto.includes("copia") || texto.includes("resuma") || texto.includes("analisa")) {
+    // 3. COPIA/ANALISE
+    else if (texto.includes("copia") || texto.includes("resuma")) {
       resposta = this.copiarAnalisar(texto);
     }
-
-    // 4. COMANDOS DE SISTEMA
+    // 4. SISTEMA
     else if (texto.includes("oi") || texto.includes("ola")) {
-      resposta = `Olá ${this.memoria.nomeUsuario}! No que posso ajudar hoje?`;
+      resposta = `Olá ${this.memoria.nomeUsuario}! K-AI na área. Modo ${this.configVoz.modo}.`;
     }
-    else if (texto.includes("quem é você")) {
-      resposta = "Eu sou o K-AI, seu assistente virtual do KORVIL. Posso criar, navegar e analisar coisas pra você.";
-    }
-
-    // 5. SE NÃO ENTENDER
     else {
-      resposta = "Não entendi direito. Você pode pedir pra eu: Criar, Navegar ou Analisar algo.";
+      resposta = "Não entendi. Peça pra eu Criar, Navegar ou Analisar.";
     }
 
     this.adicionarNaTela("kai", resposta);
-    this.falar(resposta); // Fala a resposta
+    this.falar(resposta);
   },
 
-  // ===== AÇÃO 1: NAVEGAR =====
   navegar(comando) {
-    if (comando.includes("k-tp") || comando.includes("transformação")) {
-      window.parent.irParaKTP();
-      return "Abrindo K-TP Projeto Transformação pra você.";
-    }
-    if (comando.includes("k-alma")) {
-      window.parent.abrirTela('kalma');
-      return "Indo para K-ALMA.";
-    }
-    if (comando.includes("central") || comando.includes("inicio")) {
-      window.parent.abrirTela('central');
-      return "Voltando para a Central KORVIL.";
-    }
-    if (comando.includes("sistema k")) {
-      window.parent.abrirTela('sistema');
-      return "Abrindo Sistema K.";
-    }
-    return "Não encontrei essa página. Quer ir para K-TP, K-ALMA ou Central?";
+    if (comando.includes("k-tp")) { window.parent.irParaKTP(); return "Abrindo K-TP."; }
+    if (comando.includes("k-alma")) { window.parent.abrirTela('kalma'); return "Indo para K-ALMA."; }
+    if (comando.includes("central")) { window.parent.abrirTela('central'); return "Voltando para Central."; }
+    return "Não encontrei essa página.";
   },
 
-  // ===== AÇÃO 2: CRIAR =====
   async criar(comando) {
-    if (comando.includes("post") || comando.includes("instagram")) {
-      return "Ok, vou criar um post para o Instagram do KORVIL. \n\n**Legenda sugerida:**\nTransforme sua vida com o KORVIL. \n#korvil #desenvolvimentohumano #ktp";
+    if (comando.includes("post")) {
+      return "Post criado: Transforme sua vida com o KORVIL. #korvil #ktp";
     }
-    if (comando.includes("texto") || comando.includes("site")) {
-      return "Pronto. Aqui está um texto para o site:\n\nO KORVIL é um ecossistema completo de desenvolvimento humano e negócios. Entre e descubra seu potencial.";
-    }
-    if (comando.includes("roteiro")) {
-      return "Roteiro de vídeo pronto:\n1. Abertura 3s\n2. Problema\n3. Solução com KORVIL\n4. Chamada para ação";
-    }
-    return "O que você quer que eu crie? Post, Texto ou Roteiro?";
+    return "O que você quer que eu crie?";
   },
 
-  // ===== AÇÃO 3: COPIAR / ANALISAR =====
   copiarAnalisar(comando) {
     if (comando.includes("copia")) {
       navigator.clipboard.writeText(comando.replace("copia", ""));
-      return "Texto copiado para a área de transferência.";
+      return "Texto copiado.";
     }
-    if (comando.includes("resuma")) {
-      return "Resumo: O KORVIL é uma plataforma focada em desenvolvimento humano, negócios e serviços com a IA K-AI para ajudar.";
-    }
-    if (comando.includes("analisa")) {
-      return "Envie a imagem ou arquivo pra mim com o botão 📎 que eu analiso pra você.";
-    }
-    return "Posso copiar ou resumir algo pra você.";
+    return "Posso copiar ou resumir.";
   },
 
-  // ===== FUNÇÃO DE FALA =====
+  // ===== FUNÇÃO DE FALA ATUALIZADA =====
   falar(texto) {
     if ('speechSynthesis' in window) {
+      speechSynthesis.cancel(); // para fala anterior
       const fala = new SpeechSynthesisUtterance(texto);
       fala.lang = 'pt-BR';
-      fala.rate = 1.1;
+      fala.voice = this.configVoz.vozSelecionada; // USA A VOZ ESCOLHIDA
+      fala.rate = this.configVoz.modo === "ilimitada" ? 1.2 : 0.9; // Ilimitada fala mais rapido
+      fala.pitch = this.configVoz.genero === "masculino" ? 0.8 : 1.2; // Masculino grave
+      fala.volume = 1;
       speechSynthesis.speak(fala);
     }
   },
 
-  // ===== MOSTRAR NA TELA DO CHAT =====
   adicionarNaTela(quem, texto) {
     const chatBox = document.getElementById('chatBox');
     if (!chatBox) return;
@@ -114,7 +140,10 @@ const KAI = {
     msg.classList.add('msg', quem);
     msg.innerHTML = `<b>${quem === 'kai' ? 'K-AI' : 'Você'}:</b> ${texto.replace(/\n/g, '<br>')}`;
     chatBox.appendChild(msg);
-    chatBox.scrollTop = chatBox.scrollHeight; // rola pra baixo
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 
 };
+
+// INICIA O K-AI QUANDO CARREGAR A PAGINA
+window.onload = () => KAI.iniciar();
