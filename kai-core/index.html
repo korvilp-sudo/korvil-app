@@ -9,39 +9,28 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 body{background:#000;overflow:hidden;color:var(--c)}
-
 #canvas3d{position:fixed;inset:0;z-index:0;cursor:pointer}
 .ui{position:fixed;z-index:10;pointer-events:none}
 .logo{top:30px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:900;letter-spacing:6px;text-shadow:0 0 25px var(--c)}
 .logo span{color:var(--c2);font-size:14px;letter-spacing:2px;display:block;text-align:center;margin-top:5px}
-.modo{top:30px;right:20px;font-size:12px;font-weight:700;padding:8px 14px;border:1px solid var(--c);border-radius:20px;background:rgba(0,255,255,.1);pointer-events:auto;cursor:pointer;transition:.3s}
-.modo:hover{box-shadow:0 0 15px var(--c)}
+.modo{top:30px;right:20px;font-size:12px;font-weight:700;padding:8px 14px;border:1px solid var(--c);border-radius:20px;background:rgba(0,255,255,.1);pointer-events:auto;cursor:pointer}
 .modo.admin{border-color:#00ff88; color:#00ff88; box-shadow:0 0 15px #00ff88;}
-.status{bottom:30px;left:50%;transform:translateX(-50%);font-size:14px;text-align:center;background:rgba(0,0,0,.7);padding:10px 20px;border-radius:25px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)}
-
-.menuBtn{top:30px;left:20px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,255,255,.05);transition:.3s}
-.menuBtn:hover{background:rgba(0,255,255,.2)}
-.menu{top:90px;left:20px;width:340px;max-height:75vh;overflow-y:auto;background:rgba(0,10,15,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px);box-shadow:0 0 30px rgba(0,255,255,.2)}
+.status{bottom:30px;left:50%;transform:translateX(-50%);font-size:14px;text-align:center;background:rgba(0,0,0,.7);padding:10px 20px;border-radius:25px;border:2px solid var(--c)}
+.menuBtn{top:30px;left:20px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,255,255,.05)}
+.menu{top:90px;left:20px;width:340px;max-height:75vh;overflow-y:auto;background:rgba(0,10,15,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
 .menu h3{color:var(--c2);margin:15px 0 8px;font-size:13px;border-bottom:1px solid #00333a;padding-bottom:5px}
-.menu button{width:100%;background:rgba(0,255,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:5px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
-.menu button:hover{background:rgba(0,255,255,.15);border-color:var(--c)}
-
+.menu button{width:100%;background:rgba(0,255,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:5px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
 .mic{bottom:80px;left:50%;transform:translateX(-50%);width:90px;height:90px;border:3px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;cursor:pointer;pointer-events:auto;transition:.3s;box-shadow:0 0 40px var(--c);background:rgba(0,255,255,.05)}
 .mic:hover{transform:translateX(-50%) scale(1.1)}
 .mic.listening{animation:pulse 0.8s infinite;background:rgba(0,255,255,.3)}
 @keyframes pulse{0%,100%{box-shadow:0 0 40px var(--c)}50%{box-shadow:0 0 90px var(--c2)}}
-
-.chat{bottom:190px;left:50%;transform:translateX(-50%);width:90%;max-width:650px;background:rgba(0,0,0,.8);border:1px solid var(--c);border-radius:15px;padding:18px;max-height:250px;overflow-y:auto;backdrop-filter:blur(15px);pointer-events:auto;scroll-behavior:smooth}
-.msg{margin:10px 0;font-size:15px;line-height:1.6;animation:fadeIn .3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.chat{bottom:190px;left:50%;transform:translateX(-50%);width:90%;max-width:650px;background:rgba(0,0,0,.8);border:1px solid var(--c);border-radius:15px;padding:18px;max-height:250px;overflow-y:auto;backdrop-filter:blur(15px);pointer-events:auto}
+.msg{margin:10px 0;font-size:15px;line-height:1.6}
 .msg.user{color:var(--c2);text-align:right}
 .msg.kai{color:var(--c)}
-
 .inputArea{display:flex;gap:8px;margin-top:10px}
-.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px;transition:.3s}
-.inputArea input:focus{box-shadow:0 0 15px var(--c)}
-.inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900;transition:.3s}
-.inputArea button:hover{transform:scale(1.1)}
+.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px}
+.inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900}
 </style>
 </head>
 <body>
@@ -52,25 +41,25 @@ body{background:#000;overflow:hidden;color:var(--c)}
 <div class="ui menuBtn" onclick="toggleMenu()">☰</div>
 
 <div class="ui menu" id="menu">
-  <h3>⚡ INTERAÇÕES REAIS</h3>
-  <button onclick="abrirApp()">Abrir APP KORVIL</button>
-  <button onclick="abrirBusca('marketing digital')">Pesquisar Google</button>
-  <button onclick="executar('calcular 15% de 2000')">Calcular na Hora</button>
+  <h3>⚡ INTERAÇÕES</h3>
+  <button onclick="executar('abrir app')">Abrir APP KORVIL</button>
+  <button onclick="executar('buscar marketing digital')">Pesquisar Google</button>
+  <button onclick="executar('calcular 15% de 2000')">Calcular</button>
 
-  <h3>🤖 9 GAVETAS KAI-CORE</h3>
-  <button onclick="executar('cria post para instagram')">Criar Conteúdo</button>
-  <button onclick="executar('copiar texto')">Copiar Texto</button>
-  <button onclick="executar('gerar 5 ideias')">Gerar Ideias</button>
-  <button onclick="executar('leads de hoje')">Ver Leads</button>
+  <h3>🤖 10 GAVETAS</h3>
+  <button onclick="executar('cria post')">Criar Conteúdo</button>
+  <button onclick="executar('ver leads')">Ver Leads</button>
+  <button onclick="executar('copiar texto')">Copiar</button>
+  <button onclick="executar('explica funil')">Explicar</button>
 
   <h3>💾 MEMÓRIA</h3>
-  <button onclick="executar('lembre que tenho reunião 15h')">Salvar Memória</button>
-  <button onclick="executar('o que você lembra')">Buscar Memória</button>
+  <button onclick="executar('lembre reunião 15h')">Salvar Memória</button>
   <button onclick="executar('estatísticas')">Estatísticas</button>
+  <button onclick="executar('limpar memória')">Limpar</button>
 
   <h3>⚙️ SISTEMA</h3>
   <button onclick="executar('status')">Status</button>
-  <button onclick="executar('limpar memória')" style="border-color:red;color:#ff5555">Limpar Memória</button>
+  <button onclick="executar('tocar música')">Música</button>
 </div>
 
 <div class="ui chat" id="chat"></div>
@@ -85,8 +74,9 @@ body{background:#000;overflow:hidden;color:var(--c)}
 </div>
 
 <audio id="bgMusic" loop></audio>
+<script src="kai-core.js"></script>
 <script>
-// ===== 0. CONFIG + MEMÓRIA + KAI-CORE INTEGRADO =====
+// ===== CONFIG + MEMÓRIA =====
 const KAI_CONFIG = {
   MODO: localStorage.getItem('kai_modo') || 'USER',
   SENHA_ADMIN: 'KORVIL2026',
@@ -102,53 +92,20 @@ const KAI_MEMORY = {
   estatisticas(){ return `Conversas: ${this.dados.historico.length} | Memórias: ${this.dados.memorias.length}`; }
 }
 
-// KAI-CORE: 9 GAVETAS
-const KAI_ACTIONS = {
-  navega: (cmd) => { if(cmd.includes('app') || cmd.includes('korvil')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); return 'Abrindo aplicativo KORVIL agora Chefe'; } return null; },
-  busca: (cmd) => { if(cmd.includes('buscar') || cmd.includes('pesquisar')){ const termo = cmd.replace('buscar', '').replace('pesquisar', '').trim(); window.open(`https://www.google.com/search?q=${encodeURIComponent(termo)}`, '_blank'); return `Pesquisando ${termo} para você Chefe`; } return null; },
-  calculo: (cmd) => { if(cmd.includes('calcular') || cmd.includes('%')){ const conta = cmd.replace('calcular', ''); try{ return `O resultado é ${eval(conta.replace('%', '/100*'))}`; }catch{ return "Erro no cálculo Chefe"; } } return null; },
-  cria: (cmd) => { if(cmd.includes('cria') || cmd.includes('post') || cmd.includes('ideia')){ return 'Criando conteúdo KORVIL para você Chefe. Arte + Legenda + Hashtags'; } return null; },
-  copia: (cmd) => { if(cmd.includes('copia')){ navigator.clipboard.writeText('Texto copiado pelo K-AI'); return 'Copiei para área de transferência'; } return null; },
-  sistema: (cmd) => { if(cmd.includes('horas')) return 'Agora são ' + new Date().toLocaleTimeString('pt-BR'); if(cmd.includes('data')) return 'Hoje é ' + new Date().toLocaleDateString('pt-BR'); if(cmd.includes('status')) return KAI_CONFIG.MODO === 'ADMIN'? 'Modo Administrador. Todos sistemas 100%' : 'Modo Visitante. Acesso limitado'; return null; },
-  social: (cmd) => { if(cmd.includes('piada')) return 'Por que o K-AI não dorme? Porque faz backup dos sonhos'; if(cmd.includes('corvo')) return 'O Corvo é o mascote KORVIL. Vigilante e leal igual a mim.'; return null; },
-  vendas: (cmd) => { if(cmd.includes('leads')) return 'Você tem 12 leads novos hoje Chefe. Quer que eu envie no WhatsApp?'; return null; },
-  memoria: (cmd) => { if(cmd.includes('lembre')) return KAI_MEMORY.salvarMemoria(cmd.replace('lembre', '')); if(cmd.includes('o que você lembra')) return KAI_MEMORY.buscar(cmd.replace('o que você lembra', '')); if(cmd.includes('estatísticas')) return KAI_MEMORY.estatisticas(); if(cmd.includes('limpar memória')){ localStorage.removeItem('kai_memoria'); KAI_MEMORY.dados = {historico:[], memorias:[]}; return 'Memória limpa Chefe'; } return null; }
-}
-
-function executarTodasActions(cmd){
-  for(let action in KAI_ACTIONS){
-    const resposta = KAI_ACTIONS[action](cmd);
-    if(resposta) return resposta;
-  }
-  return 'Comando não reconhecido. Tente: abrir app, buscar, calcular';
-}
-
-// Badge Admin
 const modoBadge = document.getElementById('modoUsuario');
 if(KAI_CONFIG.MODO === 'ADMIN'){ modoBadge.innerText = 'MODO: ADMINISTRADOR'; modoBadge.classList.add('admin'); }
 modoBadge.onclick = ()=>{ if(KAI_CONFIG.MODO!== 'ADMIN'){ const senha = prompt('Senha Administrador:'); if(senha === KAI_CONFIG.SENHA_ADMIN){ localStorage.setItem('kai_modo', 'ADMIN'); location.reload(); }else alert('Senha incorreta'); }}
 
-// ===== 1. CENA 3D COM ANÉIS =====
+// ===== CENA 3D =====
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
-const geometry = new THREE.IcosahedronGeometry(1.8, 2);
-const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.6, shininess:120});
-const nucleo = new THREE.Mesh(geometry, material); scene.add(nucleo);
+const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 2), new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.6}));
+scene.add(nucleo); scene.add(new THREE.PointLight(0x00FFFF, 2.5, 50).position.set(5,5,5)); camera.position.z = 6;
+function animate(){ requestAnimationFrame(animate); nucleo.rotation.y += 0.015; renderer.render(scene, camera); } animate();
 
-const ringGeo = new THREE.TorusGeometry(2.5, 0.1, 16, 100);
-const ringMat = new THREE.MeshBasicMaterial({color:0x00FFFF, wireframe:true});
-const ring1 = new THREE.Mesh(ringGeo, ringMat);
-const ring2 = new THREE.Mesh(ringGeo, ringMat); ring2.rotation.x = Math.PI/2;
-scene.add(ring1, ring2);
-
-const light1 = new THREE.PointLight(0x00FFFF, 2.5, 50); light1.position.set(5,5,5); scene.add(light1);
-camera.position.z = 6;
-function animate(){ requestAnimationFrame(animate); nucleo.rotation.x += 0.008; nucleo.rotation.y += 0.015; ring1.rotation.y += 0.02; ring2.rotation.z += 0.015; material.emissiveIntensity = 0.5 + Math.sin(Date.now()*0.003)*0.2; renderer.render(scene, camera); }
-animate();
-
-// ===== 2. VOZ COM BOTÃO CORRIGIDO =====
+// ===== VOZ COM BOTÃO CORRIGIDO =====
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const synth = window.speechSynthesis;
 let recognition, isListening = false, manualStop = false, ultimaFala = 0;
@@ -162,19 +119,19 @@ if(SpeechRecognition){
   recognition.lang = 'pt-BR';
   recognition.continuous = false;
 
-  recognition.onstart = ()=>{ isListening = true; manualStop = false; micBtn.classList.add('listening'); status.innerText = '🔵 Ouvindo...'; pulsarNucleo(); }
+  recognition.onstart = ()=>{ isListening = true; manualStop = false; micBtn.classList.add('listening'); status.innerText = '🔵 Ouvindo...'; }
   recognition.onend = ()=>{ isListening = false; micBtn.classList.remove('listening'); status.innerText = 'Toque no mic'; }
-  recognition.onresult = (e)=>{ 
+  recognition.onresult = (e)=>{
     const cmd = e.results[0][0].transcript.toLowerCase();
     const agora = Date.now();
     if(agora - ultimaFala < 2000) return;
     ultimaFala = agora;
-    
+
     if(cmd.includes(KAI_CONFIG.palavraAtivacao)){
       const comandoLimpo = cmd.replace(KAI_CONFIG.palavraAtivacao, '').trim();
       addMsg('user', comandoLimpo);
       processarComando(comandoLimpo);
-    } else { falar(`Diga "${KAI_CONFIG.palavraAtivacao}" antes`); }
+    } else { falar(`Diga "${KAI_CONFIG.palavraAtivacao}" antes do comando`); }
   }
 }
 
@@ -194,28 +151,25 @@ function falar(texto){
   speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(texto);
   utter.lang = 'pt-BR'; utter.rate = 0.95; utter.pitch = 0.6;
-  utter.onstart = pulsarNucleo;
+  utter.onstart = ()=>{ nucleo.material.emissiveIntensity = 1.5; setTimeout(()=>{ nucleo.material.emissiveIntensity = 0.6 }, 300); }
   synth.speak(utter);
 }
 
-function pulsarNucleo(){ material.emissiveIntensity = 1.5; setTimeout(()=>{ material.emissiveIntensity = 0.6 }, 300); }
-
-// ===== 3. CÉREBRO =====
+// ===== CÉREBRO TEMPO REAL =====
 function processarComando(cmd){
-  const resposta = executarTodasActions(cmd);
+  const resposta = executarTodasActions(cmd); // CHAMA O KAI-CORE
   falar(resposta);
 }
 
 function toggleMenu(){ const menu = document.getElementById('menu'); menu.style.display = menu.style.display==='block'?'none':'block'; }
 function executar(cmd){ toggleMenu(); addMsg('user', cmd); processarComando(cmd); }
 function enviarTexto(){ const input = document.getElementById('userInput'); if(!input.value.trim()) return; addMsg('user', input.value); processarComando(input.value); input.value = ""; }
-function abrirApp(){ executar('abrir app'); }
-function abrirBusca(termo){ executar('buscar ' + termo); }
+function tocarMusica(){ bgMusic.src = 'https://cdn.pixabay.com/download/audio/2023/01/03/audio_2b12e3e1c8.mp3'; bgMusic.volume = 0.25; bgMusic.play(); }
+function pararMusica(){ bgMusic.pause(); }
 
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
 
 setTimeout(()=>{ falar(`K-AI v2.5 online. Bem-vindo ${KAI_CONFIG.NOME_USER}`); }, 1500);
-window.addEventListener('resize', ()=>{ camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 </script>
 </body>
 </html>
