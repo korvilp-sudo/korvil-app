@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-AI | SELEÇÃO DE ACESSO</title>
+<link rel="stylesheet" href="kai-style.css">
+</head>
+<body style="background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh">
+<canvas id="canvas3d" style="opacity:0.3"></canvas>
+
+<div class="selector">
+  <div class="logo">K-AI<span>KORVIL ARTIFICIAL INTELLIGENCE</span></div>
+  <p class="sub">Escolha o modo de acesso</p>
+  
+  <div class="card-opcao" onclick="entrar('ADMIN')">
+    <h2>🔮 K-AI ORIGINAL</h2>
+    <p>Acesso Ilimitado • Administrador KORVIL<br>Criação, edição e controle total do sistema</p>
+    <span>APENAS KORVIL</span>
+  </div>
+
+  <div class="card-opcao" onclick="entrar('USER')">
+    <h2>🤖 K-AI ASSISTENTE</h2>
+    <p>Acesso Limitado • Usuários<br>Navegação no App KORVIL e comandos básicos</p>
+    <span>PÚBLICO</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="kai-ui.js"></script>
+<script>
+function entrar(modo){
+  localStorage.setItem('kai_modo', modo);
+  if(modo === 'ADMIN'){
+    window.location.href = 'kai-admin.html';
+  } else {
+    window.location.href = 'kai-user.html';
+  }
+}
+
+// Auto login: Se já for ADMIN, pula a tela
+if(localStorage.getItem('kai_modo') === 'ADMIN'){
+  window.location.href = 'kai-admin.html';
+}
+</script>
+</body>
+</html>
