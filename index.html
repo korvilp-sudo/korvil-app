@@ -9,12 +9,12 @@
 body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
 canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset:0;z-index:1;pointer-events:none}
 
-.word{position:absolute;color:rgba(0,255,255,.22);font-size:13px;font-weight:900;letter-spacing:1px;white-space:nowrap;text-shadow:0 0 15px rgba(0,255,255,.5);animation-fill-mode:forwards; pointer-events:none; opacity:0;}
-.fadeIn{animation:fadeIn 1.2s forwards}@keyframes fadeIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
-.fadeOut{animation:fadeOut 1.2s forwards}@keyframes fadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.8)}}
-.pulse{animation:pulseWord 6s infinite}@keyframes pulseWord{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
-.slideL{animation:slideLeft 6s infinite}@keyframes slideLeft{0%{transform:translateX(0)}50%{transform:translateX(-10px)}100%{transform:translateX(0)}}
-.slideR{animation:slideRight 6s infinite}@keyframes slideRight{0%{transform:translateX(0)}50%{transform:translateX(10px)}100%{transform:translateX(0)}}
+.word{position:absolute;color:rgba(0,255,255,.25);font-size:14px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;text-shadow:0 0 20px rgba(0,255,255,.6);animation-fill-mode:forwards; pointer-events:none; opacity:0;}
+.fadeIn{animation:fadeIn 1.5s forwards}@keyframes fadeIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.fadeOut{animation:fadeOut 1.5s forwards}@keyframes fadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.7)}}
+.pulse{animation:pulseWord 5s infinite}@keyframes pulseWord{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.slideL{animation:slideLeft 5s infinite}@keyframes slideLeft{0%,100%{transform:translateX(0)}50%{transform:translateX(-15px)}}
+.slideR{animation:slideRight 5s infinite}@keyframes slideRight{0%,100%{transform:translateX(0)}50%{transform:translateX(15px)}}
 
 .card{background:rgba(0,0,0,.78);backdrop-filter:blur(30px);border:1px solid rgba(0,255,255,.2);border-radius:24px;padding:35px;width:90%;max-width:480px;position:relative;z-index:10;animation:fadeInUp.8s;box-shadow:0 0 60px rgba(0,255,255,.3); max-height:92vh; overflow-y:auto}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
@@ -101,135 +101,119 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
   </form>
 </div>
 <script>
-const { createClient } = supabase;
-const db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
-const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
-const TABELA = 'Cadastro de usuários do KORVIL';
+// 1. INICIA TUDO PRIMEIRO, SUPABASE DEPOIS
+let db;
 
-document.addEventListener('DOMContentLoaded', ()=>{
+// PALAVRAS RODA IMEDIATO
+window.onload = function() {
+  iniciarAnimacoes();
+  iniciarParticulas();
+}
 
-  // 1. OLHINHO
-  document.querySelectorAll('.toggle-pass').forEach(eye => {
-    eye.addEventListener('click', function(){
-      const targetId = this.getAttribute('data-target');
-      const input = document.getElementById(targetId);
-      const openEye = this.querySelector('.eye-open');
-      const closedEye = this.querySelector('.eye-closed');
-      if(input.type === 'password'){
-        input.type = 'text'; openEye.style.display = 'none'; closedEye.style.display = 'block'; this.classList.add('active');
-      } else {
-        input.type = 'password'; openEye.style.display = 'block'; closedEye.style.display = 'none'; this.classList.remove('active');
-      }
-    });
-  });
-
-  // 2. PALAVRAS + VERSÍCULOS VOLTARAM
+function iniciarAnimacoes(){
   const frasesKorvil = ['DESENVOLVIMENTO HUMANO','NEGOCIOS','SERVICOS','CURSOS','ECOMMERCE','LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO','K-AFORTUNADO','EMPREENDEDORISMO','FINANCAS','K-ALMA','SAUDE','BELEZA','MARKETING DIGITAL','EDUCACAO','JESUS','CONSULTORIA','INOVACAO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','DE TUDO UM POUCO','NETWORKING','MENTORIA','GESTAO','SUPORTE','COMUNIDADE K','EVENTOS','VIDA','AMOR','CONHECIMENTO','PARCERIAS','CONTEUDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRAFEGO PAGO','ALEGRIA','DIVERSAO','COPYWRITING','FUNIL DE VENDAS','LIDERANCA','PRODUTIVIDADE','CONQUISTAS','SEJA INVENCIVEL','METAS','PERFORMANCE','ATENDIMENTO','DEUS','PALESTRAS','WORKSHOPS','FE','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','AREA DO ALUNO','FORMACOES','CERTIFICADOS','EXCELENCIA','DISCIPLINA','FOCO','TRANSFORMACAO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDANCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO','VIVA SEUS SONHOS','ACREDITE EM VOCE','EVOLUA TODO DIA','MINDSET VENCEDOR','PROSPERE'];
   const versiculos = ['TUDO POSSO NAQUELE QUE ME FORTALECE - FP 4:13','O SENHOR E MEU PASTOR E NADA ME FALTARA - SL 23:1','LANCANDO SOBRE ELE TODA A VOSSA ANSIEDADE - 1PE 5:7','PORQUE EU BEM SEI OS PLANOS QUE TENHO PARA VOS - JR 29:11','NAO TEMAS, PORQUE EU SOU CONTIGO - IS 41:10','O GOZO DO SENHOR E A VOSSA FORCA - NE 8:10','ENTREGA O TEU CAMINHO AO SENHOR - SL 37:5','DEUS E O NOSSO REFUGIO E FORTALEZA - SL 46:1','SEJA FORTE E CORAJOSO - JS 1:9','A FE E O FIRME FUNDAMENTO - HB 11:1','EU SOU O CAMINHO, A VERDADE E A VIDA - JO 14:6','AMAI-VOS UNS AOS OUTROS - JO 13:34','BUSCAI PRIMEIRO O REINO DEUS - MT 6:33','A PAZ DEUS GUARDARA O VOSSO CORACAO - FP 4:7','RENOVA-SE A CADA MANHA - LM 3:23','OS QUE ESPERAM NO SENHOR RENOVARAO AS FORCAS - IS 40:31','O SENHOR PELEJARA POR VOS - EX 14:14','NAO ANDES ANSIOSO POR COISA ALGUMA - FP 4:6','EM TUDO DAI GRACAS - 1TS 5:18','DEUS SUPRIRA TODAS AS VOSSAS NECESSIDADES - FP 4:19','A VERDADE VOS LIBERTARA - JO 8:32','EU VIM PARA QUE TENHAM VIDA E A TENHAM EM ABUNDANCIA - JO 10:10','O SENHOR E A MINHA LUZ E A MINHA SALVACAO - SL 27:1','LANCA O TEU PAO SOBRE AS AGUAS - EC 11:1','ONDE ESTA O ESPIRITO DO SENHOR, AI HA LIBERDADE - 2CO 3:17','FAZEI TUDO PARA A GLORIA DEUS - 1CO 10:31','A ORACAO DE UM JUSTO PODE MUITO - TG 5:16','CONFIA NO SENHOR DE TODO O TEU CORACAO - PV 3:5','EU SOU A VIDEIRA, VOS OS RAMOS - JO 15:5','O AMOR NUNCA FALHA - 1CO 13:8'];
   const palavras = [...frasesKorvil,...versiculos];
   const wordsBg = document.getElementById('wordsBg');
   const animacoes = ['pulse','slideL','slideR'];
-
   let palavrasAtivas = [];
-  const MAX_PALAVRAS = 60;
 
   function criarPalavra(){
-    if(palavrasAtivas.length >= MAX_PALAVRAS) return;
+    if(palavrasAtivas.length >= 60) return;
     const el = document.createElement('div');
-    const palavra = palavras[Math.floor(Math.random()*palavras.length)];
-    const anim = animacoes[Math.floor(Math.random()*animacoes.length)];
-    el.className = 'word fadeIn ' + anim;
-    el.innerText = palavra;
+    el.className = 'word fadeIn ' + animacoes[Math.floor(Math.random()*3)];
+    el.innerText = palavras[Math.floor(Math.random()*palavras.length)];
     el.style.left = Math.random()*85 + 5 + '%';
     el.style.top = Math.random()*85 + 5 + '%';
     wordsBg.appendChild(el);
     palavrasAtivas.push(el);
-    const vida = 9000 + Math.random()*6000;
-    setTimeout(()=>{
-      el.classList.remove('fadeIn'); el.classList.add('fadeOut');
-      setTimeout(()=>{if(el.parentNode) el.remove(); palavrasAtivas = palavrasAtivas.filter(p=>p!==el)}, 1500);
-    }, vida);
+    setTimeout(()=>{ el.classList.add('fadeOut'); setTimeout(()=>{el.remove()},1500) }, 8000 + Math.random()*4000);
   }
-  function loopPalavras(){
-    if(palavrasAtivas.length < 40){ for(let i=0; i<4; i++) criarPalavra(); }
-    if(palavrasAtivas.length > 55){
-      const aleatoria = palavrasAtivas[Math.floor(Math.random()*palavrasAtivas.length)];
-      aleatoria.classList.remove('fadeIn'); aleatoria.classList.add('fadeOut');
-      setTimeout(()=>{if(aleatoria.parentNode) aleatoria.remove(); palavrasAtivas = palavrasAtivas.filter(p=>p!==aleatoria)}, 1500);
-    }
-  }
-  for(let i=0; i<50; i++) setTimeout(criarPalavra, i*60);
-  setInterval(loopPalavras, 500);
+  for(let i=0; i<50; i++) setTimeout(criarPalavra, i*70);
+  setInterval(()=>{ if(palavrasAtivas.length < 40) for(let i=0; i<3; i++) criarPalavra(); }, 600);
+}
 
-  // 3. PARTICULAS
+function iniciarParticulas(){
   const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;let pts=[];for(let i=0;i<30;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2});function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}draw();
+}
 
-  // 4. MASCARAS
-  const mascaraCPF = (v)=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-  const mascaraCEP = (v)=>v.replace(/\D/g,"").replace(/^(\d{5})(\d)/,"$1-$2");
-  const mascaraTel = (v)=>v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2");
-  document.getElementById('cpf').oninput = e => e.target.value = mascaraCPF(e.target.value);
-  document.getElementById('cep').oninput = e => e.target.value = mascaraCEP(e.target.value);
-  document.getElementById('whatsapp').oninput = e => e.target.value = mascaraTel(e.target.value);
+// 2. SÓ DEPOIS INICIA SUPABASE
+document.addEventListener('DOMContentLoaded', ()=>{
+  try{
+    const { createClient } = supabase;
+    db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
+  }catch(e){ console.log("Supabase erro:", e) }
 
-  // 5. IDADE
-  document.getElementById('data_nasc').addEventListener('change', ()=>{const data = document.getElementById('data_nasc').value;if(!data) return;const hoje = new Date();const nasc = new Date(data + 'T00:00:00');let idade = hoje.getFullYear() - nasc.getFullYear();const m = hoje.getMonth() - nasc.getMonth();if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;document.getElementById('idadeDisplay').innerText = idade >= 0? `Idade: ${idade} anos` : '';});
+  const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
+  const TABELA = 'Cadastro de usuários do KORVIL';
 
-  // 6. TABS
-  function showTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));document.getElementById(tab==='login'?'tabLogin':'tabCadastro').classList.add('active');document.getElementById(tab).classList.add('active'); msg('', '','msgLogin'); msg('', '','msgCadastro');}
-  function msg(t,cls,id){document.getElementById(id).innerHTML=t?`<p class="${cls}">${t}</p>`:''}
-  function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
-  document.getElementById('tabLogin').onclick = () => showTab('login');
-  document.getElementById('tabCadastro').onclick = () => showTab('cadastro');
-
-  // 7. CEP CORRIGIDO
-  async function buscarCep(){
-    const cep = document.getElementById('cep').value.replace(/\D/g,'');
-    if(cep.length!== 8) return msg('Digite um CEP válido','error','msgCadastro');
-    msg('Buscando CEP...','ok','msgCadastro');
-    try{
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await res.json();
-      if(!data.erro){
-        document.getElementById('rua').value = data.logradouro;
-        document.getElementById('bairro').value = data.bairro;
-        document.getElementById('numero').focus();
-        msg('CEP encontrado!','ok','msgCadastro');
-      } else { msg('CEP não encontrado','error','msgCadastro'); }
-    }catch{ msg('Erro ao buscar CEP','error','msgCadastro'); }
-  }
-  document.getElementById('btnBuscarCep').onclick = buscarCep;
-
-  // 8. CADASTRO
-  document.getElementById('cadastro').addEventListener('submit', async e=>{
-    e.preventDefault(); const btn = document.getElementById('btnCadastro');
-    if(document.getElementById('pass').value!==document.getElementById('pass2').value)return msg('Senhas diferentes','error','msgCadastro');
-    loading(btn,true);
-    const email = document.getElementById('email').value; const password = document.getElementById('pass').value;
-    const { data, error } = await db.auth.signUp({email: email, password: password});
-    if(error){msg(error.message,'error','msgCadastro'); loading(btn,false); return;}
-    const { error: insertError } = await db.from(TABELA).insert({
-      id: data.user.id, email: email, nome_completo: document.getElementById('nome').value,
-      cpf: document.getElementById('cpf').value.replace(/\D/g,''), data_nascimento: document.getElementById('data_nasc').value,
-      whatsapp: document.getElementById('whatsapp').value.replace(/\D/g,''), cep: document.getElementById('cep').value.replace(/\D/g,''),
-      rua: document.getElementById('rua').value, numero: document.getElementById('numero').value, bairro: document.getElementById('bairro').value,
-      criado_em: new Date().toISOString()
+  // OLHINHO
+  document.querySelectorAll('.toggle-pass').forEach(eye => {
+    eye.addEventListener('click', function(){
+      const input = document.getElementById(this.dataset.target);
+      const open = this.querySelector('.eye-open'), closed = this.querySelector('.eye-closed');
+      if(input.type === 'password'){ input.type='text'; open.style.display='none'; closed.style.display='block'; this.classList.add('active'); }
+      else{ input.type='password'; open.style.display='block'; closed.style.display='none'; this.classList.remove('active'); }
     });
-    if(insertError){ msg('Erro ao salvar: '+insertError.message,'error','msgCadastro') }
-    else { msg('Cadastro ok! Entrando...','ok','msgCadastro'); setTimeout(()=>{ window.location.href = REDIRECT; }, 1000); }
-    loading(btn,false);
   });
 
-  // 9. LOGIN
-  document.getElementById('login').addEventListener('submit', async e=>{
-    e.preventDefault(); const btn = document.getElementById('btnLogin'); loading(btn,true);
-    const { data, error } = await db.auth.signInWithPassword({email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value});
-    if(error){msg('E-mail ou senha inválidos','error','msgLogin')}
-    else{msg('Login ok! Redirecionando...','ok','msgLogin');setTimeout(()=>{ window.location.href = REDIRECT; }, 800);}
-    loading(btn,false);
-  });
+  // MASCARAS
+  const mCPF = v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+  const mCEP = v=>v.replace(/\D/g,"").replace(/^(\d{5})(\d)/,"$1-$2");
+  const mTel = v=>v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2");
+  document.getElementById('cpf').oninput = e => e.target.value = mCPF(e.target.value);
+  document.getElementById('cep').oninput = e => e.target.value = mCEP(e.target.value);
+  document.getElementById('whatsapp').oninput = e => e.target.value = mTel(e.target.value);
 
-}); // FIM DOMContentLoaded
+  // IDADE
+  document.getElementById('data_nasc').onchange = ()=>{const d=new Date(document.getElementById('data_nasc').value); let i=new Date().getFullYear()-d.getFullYear(); document.getElementById('idadeDisplay').innerText = i>=0?`Idade: ${i} anos`:''};
+
+  // TABS
+  const showTab = tab=>{document.querySelectorAll('.tab,.form').forEach(x=>x.classList.remove('active'));document.getElementById(tab==='login'?'tabLogin':'tabCadastro').classList.add('active');document.getElementById(tab).classList.add('active');}
+  document.getElementById('tabLogin').onclick = ()=>showTab('login');
+  document.getElementById('tabCadastro').onclick = ()=>showTab('cadastro');
+  const msg = (t,c,i)=>document.getElementById(i).innerHTML=t?`<p class="${c}">${t}</p>`:'';
+  const loading = (b,on)=>{b.disabled=on;b.innerHTML=on?'<span class="loader"></span>PROCESSANDO':b.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'};
+
+  // CEP
+  document.getElementById('btnBuscarCep').onclick = async ()=>{
+    const cep = document.getElementById('cep').value.replace(/\D/g,'');
+    if(cep.length!=8) return msg('Digite 8 números','error','msgCadastro');
+    msg('Buscando...','ok','msgCadastro');
+    try{ const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`); const d=await r.json();
+      if(!d.erro){ document.getElementById('rua').value=d.logradouro; document.getElementById('bairro').value=d.bairro; msg('CEP OK','ok','msgCadastro'); }
+      else msg('CEP inválido','error','msgCadastro');
+    }catch{ msg('Erro na busca','error','msgCadastro'); }
+  }
+
+  // CADASTRO
+  document.getElementById('cadastro').onsubmit = async e=>{
+    e.preventDefault(); const btn=document.getElementById('btnCadastro');
+    if(document.getElementById('pass').value!=document.getElementById('pass2').value) return msg('Senhas diferentes','error','msgCadastro');
+    loading(btn,true);
+    const { data, error } = await db.auth.signUp({email:document.getElementById('email').value,password:document.getElementById('pass').value});
+    if(error){ msg(error.message,'error','msgCadastro'); }
+    else{
+      await db.from(TABELA).insert({
+        id:data.user.id,email:document.getElementById('email').value,nome_completo:document.getElementById('nome').value,
+        cpf:document.getElementById('cpf').value.replace(/\D/g,''),data_nascimento:document.getElementById('data_nasc').value,
+        whatsapp:document.getElementById('whatsapp').value.replace(/\D/g,''),cep:document.getElementById('cep').value.replace(/\D/g,''),
+        rua:document.getElementById('rua').value,numero:document.getElementById('numero').value,bairro:document.getElementById('bairro').value
+      });
+      msg('Cadastro OK!','ok','msgCadastro'); setTimeout(()=>window.location.href=REDIRECT,1000);
+    }
+    loading(btn,false);
+  }
+
+  // LOGIN
+  document.getElementById('login').onsubmit = async e=>{
+    e.preventDefault(); const btn=document.getElementById('btnLogin'); loading(btn,true);
+    const { error } = await db.auth.signInWithPassword({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPass').value});
+    if(error){ msg('Login inválido','error','msgLogin'); }
+    else{ msg('Login OK!','ok','msgLogin'); setTimeout(()=>window.location.href=REDIRECT,800); }
+    loading(btn,false);
+  }
+});
 </script>
 </body>
 </html>
