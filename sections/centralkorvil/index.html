@@ -84,6 +84,10 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 .kai-menu-btn{display:block;width:100%;padding:14px;background:transparent;border:0;border-bottom:1px solid #222;color:var(--text);text-align:left;font-size:14px;font-weight:600;cursor:pointer;}
 .kai-menu-btn:active{background:#111;color:var(--c);}
 .kai-menu-btn:last-child{border:0;}
+
+/* BOTAO FECHAR K-AI */
+.kai-fechar{position:fixed;top:20px;right:20px;width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:50%;font-size:24px;font-weight:900;cursor:pointer;z-index:10000;display:none;box-shadow:0 0 20px var(--c)}
+.kai-fechar.ativo{display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -144,7 +148,7 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 </div>
 
 <footer class="kai-footer" id="kaiFooter">
-  <div class="message-box" id="cubeMessage">Clique no cubo K-AI</div>
+  <div class="message-box" id="cubeMessage">Segure 5s para abrir K-AI</div>
   <div class="scene" id="cubeScene">
     <div class="cube" id="cubeKAI">
       <div class="cube-face front">K-AI</div><div class="cube-face back">K-AI</div>
@@ -161,7 +165,8 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 </footer>
 
 <!-- IFRAME DO K-AI -->
-<iframe id="kaiFrame" src="kai-core/index.html" style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:9999; background:#000"></iframe>
+<iframe id="kaiFrame" src="https://korvilp-sudo.github.io/korvil-app/kai-core/index.html" style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:9999; background:#000"></iframe>
+<button class="kai-fechar" id="btnFecharKAI" onclick="fecharKAI()">X</button>
 
 <script>
 const WHATS_NUMBER = '5513997690898';
@@ -192,9 +197,13 @@ function enviarWhats(){ const nome=document.getElementById('nome').value; const 
 // ===== FUNÇÕES K-AI IFRAME =====
 function abrirKAI(){
   document.getElementById('kaiFrame').style.display = 'block';
+  document.getElementById('btnFecharKAI').classList.add('ativo');
+  document.getElementById('kaiFooter').style.display = 'none';
 }
 function fecharKAI(){
   document.getElementById('kaiFrame').style.display = 'none';
+  document.getElementById('btnFecharKAI').classList.remove('ativo');
+  document.getElementById('kaiFooter').style.display = 'flex';
 }
 
 // ===== LOGICA DO CUBO SEGREDO =====
@@ -226,7 +235,7 @@ function cancelarSegurar(){
   clearInterval(holdTimer);
   isHolding = false;
   cube.classList.remove('segurando');
-  if(!contagemAtiva) cubeMsg.innerText = 'Clique no cubo K-AI';
+  if(!contagemAtiva) cubeMsg.innerText = 'Segure 5s para abrir K-AI';
 }
 
 function iniciarContagem(){
@@ -242,7 +251,10 @@ function iniciarContagem(){
     } else {
       clearInterval(contTimer);
       cubeMsg.innerText = 'Abrindo K-AI...';
-      setTimeout(()=>{ abrirKAI(); }, 800); // AGORA ABRE IFRAME AO INVES DE MUDAR PAGINA
+      setTimeout(()=>{ 
+        abrirKAI(); 
+        contagemAtiva = false;
+      }, 800);
     }
   }, 1000);
 }
