@@ -1,118 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>K-AI | KORVIL</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#0a0f14;--chat:#111b21;--balao:#1f2c33}
+:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#202c33;--chat:#111b21;--balao:#1f2c33}
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);overflow:hidden;height:100vh;width:100vw;color:#e9edef}
+body{background:var(--bg);overflow:hidden;height:100vh;width:100vw;color:#e9edef;touch-action:none}
 
-#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.15;pointer-events:none} /* FUNDO 3D SUTIL */
+#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.08;pointer-events:none}
 
-/* TOPO IGUAL WHATSAPP */
-.topbar{position:fixed;top:0;left:0;width:100%;height:60px;background:#202c33;z-index:10;display:flex;align-items:center;padding:0 12px;gap:12px}
-.topbar img{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));padding:2px}
-.topbar .info{flex:1}
-.topbar .nome{font-weight:600;font-size:16px;color:#e9edef}
-.topbar .status-top{font-size:12px;color:#8696a0}
-.topbar .icons{font-size:22px;color:#aebac1;cursor:pointer}
+/* BARRA DE STATUS ANDROID */
+.statusBar{position:fixed;top:0;left:0;width:100%;height:24px;background:#000;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:12px;font-weight:500}
+.statusBar.right{display:flex;gap:4px}
+
+/* QUICK PANEL - ARRASTA PRA BAIXO */
+.quickPanel{position:fixed;top:-350px;left:0;width:100%;height:350px;background:#1a1f24;z-index:25;transition:.3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 20px rgba(0,0,0,.5);border-bottom:1px solid #2a3942}
+.quickPanel.open{top:24px}
+.quickPanel.puxador{width:40px;height:4px;background:#555;border-radius:2px;margin:8px auto}
+.quickPanel.atalhos{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:15px}
+.atalho{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#e9edef;cursor:pointer}
+.atalho.icon{width:50px;height:50px;background:#2a3942;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.atalho.icon.on{background:var(--c);color:#000}
+.notificacoes{padding:10px 15px;border-top:1px solid #2a3942;max-height:150px;overflow-y:auto}
+.noti{padding:10px;background:#2a3942;border-radius:10px;margin-bottom:8px;font-size:13px}
+
+/* TOPO WHATSAPP */
+.topbar{position:fixed;top:24px;left:0;width:100%;height:56px;background:var(--top);z-index:10;display:flex;align-items:center;padding:0 12px;gap:12px}
+.topbar.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));display:flex;align-items:center;justify-content:center;font-weight:900;color:#000}
+.topbar.info{flex:1}
+.topbar.nome{font-weight:600;font-size:16px}
+.topbar.status-top{font-size:12px;color:#8696a0}
 
 /* CHAT */
-.chat{position:absolute;top:60px;bottom:70px;left:0;width:100%;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px;z-index:5}
-.msg{max-width:75%;padding:8px 12px;border-radius:8px;font-size:15px;line-height:1.4;position:relative;animation:fadeIn .2s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1}}
-.msg.user{align-self:flex-end;background:#005c4b;color:#e9edef;border-radius:8px 0 8px 8px}
-.msg.kai{align-self:flex-start;background:var(--balao);color:#e9edef;border-radius:0 8px 8px 8px}
-.msg .hora{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
+.chat{position:absolute;top:80px;bottom:70px;left:0;width:100%;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.msg{max-width:75%;padding:8px 12px;border-radius:8px;font-size:15px;line-height:1.4}
+.msg.user{align-self:flex-end;background:#005c4b;border-radius:8px 0 8px 8px}
+.msg.kai{align-self:flex-start;background:var(--balao);border-radius:0 8px 8px 8px}
+.msg.hora{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
 
-/* BARRA DE INPUT IGUAL WHATSAPP */
-.inputBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:#202c33;z-index:10;display:flex;align-items:center;padding:0 8px;gap:8px}
-.inputBar .icon{font-size:24px;color:#aebac1;cursor:pointer;padding:8px}
+/* INPUT */
+.inputBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:var(--top);z-index:10;display:flex;align-items:center;padding:0 8px;gap:8px}
 .inputBar input{flex:1;background:#2a3942;border:none;color:#e9edef;padding:12px 16px;border-radius:25px;outline:none;font-size:15px}
-.inputBar .micBtn{width:50px;height:50px;background:#00a884;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#111b21;cursor:pointer;transition:.2s}
-.inputBar .micBtn.listening{background:#ff3b30;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-
-/* MENU LATERAL */
-.menu{position:fixed;top:60px;left:-320px;width:300px;height:calc(100% - 60px);background:#111b21;border-right:1px solid #2a3942;transition:.3s;z-index:20;padding:15px}
-.menu.open{left:0}
-.menu h3{color:var(--c2);font-size:12px;margin:15px 0 8px}
-.menu button{width:100%;background:#2a3942;border:none;color:#e9edef;padding:12px;margin:4px 0;border-radius:8px;text-align:left;cursor:pointer;font-size:14px}
+.inputBar.micBtn{width:50px;height:50px;background:#00a884;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#111b21;cursor:pointer}
 </style>
 </head>
 <body>
 <canvas id="canvas3d"></canvas>
 
+<!-- BARRA STATUS -->
+<div class="statusBar" id="statusBar">
+  <div>16:10</div>
+  <div class="right">4G 🔋 88%</div>
+</div>
+
+<!-- QUICK PANEL -->
+<div class="quickPanel" id="quickPanel">
+  <div class="puxador"></div>
+  <div class="atalhos">
+    <div class="atalho" onclick="toggleAtalho(this,'wifi')"><div class="icon">📶</div>Wi-Fi</div>
+    <div class="atalho" onclick="toggleAtalho(this,'voz')"><div class="icon">🎤</div>Voz</div>
+    <div class="atalho" onclick="toggleAtalho(this,'musica')"><div class="icon">🎵</div>Música</div>
+    <div class="atalho" onclick="executar('limpar memória')"><div class="icon">🧠</div>Memória</div>
+  </div>
+  <div class="notificacoes">
+    <div class="noti">🔵 K-AI: Olá Chefe. Sistema online</div>
+    <div class="noti">📊 Atualização: 3 novas memórias salvas</div>
+  </div>
+</div>
+
 <!-- TOPO -->
 <div class="topbar">
-  <div class="icons" onclick="toggleMenu()">☰</div>
-  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2300FFFF'/%3E%3C/svg%3E">
+  <div class="avatar">K</div>
   <div class="info">
     <div class="nome">K-AI</div>
     <div class="status-top" id="statusTop">online</div>
   </div>
-  <div class="icons">⋮</div>
-</div>
-
-<!-- MENU -->
-<div class="menu" id="menu">
-  <h3>⚡ AÇÕES RÁPIDAS</h3>
-  <button onclick="executar('abrir app')">Abrir APP KORVIL</button>
-  <button onclick="executar('buscar marketing')">Pesquisar Google</button>
-  <button onclick="executar('cria post')">Criar Conteúdo</button>
-  <h3>💾 MEMÓRIA</h3>
-  <button onclick="executar('estatísticas')">Estatísticas</button>
-  <button onclick="executar('limpar memória')">Limpar Memória</button>
 </div>
 
 <!-- CHAT -->
 <div class="chat" id="chat"></div>
 
-<!-- BARRA INPUT -->
+<!-- INPUT -->
 <div class="inputBar">
-  <div class="icon">😊</div>
   <input type="text" id="userInput" placeholder="Mensagem">
-  <div class="icon">📎</div>
-  <div class="icon">📷</div>
   <div class="micBtn" id="micBtn">🎤</div>
 </div>
 
-<audio id="bgMusic" loop></audio>
-<script src="kai-core.js"></script>
 <script>
-const KAI_CONFIG = {MODO: 'USER', NOME_USER: 'Chefe', palavraAtivacao: 'k-ai'}
-const KAI_MEMORY = {dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]}, salvar(){localStorage.setItem('kai_memoria', JSON.stringify(this.dados));}, salvarMemoria(t){this.dados.memorias.push({t});this.salvar();return `Salvei: ${t}`;}, buscar(t){const r=this.dados.memorias.filter(m=>m.t.includes(t));return r.length?`Lembro: ${r[0].t}`:"Não lembro";}, estatisticas(){return `Conversas: ${this.dados.historico.length}`;}}
+// ===== KAI-CORE =====
+const KAI_CONFIG = {MODO: 'USER', NOME_USER: 'Chefe'}
+const KAI_MEMORY = {dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]}, salvar(){localStorage.setItem('kai_memoria', JSON.stringify(this.dados));}, salvarMemoria(t){this.dados.memorias.push({t});this.salvar();addNoti(`🧠 Nova memória: ${t}`);return `Salvei: ${t}`;}, estatisticas(){return `Conversas: ${this.dados.historico.length} | Memórias: ${this.dados.memorias.length}`;}}
 
-// 3D FUNDO SUTIL
+const KAI_ACTIONS = {
+  navega: (cmd) => { if(cmd.includes('app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); return 'Abrindo aplicativo KORVIL'; } return null; },
+  busca: (cmd) => { if(cmd.includes('buscar')){ const termo = cmd.replace('buscar', '').trim(); window.open(`https://www.google.com/search?q=${encodeURIComponent(termo)}`, '_blank'); return `Pesquisando ${termo}`; } return null; },
+  sistema: (cmd) => { if(cmd.includes('horas')) return 'Agora são ' + new Date().toLocaleTimeString('pt-BR'); if(cmd.includes('status')) return KAI_MEMORY.estatisticas(); return null; },
+  memoria: (cmd) => { if(cmd.includes('lembre')) return KAI_MEMORY.salvarMemoria(cmd.replace('lembre', '')); if(cmd.includes('limpar memória')){ localStorage.removeItem('kai_memoria'); KAI_MEMORY.dados = {historico:[], memorias:[]}; addNoti('🧠 Memória limpa'); return 'Memória limpa Chefe'; } return null; }
+}
+function executarTodasActions(cmd){ for(let action in KAI_ACTIONS){ const resposta = KAI_ACTIONS[action](cmd); if(resposta) return resposta; } return 'Comando não reconhecido'; }
+
+// 3D FUNDO
 try{
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
-  const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.3, wireframe:true});
+  const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.2, wireframe:true});
   const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(3, 1), material); 
   scene.add(nucleo); scene.add(new THREE.PointLight(0x00FFFF, 1, 50).position.set(5,5,5)); camera.position.z = 8;
-  function animate(){ requestAnimationFrame(animate); nucleo.rotation.x += 0.005; nucleo.rotation.y += 0.008; renderer.render(scene, camera); }
+  function animate(){ requestAnimationFrame(animate); nucleo.rotation.y += 0.005; renderer.render(scene, camera); }
   animate();
 }catch(e){}
 
-const chat = document.getElementById('chat');
-const statusTop = document.getElementById('statusTop');
+// QUICK PANEL ARRASTAR
+let startY = 0;
+const quickPanel = document.getElementById('quickPanel');
+const statusBar = document.getElementById('statusBar');
 
-// VOZ
+document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
+document.addEventListener('touchmove', e => {
+  let deltaY = e.touches[0].clientY - startY;
+  if(startY < 50 && deltaY > 0){ quickPanel.style.top = Math.min(24 + deltaY, 350) + 'px'; }
+});
+document.addEventListener('touchend', e => {
+  let deltaY = e.changedTouches[0].clientY - startY;
+  if(deltaY > 100){ quickPanel.classList.add('open'); } else { quickPanel.classList.remove('open'); }
+  quickPanel.style.top = '';
+});
+statusBar.onclick = () => quickPanel.classList.toggle('open'); // Clicar na barra também abre
+
+function toggleAtalho(el, tipo){
+  el.querySelector('.icon').classList.toggle('on');
+  if(tipo === 'voz') micBtn.click();
+  if(tipo === 'musica') addNoti('🎵 Música KORVIL ativada');
+}
+
+// CHAT + VOZ
+const chat = document.getElementById('chat');
+const micBtn = document.getElementById('micBtn');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition, isListening = false;
-const micBtn = document.getElementById('micBtn');
 
 micBtn.onclick = ()=>{
   if(!SpeechRecognition){ alert("Navegador não suporta voz"); return; }
   if(!recognition){
     recognition = new SpeechRecognition();
     recognition.lang = 'pt-BR'; recognition.continuous = false;
-    recognition.onstart = ()=>{isListening=true; micBtn.classList.add('listening'); statusTop.innerText='gravando áudio...';}
-    recognition.onend = ()=>{isListening=false; micBtn.classList.remove('listening'); statusTop.innerText='online';}
+    recognition.onstart = ()=>{isListening=true; micBtn.style.background='#ff3b30';}
+    recognition.onend = ()=>{isListening=false; micBtn.style.background='#00a884';}
     recognition.onresult = (e)=>{ const cmd = e.results[0][0].transcript; addMsg('user', cmd); processarComando(cmd); }
   }
   if(!isListening) recognition.start(); else recognition.stop();
@@ -122,36 +159,26 @@ function addMsg(tipo, texto){
   const div = document.createElement('div');
   div.className = 'msg ' + tipo;
   const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  div.innerHTML = `${texto}<div class="hora">${hora} ✓✓</div>`;
+  div.innerHTML = `${texto}<div class="hora">${hora}</div>`;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
   KAI_MEMORY.dados.historico.push({tipo, texto}); KAI_MEMORY.salvar();
 }
-
-function falar(texto){
-  addMsg('kai', texto);
-  if(window.speechSynthesis){ speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(texto); utter.lang = 'pt-BR'; utter.rate = 0.95; speechSynthesis.speak(utter); }
+function addNoti(texto){
+  document.querySelector('.notificacoes').innerHTML = `<div class="noti">${texto}</div>` + document.querySelector('.notificacoes').innerHTML;
 }
-
-function processarComando(cmd){ 
-  try{ const resposta = executarTodasActions(cmd); falar(resposta); }
-  catch(e){ falar("Ok Chefe, processando: " + cmd); }
-}
-
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-function executar(cmd){ toggleMenu(); addMsg('user', cmd); processarComando(cmd); }
+function falar(texto){ addMsg('kai', texto); if(window.speechSynthesis){ speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(texto); utter.lang = 'pt-BR'; speechSynthesis.speak(utter); }
+function processarComando(cmd){ const resposta = executarTodasActions(cmd); falar(resposta); }
+function executar(cmd){ addMsg('user', cmd); processarComando(cmd); quickPanel.classList.remove('open'); }
 
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ 
-  if(e.key==='Enter'){ 
-    const val = e.target.value; 
-    if(!val.trim()) return; 
-    addMsg('user', val); 
-    processarComando(val); 
-    e.target.value = ""; 
-  }
+  if(e.key==='Enter'){ const val = e.target.value; if(!val.trim()) return; addMsg('user', val); processarComando(val); e.target.value = ""; }
 });
 
-setTimeout(()=>{ falar(`Olá Chefe. K-AI online`); }, 1000);
+// HORA REAL NA BARRA
+setInterval(()=>{ document.querySelector('.statusBar div').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) }, 1000);
+
+setTimeout(()=>{ falar(`Olá Chefe. Arraste a barra de cima pra baixo`); addNoti('🔵 K-AI Iniciado'); }, 1000);
 </script>
 </body>
 </html>
