@@ -84,10 +84,6 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 .kai-menu-btn{display:block;width:100%;padding:14px;background:transparent;border:0;border-bottom:1px solid #222;color:var(--text);text-align:left;font-size:14px;font-weight:600;cursor:pointer;}
 .kai-menu-btn:active{background:#111;color:var(--c);}
 .kai-menu-btn:last-child{border:0;}
-
-/* BOTAO FECHAR K-AI */
-.kai-fechar{position:fixed;top:20px;right:20px;width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:50%;font-size:24px;font-weight:900;cursor:pointer;z-index:10000;display:none;box-shadow:0 0 20px var(--c)}
-.kai-fechar.ativo{display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -164,12 +160,9 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   </div>
 </footer>
 
-<!-- IFRAME DO K-AI -->
-<iframe id="kaiFrame" src="https://korvilp-sudo.github.io/korvil-app/kai-core/index.html" style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:9999; background:#000"></iframe>
-<button class="kai-fechar" id="btnFecharKAI" onclick="fecharKAI()">X</button>
-
 <script>
 const WHATS_NUMBER = '5513997690898';
+const KAI_URL = 'https://korvilp-sudo.github.io/korvil-app/kai-core/index.html'; // MESMA PAGINA DO BOTAO LOGIN
 let textoWhats = '';
 let holdTimer = null;
 let contagemAtiva = false;
@@ -193,18 +186,6 @@ function toggleKaiMenu(){ kaiMenu.classList.toggle('ativo'); }
 function abrirWhats(mensagem){ textoWhats = mensagem; document.getElementById('modal').classList.add('ativo'); kaiMenu.classList.remove('ativo'); }
 function fecharForm(){ document.getElementById('modal').classList.remove('ativo'); }
 function enviarWhats(){ const nome=document.getElementById('nome').value; const whats=document.getElementById('whats').value; if(!nome||!whats){alert('Preencha Nome e WhatsApp');return;} const msg=`*KORVIL - ${textoWhats}*\n\n*DADOS DO CLIENTE:*\nNome: ${nome}\nWhats: ${whats}\n\nOla, vim do site KORVIL`; window.open(`https://wa.me/55${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank'); fecharForm(); }
-
-// ===== FUNÇÕES K-AI IFRAME =====
-function abrirKAI(){
-  document.getElementById('kaiFrame').style.display = 'block';
-  document.getElementById('btnFecharKAI').classList.add('ativo');
-  document.getElementById('kaiFooter').style.display = 'none';
-}
-function fecharKAI(){
-  document.getElementById('kaiFrame').style.display = 'none';
-  document.getElementById('btnFecharKAI').classList.remove('ativo');
-  document.getElementById('kaiFooter').style.display = 'flex';
-}
 
 // ===== LOGICA DO CUBO SEGREDO =====
 const cube = document.getElementById("cubeKAI");
@@ -252,7 +233,8 @@ function iniciarContagem(){
       clearInterval(contTimer);
       cubeMsg.innerText = 'Abrindo K-AI...';
       setTimeout(()=>{ 
-        abrirKAI(); 
+        // REDIRECIONA DIRETO IGUAL O BOTAO DO LOGIN
+        window.location.href = KAI_URL; 
         contagemAtiva = false;
       }, 800);
     }
