@@ -21,31 +21,30 @@ const KAI_MEMORY = {
       if(local){
         this.dados = JSON.parse(local);
         console.log("Memória carregada do localStorage");
-        return;
-      }
-
-      // Se não tiver, tenta buscar do arquivo
-      const res = await fetch(this.caminho);
-      if(res.ok){
-        this.dados = await res.json();
-        this.salvarLocal();
-        console.log("Memória carregada do arquivo");
+      } else {
+        // Se não tiver, tenta buscar do arquivo
+        const res = await fetch(this.caminho);
+        if(res.ok){
+          this.dados = await res.json();
+          this.salvarLocal();
+          console.log("Memória carregada do arquivo");
+        }
       }
     } catch(e) {
       console.log("Criando nova memória");
       this.dados.criado_em = new Date().toISOString().split('T')[0];
     }
-
     // Aplica preferências no KAI_CONFIG
-    KAI_CONFIG.nomeUsuario = this.dados.preferencias.nome;
-    KAI_CONFIG.autoOuvir = this.dados.preferencias.auto_ouvir;
+    if(window.KAI_CONFIG){
+      KAI_CONFIG.nomeUsuario = this.dados.preferencias.nome;
+      KAI_CONFIG.autoOuvir = this.dados.preferencias.auto_ouvir;
+    }
   },
 
   // ===== SALVAR MEMÓRIA =====
   async salvar() {
     this.dados.ultimo_acesso = new Date().toISOString();
     this.salvarLocal();
-
     // Tenta salvar no arquivo também
     try {
       await fetch(this.caminho, {
@@ -70,14 +69,11 @@ const KAI_MEMORY = {
       pergunta: pergunta,
       resposta: resposta
     };
-
     this.dados.historico.push(item);
-
     // Mantém só os últimos 200
     if(this.dados.historico.length > 200){
       this.dados.historico = this.dados.historico.slice(-200);
     }
-
     this.salvar();
   },
 
@@ -95,7 +91,6 @@ const KAI_MEMORY = {
   // ===== BUSCAR NA MEMÓRIA =====
   buscarNaMemoria(termo) {
     termo = termo.toLowerCase();
-
     // Busca no histórico
     const resultados = this.dados.historico.filter(h =>
       h.pergunta.toLowerCase().includes(termo) ||
@@ -118,7 +113,6 @@ const KAI_MEMORY = {
     if(resultados.length > 0){
       texto += `Última vez falamos: "${resultados[resultados.length-1].pergunta}"`;
     }
-
     return texto;
   },
 
@@ -146,4 +140,4 @@ const KAI_MEMORY = {
     this.salvar();
     return "Memória limpa Chefe";
   }
-                                                   }
+};
