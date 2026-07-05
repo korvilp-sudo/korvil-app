@@ -13,12 +13,12 @@ body{background:#000;overflow:hidden;color:var(--c)}
 #canvas3d{position:fixed;inset:0;z-index:0;cursor:pointer}
 .ui{position:fixed;z-index:10;pointer-events:none}
 
-.telaSelecao{top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:999}
-.telaSelecao h1{font-size:40px;text-shadow:0 0 30px var(--c);margin-bottom:10px}
-.telaSelecao p{color:var(--c2);margin-bottom:40px}
-.btnVersao{width:320px;background:rgba(0,255,255,.05);border:2px solid var(--c);color:var(--c);padding:20px;margin:10px 0;border-radius:15px;cursor:pointer;font-size:16px;font-weight:900;transition:.3s}
-.btnVersao:hover{background:rgba(0,255,255,.2);box-shadow:0 0 30px var(--c)}
-.btnVersao small{display:block;font-size:11px;color:var(--c2);margin-top:5px;font-weight:400}
+.telaSelecao{top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.98);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:999}
+.telaSelecao h1{font-size:48px;text-shadow:0 0 30px var(--c);margin-bottom:10px}
+.telaSelecao p{color:var(--c2);margin-bottom:40px;font-size:14px}
+.btnVersao{width:340px;background:rgba(0,255,255,.05);border:2px solid var(--c);color:var(--c);padding:22px;margin:12px 0;border-radius:15px;cursor:pointer;font-size:16px;font-weight:900;transition:.3s;text-align:left}
+.btnVersao:hover{background:rgba(0,255,255,.2);box-shadow:0 0 30px var(--c);transform:scale(1.02)}
+.btnVersao small{display:block;font-size:11px;color:var(--c2);margin-top:6px;font-weight:400}
 
 .logo{top:30px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:900;letter-spacing:6px;text-shadow:0 0 25px var(--c)}
 .logo span{color:var(--c2);font-size:14px;letter-spacing:2px;display:block;text-align:center;margin-top:5px}
@@ -60,11 +60,11 @@ body{background:#000;overflow:hidden;color:var(--c)}
   <p>KORVIL ARTIFICIAL INTELLIGENCE</p>
   <button class="btnVersao" onclick="iniciarKAI('ADMIN')">
     MODO ADMINISTRADOR - ILIMITADO
-    <small>Acesso total. Você Chefe. 9 Gavetas liberadas.</small>
+    <small>Acesso total. 9 Gavetas + Memória + Tudo liberado. Só você.</small>
   </button>
   <button class="btnVersao" onclick="iniciarKAI('USER')">
     MODO USUÁRIO - LIMITADO  
-    <small>Suporte KORVIL. Funções básicas para clientes.</small>
+    <small>Suporte KORVIL. Horas, música, app e status. Para clientes.</small>
   </button>
 </div>
 
@@ -74,9 +74,9 @@ body{background:#000;overflow:hidden;color:var(--c)}
 <div class="ui autoListen" id="autoListen" style="display:none">Ouvindo...</div>
 
 <div class="ui menu" id="menu">
-  <h3>VERSÕES</h3>
-  <button onclick="trocarVersao('corvo')">Versão CORVO v3.0</button>
-  <button onclick="trocarVersao('jarvis')">Versão JARVIS v2.0</button>
+  <h3>TROCAR VERSÃO</h3>
+  <button onclick="reiniciarKAI('corvo')">Versão CORVO v3.0 - Robótico</button>
+  <button onclick="reiniciarKAI('jarvis')">Versão JARVIS v2.0 - Clássico</button>
 
   <h3>INTERAÇÕES REAIS</h3>
   <button onclick="executar('abrir app')">Abrir APP KORVIL</button>
@@ -93,10 +93,11 @@ body{background:#000;overflow:hidden;color:var(--c)}
   <h3>CONFIG VOZ</h3>
   <div class="vozConfig">
     <select id="vozGenero" onchange="trocarVoz()">
-      <option value="masculino">Voz Masculina Robótica</option>
+      <option value="masculino">Voz Masculina Robótica Corvo</option>
       <option value="feminino">Voz Feminina</option>
     </select>
   </div>
+  <button onclick="voltarSelecao()" style="background:rgba(255,0,0,.1);border-color:red">Voltar Tela Inicial</button>
 </div>
 
 <div class="ui chat" id="chat" style="display:none"></div>
@@ -115,27 +116,55 @@ body{background:#000;overflow:hidden;color:var(--c)}
 <script>
 // ===== 0. CONFIG GLOBAL =====
 const KAI_CONFIG = {
-  modo: localStorage.getItem('kai_modo') || 'USER',
+  modo: 'USER',
+  versao: 'corvo',
   autoOuvir: true,
-  nomeUsuario: localStorage.getItem('kai_nome') || 'Chefe',
+  nomeUsuario: 'Chefe',
   senhaChefe: 'KORVIL2026',
   vozGenero: localStorage.getItem('kai_voz') || 'masculino'
 }
 
 let ultimoComando = "";
+let cenaIniciada = false;
 
 // ===== TELA DE SELEÇÃO =====
 function iniciarKAI(tipo){
   KAI_CONFIG.modo = tipo;
-  localStorage.setItem('kai_modo', tipo);
   document.getElementById('telaSelecao').style.display = 'none';
   document.querySelectorAll('.ui').forEach(el => { if(el.id !== 'telaSelecao') el.style.display = 'block'; });
   
   if(tipo === 'ADMIN'){
     document.getElementById('modoUsuario').innerText = 'MODO: ADMINISTRADOR';
     document.getElementById('modoUsuario').classList.add('admin');
+  } else {
+    document.getElementById('modoUsuario').innerText = 'MODO: VISITANTE';
+    document.getElementById('modoUsuario').classList.remove('admin');
   }
-  iniciarSistemas();
+  if(!cenaIniciada) iniciarSistemas();
+}
+
+function voltarSelecao(){
+  location.reload(); // Recarrega e volta pra tela de seleção
+}
+
+function reiniciarKAI(versao){
+  KAI_CONFIG.versao = versao;
+  toggleMenu();
+  falar(`Carregando versão ${versao}...`);
+  setTimeout(()=>{ 
+    trocarVisual(versao);
+    falar(`Versão ${versao.toUpperCase()} ativa Chefe`);
+  }, 1000);
+}
+
+function trocarVisual(versao){
+  if(versao === 'jarvis'){
+    material.color.set(0x00d4ff);
+    material.emissive.set(0x00d4ff);
+  } else {
+    material.color.set(0x00FFFF);
+    material.emissive.set(0x00FFFF);
+  }
 }
 
 // ===== 1. CENA 3D =====
@@ -187,7 +216,7 @@ const KAI_MEMORY = {
 
 const GAVETAS = {
   async cria(cmd){ return `Criando: ${cmd}. Sugestão KORVIL pronta Chefe.` },
-  async copia(cmd){ navigator.clipboard.writeText('Texto copiado'); return 'Copiado para área de transferência'; },
+  async copia(cmd){ navigator.clipboard.writeText('Texto copiado'); return 'Copiado para área de transferência' },
   async busca(cmd){ const termo = cmd.replace('buscar',''); window.open(`https://google.com/search?q=${termo}`,'_blank'); return `Pesquisando ${termo}` },
   async calculo(cmd){ const conta = cmd.replace('calcular',''); try{ return `Resultado: ${eval(conta)}` }catch{ return 'Erro no cálculo' } },
   async sistema(cmd){ return KAI_CONFIG.modo==='ADMIN'? 'Sistemas 100% Operacionais' : 'Sistema OK' },
@@ -203,6 +232,7 @@ const synth = window.speechSynthesis;
 let recognition, isListening = false;
 
 function iniciarSistemas(){
+  cenaIniciada = true;
   iniciarReconhecimento();
   falar(`K-AI online. Modo ${KAI_CONFIG.modo==='ADMIN'?'Administrador':'Usuário'} ativo.`);
 }
@@ -303,7 +333,6 @@ function enviarTexto(){ const input = document.getElementById('userInput'); if(!
 function anexarArquivo(){ const input = document.createElement('input'); input.type = 'file'; input.onchange = (e)=>{ addMsg('user', `📎 ${e.target.files[0].name}`); falar('Arquivo recebido'); } input.click(); }
 function tocarMusica(){ bgMusic.src = 'https://cdn.pixabay.com/download/audio/2023/01/03/audio_2b12e3e1c8.mp3'; bgMusic.volume = 0.25; bgMusic.play(); }
 function pararMusica(){ bgMusic.pause(); }
-function trocarVersao(v){ KAI_CONFIG.versao = v; falar(`Versão ${v} carregada`); }
 
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
 window.addEventListener('resize', ()=>{ camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
