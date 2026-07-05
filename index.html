@@ -15,9 +15,9 @@ canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset
 .type3{animation:slideLeft 5s}@keyframes slideLeft{0%{opacity:0;transform:translateX(-100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(50px)}}
 .type4{animation:slideRight 5s}@keyframes slideRight{0%{opacity:0;transform:translateX(100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(-50px)}}
 
-.type5{}
-.type5::after{
-  content:'|';
+/* ANIMAÇÃO DIGITAÇÃO NOVA */
+.type5{display:inline-block}
+.type5.cursor{
   color:var(--c);
   animation: blink 0.7s infinite;
   margin-left:2px;
@@ -98,20 +98,25 @@ const { createClient } = supabase;
 const db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
 const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
 
-// ANIMAÇÕES NOVAS COM DIGITAÇÃO
+// ANIMAÇÕES COM DIGITAÇÃO REAL
 const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','TECNOLOGIA','SUCESSO'];
 const wordsBg = document.getElementById('wordsBg');
 const animacoes = ['type1','type2','type3','type4','type5'];
 
 function digitarPalavra(elemento, texto, velocidade = 80){
   let i = 0;
-  elemento.innerText = '';
+  elemento.innerHTML = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.innerText = '|';
+  elemento.appendChild(cursor);
+
   const intervalo = setInterval(()=>{
-    elemento.innerText += texto.charAt(i);
+    cursor.before(texto.charAt(i));
     i++;
     if(i >= texto.length){
       clearInterval(intervalo);
-      // Espera 1.5s com a palavra completa e depois apaga
+      // Para 1.5s com a palavra completa e o | piscando
       setTimeout(()=>{
         elemento.style.opacity = '0';
         setTimeout(()=> elemento.remove(), 1000);
