@@ -1,234 +1,340 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL ACCESS</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6}*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
-body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
-canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset:0;z-index:1;pointer-events:none}
+:root{--c:#00f5ff;--c2:#00d4ff;--bg:#000}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+body{background:var(--bg);overflow:hidden;color:var(--c)}
+#canvas3d{position:fixed;inset:0;z-index:0;cursor:pointer}
+.ui{position:fixed;z-index:10;pointer-events:none}
+.logo{top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;letter-spacing:4px;text-shadow:0 0 20px var(--c);text-align:center;font-family:'Orbitron',sans-serif}
+.logo span{color:var(--c2);font-size:12px;display:block}
+.menuBtn{top:15px;left:15px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,245,255,.05)}
+.menu{top:80px;left:15px;width:320px;max-height:70vh;overflow-y:auto;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
+.menu h3{color:var(--c2);margin:10px 0 5px;font-size:12px}
+.menu button{width:100%;background:rgba(0,245,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:4px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
+.chatBox{bottom:0;left:0;width:100%;background:linear-gradient(transparent, rgba(0,0,0,.9));border-top:2px solid var(--c);padding:15px;pointer-events:auto}
+.chat{max-height:180px;overflow-y:auto;padding:10px}
+.msg{margin:8px 0;font-size:15px}
+.msg.user{color:var(--c2);text-align:right}
+.msg.kai{color:var(--c)}
+.inputArea{display:flex;gap:8px;margin-top:8px}
+.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px}
+.inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900}
+.micBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
+.micBtn.listening{background:var(--c)!important; color:#000!important}
+.badge{top:20px;right:20px;background:var(--c);color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900}
+.autoListen{bottom:120px;right:20px;font-size:11px;background:rgba(0,255,0,.15);padding:5px 10px;border-radius:10px;border:1px solid #0f0}
+.anexoBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
 
-.word{position:absolute;color:rgba(0,255,255,.25);font-size:14px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;text-shadow:0 0 20px rgba(0,255,255,.6);animation-fill-mode:forwards; pointer-events:none; opacity:0;}
-.fadeIn{animation:fadeIn 1.5s forwards}@keyframes fadeIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
-.fadeOut{animation:fadeOut 1.5s forwards}@keyframes fadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.7)}}
-.pulse{animation:pulseWord 5s infinite}@keyframes pulseWord{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-.slideL{animation:slideLeft 5s infinite}@keyframes slideLeft{0%,100%{transform:translateX(0)}50%{transform:translateX(-15px)}}
-.slideR{animation:slideRight 5s infinite}@keyframes slideRight{0%,100%{transform:translateX(0)}50%{transform:translateX(15px)}}
-
-.card{background:rgba(0,0,0,.78);backdrop-filter:blur(30px);border:1px solid rgba(0,255,255,.2);border-radius:24px;padding:35px;width:90%;max-width:480px;position:relative;z-index:10;animation:fadeInUp.8s;box-shadow:0 0 60px rgba(0,255,255,.3); max-height:92vh; overflow-y:auto}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-.logo-area{display:flex;justify-content:center;margin-bottom:25px}
-.logo-img{
-  max-width:280px;
-  width:100%;
-  height:auto;
-  border-radius:16px; /* cantos arredondados */
-  border:2px solid var(--c); /* borda ciano */
-  box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c); /* brilho duplo */
-  animation:pulseLogo 2s ease-in-out infinite;
-  padding:6px; /* respiro da moldura */
-  background:#000; /* fundo preto */
-}
-@keyframes pulseLogo{0%,100%{transform:scale(1);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c)}50%{transform:scale(1.07);box-shadow:0 0 30px var(--c)60, 0 0 50px var(--c)}}
-
-.tabs{display:flex;gap:12px;margin-bottom:25px}.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
-.tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c)}
-.form{display:none;flex-direction:column;gap:16px}.form.active{display:flex}
-label{font-size:13px; font-weight:700; margin-left:4px; color:var(--c2); display:block; margin-bottom:4px}
-.input-group{display:flex; flex-direction:column; gap:4px}
-.input-wrap{display:flex; gap:8px; align-items:flex-end}
-
-.input-pass{position:relative; display:flex; align-items:center;}
-.input-pass input{padding-right:50px;}
-.toggle-pass{position:absolute; right:15px; cursor:pointer; width:22px; height:22px; fill:var(--c2); transition:.3s; z-index:2;}
-.toggle-pass:hover{fill:var(--c); transform:scale(1.1);}
-.toggle-pass.active{fill:var(--c);}
-.eye-closed{display:none;}
-
-input{width:100%;padding:16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;font-size:16px;font-weight:600;transition:.3s}
-input:focus{border-color:var(--c); box-shadow:0 0 15px rgba(0,255,255,.3)}
-input[readonly]{opacity:0.6; cursor:not-allowed;}
-.grid-2{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
-.btn{padding:16px;border:none;background:linear-gradient(135deg,var(--c),var(--c2));color:#000;font-weight:900;font-size:16px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s}
-.btn:hover{transform:scale(1.03); box-shadow:0 0 20px var(--c)}
-.btn-sec{padding:16px 14px; font-size:14px; white-space:nowrap; flex-shrink:0;}
-.error{color:#ff3366;text-align:center;font-weight:700}.ok{color:#00ff88;text-align:center;font-weight:700}
-.loader{border:3px solid #000;border-top:3px solid #000;border-radius:50%;width:18px;height:18px;animation:spin.8s linear infinite;display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
-#idadeDisplay{font-size:13px; color:var(--c2); margin-left:4px; font-weight:700}
+/* MINI MENU CENTRAL */
+.miniMenu{top:50%;left:50%;transform:translate(-50%,-50%);width:320px;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
+.miniMenu h3{color:var(--c2);margin:10px 0 5px;font-size:12px;text-align:center}
+.senhaBox{margin-top:10px;display:none}
+.senhaBox input{width:100%;background:#001a1f;border:1px solid var(--c);color:var(--c);padding:10px;border-radius:8px;margin-bottom:5px}
 </style>
 </head>
 <body>
-<canvas id="particles"></canvas><div class="words-bg" id="wordsBg"></div>
-<div class="card">
-  <div class="logo-area">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/korvil-logo.png" class="logo-img">
-  </div>
-  <div class="tabs"><button type="button" class="tab active" id="tabLogin">ENTRAR</button><button type="button" class="tab" id="tabCadastro">NOVO USUÁRIO</button></div>
 
-  <form id="login" class="form active">
-    <input type="email" id="loginEmail" placeholder="Digite seu E-mail" required>
-    <div class="input-pass">
-      <input type="password" id="loginPass" placeholder="Digite sua Senha" required>
-      <svg class="toggle-pass" data-target="loginPass" viewBox="0 0 24 24">
-        <path class="eye-open" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-        <path class="eye-closed" d="M12 7c2.76 0 5 2.24 5 5 0.65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3.22 0.44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
-      </svg>
-    </div>
-    <button class="btn" type="submit" id="btnLogin">ACESSAR</button>
-    <div id="msgLogin"></div>
-  </form>
+<canvas id="canvas3d"></canvas>
+<div class="ui badge" id="badgeModo">MODO CHEFE</div>
+<div class="ui autoListen" id="autoListen">Ouvindo...</div>
+<div class="ui logo">K-<span>AI KORVIL ARTIFICIAL INTELLIGENCE</span></div>
+<div class="ui menuBtn" onclick="toggleMenu()">☰</div>
 
-  <form id="cadastro" class="form">
-    <div class="input-group"><label>Nome completo</label><input type="text" id="nome" placeholder="Digite seu nome" required></div>
-    <div class="input-group"><label>E-mail</label><input type="email" id="email" placeholder="seu@email.com" required></div>
-    <div class="grid-2">
-      <div class="input-group"><label>CPF</label><input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required></div>
-      <div class="input-group"><label>Data de Nascimento</label><input type="date" id="data_nasc" required><div id="idadeDisplay"></div></div>
-    </div>
-    <div class="input-group"><label>WhatsApp</label><input type="text" id="whatsapp" placeholder="(00) 00000-0000" maxlength="15" required></div>
-    <div class="input-wrap"><div class="input-group" style="flex:1"><label>CEP</label><input type="text" id="cep" placeholder="00000-000" maxlength="9" required></div><button type="button" class="btn btn-sec" id="btnBuscarCep">BUSCAR</button></div>
-    <div class="grid-2"><div class="input-group"><label>N° Casa</label><input type="text" id="numero" placeholder="123" required></div><div class="input-group"><label>Bairro</label><input type="text" id="bairro" placeholder="Bairro" readonly></div></div>
-    <div class="input-group"><label>Rua</label><input type="text" id="rua" placeholder="Rua" readonly></div>
+<!-- MENU LATERAL -->
+<div class="ui menu" id="menu">
+  <h3>VERSÕES K-AI</h3>
+  <button onclick="executar('carregar versao korvil')">Versão KORVIL v1.0 - Leve</button>
+  <button onclick="executar('carregar versao jarvis')">Versão JARVIS v2.0 - Padrão</button>
+  <button onclick="executar('carregar versao corvo')">Versão CORVO v3.0 - Completo</button>
 
-    <div class="input-group"><label>Crie uma Senha</label>
-      <div class="input-pass">
-        <input type="password" id="pass" placeholder="Mínimo 6 caracteres" required>
-        <svg class="toggle-pass" data-target="pass" viewBox="0 0 24 24">
-          <path class="eye-open" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-          <path class="eye-closed" d="M12 7c2.76 0 5 2.24 5 5 0.65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3.22 0.44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
-        </svg>
-      </div>
-    </div>
-    <div class="input-group"><label>Repita a Senha</label>
-      <div class="input-pass">
-        <input type="password" id="pass2" placeholder="Repita a senha" required>
-        <svg class="toggle-pass" data-target="pass2" viewBox="0 0 24 24">
-          <path class="eye-open" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-          <path class="eye-closed" d="M12 7c2.76 0 5 2.24 5 5 0.65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3.22 0.44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
-        </svg>
-      </div>
-    </div>
+  <h3>NAVEGAR</h3>
+  <button onclick="executar('vai para 2')">K-TP</button>
+  <button onclick="executar('vai para 8')">SERVIÇOS</button>
 
-    <button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button>
-    <div id="msgCadastro"></div>
-  </form>
+  <h3>IA</h3>
+  <button onclick="executar('fale sobre os serviços')">Fale sobre</button>
+  <button onclick="executar('estatísticas')">Estatísticas</button>
+  <button onclick="executar('limpar memória')">Limpar Memória</button>
 </div>
+
+<!-- MINI MENU NO CUBO -->
+<div class="ui miniMenu" id="miniMenu">
+  <h3>ACESSO RÁPIDO</h3>
+  <button onclick="executarMenu('abrir app')">Abrir APP KORVIL</button>
+  <button onclick="executarMenu('tocar música')">Tocar Música</button>
+  <button onclick="executarMenu('status do sistema')">Status do Sistema</button>
+
+  <h3>MODO CHEFE</h3>
+  <div class="senhaBox" id="senhaBox">
+    <input type="password" id="senhaInput" placeholder="Digite a senha">
+    <button onclick="ativarModoChefe()">Ativar</button>
+  </div>
+  <button onclick="mostrarSenha()">Ativar Modo Chefe</button>
+</div>
+
+<div class="ui chatBox">
+  <div class="chat" id="chat"></div>
+  <div class="inputArea">
+    <button class="anexoBtn" onclick="anexarArquivo()">📎</button>
+    <input type="text" id="userInput" placeholder="Fale com K-AI...">
+    <button id="micBtn" class="micBtn" onclick="toggleMic()">🎙️</button>
+    <button onclick="enviarTexto()">➤</button>
+  </div>
+</div>
+
+<!-- ORDEM CORRETA -->
+<script src="actions/navega.js"></script>
+<script src="actions/copia.js"></script>
+<script src="actions/cria.js"></script>
+<script src="actions/sistema.js"></script>
+<script src="actions/busca.js"></script>
+<script src="actions/calculo.js"></script>
+<script src="actions/social.js"></script>
+<script src="actions/vendas.js"></script>
+<script src="actions/educacao.js"></script>
+<script src="actions/kai-memory.js"></script>
+
+<audio id="bgMusic" loop></audio>
 <script>
-// 1. INICIA TUDO PRIMEIRO, SUPABASE DEPOIS
-let db;
-
-// PALAVRAS RODA IMEDIATO
-window.onload = function() {
-  iniciarAnimacoes();
-  iniciarParticulas();
+// ===== CONFIG GLOBAL =====
+const KAI_CONFIG = {
+  modo: "ilimitado",
+  autoOuvir: true,
+  nomeUsuario: "Chefe",
+  versao: "corvo",
+  senhaChefe: "KORVIL2026"
 }
 
-function iniciarAnimacoes(){
-  const frasesKorvil = ['DESENVOLVIMENTO HUMANO','NEGOCIOS','SERVICOS','CURSOS','ECOMMERCE','LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO','K-AFORTUNADO','EMPREENDEDORISMO','FINANCAS','K-ALMA','SAUDE','BELEZA','MARKETING DIGITAL','EDUCACAO','JESUS','CONSULTORIA','INOVACAO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','DE TUDO UM POUCO','NETWORKING','MENTORIA','GESTAO','SUPORTE','COMUNIDADE K','EVENTOS','VIDA','AMOR','CONHECIMENTO','PARCERIAS','CONTEUDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRAFEGO PAGO','ALEGRIA','DIVERSAO','COPYWRITING','FUNIL DE VENDAS','LIDERANCA','PRODUTIVIDADE','CONQUISTAS','SEJA INVENCIVEL','METAS','PERFORMANCE','ATENDIMENTO','DEUS','PALESTRAS','WORKSHOPS','FE','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','AREA DO ALUNO','FORMACOES','CERTIFICADOS','EXCELENCIA','DISCIPLINA','FOCO','TRANSFORMACAO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDANCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO','VIVA SEUS SONHOS','ACREDITE EM VOCE','EVOLUA TODO DIA','MINDSET VENCEDOR','PROSPERE'];
-  const versiculos = ['TUDO POSSO NAQUELE QUE ME FORTALECE - FP 4:13','O SENHOR E MEU PASTOR E NADA ME FALTARA - SL 23:1','LANCANDO SOBRE ELE TODA A VOSSA ANSIEDADE - 1PE 5:7','PORQUE EU BEM SEI OS PLANOS QUE TENHO PARA VOS - JR 29:11','NAO TEMAS, PORQUE EU SOU CONTIGO - IS 41:10','O GOZO DO SENHOR E A VOSSA FORCA - NE 8:10','ENTREGA O TEU CAMINHO AO SENHOR - SL 37:5','DEUS E O NOSSO REFUGIO E FORTALEZA - SL 46:1','SEJA FORTE E CORAJOSO - JS 1:9','A FE E O FIRME FUNDAMENTO - HB 11:1','EU SOU O CAMINHO, A VERDADE E A VIDA - JO 14:6','AMAI-VOS UNS AOS OUTROS - JO 13:34','BUSCAI PRIMEIRO O REINO DEUS - MT 6:33','A PAZ DEUS GUARDARA O VOSSO CORACAO - FP 4:7','RENOVA-SE A CADA MANHA - LM 3:23','OS QUE ESPERAM NO SENHOR RENOVARAO AS FORCAS - IS 40:31','O SENHOR PELEJARA POR VOS - EX 14:14','NAO ANDES ANSIOSO POR COISA ALGUMA - FP 4:6','EM TUDO DAI GRACAS - 1TS 5:18','DEUS SUPRIRA TODAS AS VOSSAS NECESSIDADES - FP 4:19','A VERDADE VOS LIBERTARA - JO 8:32','EU VIM PARA QUE TENHAM VIDA E A TENHAM EM ABUNDANCIA - JO 10:10','O SENHOR E A MINHA LUZ E A MINHA SALVACAO - SL 27:1','LANCA O TEU PAO SOBRE AS AGUAS - EC 11:1','ONDE ESTA O ESPIRITO DO SENHOR, AI HA LIBERDADE - 2CO 3:17','FAZEI TUDO PARA A GLORIA DEUS - 1CO 10:31','A ORACAO DE UM JUSTO PODE MUITO - TG 5:16','CONFIA NO SENHOR DE TODO O TEU CORACAO - PV 3:5','EU SOU A VIDEIRA, VOS OS RAMOS - JO 15:5','O AMOR NUNCA FALHA - 1CO 13:8'];
-  const palavras = [...frasesKorvil,...versiculos];
-  const wordsBg = document.getElementById('wordsBg');
-  const animacoes = ['pulse','slideL','slideR'];
-  let palavrasAtivas = [];
+let ultimoComando = "";
 
-  function criarPalavra(){
-    if(palavrasAtivas.length >= 60) return;
-    const el = document.createElement('div');
-    el.className = 'word fadeIn ' + animacoes[Math.floor(Math.random()*3)];
-    el.innerText = palavras[Math.floor(Math.random()*palavras.length)];
-    el.style.left = Math.random()*85 + 5 + '%';
-    el.style.top = Math.random()*85 + 5 + '%';
-    wordsBg.appendChild(el);
-    palavrasAtivas.push(el);
-    setTimeout(()=>{ el.classList.add('fadeOut'); setTimeout(()=>{el.remove()},1500) }, 8000 + Math.random()*4000);
-  }
-  for(let i=0; i<50; i++) setTimeout(criarPalavra, i*70);
-  setInterval(()=>{ if(palavrasAtivas.length < 40) for(let i=0; i<3; i++) criarPalavra(); }, 600);
+// ===== 1. CENA 3D K-AI CORVO =====
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const geometry = new THREE.IcosahedronGeometry(1.8, 2);
+const material = new THREE.MeshPhongMaterial({color:0x00f5ff, emissive:0x00f5ff, emissiveIntensity:0.6, shininess:120, transparent:true, opacity:0.9});
+const nucleo = new THREE.Mesh(geometry, material);
+scene.add(nucleo);
+
+const ringGeo = new THREE.TorusGeometry(2.5, 0.1, 16, 100);
+const ringMat = new THREE.MeshBasicMaterial({color:0x00f5ff, wireframe:true});
+const ring1 = new THREE.Mesh(ringGeo, ringMat);
+const ring2 = new THREE.Mesh(ringGeo, ringMat); ring2.rotation.x = Math.PI/2;
+scene.add(ring1, ring2);
+
+const light1 = new THREE.PointLight(0x00f5ff, 2.5, 50); light1.position.set(5,5,5); scene.add(light1);
+camera.position.z = 6;
+
+const particles = new THREE.Points(
+  new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(Array(4000).fill().map(()=> (Math.random()-0.5)*25), 3)),
+  new THREE.PointsMaterial({color:0x00f5ff, size:0.025})
+);
+scene.add(particles);
+
+function animate(){
+  requestAnimationFrame(animate);
+  nucleo.rotation.x += 0.008;
+  nucleo.rotation.y += 0.015;
+  ring1.rotation.y += 0.02;
+  ring2.rotation.z += 0.015;
+  particles.rotation.y += 0.0008;
+  material.emissiveIntensity = 0.5 + Math.sin(Date.now()*0.003)*0.2;
+  renderer.render(scene, camera);
 }
+animate();
 
-function iniciarParticulas(){
-  const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;let pts=[];for(let i=0;i<30;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2});function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}draw();
-}
-
-// 2. SÓ DEPOIS INICIA SUPABASE
-document.addEventListener('DOMContentLoaded', ()=>{
-  try{
-    const { createClient } = supabase;
-    db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
-  }catch(e){ console.log("Supabase erro:", e) }
-
-  const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
-  const TABELA = 'Cadastro de usuários do KORVIL';
-
-  // OLHINHO
-  document.querySelectorAll('.toggle-pass').forEach(eye => {
-    eye.addEventListener('click', function(){
-      const input = document.getElementById(this.dataset.target);
-      const open = this.querySelector('.eye-open'), closed = this.querySelector('.eye-closed');
-      if(input.type === 'password'){ input.type='text'; open.style.display='none'; closed.style.display='block'; this.classList.add('active'); }
-      else{ input.type='password'; open.style.display='block'; closed.style.display='none'; this.classList.remove('active'); }
-    });
-  });
-
-  // MASCARAS
-  const mCPF = v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-  const mCEP = v=>v.replace(/\D/g,"").replace(/^(\d{5})(\d)/,"$1-$2");
-  const mTel = v=>v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2");
-  document.getElementById('cpf').oninput = e => e.target.value = mCPF(e.target.value);
-  document.getElementById('cep').oninput = e => e.target.value = mCEP(e.target.value);
-  document.getElementById('whatsapp').oninput = e => e.target.value = mTel(e.target.value);
-
-  // IDADE
-  document.getElementById('data_nasc').onchange = ()=>{const d=new Date(document.getElementById('data_nasc').value); let i=new Date().getFullYear()-d.getFullYear(); document.getElementById('idadeDisplay').innerText = i>=0?`Idade: ${i} anos`:''};
-
-  // TABS
-  const showTab = tab=>{document.querySelectorAll('.tab,.form').forEach(x=>x.classList.remove('active'));document.getElementById(tab==='login'?'tabLogin':'tabCadastro').classList.add('active');document.getElementById(tab).classList.add('active');}
-  document.getElementById('tabLogin').onclick = ()=>showTab('login');
-  document.getElementById('tabCadastro').onclick = ()=>showTab('cadastro');
-  const msg = (t,c,i)=>document.getElementById(i).innerHTML=t?`<p class="${c}">${t}</p>`:'';
-  const loading = (b,on)=>{b.disabled=on;b.innerHTML=on?'<span class="loader"></span>PROCESSANDO':b.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'};
-
-  // CEP
-  document.getElementById('btnBuscarCep').onclick = async ()=>{
-    const cep = document.getElementById('cep').value.replace(/\D/g,'');
-    if(cep.length!=8) return msg('Digite 8 números','error','msgCadastro');
-    msg('Buscando...','ok','msgCadastro');
-    try{ const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`); const d=await r.json();
-      if(!d.erro){ document.getElementById('rua').value=d.logradouro; document.getElementById('bairro').value=d.bairro; msg('CEP OK','ok','msgCadastro'); }
-      else msg('CEP inválido','error','msgCadastro');
-    }catch{ msg('Erro na busca','error','msgCadastro'); }
-  }
-
-  // CADASTRO
-  document.getElementById('cadastro').onsubmit = async e=>{
-    e.preventDefault(); const btn=document.getElementById('btnCadastro');
-    if(document.getElementById('pass').value!=document.getElementById('pass2').value) return msg('Senhas diferentes','error','msgCadastro');
-    loading(btn,true);
-    const { data, error } = await db.auth.signUp({email:document.getElementById('email').value,password:document.getElementById('pass').value});
-    if(error){ msg(error.message,'error','msgCadastro'); }
-    else{
-      await db.from(TABELA).insert({
-        id:data.user.id,email:document.getElementById('email').value,nome_completo:document.getElementById('nome').value,
-        cpf:document.getElementById('cpf').value.replace(/\D/g,''),data_nascimento:document.getElementById('data_nasc').value,
-        whatsapp:document.getElementById('whatsapp').value.replace(/\D/g,''),cep:document.getElementById('cep').value.replace(/\D/g,''),
-        rua:document.getElementById('rua').value,numero:document.getElementById('numero').value,bairro:document.getElementById('bairro').value
-      });
-      msg('Cadastro OK!','ok','msgCadastro'); setTimeout(()=>window.location.href=REDIRECT,1000);
-    }
-    loading(btn,false);
-  }
-
-  // LOGIN
-  document.getElementById('login').onsubmit = async e=>{
-    e.preventDefault(); const btn=document.getElementById('btnLogin'); loading(btn,true);
-    const { error } = await db.auth.signInWithPassword({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPass').value});
-    if(error){ msg('Login inválido','error','msgLogin'); }
-    else{ msg('Login OK!','ok','msgLogin'); setTimeout(()=>window.location.href=REDIRECT,800); }
-    loading(btn,false);
-  }
+// CLIQUE NO CUBO = MINI MENU
+document.getElementById('canvas3d').addEventListener('click', ()=>{
+  const menu = document.getElementById('miniMenu');
+  menu.style.display = menu.style.display === 'block'? 'none' : 'block';
 });
+
+// ===== 2. KAI MEMORY + UI + BRAIN UNIFICADOS =====
+const KAI_MEMORY = {
+  dados: { historico: [], memorias_importantes: [] },
+  async carregar(){
+    const local = localStorage.getItem('kai_memoria');
+    if(local) this.dados = JSON.parse(local);
+  },
+  salvar(){ localStorage.setItem('kai_memoria', JSON.stringify(this.dados)); },
+  adicionarConversa(pergunta, resposta){
+    this.dados.historico.push({pergunta, resposta, data: new Date().toISOString()});
+    if(this.dados.historico.length > 200) this.dados.historico = this.dados.historico.slice(-200);
+    this.salvar();
+  },
+  salvarMemoriaImportante(texto){
+    this.dados.memorias_importantes.push({texto, data: new Date().toISOString()});
+    this.salvar();
+    return `Salvei na memória: ${texto}`;
+  },
+  buscarNaMemoria(termo){
+    termo = termo.toLowerCase();
+    const res = this.dados.historico.filter(h=>h.pergunta.includes(termo)).slice(-1);
+    return res.length? `Última vez: "${res[0].pergunta}"` : "Não lembro disso";
+  },
+  getEstatisticas(){ return { total_conversas: this.dados.historico.length } }
+}
+
+const KAI_BRAIN = {
+  async processarComando(cmdOriginal){
+    const cmd = cmdOriginal.toLowerCase();
+    let resposta = "";
+
+    // PALAVRA DE ATIVAÇÃO
+    if(!cmd.includes('k-ai') &&!cmd.includes('corvo') && KAI_CONFIG.modo === "limitado") return;
+
+    // MODO CHEFE ILIMITADO
+    if(KAI_CONFIG.modo === "ilimitado"){
+      if(cmd.includes('vai') || cmd.includes('abrir')) resposta = Navega.ir(cmd);
+      else if(cmd.includes('cria')) resposta = await Cria.executar(cmd);
+      else if(cmd.includes('copia') || cmd.includes('resuma')) resposta = await Copia.executar(cmd);
+      else if(cmd.includes('buscar') || cmd.includes('pesquisar')) resposta = await Busca.executar(cmd);
+      else if(cmd.includes('calcular')) resposta = await Calculo.executar(cmd);
+      else if(cmd.includes('postar') || cmd.includes('social')) resposta = await Social.executar(cmd);
+      else if(cmd.includes('venda') || cmd.includes('lead')) resposta = await Vendas.executar(cmd);
+      else if(cmd.includes('aula') || cmd.includes('curso')) resposta = await Educacao.executar(cmd);
+      else if(cmd.includes('status') || cmd.includes('sistema')) resposta = await Sistema.executar(cmd);
+      else if(cmd.includes('lembre')) resposta = KAI_MEMORY.salvarMemoriaImportante(cmdOriginal);
+      else if(cmd.includes('o que você lembra')) resposta = KAI_MEMORY.buscarNaMemoria(cmdOriginal);
+      else if(cmd.includes('tocar música')){ tocarMusica(); resposta = "Ativando trilha KORVIL"; }
+      else if(cmd.includes('parar música')){ pararMusica(); resposta = "Música pausada"; }
+      else resposta = `Executando: ${cmdOriginal} Chefe`;
+    }
+    // MODO USUÁRIO LIMITADO
+    else {
+      if(cmd.includes('olá') || cmd.includes('k-ai')) resposta = 'Olá. K-AI online. Como posso ajudar?';
+      else if(cmd.includes('hora')) resposta = 'Agora são ' + new Date().toLocaleTimeString('pt-BR');
+      else if(cmd.includes('data')) resposta = 'Hoje é ' + new Date().toLocaleDateString('pt-BR');
+      else if(cmd.includes('status')) resposta = 'Sistema operando. Modo Usuário ativo.';
+      else if(cmd.includes('abrir app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); resposta = 'Abrindo app KORVIL'; }
+      else resposta = 'Comando não disponível no modo usuário';
+    }
+
+    KAI_MEMORY.adicionarConversa(cmdOriginal, resposta);
+    KAI_UI.falar(resposta);
+  }
+}
+
+const KAI_UI = {
+  recognition: null,
+  chat: null,
+
+  init(){
+    this.chat = document.getElementById('chat');
+    this.iniciarReconhecimento();
+    this.falar(`K-AI online. Modo ${KAI_CONFIG.nomeUsuario} ativo.`);
+  },
+
+  iniciarReconhecimento(){
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SpeechRecognition) return;
+
+    this.recognition = new SpeechRecognition();
+    this.recognition.lang = 'pt-BR';
+    this.recognition.continuous = true;
+
+    this.recognition.onstart = ()=>{
+      document.getElementById('micBtn').classList.add('listening');
+      document.getElementById('autoListen').style.display = 'block';
+      pulsarNucleo();
+    }
+    this.recognition.onend = ()=>{
+      document.getElementById('micBtn').classList.remove('listening');
+      if(KAI_CONFIG.autoOuvir) setTimeout(()=>this.recognition.start(), 500);
+    }
+    this.recognition.onresult = (e)=>{
+      const cmd = e.results[e.results.length-1][0].transcript;
+      if(cmd.length > 2 && cmd!== ultimoComando){
+        ultimoComando = cmd;
+        this.addMsg('user', cmd);
+        KAI_BRAIN.processarComando(cmd);
+      }
+    }
+    if(KAI_CONFIG.autoOuvir) this.recognition.start();
+  },
+
+  toggleMic(){
+    KAI_CONFIG.autoOuvir =!KAI_CONFIG.autoOuvir;
+    document.getElementById('autoListen').style.display = KAI_CONFIG.autoOuvir? 'block':'none';
+    KAI_CONFIG.autoOuvir? this.recognition.start() : this.recognition.stop();
+  },
+
+  falar(texto){
+    this.addMsg('kai', texto);
+    speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.lang = 'pt-BR';
+    utter.pitch = 0.6;
+    utter.rate = 0.95;
+    utter.onstart = pulsarNucleo;
+    speechSynthesis.speak(utter);
+  },
+
+  addMsg(tipo, texto){
+    const div = document.createElement('div');
+    div.className = 'msg ' + tipo;
+    div.innerHTML = tipo==='user'? `<b>Você:</b> ${texto}` : `<b>K-AI:</b> ${texto}`;
+    this.chat.appendChild(div);
+    this.chat.scrollTop = this.chat.scrollHeight;
+  },
+
+  enviarTexto(){
+    const input = document.getElementById('userInput');
+    if(!input.value.trim()) return;
+    this.addMsg('user', input.value);
+    KAI_BRAIN.processarComando(input.value);
+    input.value = "";
+  },
+
+  executar(cmd){ this.toggleMenu(); this.addMsg('user', cmd); KAI_BRAIN.processarComando(cmd); },
+  executarMenu(cmd){ document.getElementById('miniMenu').style.display = 'none'; this.addMsg('user', cmd); KAI_BRAIN.processarComando(cmd); },
+  toggleMenu(){ const menu = document.getElementById('menu'); menu.style.display = menu.style.display==='block'?'none':'block'; },
+  anexarArquivo(){ const input = document.createElement('input'); input.type = 'file'; input.onchange = async (e)=>{ const file = e.target.files[0]; this.addMsg('user', `📎 ${file.name}`); const res = await Copia.lerArquivo(file); this.falar(res); } input.click(); }
+}
+
+function pulsarNucleo(){
+  material.emissiveIntensity = 1.5;
+  setTimeout(()=>{ material.emissiveIntensity = 0.6 }, 300);
+}
+
+function mostrarSenha(){ document.getElementById('senhaBox').style.display = 'block'; }
+function ativarModoChefe(){
+  const senha = document.getElementById('senhaInput').value;
+  if(senha === KAI_CONFIG.senhaChefe){
+    KAI_CONFIG.modo = "ilimitado";
+    KAI_CONFIG.nomeUsuario = "Chefe";
+    document.getElementById('badgeModo').innerText = "MODO CHEFE";
+    KAI_UI.falar("Modo Chefe Ilimitado ativado");
+  } else {
+    KAI_UI.falar("Senha incorreta");
+  }
+}
+
+function tocarMusica(){ bgMusic.src = 'https://cdn.pixabay.com/download/audio/2023/01/03/audio_2b12e3e1c8.mp3'; bgMusic.volume = 0.25; bgMusic.play(); }
+function pararMusica(){ bgMusic.pause(); }
+
+// ===== INICIAR =====
+function toggleMenu(){ KAI_UI.toggleMenu(); }
+function toggleMic(){ KAI_UI.toggleMic(); }
+function enviarTexto(){ KAI_UI.enviarTexto(); }
+function executar(cmd){ KAI_UI.executar(cmd); }
+function executarMenu(cmd){ KAI_UI.executarMenu(cmd); }
+function anexarArquivo(){ KAI_UI.anexarArquivo(); }
+
+document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
+
+async function iniciarKAI(){ await KAI_MEMORY.carregar(); Sistema.carregar(); KAI_UI.init(); }
+setTimeout(iniciarKAI, 800);
+
+window.addEventListener('resize', ()=>{ camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 </script>
 </body>
 </html>
