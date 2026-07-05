@@ -1,13 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-AI | SELEÇÃO DE ACESSO</title>
 <link rel="stylesheet" href="kai-style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body style="background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh">
-<canvas id="canvas3d" style="opacity:0.3"></canvas>
+<body>
+<canvas id="canvas3d"></canvas>
 
 <div class="selector">
   <div class="logo">K-AI<span>KORVIL ARTIFICIAL INTELLIGENCE</span></div>
@@ -26,8 +26,6 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="kai-ui.js"></script>
 <script>
 function entrar(modo){
   localStorage.setItem('kai_modo', modo);
@@ -37,11 +35,11 @@ function entrar(modo){
     window.location.href = 'kai-user.html';
   }
 }
-
-// Auto login: Se já for ADMIN, pula a tela
+// Auto login Admin
 if(localStorage.getItem('kai_modo') === 'ADMIN'){
   window.location.href = 'kai-admin.html';
 }
 </script>
+<script src="kai-ui.js"></script>
 </body>
 </html>
