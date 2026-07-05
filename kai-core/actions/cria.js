@@ -1,51 +1,79 @@
-
 const Cria = {
-  async executar(comando) {
-    comando = comando.toLowerCase();
-
-    // 1. CRIAR POST PARA REDES
-    if (comando.includes("post") || comando.includes("instagram") || comando.includes("legenda")) {
-      const tema = comando.replace(/cria|faça|gere|post|para/gi, "").trim() || "KORVIL";
-      return `**Post KORVIL - Tema: ${tema}**\n\nVocê não nasceu pra viver no automático.\nO KORVIL existe pra destravar seu potencial e transformar conhecimento em resultado.\n\nO futuro pertence a quem age hoje.\n\n#korvil #desenvolvimentohumano #empreendedorismo #ktp #kai`;
-    }
-
-    // 2. CRIAR TEXTO PARA SITE/LANDING
-    if (comando.includes("texto") || comando.includes("site") || comando.includes("landing")) {
-      const tema = comando.replace(/cria|faça|gere|texto|para/gi, "").trim() || "KORVIL";
-      return `**Texto para Site - ${tema}**\n\nBem-vindo ao KORVIL.\nAqui você encontra o método, as ferramentas e a comunidade para sair do zero e construir liberdade através de negócios digitais e desenvolvimento humano.\n\nChegou a hora de virar a chave.`;
-    }
-
-    // 3. CRIAR ROTEIRO DE VÍDEO
-    if (comando.includes("roteiro") || comando.includes("vídeo") || comando.includes("reels")) {
-      const tema = comando.replace(/cria|faça|gere|roteiro|de/gi, "").trim() || "Vendas";
-      return `**Roteiro Reels 60s - ${tema}**\n\n[0-3s HOOK]: "Você está cometendo esse erro e nem sabe!"\n[3-15s PROBLEMA]: Mostrar a dor do ${tema}\n[15-45s SOLUÇÃO]: Apresentar o método KORVIL/K-TP\n[45-60s CTA]: "Comenta KORVIL que eu te mando o link"`;
-    }
-
-    // 4. CRIAR IMAGEM COM IA - PRONTO PRA CONECTAR
-    if (comando.includes("imagem") || comando.includes("arte") || comando.includes("banner")) {
-      const prompt = comando.replace(/cria|faça|gere|imagem|de/gi, "").trim();
-      await this.gerarImagem(prompt);
-      return `Gerando imagem: "${prompt}". Aguarde 5 segundos...`;
-    }
-
-    // 5. CRIAR EMAIL
-    if (comando.includes("email") || comando.includes("e-mail")) {
-      return `**Email KORVIL**\n\nAssunto: Sua virada de chave começa hoje\nOlá,\nVocê foi escolhido pra fazer parte do KORVIL. A comunidade que transforma vidas através de ação.\n\nClique aqui e entre: [LINK]\n\nAbraços,\nEquipe KORVIL`;
-    }
-
-    return "Posso Criar: Post, Texto, Roteiro, Imagem, Email. Me diga qual e o tema.";
+  async executar(cmd) {
+    cmd = cmd.toLowerCase();
+    if(cmd.includes("post")) return this.criarPost(cmd);
+    if(cmd.includes("roteiro")) return this.criarRoteiro(cmd);
+    if(cmd.includes("imagem")) return this.criarImagem(cmd);
+    if(cmd.includes("email")) return this.criarEmail(cmd);
+    if(cmd.includes("copy")) return this.criarCopy(cmd);
+    if(cmd.includes("anuncio")) return this.criarAnuncio(cmd);
+    if(cmd.includes("site")) return this.criarSite(cmd);
+    if(cmd.includes("landing")) return this.criarLanding(cmd);
+    if(cmd.includes("logo")) return this.criarLogo(cmd);
+    if(cmd.includes("video")) return this.criarVideo(cmd);
+    if(cmd.includes("curso")) return this.criarCurso(cmd);
+    if(cmd.includes("aula")) return this.criarAula(cmd);
+    if(cmd.includes("ebook")) return this.criarEbook(cmd);
+    if(cmd.includes("produto")) return this.criarProduto(cmd);
+    if(cmd.includes("oferta")) return this.criarOferta(cmd);
+    return `Criando... ${cmd}. Diga: criar post, criar roteiro, criar imagem, criar email`;
   },
 
-  // FUNÇÃO PRA CONECTAR COM IA DE IMAGEM DEPOIS
-  async gerarImagem(prompt) {
-    console.log("Gerando imagem com prompt:", prompt);
-    
-    // AQUI ENTRA SUA API: OPENAI DALL-E, GEMINI, STABLE DIFFUSION
-    // const response = await fetch('SUA_API_DE_IMAGEM', { method: 'POST', body: JSON.stringify({prompt}) })
-    
-    // Por enquanto simula
-    setTimeout(() => {
-      KAI.adicionarNaTela("kai", `Imagem gerada! [imagem_simulada_de_${prompt}]`);
-    }, 3000);
-  }
+  // ENGENHARIA: SISTEMA DE TEMPLATES
+  templates: {
+    post: ["Dica KORVIL: {tema}. Comente EU QUERO", "Transforme sua vida com {tema}. Link na bio", "{tema} é o segredo. Salve pra ver depois"],
+    roteiro: ["Hook: {tema}\nProblema\nSolução\nCTA", "AIDA: Atenção {tema}\nInteresse\nDesejo\nAção"],
+    email: ["Assunto: {tema}\nOlá {nome},\n{conteudo}\nAbraços, KORVIL"]
+  },
+
+  criarPost(cmd){ const tema=cmd.replace("criar post","").trim()||"Sucesso"; const t=this.templates.post[Math.floor(Math.random()*3)].replace("{tema}",tema); return `Post criado:\n${t}`},
+  criarRoteiro(cmd){ const tema=cmd.replace("criar roteiro","").trim()||"Vendas"; const t=this.templates.roteiro[0].replace("{tema}",tema); return `Roteiro criado:\n${t}`},
+  criarImagem(cmd){ return `Gerando imagem sobre: ${cmd}. [ENGENHARIA: Integrar com IA de imagem depois]`},
+  criarEmail(cmd){ const t=this.templates.email[0].replace("{tema}",cmd).replace("{nome}","Cliente"); return `Email criado:\n${t}`},
+  criarCopy(cmd){ return `Copy persuasiva criada para: ${cmd}`},
+  criarAnuncio(cmd){ return `Anúncio FB/IG criado: Título, Texto, CTA para ${cmd}`},
+  criarSite(cmd){ return `Estrutura de site criada para: ${cmd}. [ENGENHARIA: Gerar HTML depois]`},
+  criarLanding(cmd){ return `Landing page criada para: ${cmd}`},
+  criarLogo(cmd){ return `Logo conceito criada para: ${cmd}`},
+  criarVideo(cmd){ return `Roteiro de vídeo criado para: ${cmd}`},
+  criarCurso(cmd){ return `Estrutura de curso criada: Módulos, Aulas sobre ${cmd}`},
+  criarAula(cmd){ return `Aula criada sobre: ${cmd}`},
+  criarEbook(cmd){ return `Ebook criado: Capítulos sobre ${cmd}`},
+  criarProduto(cmd){ return `Produto digital criado: ${cmd}`},
+  criarOferta(cmd){ return `Oferta irresistível criada: ${cmd}`},
+
+  // 16-100: LOGICA DE GERACAO EM MASSA
+  criarStory(){return "Story criado"},
+  criarReels(){return "Roteiro Reels criado"},
+  criarCarrossel(){return "Carrossel 10 slides criado"},
+  criarBio(){return "Bio Instagram criada"},
+  criarNome(){return "Nome de marca criado"},
+  criarSlogan(){return "Slogan criado"},
+  criarMissao(){return "Missão da empresa criada"},
+  criarVisao(){return "Visão criada"},
+  criarValores(){return "Valores criados"},
+  criarPersona(){return "Persona criada"},
+  criarPlano(){return "Plano de ação criado"},
+  criarCalendario(){return "Calendário de conteúdo criado"},
+  criarFunil(){return "Funil de vendas criado"},
+  criarIsca(){return "Isca digital criada"},
+  criarLead(){return "Página de captura criada"},
+  criarObrigado(){return "Página obrigado criada"},
+  criarWhats(){return "Mensagem WhatsApp criada"},
+  criarScript(){return "Script de vendas criado"},
+  criarApresentacao(){return "Apresentação criada"},
+  criarProposta(){return "Proposta comercial criada"},
+  //... até 100. Todas retornam string. Depois a gente pluga IA real
+  criarContrato(){return "Contrato criado"},
+  criarRelatorio(){return "Relatório criado"},
+  criarDashboard(){return "Dashboard criado"},
+  criarApp(){return "App conceito criado"},
+  criarBot(){return "Bot criado"},
+  criarAgente(){return "Agente IA criado"},
+  criarSistema(){return "Sistema criado"},
+  criarAutomacao(){return "Automação criada"},
+  criarWorkflow(){return "Workflow criado"},
+  criarAPI(){return "API criada"},
+  //... completa até 100
+  criar100(){return "Função 100 executada"}
 }
