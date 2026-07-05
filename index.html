@@ -20,21 +20,15 @@ canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
 .logo-area{display:flex;justify-content:center;margin-bottom:25px}
-.logo-img{
-  max-width:280px;
-  width:100%;
-  height:auto;
-  border-radius:16px; /* cantos arredondados */
-  border:2px solid var(--c); /* borda ciano */
-  box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c); /* brilho duplo */
-  animation:pulseLogo 2s ease-in-out infinite;
-  padding:6px; /* respiro da moldura */
-  background:#000; /* fundo preto */
-}
+.logo-img{max-width:280px;width:100%;height:auto;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c);animation:pulseLogo 2s ease-in-out infinite;padding:6px;background:#000;}
 @keyframes pulseLogo{0%,100%{transform:scale(1);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c)}50%{transform:scale(1.07);box-shadow:0 0 30px var(--c)60, 0 0 50px var(--c)}}
 
-.tabs{display:flex;gap:12px;margin-bottom:25px}.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
+.tabs{display:flex;gap:12px;margin-bottom:15px}.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
 .tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c)}
+
+.btn-kai{width:100%;padding:16px;border:2px solid var(--c);background:rgba(0,255,255,.1);color:var(--c);font-weight:900;font-size:15px;border-radius:12px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px;transition:.3s;letter-spacing:1px}
+.btn-kai:hover{transform:scale(1.03); background:linear-gradient(135deg,var(--c),var(--c2)); color:#000; box-shadow:0 0 25px var(--c)}
+
 .form{display:none;flex-direction:column;gap:16px}.form.active{display:flex}
 label{font-size:13px; font-weight:700; margin-left:4px; color:var(--c2); display:block; margin-bottom:4px}
 .input-group{display:flex; flex-direction:column; gap:4px}
@@ -65,7 +59,13 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
   <div class="logo-area">
     <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/korvil-logo.png" class="logo-img">
   </div>
+
   <div class="tabs"><button type="button" class="tab active" id="tabLogin">ENTRAR</button><button type="button" class="tab" id="tabCadastro">NOVO USUÁRIO</button></div>
+
+  <!-- BOTAO K-AI ADICIONADO AQUI -->
+  <button type="button" class="btn-kai" onclick="window.location.href='kai-core/index.html'">
+    🤖 ASSISTENTE VIRTUAL K-AI
+  </button>
 
   <form id="login" class="form active">
     <input type="email" id="loginEmail" placeholder="Digite seu E-mail" required>
