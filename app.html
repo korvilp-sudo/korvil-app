@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
 <title>KORVIL APP</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --card2:#111; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
@@ -106,12 +105,15 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
 <main class="wrap">
   <section id="central" class="tela ativa">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/logo-ktp.png" alt="Logo KORVIL" class="logo-central">
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
+    <!-- H1 CENTRAL KORVIL REMOVIDO -->
 
+    <!-- 1. SETORES: EM CIMA DAS IMAGENS -->
     <h3 class="sectitle">SETORES:</h3>
     <div class="grid-4">
       <div class="btn-app" onclick="abrirTela('sistema')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/sistema/images/logosistemak.png" alt="Sistema K"> <!-- LOGO CORRIGIDA -->
+        <!-- 2. SISTEMA K ARRUMADO: URL ABSOLUTA -->
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/sistema/images/logosistemak.png" alt="Sistema K">
         <span>Sistema K</span>
       </div>
       <div class="btn-app" onclick="irParaKTP()">
@@ -128,14 +130,38 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
       </div>
     </div>
 
+    <!-- 3. CENTRAL: EM BAIXO DAS IMAGENS -->
     <h3 class="sectitle">CENTRAL:</h3>
+
     <div class="card" onclick="abrirTela('humano')"><h2>1. DESENVOLVIMENTO HUMANO</h2><p>Cursos, Treinamento, Saude e Beleza</p></div>
     <div class="card" onclick="abrirTela('negocios')"><h2>2. NEGOCIOS</h2><p>Parcerias com Profissionais</p></div>
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
   </section>
 
-  <!-- RESTO IGUAL... -->
-  
+  <section id="humano" class="tela">
+    <h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2>
+    <div class="sub-aba">
+      <h4>AREAS</h4>
+      <h4>Tecnologias:</h4><ul><li>1. Manutencao de Celular</li></ul>
+      <h4>Educacao Fisica Bacharelado:</h4><ul><li>1. Treinamento Personalizado</li></ul>
+      <h4>Empreendedorismo:</h4><ul><li>1. Negocio Proprio</li></ul>
+      <h4>Saude:</h4><ul><li onclick="irParaKTH()">1. K-TH Terapia Holistica →</li></ul>
+      <h4>Beleza:</h4><ul><li>1. Cabeleireiro Unissex</li></ul>
+    </div>
+    <button class="btn" onclick="abrirWhats('Cursos KORVIL - Desenvolvimento Humano')">Falar com Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="negocios" class="tela"><h1>NEGOCIOS</h1><div class="sub-aba"><h4>PARCERIAS COM PROFISSIONAIS</h4><p>Profissionais das areas KORVIL.</p></div><button class="btn" onclick="abrirWhats('Parcerias KORVIL - Negocios')">Falar com Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="servicos" class="tela"><h1>SERVICOS</h1><div class="sub-aba"><h4>1. CONCERTOS DE CELULAR</h4><p>Profissionais tecnicos.</p></div><div class="sub-aba"><h4>2. TREINAMENTO</h4><p>Profissionais KORVIL.</p></div><div class="sub-aba"><h4>3. CONSULTORIA</h4><p>Profissionais em Financas.</p></div><div class="sub-aba"><h4>4. SAUDE E BELEZA</h4><p>Profissionais da area.</p></div><button class="btn" onclick="abrirWhats('Servicos KORVIL - Servicos')">Contratar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="sistema" class="tela"><h1>SISTEMA K</h1><h2>SERVICOS GERAIS PROFISSIONAIS</h2><div class="sub-aba"><ul><li>Eletricista</li><li>Carpinteiro</li><li>Faxineira</li><li>Encanador</li><li>Pintor</li><li>Pedreiro</li></ul></div><button class="btn" onclick="abrirWhats('Sistema K - Servicos Gerais')">Contratar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><div class="sub-aba"><h4>CONSULTORIA FINANCEIRA</h4><p>Profissionais em estrategia.</p></div><button class="btn" onclick="abrirWhats('K-AFORTUNADO - Consultoria Financeira')">Agendar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kalma" class="tela"><h1>K-ALMA</h1><h2>SAUDE</h2><div class="sub-aba"><ul><li>Terapeuta Holistico</li><li>Dentista</li><li>Fisioterapeuta</li><li>Medico</li></ul></div><h2>BELEZA</h2><div class="sub-aba"><ul><li>Cabeleireiro Unissex</li><li>Barbeiro</li><li>Esteticista</li><li>Manicure</li><li>Sobrancelhas</li></ul></div><button class="btn" onclick="abrirWhats('K-ALMA - Saude e Beleza')">Agendar Profissionais</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+
+  <section id="kai-assistente" class="tela"><h1>K-AI ASSISTENTE</h1><div class="card"><p>Clique no cubo K-AI para abrir o Mini Menu.</p></div><button class="btn" onclick="abrirWhats('K-AI - Assistente Virtual')">Falar com K-AI no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kai-sobre" class="tela"><h1>SOBRE O KORVIL</h1><div class="card"><h4>11 ANOS DE KORVIL</h4><p><b>Sistema K:</b> Servicos Gerais</p><p><b>K-TP:</b> Projeto Transformacao</p><p><b>K-AFORTUNADO:</b> Financas</p><p><b>K-ALMA:</b> Saude e Beleza</p><p><b>Cursos:</b> Tecnologia, Educacao Fisica, Empreendedorismo</p></div><button class="btn" onclick="abrirWhats('KORVIL - Sobre')">Falar sobre KORVIL no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kai-politica" class="tela"><h1>POLITICA E PRIVACIDADE</h1><div class="card"><p><b>KORVIL LTDA</b></p><p>LGPD: Seus dados sao usados so para contato. Nao vendemos dados. Whats oficial: 13997690898</p></div><button class="btn" onclick="abrirWhats('KORVIL - Politica e Privacidade')">Duvidas no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+
   <section id="ktp-iframe" class="tela">
     <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
     <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-site/sections/ktp/"></iframe>
@@ -149,12 +175,36 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   </section>
 </main>
 
-<script>
-// CONFIG SUPABASE - SUAS CHAVES
-const SUPABASE_URL = 'https://vtvewhgvuzpxcpzqddpk.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0'
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 class="logo">KORVIL</h2>
+    <input id="nome" placeholder="Seu Nome Completo" required>
+    <input id="whats" placeholder="Seu WhatsApp com DDD" required>
+    <input id="cep" placeholder="CEP" onblur="buscaCEP()">
+    <input id="rua" placeholder="Rua e Numero">
+    <button class="btn" onclick="enviarWhats()">Enviar para WhatsApp 13997690898</button>
+    <button class="btn voltar" onclick="fecharForm()">Cancelar</button>
+  </div>
+</div>
 
+<footer class="kai-footer">
+  <div class="message-box" id="cubeMessage">Clique no cubo K-AI</div>
+  <div class="scene" id="cubeScene">
+    <div class="cube" id="cubeKAI">
+      <div class="cube-face front">K-AI</div><div class="cube-face back">K-AI</div>
+      <div class="cube-face right">K-AI</div><div class="cube-face left">K-AI</div>
+      <div class="cube-face top">K-AI</div><div class="cube-face bottom">K-AI</div>
+    </div>
+    <div class="kai-menu-box" id="kaiMenu">
+      <div class="kai-head">MINI MENU <svg onclick="toggleKaiMenu()" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+      <button class="kai-menu-btn" onclick="abrirTela('kai-sobre');toggleKaiMenu()">Sobre o KORVIL</button>
+      <button class="kai-menu-btn" onclick="abrirTela('kai-politica');toggleKaiMenu()">Política e Privacidade</button>
+      <button class="kai-menu-btn" onclick="abrirWhats('K-AI - Atendimento')">Falar no Whats</button>
+    </div>
+  </div>
+</footer>
+
+<script>
 const WHATS_NUMBER = '5513997690898';
 let textoWhats = '';
 const cube = document.getElementById("cubeKAI");
