@@ -1,3 +1,69 @@
+// ===== CÉREBRO SEPARADO - 9 GAVETAS =====
+const KAI_BRAIN = {
+  async processarComando(cmdOriginal){
+    const cmd = cmdOriginal.toLowerCase();
+    let resposta = "";
+
+    // ATALHOS SISTEMA
+    if(cmd.includes("parar de ouvir")) {
+      KAI_CONFIG.autoOuvir=false;
+      if(KAI_UI.recognition) KAI_UI.recognition.stop();
+      resposta="Modo manual ativado Chefe";
+    }
+    else if(cmd.includes("voltar a ouvir")) {
+      KAI_CONFIG.autoOuvir=true;
+      if(KAI_UI.recognition) KAI_UI.recognition.start();
+      resposta="Voltando a ouvir";
+    }
+    else if(cmd.includes("lembre") || cmd.includes("salvar na memória")){
+      const texto = cmdOriginal.replace(/lembre|salvar na memória/g, '').trim();
+      resposta = KAI_MEMORY.salvarMemoriaImportante(texto);
+    }
+    else if(cmd.includes("o que você lembra") || cmd.includes("buscar na memória")){
+      const termo = cmdOriginal.replace(/o que você lembra|buscar na memória/g, '').trim();
+      resposta = KAI_MEMORY.buscarNaMemoria(termo);
+    }
+
+    // CHAMADAS DAS GAVETAS - ORDEM DE PRIORIDADE
+    else if (cmd.includes("vai") || cmd.includes("abrir")) {
+      resposta = Navega.ir(cmd);
+    }
+    else if (cmd.includes("cria")) {
+      resposta = await Cria.executar(cmd);
+    }
+    else if (cmd.includes("copia") || cmd.includes("resuma") || cmd.includes("analisa") || cmd.includes("traduz")) {
+      resposta = await Copia.executar(cmd);
+    }
+    else if (cmd.includes("hora") || cmd.includes("data") || cmd.includes("status") || cmd.includes("estatísticas")) {
+      resposta = await Sistema.executar(cmd);
+    }
+    // 5 NOVAS GAVETAS
+    else if (cmd.includes("buscar") || cmd.includes("pesquisar")) {
+      resposta = await Busca.executar(cmd);
+    }
+    else if (cmd.includes("calcular") || cmd.includes("somar") || cmd.includes("dividir") || cmd.includes("multiplicar") || cmd.includes("%")) {
+      resposta = await Calculo.executar(cmd);
+    }
+    else if (cmd.includes("postar") || cmd.includes("instagram") || cmd.includes("social") || cmd.includes("story") || cmd.includes("reels")) {
+      resposta = await Social.executar(cmd);
+    }
+    else if (cmd.includes("lead") || cmd.includes("venda") || cmd.includes("proposta") || cmd.includes("crm") || cmd.includes("cliente")) {
+      resposta = await Vendas.executar(cmd);
+    }
+    else if (cmd.includes("aula") || cmd.includes("curso") || cmd.includes("aprender") || cmd.includes("exercício") || cmd.includes("estudar")) {
+      resposta = await Educacao.executar(cmd);
+    }
+    // FALLBACK
+    else {
+      resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, pesquisar algo, calcular 10%`;
+    }
+
+    KAI_MEMORY.adicionarConversa(cmdOriginal, resposta);
+    KAI_UI.falar(resposta);
+  }
+}
+
+// ===== INTERFACE + CENA 3D CORVO + VOZ =====
 const KAI_UI = {
   scene: null,
   camera: null,
@@ -93,8 +159,8 @@ const KAI_UI = {
     this.recognition.onresult = (e)=>{
       const cmd = e.results[e.results.length-1][0].transcript;
       if(cmd.length > 2){
-        this.addMsg('user',cmd);
-        KAI_BRAIN.processarComando(cmd);
+        document.getElementById('userInput').value = cmd;
+        this.enviarTexto();
       }
     }
 
@@ -104,7 +170,7 @@ const KAI_UI = {
       if(KAI_CONFIG.autoOuvir) this.recognition.start();
     }
 
-    try{ this.recognition.start(); }catch(e){}
+    if(KAI_CONFIG.autoOuvir) try{ this.recognition.start(); }catch(e){}
   },
 
   toggleMic(){
@@ -124,7 +190,7 @@ const KAI_UI = {
     utter.pitch = 0.6; // VOZ CORVO GRAVE
     utter.rate = 0.95;
     utter.volume = 1;
-    utter.onstart = this.pulsarCore;
+    utter.onstart = ()=> this.pulsarCore();
     speechSynthesis.speak(utter);
   },
 
@@ -176,61 +242,5 @@ const KAI_UI = {
     document.getElementById('userInput').addEventListener('keydown', (e)=>{
       if(e.key==='Enter') this.enviarTexto();
     });
-  }
-}
-
-// ===== CÉREBRO SEPARADO - 9 GAVETAS =====
-const KAI_BRAIN = {
-  async processarComando(cmdOriginal){
-    const cmd = cmdOriginal.toLowerCase();
-    let resposta = "";
-
-    // ATALHOS SISTEMA
-    if(cmd.includes("parar de ouvir")) {
-      KAI_CONFIG.autoOuvir=false;
-      if(KAI_UI.recognition) KAI_UI.recognition.stop();
-      resposta="Modo manual ativado Chefe";
-    }
-    else if(cmd.includes("voltar a ouvir")) {
-      KAI_CONFIG.autoOuvir=true;
-      if(KAI_UI.recognition) KAI_UI.recognition.start();
-      resposta="Voltando a ouvir";
-    }
-
-    // CHAMADAS DAS GAVETAS - ORDEM DE PRIORIDADE
-    else if (cmd.includes("vai") || cmd.includes("abrir")) {
-      resposta = Navega.ir(cmd);
-    }
-    else if (cmd.includes("cria")) {
-      resposta = await Cria.executar(cmd);
-    }
-    else if (cmd.includes("copia") || cmd.includes("resuma") || cmd.includes("analisa") || cmd.includes("traduz")) {
-      resposta = await Copia.executar(cmd);
-    }
-    else if (cmd.includes("hora") || cmd.includes("salvar") || cmd.includes("memória") || cmd.includes("data") || cmd.includes("status")) {
-      resposta = await Sistema.executar(cmd);
-    }
-    // 5 NOVAS GAVETAS
-    else if (cmd.includes("buscar") || cmd.includes("pesquisar")) {
-      resposta = await Busca.executar(cmd);
-    }
-    else if (cmd.includes("calcular") || cmd.includes("somar") || cmd.includes("dividir") || cmd.includes("multiplicar") || cmd.includes("%")) {
-      resposta = await Calculo.executar(cmd);
-    }
-    else if (cmd.includes("postar") || cmd.includes("instagram") || cmd.includes("social") || cmd.includes("story") || cmd.includes("reels")) {
-      resposta = await Social.executar(cmd);
-    }
-    else if (cmd.includes("lead") || cmd.includes("venda") || cmd.includes("proposta") || cmd.includes("crm") || cmd.includes("cliente")) {
-      resposta = await Vendas.executar(cmd);
-    }
-    else if (cmd.includes("aula") || cmd.includes("curso") || cmd.includes("aprender") || cmd.includes("exercício") || cmd.includes("estudar")) {
-      resposta = await Educacao.executar(cmd);
-    }
-    // FALLBACK
-    else {
-      resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, pesquisar algo, calcular 10%`;
-    }
-
-    KAI_UI.falar(resposta);
   }
 }
