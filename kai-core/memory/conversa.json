@@ -1,1 +1,13 @@
 
+{
+  "usuario": "Chefe",
+  "modo": "ilimitado",
+  "criado_em": "2026-04-25",
+  "historico": [],
+  "memorias_importantes": [],
+  "preferencias": {
+    "voz_grave": true,
+    "auto_ouvir": true,
+    "nome": "Chefe"
+  }
+}
