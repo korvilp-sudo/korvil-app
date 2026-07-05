@@ -1,132 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;-webkit-tap-highlight-color:transparent}
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-body{background:#000;overflow:hidden;color:var(--c);height:100vh;width:100vw}
+:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#0a0f14;--chat:#111b21;--balao:#1f2c33}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);overflow:hidden;height:100vh;width:100vw;color:#e9edef}
 
-#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
-.ui{position:fixed;z-index:999;pointer-events:auto} /* FORÇEI PRA FICAR POR CIMA */
+#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.15;pointer-events:none} /* FUNDO 3D SUTIL */
 
-.logo{top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;letter-spacing:4px;text-shadow:0 0 20px var(--c);text-align:center}
-.logo span{color:var(--c2);font-size:11px;letter-spacing:2px;display:block;margin-top:3px}
-.modo{top:20px;right:15px;font-size:10px;font-weight:700;padding:6px 10px;border:1px solid var(--c);border-radius:20px;background:rgba(0,255,255,.1);cursor:pointer}
-.modo.admin{border-color:#00ff88; color:#00ff88;}
+/* TOPO IGUAL WHATSAPP */
+.topbar{position:fixed;top:0;left:0;width:100%;height:60px;background:#202c33;z-index:10;display:flex;align-items:center;padding:0 12px;gap:12px}
+.topbar img{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));padding:2px}
+.topbar .info{flex:1}
+.topbar .nome{font-weight:600;font-size:16px;color:#e9edef}
+.topbar .status-top{font-size:12px;color:#8696a0}
+.topbar .icons{font-size:22px;color:#aebac1;cursor:pointer}
 
-.menuBtn{top:15px;left:15px;width:40px;height:40px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;background:rgba(0,0,0,.5)}
-.menu{top:65px;left:15px;width:calc(100% - 30px);max-width:340px;max-height:60vh;overflow-y:auto;background:rgba(0,10,20,.98);border:2px solid var(--c);border-radius:15px;padding:12px;display:none;backdrop-filter:blur(10px)}
-.menu h3{color:var(--c2);margin:10px 0 5px;font-size:12px}
-.menu button{width:100%;background:rgba(0,255,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:4px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
+/* CHAT */
+.chat{position:absolute;top:60px;bottom:70px;left:0;width:100%;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.msg{max-width:75%;padding:8px 12px;border-radius:8px;font-size:15px;line-height:1.4;position:relative;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1}}
+.msg.user{align-self:flex-end;background:#005c4b;color:#e9edef;border-radius:8px 0 8px 8px}
+.msg.kai{align-self:flex-start;background:var(--balao);color:#e9edef;border-radius:0 8px 8px 8px}
+.msg .hora{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
 
-.mic{bottom:90px;left:50%;transform:translateX(-50%);width:70px;height:70px;border:3px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;box-shadow:0 0 30px var(--c);background:rgba(0,255,255,.1)}
-.mic.listening{animation:pulse 0.8s infinite;background:rgba(0,255,255,.3)}
-@keyframes pulse{0%,100%{box-shadow:0 0 30px var(--c)}50%{box-shadow:0 0 70px var(--c2)}}
+/* BARRA DE INPUT IGUAL WHATSAPP */
+.inputBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:#202c33;z-index:10;display:flex;align-items:center;padding:0 8px;gap:8px}
+.inputBar .icon{font-size:24px;color:#aebac1;cursor:pointer;padding:8px}
+.inputBar input{flex:1;background:#2a3942;border:none;color:#e9edef;padding:12px 16px;border-radius:25px;outline:none;font-size:15px}
+.inputBar .micBtn{width:50px;height:50px;background:#00a884;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#111b21;cursor:pointer;transition:.2s}
+.inputBar .micBtn.listening{background:#ff3b30;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-.chat{display:none} /* ESCONDI CHAT NO MOBILE PRA NÃO TAMPA A TELA */
-
-.inputArea{bottom:20px;left:50%;transform:translateX(-50%);width:95%;max-width:600px;display:flex;gap:6px}
-.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:12px;border-radius:12px;outline:none;font-size:14px}
-.inputArea input:focus{border-color:var(--c2);box-shadow:none;background:#001a1f} /* SEM AZUL */
-.inputArea button{width:44px;height:44px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900}
-.status{bottom:60px;left:50%;transform:translateX(-50%);font-size:12px;text-align:center;background:rgba(0,0,0,.8);padding:6px 12px;border-radius:20px;border:1px solid var(--c)}
+/* MENU LATERAL */
+.menu{position:fixed;top:60px;left:-320px;width:300px;height:calc(100% - 60px);background:#111b21;border-right:1px solid #2a3942;transition:.3s;z-index:20;padding:15px}
+.menu.open{left:0}
+.menu h3{color:var(--c2);font-size:12px;margin:15px 0 8px}
+.menu button{width:100%;background:#2a3942;border:none;color:#e9edef;padding:12px;margin:4px 0;border-radius:8px;text-align:left;cursor:pointer;font-size:14px}
 </style>
 </head>
 <body>
 <canvas id="canvas3d"></canvas>
 
-<div class="ui logo">K-AI<span>KORVIL ARTIFICIAL INTELLIGENCE</span></div>
-<div class="ui modo" id="modoUsuario">MODO: VISITANTE</div>
-<div class="ui menuBtn" onclick="toggleMenu()">☰</div>
+<!-- TOPO -->
+<div class="topbar">
+  <div class="icons" onclick="toggleMenu()">☰</div>
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2300FFFF'/%3E%3C/svg%3E">
+  <div class="info">
+    <div class="nome">K-AI</div>
+    <div class="status-top" id="statusTop">online</div>
+  </div>
+  <div class="icons">⋮</div>
+</div>
 
-<div class="ui menu" id="menu">
-  <h3>INTERAÇÕES</h3>
+<!-- MENU -->
+<div class="menu" id="menu">
+  <h3>⚡ AÇÕES RÁPIDAS</h3>
   <button onclick="executar('abrir app')">Abrir APP KORVIL</button>
   <button onclick="executar('buscar marketing')">Pesquisar Google</button>
-  <button onclick="executar('calcular 15% de 2000')">Calcular</button>
-  <button onclick="executar('status')">Status</button>
+  <button onclick="executar('cria post')">Criar Conteúdo</button>
+  <h3>💾 MEMÓRIA</h3>
+  <button onclick="executar('estatísticas')">Estatísticas</button>
   <button onclick="executar('limpar memória')">Limpar Memória</button>
 </div>
 
-<div class="ui status" id="status">Toque no mic</div>
+<!-- CHAT -->
+<div class="chat" id="chat"></div>
 
-<div class="ui inputArea">
-  <input type="text" id="userInput" placeholder="Digite ou fale com K-AI...">
-  <button id="micBtn">🎙️</button>
-  <button onclick="enviarTexto()">➤</button>
+<!-- BARRA INPUT -->
+<div class="inputBar">
+  <div class="icon">😊</div>
+  <input type="text" id="userInput" placeholder="Mensagem">
+  <div class="icon">📎</div>
+  <div class="icon">📷</div>
+  <div class="micBtn" id="micBtn">🎤</div>
 </div>
 
 <audio id="bgMusic" loop></audio>
 <script src="kai-core.js"></script>
 <script>
-// ===== CONFIG =====
-const KAI_CONFIG = {MODO: localStorage.getItem('kai_modo') || 'USER', SENHA_ADMIN: 'KORVIL2026', NOME_USER: 'Chefe', palavraAtivacao: 'k-ai'}
-const KAI_MEMORY = {dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]}, salvar(){localStorage.setItem('kai_memoria', JSON.stringify(this.dados));}, salvarMemoria(t){this.dados.memorias.push({t});this.salvar();return `Salvei: ${t}`;}, buscar(t){const r=this.dados.memorias.filter(m=>m.t.includes(t));return r.length?`Lembro: ${r[0].t}`:"Não lembro";}}
+const KAI_CONFIG = {MODO: 'USER', NOME_USER: 'Chefe', palavraAtivacao: 'k-ai'}
+const KAI_MEMORY = {dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]}, salvar(){localStorage.setItem('kai_memoria', JSON.stringify(this.dados));}, salvarMemoria(t){this.dados.memorias.push({t});this.salvar();return `Salvei: ${t}`;}, buscar(t){const r=this.dados.memorias.filter(m=>m.t.includes(t));return r.length?`Lembro: ${r[0].t}`:"Não lembro";}, estatisticas(){return `Conversas: ${this.dados.historico.length}`;}}
 
-const modoBadge = document.getElementById('modoUsuario');
-if(KAI_CONFIG.MODO === 'ADMIN'){ modoBadge.innerText = 'MODO: ADMIN'; modoBadge.classList.add('admin'); }
-
-// ===== CENA 3D COM FALLBACK =====
-let scene, camera, renderer, nucleo, material;
+// 3D FUNDO SUTIL
 try{
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
-  material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.6});
-  nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 2), material); 
-  scene.add(nucleo); scene.add(new THREE.PointLight(0x00FFFF, 2.5, 50).position.set(5,5,5)); camera.position.z = 6;
-  function animate(){ requestAnimationFrame(animate); if(nucleo) nucleo.rotation.y += 0.015; renderer.render(scene, camera); }
+  const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.3, wireframe:true});
+  const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(3, 1), material); 
+  scene.add(nucleo); scene.add(new THREE.PointLight(0x00FFFF, 1, 50).position.set(5,5,5)); camera.position.z = 8;
+  function animate(){ requestAnimationFrame(animate); nucleo.rotation.x += 0.005; nucleo.rotation.y += 0.008; renderer.render(scene, camera); }
   animate();
-}catch(e){ console.log("3D falhou", e) }
+}catch(e){}
 
-window.addEventListener('resize', ()=>{ if(camera){camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);}});
+const chat = document.getElementById('chat');
+const statusTop = document.getElementById('statusTop');
 
-// ===== VOZ =====
+// VOZ
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const synth = window.speechSynthesis;
 let recognition, isListening = false;
-
 const micBtn = document.getElementById('micBtn');
-const status = document.getElementById('status');
 
-if(SpeechRecognition){
-  recognition = new SpeechRecognition();
-  recognition.lang = 'pt-BR'; recognition.continuous = false;
-  recognition.onstart = ()=>{isListening=true; micBtn.classList.add('listening'); status.innerText='🔵 Ouvindo...';}
-  recognition.onend = ()=>{isListening=false; micBtn.classList.remove('listening'); status.innerText='Toque no mic';}
-  recognition.onresult = (e)=>{ 
-    const cmd = e.results[0][0].transcript.toLowerCase();
-    if(cmd.includes(KAI_CONFIG.palavraAtivacao)){
-      const comandoLimpo = cmd.replace(KAI_CONFIG.palavraAtivacao, '').trim();
-      processarComando(comandoLimpo);
-    } else { falar(`Diga "K-AI" antes`); }
+micBtn.onclick = ()=>{
+  if(!SpeechRecognition){ alert("Navegador não suporta voz"); return; }
+  if(!recognition){
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR'; recognition.continuous = false;
+    recognition.onstart = ()=>{isListening=true; micBtn.classList.add('listening'); statusTop.innerText='gravando áudio...';}
+    recognition.onend = ()=>{isListening=false; micBtn.classList.remove('listening'); statusTop.innerText='online';}
+    recognition.onresult = (e)=>{ const cmd = e.results[0][0].transcript; addMsg('user', cmd); processarComando(cmd); }
   }
+  if(!isListening) recognition.start(); else recognition.stop();
 }
 
-micBtn.onclick = ()=>{ if(!isListening && recognition) recognition.start(); else if(recognition) recognition.stop(); }
+function addMsg(tipo, texto){
+  const div = document.createElement('div');
+  div.className = 'msg ' + tipo;
+  const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML = `${texto}<div class="hora">${hora} ✓✓</div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  KAI_MEMORY.dados.historico.push({tipo, texto}); KAI_MEMORY.salvar();
+}
 
 function falar(texto){
-  if(synth.speaking) synth.cancel();
-  const utter = new SpeechSynthesisUtterance(texto);
-  utter.lang = 'pt-BR'; utter.rate = 0.95; utter.pitch = 0.6;
-  utter.onstart = ()=>{ if(material) material.emissiveIntensity = 1.5; setTimeout(()=>{if(material)material.emissiveIntensity=0.6},300)}
-  synth.speak(utter);
-  status.innerText = 'K-AI: ' + texto;
+  addMsg('kai', texto);
+  if(window.speechSynthesis){ speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(texto); utter.lang = 'pt-BR'; utter.rate = 0.95; speechSynthesis.speak(utter); }
 }
 
-// ===== CÉREBRO =====
-function processarComando(cmd){ const resposta = executarTodasActions(cmd); falar(resposta); }
-function toggleMenu(){ const menu = document.getElementById('menu'); menu.style.display = menu.style.display==='block'?'none':'block'; }
-function executar(cmd){ toggleMenu(); processarComando(cmd); }
-function enviarTexto(){ const input = document.getElementById('userInput'); if(!input.value.trim()) return; processarComando(input.value); input.value = ""; }
-document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
+function processarComando(cmd){ 
+  try{ const resposta = executarTodasActions(cmd); falar(resposta); }
+  catch(e){ falar("Ok Chefe, processando: " + cmd); }
+}
 
-setTimeout(()=>{ falar(`K-AI online Chefe`); }, 1000);
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+function executar(cmd){ toggleMenu(); addMsg('user', cmd); processarComando(cmd); }
+
+document.getElementById('userInput').addEventListener('keydown', (e)=>{ 
+  if(e.key==='Enter'){ 
+    const val = e.target.value; 
+    if(!val.trim()) return; 
+    addMsg('user', val); 
+    processarComando(val); 
+    e.target.value = ""; 
+  }
+});
+
+setTimeout(()=>{ falar(`Olá Chefe. K-AI online`); }, 1000);
 </script>
 </body>
 </html>
