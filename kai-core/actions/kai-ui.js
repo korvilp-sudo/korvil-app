@@ -194,6 +194,15 @@ const KAI_BRAIN = {
     }
     else {
       resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, que horas são`;
+    else if (cmd.includes("buscar") || cmd.includes("pesquisar")) { resposta = await Busca.executar(cmd); }
+    }
+    else if (cmd.includes("calcular") || cmd.includes("somar") || cmd.includes("%")) { resposta = await Calculo.executar(cmd); }
+    }
+    else if (cmd.includes("postar") || cmd.includes("instagram") || cmd.includes("social")) { resposta = await Social.executar(cmd); }
+    }
+    else if (cmd.includes("lead") || cmd.includes("venda") || cmd.includes("proposta")) { resposta = await Vendas.executar(cmd); }
+    }
+    else if (cmd.includes("aula") || cmd.includes("curso") || cmd.includes("aprender")) { resposta = await Educacao.executar(cmd); }
     }
 
     KAI_UI.falar(resposta);
