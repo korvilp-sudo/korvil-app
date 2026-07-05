@@ -105,34 +105,29 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
 <main class="wrap">
   <section id="central" class="tela ativa">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
-    <!-- H1 CENTRAL KORVIL REMOVIDO -->
+    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/logo-korvil.png" alt="Logo KORVIL" class="logo-central">
 
-    <!-- 1. SETORES: EM CIMA DAS IMAGENS -->
     <h3 class="sectitle">SETORES:</h3>
     <div class="grid-4">
       <div class="btn-app" onclick="abrirTela('sistema')">
-        <!-- 2. SISTEMA K ARRUMADO: URL ABSOLUTA -->
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/sistema/images/logosistemak.png" alt="Sistema K">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/sistemak/images/logosistemak.png" alt="Sistema K">
         <span>Sistema K</span>
       </div>
       <div class="btn-app" onclick="irParaKTP()">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/ktp/images/logoktp.png" alt="K-TP">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/ktp/images/logoktp.png" alt="K-TP">
         <span>K-TP</span>
       </div>
       <div class="btn-app" onclick="abrirTela('kafortunado')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
         <span>K-AFORTUNADO</span>
       </div>
       <div class="btn-app" onclick="abrirTela('kalma')">
-        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-site/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
         <span>K-ALMA</span>
       </div>
     </div>
 
-    <!-- 3. CENTRAL: EM BAIXO DAS IMAGENS -->
     <h3 class="sectitle">CENTRAL:</h3>
-
     <div class="card" onclick="abrirTela('humano')"><h2>1. DESENVOLVIMENTO HUMANO</h2><p>Cursos, Treinamento, Saude e Beleza</p></div>
     <div class="card" onclick="abrirTela('negocios')"><h2>2. NEGOCIOS</h2><p>Parcerias com Profissionais</p></div>
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
@@ -162,9 +157,10 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   <section id="kai-sobre" class="tela"><h1>SOBRE O KORVIL</h1><div class="card"><h4>11 ANOS DE KORVIL</h4><p><b>Sistema K:</b> Servicos Gerais</p><p><b>K-TP:</b> Projeto Transformacao</p><p><b>K-AFORTUNADO:</b> Financas</p><p><b>K-ALMA:</b> Saude e Beleza</p><p><b>Cursos:</b> Tecnologia, Educacao Fisica, Empreendedorismo</p></div><button class="btn" onclick="abrirWhats('KORVIL - Sobre')">Falar sobre KORVIL no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kai-politica" class="tela"><h1>POLITICA E PRIVACIDADE</h1><div class="card"><p><b>KORVIL LTDA</b></p><p>LGPD: Seus dados sao usados so para contato. Nao vendemos dados. Whats oficial: 13997690898</p></div><button class="btn" onclick="abrirWhats('KORVIL - Politica e Privacidade')">Duvidas no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
 
+  <!-- MUDEI AQUI: AGORA APONTA DIRETO PROJETO TRANSFORMAÇÃO -->
   <section id="ktp-iframe" class="tela">
     <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
-    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-site/sections/ktp/"></iframe>
+    <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-app/Sections/ktp/projetotransformacao/projetransformacao.html"></iframe>
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
 
