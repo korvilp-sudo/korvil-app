@@ -49,7 +49,12 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
 <body>
 <canvas id="particles"></canvas><div class="words-bg" id="wordsBg"></div>
 <div class="card">
-  <div class="logo-area"><img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/logo-korvil.png" class="logo-img" onerror="this.style.display='none'"></div>
+  <div class="logo-area">
+  <video class="logo-img" autoplay muted loop playsinline>
+    <source src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/korvillogo.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo.
+  </video>
+</div>
   <div class="tabs"><button type="button" class="tab active" id="tabLogin">ENTRAR</button><button type="button" class="tab" id="tabCadastro">NOVO USUÁRIO</button></div>
 
   <form id="login" class="form active">
