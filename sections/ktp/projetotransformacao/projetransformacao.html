@@ -2,107 +2,130 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TP PROJETO TRANSFORMAÇÃO 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
+<title>K-TP PROJETO TRANSFORMAÇÃO</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card2:#111; --text:#fff; --text2:#aaa; --ok:#00ff88; --borda:#1f1f1f;}
+:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
-.logo-projeto-area{display:flex;justify-content:center;margin:0 0 16px;}
-.logo-projeto{width:100%;max-width:300px;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c);padding:8px;background:#000;animation:pulseLogo 2s infinite;}
-@keyframes pulseLogo{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-h1{text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:4px;}
-.subtitulo{text-align:center;color:var(--text2);font-size:13px;margin-bottom:20px;}
-.etapa{display:none;} .etapa.ativa{display:block;}
-.etapa-titulo{font-size:15px;font-weight:800;color:var(--c);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.etapa-num{background:var(--c);color:#000;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;}
-.grid-planos{display:grid;gap:12px;}
-.card-plano{background:var(--card2);border:2px solid var(--borda);border-radius:14px;padding:14px;cursor:pointer;}
-.card-plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
-.card-plano .tipo{font-size:12px;color:var(--text2);font-weight:700;}
-.card-plano .nome{font-size:16px;font-weight:900;color:var(--c);margin:4px 0;}
-.card-plano .preco{font-size:22px;font-weight:900;color:var(--ok);}
-.card-plano .preco span{font-size:12px;color:var(--text2);}
-.grid-horarios,.grid-objetivos{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn-horario,.btn-objetivo{padding:14px;background:var(--card2);border:2px solid var(--borda);border-radius:10px;color:var(--text);font-weight:700;text-align:center;cursor:pointer;}
-.btn-horario.selecionado,.btn-objetivo.selecionado{border-color:var(--c);background:rgba(0,245,255,.1);color:var(--c);}
-.input-group{margin-bottom:12px;}
+h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;border-left:3px solid var(--c);padding-left:8px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;}
+.plano:hover{border-color:var(--c);}
+.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);}
+.plano .nome{font-weight:800;color:var(--c);font-size:13px;}
+.plano .desc{font-size:11px;color:var(--text2);margin:4px 0;}
+.plano .valor{font-weight:900;color:var(--ok);font-size:16px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
+.btn.voltar{background:#222;color:var(--text);}
+.input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select{width:100%;padding:14px;background:#111;border:2px solid var(--borda);border-radius:10px;color:#fff;font-size:15px;}
-.btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--c),#00d4ff);color:#000;border:0;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;margin-top:16px;}
-.btn-sec{background:#222;color:var(--text);margin-top:10px;}
-.btn:disabled{opacity:.5;}
-.resumo{background:rgba(0,245,255,.05);border:1.5px solid var(--c);border-radius:12px;padding:14px;margin-bottom:16px;}
+.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 </style>
 </head>
 <body>
 
-<div class="logo-projeto-area">
-  <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/ktp/images/logoprojetotransformacao.png?v=2" class="logo-projeto" alt="Logo Projeto Transformação">
-</div>
-<h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
-<p class="subtitulo">Transforme seu corpo em 12 semanas</p>
+<h1>K-T.P KORVIL</h1>
 
-<div id="etapa1" class="etapa ativa">
-  <h2 class="etapa-titulo"><span class="etapa-num">1</span> ESCOLHA SEU PLANO</h2>
-  <div class="grid-planos">
-    <div class="card-plano" onclick="selecionarPlano(this, 'Aula Avulsa Online', 20)"><div class="tipo">ONLINE</div><div class="nome">AULA AVULSA</div><div class="preco">R$20<span>/aula</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Aula Avulsa Presencial', 20)"><div class="tipo">PRESENCIAL</div><div class="nome">AULA AVULSA</div><div class="preco">R$20<span>/aula</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Online Mensal', 60)"><div class="tipo">ONLINE MENSAL</div><div class="nome">PLANO COMPLETO</div><div class="preco">R$60<span>/mês</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Presencial 2x semana', 60)"><div class="tipo">PRESENCIAL</div><div class="nome">2X NA SEMANA</div><div class="preco">R$60<span>/mês</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Presencial 3x semana', 80)"><div class="tipo">PRESENCIAL</div><div class="nome">3X NA SEMANA</div><div class="preco">R$80<span>/mês</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Presencial 4x semana', 100)"><div class="tipo">PRESENCIAL</div><div class="nome">4X NA SEMANA</div><div class="preco">R$100<span>/mês</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Presencial 5x semana', 130)"><div class="tipo">PRESENCIAL</div><div class="nome">5X NA SEMANA</div><div class="preco">R$130<span>/mês</span></div></div>
-    <div class="card-plano" onclick="selecionarPlano(this, 'Presencial Ilimitado', 150)"><div class="tipo">PRESENCIAL VIP</div><div class="nome">ILIMITADO</div><div class="preco">R$150<span>/mês</span></div></div>
+<div class="card">
+  <div style="text-align:center;margin-bottom:12px;">
+    <div style="font-size:12px;color:var(--text2);font-weight:700;">K-T.P KORVIL</div>
+    <div style="font-size:16px;font-weight:900;color:var(--c);">PROJETO TRANSFORMAÇÃO 2026</div>
   </div>
-  <button class="btn" id="btnEtapa1" onclick="irEtapa(2)" disabled>CONTINUAR</button>
-</div>
 
-<div id="etapa2" class="etapa">
-  <h2 class="etapa-titulo"><span class="etapa-num">2</span> ESCOLHA SEU HORÁRIO</h2>
-  <div class="grid-horarios">
-    <div class="btn-horario" onclick="selecionarHorario(this, '05:00 às 06:00')">05:00 às 06:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '06:00 às 07:00')">06:00 às 07:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '07:00 às 08:00')">07:00 às 08:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '08:00 às 09:00')">08:00 às 09:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '17:00 às 18:00')">17:00 às 18:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '18:00 às 19:00')">18:00 às 19:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '19:00 às 20:00')">19:00 às 20:00</div>
-    <div class="btn-horario" onclick="selecionarHorario(this, '20:00 às 21:00')">20:00 às 21:00</div>
+  <div class="titulo-secao">| 1. ESCOLHA O PLANO</div>
+  
+  <div class="grid-2">
+    <div class="plano">
+      <div class="nome">AULA AVULSA ONLINE</div>
+      <div class="desc">Seg a Sex | Acompanhamento WhatsApp</div>
+      <div class="valor">R$20,00</div>
+      <div class="desc">MATRÍCULA: GRÁTIS</div>
+    </div>
+    <div class="plano">
+      <div class="nome">AULA AVULSA PRESENCIAL</div>
+      <div class="desc">Seg a Sex | 17h às 20h</div>
+      <div class="valor">R$20,00</div>
+      <div class="desc">MATRÍCULA: GRÁTIS<br>Pagar por horário</div>
+    </div>
   </div>
-  <button class="btn" id="btnEtapa2" onclick="irEtapa(3)" disabled>CONTINUAR</button>
-  <button class="btn btn-sec" onclick="irEtapa(1)">VOLTAR</button>
-</div>
 
-<div id="etapa3" class="etapa">
-  <h2 class="etapa-titulo"><span class="etapa-num">3</span> QUAL SEU OBJETIVO?</h2>
-  <div class="grid-objetivos">
-    <div class="btn-objetivo" onclick="selecionarObjetivo(this, 'Manutenção')">MANUTENÇÃO</div>
-    <div class="btn-objetivo" onclick="selecionarObjetivo(this, 'Resistência')">RESISTÊNCIA</div>
-    <div class="btn-objetivo" onclick="selecionarObjetivo(this, 'Emagrecimento')">EMAGRECIMENTO</div>
-    <div class="btn-objetivo" onclick="selecionarObjetivo(this, 'Hipertrofia')">HIPERTROFIA</div>
+  <div class="plano">
+    <div class="nome">ONLINE MENSAL</div>
+    <div class="desc">Seg a Sex | Acompanhamento diário</div>
+    <div class="valor">R$60,00 / MÊS</div>
+    <div class="desc">MATRÍCULA NOVO: R$60,00 | PIX: korvilinj@gmail.com</div>
   </div>
-  <button class="btn" id="btnEtapa3" onclick="irEtapa(4)" disabled>CONTINUAR</button>
-  <button class="btn btn-sec" onclick="irEtapa(2)">VOLTAR</button>
+
+  <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">PLANOS MENSAIS PRESENCIAIS</div>
+  <div class="grid-2">
+    <div class="plano"><div class="nome">2x na semana</div><div class="valor">R$60,00</div></div>
+    <div class="plano"><div class="nome">3x na semana</div><div class="valor">R$80,00</div></div>
+    <div class="plano"><div class="nome">4x na semana</div><div class="valor">R$100,00</div></div>
+    <div class="plano"><div class="nome">5x na semana</div><div class="valor">R$130,00</div></div>
+  </div>
+  <div class="plano"><div class="nome">ILIMITADO</div><div class="valor">R$150,00</div></div>
+  
+  <div style="margin-top:8px;padding:8px;background:#111;border-radius:8px;font-size:11px;">
+    MATRÍCULA ANUAL ANO: R$150,00 | PIX: korvilinj@gmail.com
+  </div>
 </div>
 
-<div id="etapa4" class="etapa">
-  <h2 class="etapa-titulo"><span class="etapa-num">4</span> SEUS DADOS</h2>
-  <div class="resumo" id="resumoFinal"></div>
-  <div class="input-group"><label>Nome Completo</label><input type="text" id="nome"></div>
-  <div class="input-group"><label>WhatsApp</label><input type="tel" id="whats"></div>
-  <button class="btn" onclick="enviarWhats()">ENVIAR PARA WHATSAPP</button>
-  <button class="btn btn-sec" onclick="irEtapa(3)">VOLTAR</button>
+<div class="card">
+  <div class="titulo-secao">| 2. ESCOLHA HORÁRIO | SEG A SEX | 7 VAGAS</div>
+  <div class="grid-3">
+    <div class="plano" style="text-align:center;padding:10px;">05:00 às 06:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">06:00 às 07:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">07:00 às 08:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">08:00 às 09:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">17:00 às 18:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">18:00 às 19:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">19:00 às 20:00</div>
+    <div class="plano" style="text-align:center;padding:10px;">20:00 às 21:00</div>
+  </div>
 </div>
 
-<script>
-let dados = {plano:'', valor:'', horario:'', objetivo:''};
-function irEtapa(n){document.querySelectorAll('.etapa').forEach(e=>e.classList.remove('ativa'));document.getElementById('etapa'+n).classList.add('ativa');window.scrollTo(0,0);if(n==4)montarResumo();}
-function selecionarPlano(el, nome, valor){document.querySelectorAll('.card-plano').forEach(c=>c.classList.remove('selecionado'));el.classList.add('selecionado');dados.plano = nome; dados.valor = valor;document.getElementById('btnEtapa1').disabled = false;}
-function selecionarHorario(el, horario){document.querySelectorAll('.btn-horario').forEach(c=>c.classList.remove('selecionado'));el.classList.add('selecionado');dados.horario = horario;document.getElementById('btnEtapa2').disabled = false;}
-function selecionarObjetivo(el, objetivo){document.querySelectorAll('.btn-objetivo').forEach(c=>c.classList.remove('selecionado'));el.classList.add('selecionado');dados.objetivo = objetivo;document.getElementById('btnEtapa3').disabled = false;}
-function montarResumo(){document.getElementById('resumoFinal').innerHTML = `<h3>RESUMO DO SEU PLANO</h3><p><b>Plano:</b> ${dados.plano} - R$${dados.valor}</p><p><b>Horário:</b> ${dados.horario}</p><p><b>Objetivo:</b> ${dados.objetivo}</p>`;}
-function enviarWhats(){const msg = `*K-TP PROJETO TRANSFORMAÇÃO 2026*\n\n*PLANO:* ${dados.plano} - R$${dados.valor}\n*HORÁRIO:* ${dados.horario}\n*OBJETIVO:* ${dados.objetivo}\n\n*NOME:* ${document.getElementById('nome').value}\n*WHATS:* ${document.getElementById('whats').value}`;window.open(`https://wa.me/5513997690898?text=${encodeURIComponent(msg)}`, '_blank');}
-</script>
+<div class="card">
+  <div class="titulo-secao">| 3. ESCOLHA SEU OBJETIVO</div>
+  <div class="grid-2">
+    <div class="plano" style="text-align:center;">1. MANUTENÇÃO<br><span style="font-size:10px;">Tônus, saúde</span></div>
+    <div class="plano" style="text-align:center;">2. RESISTÊNCIA<br><span style="font-size:10px;">Cardio, disposição</span></div>
+    <div class="plano" style="text-align:center;">3. EMAGRECIMENTO<br><span style="font-size:10px;">Queimar gordura</span></div>
+    <div class="plano" style="text-align:center;">4. HIPERTROFIA<br><span style="font-size:10px;">Ganho de massa</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="titulo-secao">| 4. DADOS PESSOAIS + ANAMNESE</div>
+  <div class="input-group"><label>Nome Completo</label><input type="text" placeholder="Korvil"></div>
+  <div class="grid-2">
+    <div class="input-group"><label>CPF</label><input type="text" placeholder="453.814.088-88"></div>
+    <div class="input-group"><label>Data Nasc</label><input type="date"></div>
+  </div>
+  <div class="grid-2">
+    <div class="input-group"><label>Idade</label>
+      <select><option>Adultos</option></select>
+    </div>
+    <div class="input-group"><label>Público</label>
+      <select><option>Adultos</option></select>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="input-group"><label>Peso kg</label><input type="number" placeholder="95"></div>
+    <div class="input-group"><label>Altura cm</label><input type="number" placeholder="111"></div>
+  </div>
+  <div class="input-group"><label>Nível</label>
+    <select><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
+  </div>
+  <div class="input-group"><label>Email</label><input type="email" placeholder="korvil.aj@gmail.com"></div>
+  <div class="input-group"><label>WhatsApp</label><input type="tel" placeholder="13997690898"></div>
+</div>
+
+<button class="btn voltar" onclick="window.location.href='https://korvilp-sudo.github.io/korvil-app/app.html'">Voltar</button>
+
 </body>
 </html>
