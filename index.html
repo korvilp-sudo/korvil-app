@@ -102,10 +102,10 @@ const db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJ
 const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
 const TABELA = 'Cadastro de usuários do KORVIL';
 
-// FUNÇÃO CEP GLOBAL - AGORA FORA DO DOMContentLoaded
-window.buscarCep = async function(){
+// FUNÇÃO CEP GLOBAL - CORREÇÃO PRINCIPAL
+async function buscarCep(){
   const cep = document.getElementById('cep').value.replace(/\D/g,'');
-  if(cep.length!== 8) return msg('Digite um CEP válido','error','msgCadastro');
+  if(cep.length!== 8) return msg('Digite um CEP válido com 8 números','error','msgCadastro');
   msg('Buscando CEP...','ok','msgCadastro');
   try{
     const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -113,9 +113,14 @@ window.buscarCep = async function(){
     if(!data.erro){
       document.getElementById('rua').value = data.logradouro;
       document.getElementById('bairro').value = data.bairro;
+      document.getElementById('numero').focus(); // já joga pro número
       msg('CEP encontrado!','ok','msgCadastro');
-    } else { msg('CEP não encontrado','error','msgCadastro'); }
-  }catch{ msg('Erro ao buscar CEP','error','msgCadastro'); }
+    } else {
+      msg('CEP não encontrado','error','msgCadastro');
+    }
+  }catch{
+    msg('Erro ao buscar CEP','error','msgCadastro');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -159,7 +164,7 @@ function msg(t,cls,id){document.getElementById(id).innerHTML=t?`<p class="${cls}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
 document.getElementById('tabLogin').onclick = () => showTab('login');
 document.getElementById('tabCadastro').onclick = () => showTab('cadastro');
-document.getElementById('btnBuscarCep').onclick = buscarCep; // Linkei o botão
+document.getElementById('btnBuscarCep').addEventListener('click', buscarCep); // LINKA O BOTÃO AQUI
 
 // CADASTRO
 document.getElementById('cadastro').addEventListener('submit', async e=>{
