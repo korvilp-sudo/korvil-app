@@ -160,6 +160,9 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   </div>
 </footer>
 
+<!-- IFRAME DO K-AI -->
+<iframe id="kaiFrame" src="kai-core/index.html" style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:9999; background:#000"></iframe>
+
 <script>
 const WHATS_NUMBER = '5513997690898';
 let textoWhats = '';
@@ -185,6 +188,14 @@ function toggleKaiMenu(){ kaiMenu.classList.toggle('ativo'); }
 function abrirWhats(mensagem){ textoWhats = mensagem; document.getElementById('modal').classList.add('ativo'); kaiMenu.classList.remove('ativo'); }
 function fecharForm(){ document.getElementById('modal').classList.remove('ativo'); }
 function enviarWhats(){ const nome=document.getElementById('nome').value; const whats=document.getElementById('whats').value; if(!nome||!whats){alert('Preencha Nome e WhatsApp');return;} const msg=`*KORVIL - ${textoWhats}*\n\n*DADOS DO CLIENTE:*\nNome: ${nome}\nWhats: ${whats}\n\nOla, vim do site KORVIL`; window.open(`https://wa.me/55${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank'); fecharForm(); }
+
+// ===== FUNÇÕES K-AI IFRAME =====
+function abrirKAI(){
+  document.getElementById('kaiFrame').style.display = 'block';
+}
+function fecharKAI(){
+  document.getElementById('kaiFrame').style.display = 'none';
+}
 
 // ===== LOGICA DO CUBO SEGREDO =====
 const cube = document.getElementById("cubeKAI");
@@ -231,7 +242,7 @@ function iniciarContagem(){
     } else {
       clearInterval(contTimer);
       cubeMsg.innerText = 'Abrindo K-AI...';
-      setTimeout(()=>{ window.location.href = 'kai-core/index.html'; }, 800);
+      setTimeout(()=>{ abrirKAI(); }, 800); // AGORA ABRE IFRAME AO INVES DE MUDAR PAGINA
     }
   }, 1000);
 }
