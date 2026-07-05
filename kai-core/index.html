@@ -52,8 +52,19 @@ body{background:#000;overflow:hidden;color:var(--c)}
   <button onclick="executar('vai para 7')">7. NEGOCIOS</button>
   <button onclick="executar('vai para 8')">8. SERVICOS</button>
 
-  <h3>COMANDOS</h3>
+  <h3>CRIAR</h3>
+  <button onclick="executar('criar post')">Criar Post</button>
+  <button onclick="executar('criar roteiro')">Criar Roteiro</button>
+  <button onclick="executar('criar imagem')">Criar Imagem</button>
+
+  <h3>COPIAR</h3>
+  <button onclick="executar('copiar tudo')">Copiar Tudo</button>
+  <button onclick="executar('resumir isso')">Resumir</button>
+  <button onclick="executar('copiar emails')">Copiar Emails</button>
+
+  <h3>SISTEMA</h3>
   <button onclick="executar('que horas são')">Que horas são</button>
+  <button onclick="executar('salvar memória')">Salvar Memória</button>
   <button onclick="executar('parar de ouvir')">Parar de ouvir</button>
   <button onclick="executar('voltar a ouvir')">Voltar a ouvir</button>
 </div>
@@ -62,15 +73,20 @@ body{background:#000;overflow:hidden;color:var(--c)}
   <div class="chat" id="chat"></div>
   <div class="inputArea">
     <input type="text" id="userInput" placeholder="Fale com K-AI..." onkeydown="if(event.key==='Enter') enviarTexto()">
+    <button id="btnAnexo" onclick="anexarArquivo()">📎</button>
     <button class="micBtn" id="micBtn" onclick="toggleMic()">🎙️</button>
     <button onclick="enviarTexto()">➤</button>
   </div>
 </div>
 
+<!-- CARREGA AS 3 GAVETAS -->
 <script src="actions/navega.js"></script>
+<script src="actions/copia.js"></script>
+<script src="actions/cria.js"></script>
+<script src="actions/sistema.js"></script>
 
 <script>
-const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true }
+const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe" }
 let recognition;
 
 // ===== CENA 3D CORVO =====
@@ -138,23 +154,41 @@ function executar(cmd){
   toggleMenu(); addMsg('user', cmd); processarComando(cmd);
 }
 
+function anexarArquivo(){
+  const input = document.createElement('input'); input.type = 'file';
+  input.onchange = async (e)=>{
+    const file = e.target.files[0];
+    addMsg('user', `Arquivo: ${file.name}`);
+    const res = await Copia.lerArquivo(file);
+    falar(res);
+  }
+  input.click();
+}
+
+// ===== CÉREBRO PRINCIPAL COM AS 4 GAVETAS =====
 async function processarComando(cmdOriginal){
   const cmd = cmdOriginal.toLowerCase(); let resposta = "";
 
-  // ATALHOS
-  if(cmd.includes("parar de ouvir")) { KAI_CONFIG.autoOuvir=false; recognition.stop(); resposta="Modo manual ativado"; }
+  // ATALHOS SISTEMA
+  if(cmd.includes("parar de ouvir")) { KAI_CONFIG.autoOuvir=false; recognition.stop(); resposta="Modo manual ativado Chefe"; }
   else if(cmd.includes("voltar a ouvir")) { KAI_CONFIG.autoOuvir=true; recognition.start(); resposta="Voltando a ouvir"; }
+
+  // CHAMADAS DAS GAVETAS - ORDEM IMPORTA
   else if (cmd.includes("vai") || cmd.includes("abrir")) { resposta = Navega.ir(cmd); }
-  else if (cmd.includes("hora")) { resposta = 'Agora são ' + new Date().toLocaleTimeString('pt-BR'); }
-  else { resposta = `Entendi: "${cmdOriginal}"`; }
+  else if (cmd.includes("cria")) { resposta = await Cria.executar(cmd); }
+  else if (cmd.includes("copia") || cmd.includes("resuma") || cmd.includes("analisa") || cmd.includes("traduz")) { resposta = await Copia.executar(cmd); }
+  else if (cmd.includes("hora") || cmd.includes("salvar") || cmd.includes("memória") || cmd.includes("data") || cmd.includes("status")) { resposta = await Sistema.executar(cmd); }
+
+  else { resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, que horas são`; }
 
   falar(resposta);
 }
 
 // INICIAR
 setTimeout(()=>{
+  Sistema.carregar();
   iniciarReconhecimento();
-  falar(`K-AI online. Modo Chefe ativo.`);
+  falar(`K-AI online. Modo Chefe ativo. Pronto para comandos.`);
 }, 800);
 
 window.addEventListener('resize', ()=>{
