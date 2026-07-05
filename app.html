@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;}
 .icon-top svg{width:22px;height:22px;stroke:var(--c);cursor:pointer;transition:.2s;}
 .icon-top svg:active{filter:drop-shadow(0 0 6px var(--c));}
 
-.wrap{padding:70px 16px 110px;max-width:700px;margin:auto;animation:fadeIn.4s;}
+.wrap{padding:70px 16px 110px;max-width:700px;margin:auto;animation:fadeIn.4s;min-height:calc(100vh - 180px);}
 h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;}
 h2{font-size:16px;font-weight:700;margin:0 0 8px;}
 h4{color:var(--c);font-size:13px;margin:0 0 6px;font-weight:700;}
@@ -58,7 +58,7 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .overlay.ativo{display:block;}
 
 .logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;}
-iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;}
+iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;display:block;}
 
 .modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
 .modal.ativo{display:flex;}
@@ -119,13 +119,18 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
   </section>
 
-  <section id="humano" class="tela"><h1>DESENVOLVIMENTO HUMANO</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="negocios" class="tela"><h1>NEGOCIOS</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="servicos" class="tela"><h1>SERVICOS</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="sistema" class="tela"><h1>SISTEMA K</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="kalma" class="tela"><h1>K-ALMA</h1><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="ktp-iframe" class="tela"><h1>K-TP</h1><iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetransformacao.html"></iframe><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="humano" class="tela"><h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="negocios" class="tela"><h1>NEGOCIOS</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="servicos" class="tela"><h1>SERVICOS</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="sistema" class="tela"><h1>SISTEMA K</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <section id="kalma" class="tela"><h1>K-ALMA</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  
+  <section id="ktp-iframe" class="tela">
+    <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
+    <iframe class="korvil-frame" id="iframeKTP" src="about:blank"></iframe>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
 </main>
 
 <div class="modal" id="modal">
@@ -138,7 +143,7 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   </div>
 </div>
 
-<footer class="kai-footer">
+<footer class="kai-footer" id="kaiFooter">
   <div class="message-box" id="cubeMessage">Clique no cubo K-AI</div>
   <div class="scene" id="cubeScene">
     <div class="cube" id="cubeKAI">
@@ -162,8 +167,19 @@ let holdTimer = null;
 let contagemAtiva = false;
 let isHolding = false;
 
-function irParaKTP(){ abrirTela('ktp-iframe'); }
-function abrirTela(id){ document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); window.scrollTo({top:0, behavior:'smooth'}); kaiMenu.classList.remove('ativo'); }
+function irParaKTP(){ 
+  abrirTela('ktp-iframe'); 
+  document.getElementById('iframeKTP').src = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetransformacao.html";
+}
+
+function abrirTela(id){ 
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); 
+  const tela = document.getElementById(id);
+  if(tela){ tela.classList.add('ativa'); }
+  window.scrollTo({top:0, behavior:'smooth'}); 
+  kaiMenu.classList.remove('ativo'); 
+}
+
 function toggleMenu(){ document.getElementById('menu').classList.toggle('ativo'); document.getElementById('overlay').classList.toggle('ativo'); }
 function toggleKaiMenu(){ kaiMenu.classList.toggle('ativo'); }
 function abrirWhats(mensagem){ textoWhats = mensagem; document.getElementById('modal').classList.add('ativo'); kaiMenu.classList.remove('ativo'); }
@@ -176,7 +192,7 @@ const kaiMenu = document.getElementById("kaiMenu");
 const cubeMsg = document.getElementById("cubeMessage");
 
 function iniciarSegurar(e){
-  e.preventDefault(); // BLOQUEIA O MENU "BAIXAR/COMPARTILHAR"
+  e.preventDefault();
   if(contagemAtiva || isHolding) return;
   isHolding = true;
   cube.classList.add('segurando');
@@ -227,13 +243,9 @@ cube.addEventListener('click', (e) => {
 
 // BLOQUEAR MENU DO NAVEGADOR
 cube.addEventListener('contextmenu', e => e.preventDefault());
-
-// Segurar = Senha secreta - PC
 cube.addEventListener('mousedown', iniciarSegurar);
 cube.addEventListener('mouseup', cancelarSegurar);
 cube.addEventListener('mouseleave', cancelarSegurar);
-
-// Segurar = Senha secreta - CELULAR
 cube.addEventListener('touchstart', iniciarSegurar, {passive: false});
 cube.addEventListener('touchend', cancelarSegurar);
 cube.addEventListener('touchmove', cancelarSegurar);
