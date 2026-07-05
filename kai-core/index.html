@@ -1,184 +1,192 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>K-AI</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#202c33;--chat:#111b21;--balao:#1f2c33}
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);overflow:hidden;height:100vh;width:100vw;color:#e9edef;touch-action:none}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fff;font-family:Roboto,sans-serif}
 
-#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.08;pointer-events:none}
+/* TELA DE CELULAR REAL */
+.phone{width:100%;height:100%;background:#0b141a;position:relative;display:flex;flex-direction:column}
 
-/* BARRA DE STATUS ANDROID */
-.statusBar{position:fixed;top:0;left:0;width:100%;height:24px;background:#000;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:12px;font-weight:500}
-.statusBar.right{display:flex;gap:4px}
+/* BARRA DE STATUS */
+.status{height:28px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:13px;font-weight:500}
+.status span{display:flex;gap:4px}
 
-/* QUICK PANEL - ARRASTA PRA BAIXO */
-.quickPanel{position:fixed;top:-350px;left:0;width:100%;height:350px;background:#1a1f24;z-index:25;transition:.3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 20px rgba(0,0,0,.5);border-bottom:1px solid #2a3942}
-.quickPanel.open{top:24px}
-.quickPanel.puxador{width:40px;height:4px;background:#555;border-radius:2px;margin:8px auto}
-.quickPanel.atalhos{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:15px}
-.atalho{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#e9edef;cursor:pointer}
-.atalho.icon{width:50px;height:50px;background:#2a3942;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
-.atalho.icon.on{background:var(--c);color:#000}
-.notificacoes{padding:10px 15px;border-top:1px solid #2a3942;max-height:150px;overflow-y:auto}
-.noti{padding:10px;background:#2a3942;border-radius:10px;margin-bottom:8px;font-size:13px}
+/* PAINEL ARRASTAVEL ANDROID */
+#notiPanel{position:absolute;top:-400px;left:0;width:100%;height:400px;background:#1f2c33;z-index:100;transition:top.3s;box-shadow:0 10px 20px rgba(0,0,0,.6)}
+#notiPanel.open{top:28px}
+#notiPanel.handle{width:40px;height:4px;background:#555;border-radius:2px;margin:8px auto}
+.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:20px}
+.shortcut{text-align:center;font-size:11px}
+.shortcut.btn{width:56px;height:56px;background:#2a3942;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.shortcut.btn.active{background:#00FFFF;color:#000}
+.notis{padding:0 15px;max-height:200px;overflow-y:auto}
+.noti{background:#2a3942;padding:12px;border-radius:8px;margin-bottom:8px;font-size:14px}
 
-/* TOPO WHATSAPP */
-.topbar{position:fixed;top:24px;left:0;width:100%;height:56px;background:var(--top);z-index:10;display:flex;align-items:center;padding:0 12px;gap:12px}
-.topbar.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));display:flex;align-items:center;justify-content:center;font-weight:900;color:#000}
-.topbar.info{flex:1}
-.topbar.nome{font-weight:600;font-size:16px}
-.topbar.status-top{font-size:12px;color:#8696a0}
+/* TOPO DO CHAT */
+.header{height:60px;background:#202c33;display:flex;align-items:center;padding:0 12px;gap:12px;border-bottom:1px solid #2a3942}
+.header.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00FFFF,#A8FFE6);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:18px}
+.header.name{flex:1;font-size:16px;font-weight:500}
+.header.name small{color:#8696a0;font-size:12px}
 
 /* CHAT */
-.chat{position:absolute;top:80px;bottom:70px;left:0;width:100%;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px;z-index:5}
-.msg{max-width:75%;padding:8px 12px;border-radius:8px;font-size:15px;line-height:1.4}
-.msg.user{align-self:flex-end;background:#005c4b;border-radius:8px 0 8px 8px}
-.msg.kai{align-self:flex-start;background:var(--balao);border-radius:0 8px 8px 8px}
-.msg.hora{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
+#chat{flex:1;overflow-y:auto;padding:15px;background:#0b141a;position:relative}
+#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.1;pointer-events:none}
+.bubble{max-width:80%;padding:8px 12px;border-radius:7.5px;margin-bottom:8px;font-size:15px;line-height:1.4;position:relative;z-index:2}
+.bubble.me{background:#005c4b;align-self:flex-end;margin-left:auto;border-radius:7.5px 0 7.5px 7.5px}
+.bubble.kai{background:#1f2c33;align-self:flex-start;border-radius:0 7.5px 7.5px 7.5px}
+.bubble.time{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
 
-/* INPUT */
-.inputBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:var(--top);z-index:10;display:flex;align-items:center;padding:0 8px;gap:8px}
-.inputBar input{flex:1;background:#2a3942;border:none;color:#e9edef;padding:12px 16px;border-radius:25px;outline:none;font-size:15px}
-.inputBar.micBtn{width:50px;height:50px;background:#00a884;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#111b21;cursor:pointer}
+/* BARRA INPUT */
+.footer{height:68px;background:#202c33;display:flex;align-items:center;padding:0 8px;gap:8px}
+.footer input{flex:1;height:46px;background:#2a3942;border:none;border-radius:23px;padding:0 16px;color:#fff;font-size:15px;outline:none}
+.footer.btn{width:48px;height:48px;border-radius:50%;background:#00a884;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}
+.footer.btn.rec{background:#ff3b30}
 </style>
 </head>
 <body>
-<canvas id="canvas3d"></canvas>
+<div class="phone">
 
-<!-- BARRA STATUS -->
-<div class="statusBar" id="statusBar">
-  <div>16:10</div>
-  <div class="right">4G 🔋 88%</div>
-</div>
-
-<!-- QUICK PANEL -->
-<div class="quickPanel" id="quickPanel">
-  <div class="puxador"></div>
-  <div class="atalhos">
-    <div class="atalho" onclick="toggleAtalho(this,'wifi')"><div class="icon">📶</div>Wi-Fi</div>
-    <div class="atalho" onclick="toggleAtalho(this,'voz')"><div class="icon">🎤</div>Voz</div>
-    <div class="atalho" onclick="toggleAtalho(this,'musica')"><div class="icon">🎵</div>Música</div>
-    <div class="atalho" onclick="executar('limpar memória')"><div class="icon">🧠</div>Memória</div>
+  <!-- STATUS BAR -->
+  <div class="status" id="statusBar">
+    <div id="hora">16:10</div>
+    <span>4G 🔋 90%</span>
   </div>
-  <div class="notificacoes">
-    <div class="noti">🔵 K-AI: Olá Chefe. Sistema online</div>
-    <div class="noti">📊 Atualização: 3 novas memórias salvas</div>
+
+  <!-- PAINEL NOTIFICAÇÕES -->
+  <div id="notiPanel">
+    <div class="handle"></div>
+    <div class="shortcuts">
+      <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'mic')">🎤</div>Voz</div>
+      <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'app')">🚀</div>App</div>
+      <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'google')">🔍</div>Google</div>
+      <div class="shortcut"><div class="btn" onclick="limparMem()">🧠</div>Memória</div>
+    </div>
+    <div class="notis" id="notis"></div>
   </div>
-</div>
 
-<!-- TOPO -->
-<div class="topbar">
-  <div class="avatar">K</div>
-  <div class="info">
-    <div class="nome">K-AI</div>
-    <div class="status-top" id="statusTop">online</div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar">K</div>
+    <div class="name">K-AI<br><small id="status">online</small></div>
   </div>
-</div>
 
-<!-- CHAT -->
-<div class="chat" id="chat"></div>
+  <!-- CHAT -->
+  <div id="chat">
+    <canvas id="canvas3d"></canvas>
+  </div>
 
-<!-- INPUT -->
-<div class="inputBar">
-  <input type="text" id="userInput" placeholder="Mensagem">
-  <div class="micBtn" id="micBtn">🎤</div>
+  <!-- INPUT -->
+  <div class="footer">
+    <input type="text" id="input" placeholder="Mensagem">
+    <div class="btn" id="mic">🎤</div>
+    <div class="btn" onclick="send()">➤</div>
+  </div>
+
 </div>
 
 <script>
-// ===== KAI-CORE =====
-const KAI_CONFIG = {MODO: 'USER', NOME_USER: 'Chefe'}
-const KAI_MEMORY = {dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]}, salvar(){localStorage.setItem('kai_memoria', JSON.stringify(this.dados));}, salvarMemoria(t){this.dados.memorias.push({t});this.salvar();addNoti(`🧠 Nova memória: ${t}`);return `Salvei: ${t}`;}, estatisticas(){return `Conversas: ${this.dados.historico.length} | Memórias: ${this.dados.memorias.length}`;}}
+// ===== ESTADO =====
+let modo = 'USER';
+let memoria = JSON.parse(localStorage.getItem('kai')) || {hist:[], mems:[]};
 
-const KAI_ACTIONS = {
-  navega: (cmd) => { if(cmd.includes('app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); return 'Abrindo aplicativo KORVIL'; } return null; },
-  busca: (cmd) => { if(cmd.includes('buscar')){ const termo = cmd.replace('buscar', '').trim(); window.open(`https://www.google.com/search?q=${encodeURIComponent(termo)}`, '_blank'); return `Pesquisando ${termo}`; } return null; },
-  sistema: (cmd) => { if(cmd.includes('horas')) return 'Agora são ' + new Date().toLocaleTimeString('pt-BR'); if(cmd.includes('status')) return KAI_MEMORY.estatisticas(); return null; },
-  memoria: (cmd) => { if(cmd.includes('lembre')) return KAI_MEMORY.salvarMemoria(cmd.replace('lembre', '')); if(cmd.includes('limpar memória')){ localStorage.removeItem('kai_memoria'); KAI_MEMORY.dados = {historico:[], memorias:[]}; addNoti('🧠 Memória limpa'); return 'Memória limpa Chefe'; } return null; }
-}
-function executarTodasActions(cmd){ for(let action in KAI_ACTIONS){ const resposta = KAI_ACTIONS[action](cmd); if(resposta) return resposta; } return 'Comando não reconhecido'; }
-
-// 3D FUNDO
+// ===== 3D FUNCIONANDO =====
 try{
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.2, wireframe:true});
-  const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(3, 1), material); 
-  scene.add(nucleo); scene.add(new THREE.PointLight(0x00FFFF, 1, 50).position.set(5,5,5)); camera.position.z = 8;
-  function animate(){ requestAnimationFrame(animate); nucleo.rotation.y += 0.005; renderer.render(scene, camera); }
-  animate();
-}catch(e){}
+  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true});
+  renderer.setSize(window.innerWidth, window.innerHeight-128);
+  const geo = new THREE.IcosahedronGeometry(2.5, 1);
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, wireframe:true});
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh); scene.add(new THREE.PointLight(0x00FFFF,2).position.set(3,3,3));
+  camera.position.z = 6;
+  function loop(){ requestAnimationFrame(loop); mesh.rotation.y += 0.01; renderer.render(scene,camera); }
+  loop();
+}catch(e){console.log("3D erro",e)}
 
-// QUICK PANEL ARRASTAR
+// ===== ARRASTAR PAINEL =====
 let startY = 0;
-const quickPanel = document.getElementById('quickPanel');
-const statusBar = document.getElementById('statusBar');
-
-document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
-document.addEventListener('touchmove', e => {
-  let deltaY = e.touches[0].clientY - startY;
-  if(startY < 50 && deltaY > 0){ quickPanel.style.top = Math.min(24 + deltaY, 350) + 'px'; }
-});
-document.addEventListener('touchend', e => {
-  let deltaY = e.changedTouches[0].clientY - startY;
-  if(deltaY > 100){ quickPanel.classList.add('open'); } else { quickPanel.classList.remove('open'); }
-  quickPanel.style.top = '';
-});
-statusBar.onclick = () => quickPanel.classList.toggle('open'); // Clicar na barra também abre
-
-function toggleAtalho(el, tipo){
-  el.querySelector('.icon').classList.toggle('on');
-  if(tipo === 'voz') micBtn.click();
-  if(tipo === 'musica') addNoti('🎵 Música KORVIL ativada');
+const panel = document.getElementById('notiPanel');
+document.getElementById('statusBar').ontouchstart = e => startY = e.touches[0].clientY;
+document.getElementById('statusBar').ontouchend = e => {
+  if(e.changedTouches[0].clientY - startY > 50) panel.classList.add('open');
 }
-
-// CHAT + VOZ
-const chat = document.getElementById('chat');
-const micBtn = document.getElementById('micBtn');
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition, isListening = false;
-
-micBtn.onclick = ()=>{
-  if(!SpeechRecognition){ alert("Navegador não suporta voz"); return; }
-  if(!recognition){
-    recognition = new SpeechRecognition();
-    recognition.lang = 'pt-BR'; recognition.continuous = false;
-    recognition.onstart = ()=>{isListening=true; micBtn.style.background='#ff3b30';}
-    recognition.onend = ()=>{isListening=false; micBtn.style.background='#00a884';}
-    recognition.onresult = (e)=>{ const cmd = e.results[0][0].transcript; addMsg('user', cmd); processarComando(cmd); }
-  }
-  if(!isListening) recognition.start(); else recognition.stop();
+panel.ontouchend = e => {
+  if(startY - e.changedTouches[0].clientY > 50) panel.classList.remove('open');
 }
+document.getElementById('statusBar').onclick = () => panel.classList.toggle('open');
 
-function addMsg(tipo, texto){
+// ===== FUNÇÕES QUE FUNCIONAM =====
+function addNoti(txt){
+  document.getElementById('notis').innerHTML = `<div class="noti">${txt}</div>` + document.getElementById('notis').innerHTML;
+}
+function addMsg(who, txt){
   const div = document.createElement('div');
-  div.className = 'msg ' + tipo;
-  const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  div.innerHTML = `${texto}<div class="hora">${hora}</div>`;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  KAI_MEMORY.dados.historico.push({tipo, texto}); KAI_MEMORY.salvar();
+  div.className = 'bubble ' + who;
+  div.innerHTML = txt + `<div class="time">${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>`;
+  document.getElementById('chat').appendChild(div);
+  document.getElementById('chat').scrollTop = 99999;
+  memoria.hist.push({who,txt}); localStorage.setItem('kai',JSON.stringify(memoria));
 }
-function addNoti(texto){
-  document.querySelector('.notificacoes').innerHTML = `<div class="noti">${texto}</div>` + document.querySelector('.notificacoes').innerHTML;
+function falar(txt){
+  addMsg('kai',txt);
+  speechSynthesis.speak(new SpeechSynthesisUtterance(txt));
 }
-function falar(texto){ addMsg('kai', texto); if(window.speechSynthesis){ speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(texto); utter.lang = 'pt-BR'; speechSynthesis.speak(utter); }
-function processarComando(cmd){ const resposta = executarTodasActions(cmd); falar(resposta); }
-function executar(cmd){ addMsg('user', cmd); processarComando(cmd); quickPanel.classList.remove('open'); }
+function processar(cmd){
+  cmd = cmd.toLowerCase();
+  if(cmd.includes('app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); addNoti('🚀 App KORVIL aberto'); return 'Abrindo app KORVIL'; }
+  if(cmd.includes('buscar')){ let q = cmd.replace('buscar',''); window.open('https://google.com/search?q='+q,'_blank'); addNoti('🔍 Pesquisando: '+q); return 'Pesquisando '+q; }
+  if(cmd.includes('lembre')){ memoria.mems.push(cmd); localStorage.setItem('kai',JSON.stringify(memoria)); addNoti('🧠 Memória salva'); return 'Salvei na memória'; }
+  if(cmd.includes('status')){ return `Tenho ${memoria.hist.length} conversas e ${memoria.mems.length} memórias`; }
+  return 'Entendi: '+cmd;
+}
+function send(){
+  const val = document.getElementById('input').value;
+  if(!val) return;
+  addMsg('me',val);
+  falar(processar(val));
+  document.getElementById('input').value='';
+}
+function toggleBtn(el, tipo){
+  el.classList.toggle('active');
+  if(tipo=='mic') document.getElementById('mic').click();
+  if(tipo=='app') processar('abrir app');
+  if(tipo=='google') processar('buscar korvil');
+}
+function limparMem(){
+  localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; 
+  addNoti('🧠 Memória limpa'); falar('Memória limpa Chefe');
+}
 
-document.getElementById('userInput').addEventListener('keydown', (e)=>{ 
-  if(e.key==='Enter'){ const val = e.target.value; if(!val.trim()) return; addMsg('user', val); processarComando(val); e.target.value = ""; }
-});
+// ===== VOZ =====
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(SR){
+  const rec = new SR(); rec.lang='pt-BR';
+  document.getElementById('mic').onclick = ()=>{
+    document.getElementById('mic').classList.toggle('rec');
+    document.getElementById('status').innerText = 'ouvindo...';
+    rec.start();
+    rec.onresult = e => {
+      const txt = e.results[0][0].transcript;
+      addMsg('me',txt); falar(processar(txt));
+      document.getElementById('mic').classList.remove('rec');
+      document.getElementById('status').innerText = 'online';
+    }
+  }
+}
 
-// HORA REAL NA BARRA
-setInterval(()=>{ document.querySelector('.statusBar div').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) }, 1000);
+// ===== HORA REAL =====
+setInterval(()=>{
+  document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+},1000);
 
-setTimeout(()=>{ falar(`Olá Chefe. Arraste a barra de cima pra baixo`); addNoti('🔵 K-AI Iniciado'); }, 1000);
+addMsg('kai','Olá Chefe. Arraste a barra de cima pra baixo');
+addNoti('🔵 K-AI Iniciado');
 </script>
 </body>
 </html>
