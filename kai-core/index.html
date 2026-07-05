@@ -3,49 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI</title>
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
+:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#0d1a20;--chat:#0b141a;--balao:#132e36}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fff;font-family:Roboto,sans-serif}
+body{width:100vw;height:100vh;overflow:hidden;background:var(--bg);color:#e9edef;font-family:Roboto,sans-serif}
 
-/* TELA DE CELULAR REAL */
-.phone{width:100%;height:100%;background:#0b141a;position:relative;display:flex;flex-direction:column}
+.phone{width:100%;height:100%;background:var(--chat);position:relative;display:flex;flex-direction:column}
 
-/* BARRA DE STATUS */
-.status{height:28px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:13px;font-weight:500}
-.status span{display:flex;gap:4px}
+/* STATUS BAR KORVIL */
+.status{height:28px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:13px;font-weight:500;color:var(--c)}
 
-/* PAINEL ARRASTAVEL ANDROID */
-#notiPanel{position:absolute;top:-400px;left:0;width:100%;height:400px;background:#1f2c33;z-index:100;transition:top.3s;box-shadow:0 10px 20px rgba(0,0,0,.6)}
+/* PAINEL ARRASTAVEL ANDROID COM SELETOR */
+#notiPanel{position:absolute;top:-420px;left:0;width:100%;height:420px;background:#0d1a20;z-index:100;transition:top.3s cubic-bezier(.4,0,.2,1);border-bottom:2px solid var(--c);box-shadow:0 10px 30px rgba(0,255,255,.2)}
 #notiPanel.open{top:28px}
-#notiPanel.handle{width:40px;height:4px;background:#555;border-radius:2px;margin:8px auto}
-.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:20px}
-.shortcut{text-align:center;font-size:11px}
-.shortcut.btn{width:56px;height:56px;background:#2a3942;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px}
-.shortcut.btn.active{background:#00FFFF;color:#000}
-.notis{padding:0 15px;max-height:200px;overflow-y:auto}
-.noti{background:#2a3942;padding:12px;border-radius:8px;margin-bottom:8px;font-size:14px}
+.handle{width:50px;height:5px;background:var(--c);border-radius:3px;margin:8px auto;opacity:.7}
+.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:15px}
+.shortcut{text-align:center;font-size:11px;color:var(--c2)}
+.shortcut.btn{width:60px;height:60px;background:#132e36;border:1px solid var(--c);border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
+.shortcut.btn.active{background:var(--c);color:#000;box-shadow:0 0 20px var(--c)}
+.notis{padding:0 15px;max-height:220px;overflow-y:auto;border-top:1px solid #132e36}
+.noti{background:#132e36;padding:12px;border-radius:8px;margin:8px 0;font-size:14px;border-left:3px solid var(--c)}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:99}
+.overlay.show{display:block}
 
-/* TOPO DO CHAT */
-.header{height:60px;background:#202c33;display:flex;align-items:center;padding:0 12px;gap:12px;border-bottom:1px solid #2a3942}
-.header.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00FFFF,#A8FFE6);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:18px}
+/* MENU LATERAL KORVIL */
+#sideMenu{position:fixed;top:0;left:-320px;width:300px;height:100%;background:#0d1a20;z-index:101;transition:left.3s;border-right:2px solid var(--c)}
+#sideMenu.open{left:0}
+.sideHeader{height:150px;background:linear-gradient(135deg,var(--c),var(--c2));padding:20px;display:flex;flex-direction:column;justify-content:end;color:#000}
+.sideHeader h2{font-size:22px;font-weight:900}
+.sideHeader p{font-size:12px}
+.sideItem{padding:14px 18px;display:flex;align-items:center;gap:12px;font-size:15px;color:var(--c2);border-bottom:1px solid #132e36;cursor:pointer}
+.sideItem:hover{background:#132e36}
+
+/* HEADER */
+.header{height:60px;background:var(--top);display:flex;align-items:center;padding:0 12px;gap:12px;border-bottom:1px solid #132e36}
+.header.menuBtn{font-size:24px;color:var(--c);cursor:pointer}
+.header.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:18px;box-shadow:0 0 15px var(--c)}
 .header.name{flex:1;font-size:16px;font-weight:500}
-.header.name small{color:#8696a0;font-size:12px}
+.header.name small{color:var(--c2);font-size:12px}
 
-/* CHAT */
-#chat{flex:1;overflow-y:auto;padding:15px;background:#0b141a;position:relative}
-#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.1;pointer-events:none}
-.bubble{max-width:80%;padding:8px 12px;border-radius:7.5px;margin-bottom:8px;font-size:15px;line-height:1.4;position:relative;z-index:2}
-.bubble.me{background:#005c4b;align-self:flex-end;margin-left:auto;border-radius:7.5px 0 7.5px 7.5px}
-.bubble.kai{background:#1f2c33;align-self:flex-start;border-radius:0 7.5px 7.5px 7.5px}
-.bubble.time{font-size:11px;color:#8696a0;text-align:right;margin-top:4px}
+/* CHAT TELA CHEIA IGUAL META AI */
+#chat{flex:1;overflow-y:auto;padding:15px;background:var(--chat);position:relative}
+#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.12;pointer-events:none}
+.bubble{max-width:80%;padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:15px;line-height:1.4;position:relative;z-index:2}
+.bubble.me{background:#005c4b;margin-left:auto;border-radius:8px 0 8px 8px}
+.bubble.kai{background:var(--balao);border:1px solid var(--c);border-radius:0 8px 8px 8px;box-shadow:0 0 10px rgba(0,255,255,.1)}
+.bubble.time{font-size:11px;color:var(--c2);text-align:right;margin-top:4px}
 
-/* BARRA INPUT */
-.footer{height:68px;background:#202c33;display:flex;align-items:center;padding:0 8px;gap:8px}
-.footer input{flex:1;height:46px;background:#2a3942;border:none;border-radius:23px;padding:0 16px;color:#fff;font-size:15px;outline:none}
-.footer.btn{width:48px;height:48px;border-radius:50%;background:#00a884;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}
-.footer.btn.rec{background:#ff3b30}
+/* BARRA INPUT GRANDE */
+.footer{height:72px;background:var(--top);display:flex;align-items:center;padding:0 10px;gap:8px;border-top:1px solid #132e36}
+.footer input{flex:1;height:50px;background:#132e36;border:1px solid var(--c);border-radius:25px;padding:0 18px;color:#fff;font-size:15px;outline:none}
+.footer.btn{width:50px;height:50px;border-radius:50%;background:var(--c);color:#000;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer}
+.footer.btn.rec{background:#ff3b30;color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 </style>
 </head>
 <body>
@@ -54,23 +66,41 @@ body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fff;font-fa
   <!-- STATUS BAR -->
   <div class="status" id="statusBar">
     <div id="hora">16:10</div>
-    <span>4G 🔋 90%</span>
+    <span>KORVIL 4G 🔋 100%</span>
   </div>
+
+  <!-- OVERLAY PRA FECHAR PAINEL -->
+  <div class="overlay" id="overlay" onclick="closePanel()"></div>
 
   <!-- PAINEL NOTIFICAÇÕES -->
   <div id="notiPanel">
     <div class="handle"></div>
     <div class="shortcuts">
       <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'mic')">🎤</div>Voz</div>
-      <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'app')">🚀</div>App</div>
-      <div class="shortcut"><div class="btn" onclick="toggleBtn(this,'google')">🔍</div>Google</div>
+      <div class="shortcut"><div class="btn" onclick="goPage('app')">🚀</div>App</div>
+      <div class="shortcut"><div class="btn" onclick="goPage('dashboard')">📊</div>Dash</div>
       <div class="shortcut"><div class="btn" onclick="limparMem()">🧠</div>Memória</div>
     </div>
     <div class="notis" id="notis"></div>
   </div>
 
+  <!-- MENU LATERAL -->
+  <div id="sideMenu">
+    <div class="sideHeader">
+      <h2>K-AI</h2>
+      <p>KORVIL ARTIFICIAL INTELLIGENCE</p>
+    </div>
+    <div class="sideItem" onclick="goPage('app')">🚀 Abrir APP KORVIL</div>
+    <div class="sideItem" onclick="goPage('dashboard')">📊 Dashboard</div>
+    <div class="sideItem" onclick="goPage('marketing')">📢 Marketing</div>
+    <div class="sideItem" onclick="goPage('criador')">🎨 Criador de Arte</div>
+    <div class="sideItem" onclick="goPage('config')">⚙️ Configurações</div>
+    <div class="sideItem" onclick="limparMem()">🗑️ Limpar Memória</div>
+  </div>
+
   <!-- HEADER -->
   <div class="header">
+    <div class="menuBtn" onclick="toggleMenu()">☰</div>
     <div class="avatar">K</div>
     <div class="name">K-AI<br><small id="status">online</small></div>
   </div>
@@ -82,7 +112,7 @@ body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fff;font-fa
 
   <!-- INPUT -->
   <div class="footer">
-    <input type="text" id="input" placeholder="Mensagem">
+    <input type="text" id="input" placeholder="Mensagem para K-AI...">
     <div class="btn" id="mic">🎤</div>
     <div class="btn" onclick="send()">➤</div>
   </div>
@@ -93,38 +123,55 @@ body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fff;font-fa
 // ===== ESTADO =====
 let modo = 'USER';
 let memoria = JSON.parse(localStorage.getItem('kai')) || {hist:[], mems:[]};
+const PAGINAS = {
+  'app': 'https://korvilp-sudo.github.io/korvil-app/app.html',
+  'dashboard': 'https://korvilp-sudo.github.io/korvil-app/dashboard.html',
+  'marketing': 'https://korvilp-sudo.github.io/korvil-app/marketing.html',
+  'criador': 'https://korvilp-sudo.github.io/korvil-app/criador.html',
+  'config': 'https://korvilp-sudo.github.io/korvil-app/config.html'
+}
 
-// ===== 3D FUNCIONANDO =====
+// ===== 3D KORVIL MELHORADO =====
 try{
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true});
-  renderer.setSize(window.innerWidth, window.innerHeight-128);
-  const geo = new THREE.IcosahedronGeometry(2.5, 1);
-  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, wireframe:true});
+  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true, antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight-130);
+  const geo = new THREE.IcosahedronGeometry(3, 2);
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.3, wireframe:true});
   const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh); scene.add(new THREE.PointLight(0x00FFFF,2).position.set(3,3,3));
-  camera.position.z = 6;
-  function loop(){ requestAnimationFrame(loop); mesh.rotation.y += 0.01; renderer.render(scene,camera); }
+  scene.add(mesh); scene.add(new THREE.PointLight(0x00FFFF,3).position.set(4,4,4));
+  camera.position.z = 7;
+  function loop(){ requestAnimationFrame(loop); mesh.rotation.x += 0.005; mesh.rotation.y += 0.01; renderer.render(scene,camera); }
   loop();
-}catch(e){console.log("3D erro",e)}
+}catch(e){}
 
-// ===== ARRASTAR PAINEL =====
-let startY = 0;
+// ===== PAINEL ARRASTAR MELHORADO =====
 const panel = document.getElementById('notiPanel');
-document.getElementById('statusBar').ontouchstart = e => startY = e.touches[0].clientY;
-document.getElementById('statusBar').ontouchend = e => {
-  if(e.changedTouches[0].clientY - startY > 50) panel.classList.add('open');
-}
-panel.ontouchend = e => {
-  if(startY - e.changedTouches[0].clientY > 50) panel.classList.remove('open');
-}
-document.getElementById('statusBar').onclick = () => panel.classList.toggle('open');
+const overlay = document.getElementById('overlay');
+let startY = 0;
+document.getElementById('statusBar').addEventListener('touchstart', e => startY = e.touches[0].clientY);
+document.getElementById('statusBar').addEventListener('touchend', e => {
+  if(e.changedTouches[0].clientY - startY > 40) openPanel();
+});
+function openPanel(){ panel.classList.add('open'); overlay.classList.add('show'); }
+function closePanel(){ panel.classList.remove('open'); overlay.classList.remove('show'); }
 
-// ===== FUNÇÕES QUE FUNCIONAM =====
-function addNoti(txt){
-  document.getElementById('notis').innerHTML = `<div class="noti">${txt}</div>` + document.getElementById('notis').innerHTML;
+// ===== MENU LATERAL =====
+function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); }
+
+// ===== NAVEGAÇÃO POR VOZ/COMANDO =====
+function goPage(pagina){
+  if(PAGINAS[pagina]){
+    window.open(PAGINAS[pagina], '_blank');
+    addNoti(`🚀 Abrindo ${pagina.toUpperCase()}`);
+    falar(`Abrindo ${pagina} agora Chefe`);
+  }
+  toggleMenu(); closePanel();
 }
+
+// ===== FUNÇÕES K-AI =====
+function addNoti(txt){ document.getElementById('notis').innerHTML = `<div class="noti">${txt}</div>` + document.getElementById('notis').innerHTML; }
 function addMsg(who, txt){
   const div = document.createElement('div');
   div.className = 'bubble ' + who;
@@ -133,60 +180,49 @@ function addMsg(who, txt){
   document.getElementById('chat').scrollTop = 99999;
   memoria.hist.push({who,txt}); localStorage.setItem('kai',JSON.stringify(memoria));
 }
-function falar(txt){
-  addMsg('kai',txt);
-  speechSynthesis.speak(new SpeechSynthesisUtterance(txt));
-}
+function falar(txt){ addMsg('kai',txt); speechSynthesis.speak(new SpeechSynthesisUtterance(txt)); }
+
 function processar(cmd){
   cmd = cmd.toLowerCase();
-  if(cmd.includes('app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); addNoti('🚀 App KORVIL aberto'); return 'Abrindo app KORVIL'; }
-  if(cmd.includes('buscar')){ let q = cmd.replace('buscar',''); window.open('https://google.com/search?q='+q,'_blank'); addNoti('🔍 Pesquisando: '+q); return 'Pesquisando '+q; }
-  if(cmd.includes('lembre')){ memoria.mems.push(cmd); localStorage.setItem('kai',JSON.stringify(memoria)); addNoti('🧠 Memória salva'); return 'Salvei na memória'; }
-  if(cmd.includes('status')){ return `Tenho ${memoria.hist.length} conversas e ${memoria.mems.length} memórias`; }
-  return 'Entendi: '+cmd;
+  if(cmd.includes('app') || cmd.includes('abrir aplicativo')) return goPage('app'), 'Abrindo aplicativo KORVIL';
+  if(cmd.includes('dashboard') || cmd.includes('painel')) return goPage('dashboard'), 'Abrindo Dashboard';
+  if(cmd.includes('marketing')) return goPage('marketing'), 'Abrindo área de Marketing';
+  if(cmd.includes('criar arte') || cmd.includes('criador')) return goPage('criador'), 'Abrindo Criador de Arte';
+  if(cmd.includes('config') || cmd.includes('configuração')) return goPage('config'), 'Abrindo Configurações';
+  if(cmd.includes('buscar') || cmd.includes('pesquisar')){ let q = cmd.replace('buscar','').replace('pesquisar',''); window.open('https://google.com/search?q='+q,'_blank'); addNoti('🔍 Pesquisando: '+q); return 'Pesquisando '+q; }
+  if(cmd.includes('lembre')){ memoria.mems.push(cmd); localStorage.setItem('kai',JSON.stringify(memoria)); addNoti('🧠 Memória salva'); return 'Salvei na memória Chefe'; }
+  if(cmd.includes('status')){ return `Sistema KORVIL online. ${memoria.hist.length} conversas e ${memoria.mems.length} memórias`; }
+  if(cmd.includes('limpar memória')) return limparMem(), 'Memória limpa';
+  return 'Comando não reconhecido. Diga: abrir app, dashboard, marketing';
 }
-function send(){
-  const val = document.getElementById('input').value;
-  if(!val) return;
-  addMsg('me',val);
-  falar(processar(val));
-  document.getElementById('input').value='';
-}
-function toggleBtn(el, tipo){
-  el.classList.toggle('active');
-  if(tipo=='mic') document.getElementById('mic').click();
-  if(tipo=='app') processar('abrir app');
-  if(tipo=='google') processar('buscar korvil');
-}
-function limparMem(){
-  localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; 
-  addNoti('🧠 Memória limpa'); falar('Memória limpa Chefe');
-}
+function send(){ const val = document.getElementById('input').value; if(!val) return; addMsg('me',val); falar(processar(val)); document.getElementById('input').value=''; }
+function toggleBtn(el, tipo){ el.classList.toggle('active'); if(tipo=='mic') document.getElementById('mic').click(); }
+function limparMem(){ localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; addNoti('🧠 Memória limpa'); return 'Memória limpa Chefe'; }
 
-// ===== VOZ =====
+// ===== VOZ COM PALAVRA DE ATIVAÇÃO =====
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 if(SR){
-  const rec = new SR(); rec.lang='pt-BR';
+  const rec = new SR(); rec.lang='pt-BR'; rec.continuous=false;
   document.getElementById('mic').onclick = ()=>{
     document.getElementById('mic').classList.toggle('rec');
     document.getElementById('status').innerText = 'ouvindo...';
     rec.start();
     rec.onresult = e => {
-      const txt = e.results[0][0].transcript;
+      let txt = e.results[0][0].transcript;
+      if(txt.toLowerCase().includes('k-ai')) txt = txt.toLowerCase().replace('k-ai','');
       addMsg('me',txt); falar(processar(txt));
       document.getElementById('mic').classList.remove('rec');
       document.getElementById('status').innerText = 'online';
     }
+    rec.onend = ()=>{ document.getElementById('mic').classList.remove('rec'); document.getElementById('status').innerText = 'online'; }
   }
 }
 
 // ===== HORA REAL =====
-setInterval(()=>{
-  document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
-},1000);
+setInterval(()=>{ document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) },1000);
+document.getElementById('input').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
 
-addMsg('kai','Olá Chefe. Arraste a barra de cima pra baixo');
-addNoti('🔵 K-AI Iniciado');
+setTimeout(()=>{ falar(`Olá Chefe. K-AI KORVIL online. Arraste a barra de cima`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
 </script>
 </body>
 </html>
