@@ -54,7 +54,6 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
 
   <div class="tabs"><button type="button" class="tab active" id="tabLogin">ENTRAR</button><button type="button" class="tab" id="tabCadastro">NOVO USUÁRIO</button></div>
 
-  <!-- BOTAO K-AI -->
   <button type="button" class="btn-kai" onclick="window.location.href='kai-core/index.html'">
     🤖 ASSISTENTE VIRTUAL K-AI
   </button>
@@ -146,7 +145,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
   }catch(e){ console.log("Supabase erro:", e) }
 
-  // REDIRECIONAMENTO CORRETO PRA APP
   const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
   const TABELA = 'Cadastro de usuários do KORVIL';
 
@@ -184,7 +182,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }catch{ msg('Erro na busca','error','msgCadastro'); }
   }
 
-  // CADASTRO - VAI PRA APP
   document.getElementById('cadastro').onsubmit = async e=>{
     e.preventDefault(); const btn=document.getElementById('btnCadastro');
     if(document.getElementById('pass').value!=document.getElementById('pass2').value) return msg('Senhas diferentes','error','msgCadastro');
@@ -199,11 +196,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
         rua:document.getElementById('rua').value,numero:document.getElementById('numero').value,bairro:document.getElementById('bairro').value
       });
       msg('Cadastro OK! Redirecionando...','ok','msgCadastro');
-      setTimeout(()=>window.location.replace(REDIRECT), 800);
+      setTimeout(()=>{ window.location.href = REDIRECT; }, 1500);
     }
   }
 
-  // LOGIN - VAI PRA APP
   document.getElementById('login').onsubmit = async e=>{
     e.preventDefault();
     const btn=document.getElementById('btnLogin');
@@ -214,7 +210,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
       loading(btn,false);
     } else {
       msg('Login OK! Redirecionando...','ok','msgLogin');
-      setTimeout(()=>window.location.replace(REDIRECT), 500);
+      await new Promise(r => setTimeout(r, 1000));
+      window.location.href = REDIRECT;
     }
   }
 });
