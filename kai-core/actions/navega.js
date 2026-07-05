@@ -1,77 +1,99 @@
-
 const Navega = {
-  // Mapa de todas as páginas do KORVIL
-  paginas: {
-    "central": { id: "central", nome: "Central", acao: () => window.parent.abrirTela('central') },
-    "k-tp": { id: "ktp", nome: "K-TP", acao: () => window.parent.irParaKTP() },
-    "k-alma": { id: "kalma", nome: "K-ALMA", acao: () => window.parent.abrirTela('kalma') },
-    "sistema k": { id: "sistema", nome: "Sistema K", acao: () => window.parent.abrirTela('sistema') },
-    "comunidade": { id: "comunidade", nome: "Comunidade", acao: () => window.parent.abrirTela('comunidade') },
-    "whats": { id: "whats", nome: "WhatsApp", acao: () => window.parent.abrirTela('whats') },
-    "config": { id: "config", nome: "Configurações", acao: () => window.parent.abrirTela('config') },
-    "perfil": { id: "perfil", nome: "Perfil", acao: () => window.parent.abrirTela('perfil') }
+  // ROTAS QUE JÁ EXISTEM NO SEU APP.HTML
+  rotasInternas: {
+    "central": "central",
+    "sistema k": "sistema",
+    "k-tp": "ktp-iframe",
+    "k-afortunado": "kafortunado",
+    "k-alma": "kalma",
+    "humano": "humano",
+    "desenvolvimento humano": "humano",
+    "negocios": "negocios",
+    "servicos": "servicos",
+    "inicio": "central",
+    "home": "central",
+    "menu": "central",
+    "voltar": "central"
   },
 
-  // Função principal que o kai.js chama
   ir(comando) {
-    comando = comando.toLowerCase();
+    let pagina = comando.replace("vai para", "").replace("abrir", "").replace("ir para", "").replace("acessar", "").trim().toLowerCase();
 
-    // 1. COMANDOS ESPECIAIS
-    if (comando.includes("voltar") || comando.includes("inicio")) {
-      return this.voltar();
-    }
-    if (comando.includes("fechar") || comando.includes("sair")) {
-      return this.fechar();
-    }
-    if (comando.includes("atualizar") || comando.includes("recarregar")) {
-      window.parent.location.reload();
-      return "Recarregando o KORVIL...";
-    }
+    // ATALHOS POR NUMERO
+    if(pagina.includes("1") || pagina.includes("sistema")) pagina = "sistema k";
+    if(pagina.includes("2") || pagina.includes("tp")) pagina = "k-tp";
+    if(pagina.includes("3") || pagina.includes("afortunado")) pagina = "k-afortunado";
+    if(pagina.includes("4") || pagina.includes("alma")) pagina = "k-alma";
+    if(pagina.includes("5") || pagina.includes("central")) pagina = "central";
+    if(pagina.includes("6") || pagina.includes("humano")) pagina = "humano";
+    if(pagina.includes("7") || pagina.includes("negocio")) pagina = "negocios";
+    if(pagina.includes("8") || pagina.includes("servico")) pagina = "servicos";
 
-    // 2. PROCURA A PÁGINA NO MAPA
-    for (let chave in this.paginas) {
-      if (comando.includes(chave)) {
-        const pagina = this.paginas[chave];
+    // PROCURA NAS ROTAS INTERNAS
+    for(let chave in this.rotasInternas){
+      if(pagina.includes(chave)){
+        const idTela = this.rotasInternas[chave];
 
-        // Valida se a função existe no pai
-        if (typeof window.parent.abrirTela === 'function' || typeof window.parent.irParaKTP === 'function') {
-          pagina.acao(); // Executa a ação
-          this.salvarUltimaPagina(pagina.id);
-          return `Ok ${KAI.memoria.nomeUsuario}, indo para ${pagina.nome}.`;
+        // CASO ESPECIAL K-TP QUE USA IFRAME
+        if(idTela === "ktp-iframe"){
+          window.parent.irParaKTP(); // chama a função que já existe no app
         } else {
-          return "Erro: Não consegui conectar com o KORVIL. Recarregue a página.";
+          window.parent.abrirTela(idTela); // chama a função que já existe no app
         }
+
+        return `Abrindo ${chave.toUpperCase()}.`;
       }
     }
 
-    // 3. SE NÃO ACHOU
-    return `Não encontrei essa página. Posso ir para: Central, K-TP, K-ALMA, Sistema K, Comunidade, Whats.`;
+    return `Página "${pagina}" não encontrada. Diga: central, sistema k, k-tp, k-afortunado, k-alma, humano, negocios ou servicos`;
+  }
+}const Navega = {
+  // ROTAS QUE JÁ EXISTEM NO SEU APP.HTML
+  rotasInternas: {
+    "central": "central",
+    "sistema k": "sistema",
+    "k-tp": "ktp-iframe",
+    "k-afortunado": "kafortunado",
+    "k-alma": "kalma",
+    "humano": "humano",
+    "desenvolvimento humano": "humano",
+    "negocios": "negocios",
+    "servicos": "servicos",
+    "inicio": "central",
+    "home": "central",
+    "menu": "central",
+    "voltar": "central"
   },
 
-  voltar() {
-    if (window.history.length > 1) {
-      window.parent.history.back();
-      return "Voltando uma página.";
-    } else {
-      this.paginas["central"].acao();
-      return "Voltando para a Central.";
+  ir(comando) {
+    let pagina = comando.replace("vai para", "").replace("abrir", "").replace("ir para", "").replace("acessar", "").trim().toLowerCase();
+
+    // ATALHOS POR NUMERO
+    if(pagina.includes("1") || pagina.includes("sistema")) pagina = "sistema k";
+    if(pagina.includes("2") || pagina.includes("tp")) pagina = "k-tp";
+    if(pagina.includes("3") || pagina.includes("afortunado")) pagina = "k-afortunado";
+    if(pagina.includes("4") || pagina.includes("alma")) pagina = "k-alma";
+    if(pagina.includes("5") || pagina.includes("central")) pagina = "central";
+    if(pagina.includes("6") || pagina.includes("humano")) pagina = "humano";
+    if(pagina.includes("7") || pagina.includes("negocio")) pagina = "negocios";
+    if(pagina.includes("8") || pagina.includes("servico")) pagina = "servicos";
+
+    // PROCURA NAS ROTAS INTERNAS
+    for(let chave in this.rotasInternas){
+      if(pagina.includes(chave)){
+        const idTela = this.rotasInternas[chave];
+
+        // CASO ESPECIAL K-TP QUE USA IFRAME
+        if(idTela === "ktp-iframe"){
+          window.parent.irParaKTP(); // chama a função que já existe no app
+        } else {
+          window.parent.abrirTela(idTela); // chama a função que já existe no app
+        }
+
+        return `Abrindo ${chave.toUpperCase()}.`;
+      }
     }
-  },
 
-  fechar() {
-    // Manda mensagem pro pai fechar o iframe do K-AI
-    window.parent.postMessage({ tipo: "fecharKai" }, "*");
-    return "Fechando K-AI.";
-  },
-
-  abrirModal(nome) {
-    // Pra abrir popups no futuro
-    window.parent.postMessage({ tipo: "abrirModal", nome: nome }, "*");
-    return `Abrindo ${nome}.`;
-  },
-
-  salvarUltimaPagina(id) {
-    localStorage.setItem('kai_ultima_pagina', id);
-    KAI.memoria.ultimaPagina = id;
+    return `Página "${pagina}" não encontrada. Diga: central, sistema k, k-tp, k-afortunado, k-alma, humano, negocios ou servicos`;
   }
 }
