@@ -22,6 +22,7 @@ const KAI_UI = {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.nucleo = new THREE.Mesh(
       new THREE.IcosahedronGeometry(1.5, 2),
@@ -40,23 +41,31 @@ const KAI_UI = {
     this.ring2.rotation.x = Math.PI/2;
 
     this.scene.add(this.ring1, this.ring2);
-    this.scene.add(new THREE.PointLight(0x00f5ff, 2, 50).position.set(5,5,5));
+
+    const light = new THREE.PointLight(0x00f5ff, 2, 50);
+    light.position.set(5,5,5);
+    this.scene.add(light);
+
     this.camera.position.z = 5;
     this.animate();
   },
 
   animate() {
     requestAnimationFrame(()=>this.animate());
-    this.nucleo.rotation.x += 0.01;
-    this.nucleo.rotation.y += 0.018;
-    this.ring1.rotation.y += 0.025;
-    this.ring2.rotation.z += 0.018;
-    this.renderer.render(this.scene, this.camera);
+    if(this.nucleo){
+      this.nucleo.rotation.x += 0.01;
+      this.nucleo.rotation.y += 0.018;
+      this.ring1.rotation.y += 0.025;
+      this.ring2.rotation.z += 0.018;
+      this.renderer.render(this.scene, this.camera);
+    }
   },
 
   pulsarCore() {
-    KAI_UI.nucleo.material.emissiveIntensity = 1.5;
-    setTimeout(()=>KAI_UI.nucleo.material.emissiveIntensity=0.7,250)
+    if(KAI_UI.nucleo){
+      KAI_UI.nucleo.material.emissiveIntensity = 1.5;
+      setTimeout(()=>{ if(KAI_UI.nucleo) KAI_UI.nucleo.material.emissiveIntensity=0.7 },250)
+    }
   },
 
   // ===== 2. CHAT UI =====
@@ -71,7 +80,10 @@ const KAI_UI = {
   // ===== 3. VOZ TEMPO REAL =====
   iniciarReconhecimento(){
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SpeechRecognition) return;
+    if(!SpeechRecognition) {
+      console.log("Reconhecimento de voz não suportado");
+      return;
+    }
 
     this.recognition = new SpeechRecognition();
     this.recognition.lang = 'pt-BR';
@@ -86,11 +98,13 @@ const KAI_UI = {
       }
     }
 
+    this.recognition.onerror = (e)=>{ console.log("Erro voz:", e.error) }
+
     this.recognition.onend = ()=>{
       if(KAI_CONFIG.autoOuvir) this.recognition.start();
     }
 
-    this.recognition.start();
+    try{ this.recognition.start(); }catch(e){}
   },
 
   toggleMic(){
@@ -104,10 +118,12 @@ const KAI_UI = {
 
   falar(texto){
     this.addMsg('kai', texto);
+    speechSynthesis.cancel(); // Para fala anterior
     const utter = new SpeechSynthesisUtterance(texto);
     utter.lang = 'pt-BR';
     utter.pitch = 0.6; // VOZ CORVO GRAVE
     utter.rate = 0.95;
+    utter.volume = 1;
     utter.onstart = this.pulsarCore;
     speechSynthesis.speak(utter);
   },
@@ -115,7 +131,7 @@ const KAI_UI = {
   // ===== 4. INPUT E MENU =====
   enviarTexto(){
     const input = document.getElementById('userInput');
-    if(!input.value) return;
+    if(!input.value.trim()) return;
     this.addMsg('user', input.value);
     KAI_BRAIN.processarComando(input.value);
     input.value = "";
@@ -136,7 +152,7 @@ const KAI_UI = {
   anexarArquivo(){
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = "image/*,.pdf,.txt,.doc";
+    input.accept = "image/*,.pdf,.txt,.doc,.docx";
     input.onchange = async (e)=>{
       const file = e.target.files[0];
       if(!file) return;
@@ -150,9 +166,11 @@ const KAI_UI = {
   // ===== 6. EVENTOS GERAIS =====
   eventos(){
     window.addEventListener('resize', ()=>{
-      this.camera.aspect = window.innerWidth/window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      if(this.camera && this.renderer){
+        this.camera.aspect = window.innerWidth/window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      }
     });
 
     document.getElementById('userInput').addEventListener('keydown', (e)=>{
@@ -161,7 +179,7 @@ const KAI_UI = {
   }
 }
 
-// ===== CÉREBRO SEPARADO =====
+// ===== CÉREBRO SEPARADO - 9 GAVETAS =====
 const KAI_BRAIN = {
   async processarComando(cmdOriginal){
     const cmd = cmdOriginal.toLowerCase();
@@ -170,16 +188,16 @@ const KAI_BRAIN = {
     // ATALHOS SISTEMA
     if(cmd.includes("parar de ouvir")) {
       KAI_CONFIG.autoOuvir=false;
-      KAI_UI.recognition.stop();
+      if(KAI_UI.recognition) KAI_UI.recognition.stop();
       resposta="Modo manual ativado Chefe";
     }
     else if(cmd.includes("voltar a ouvir")) {
       KAI_CONFIG.autoOuvir=true;
-      KAI_UI.recognition.start();
+      if(KAI_UI.recognition) KAI_UI.recognition.start();
       resposta="Voltando a ouvir";
     }
 
-    // CHAMADAS DAS GAVETAS
+    // CHAMADAS DAS GAVETAS - ORDEM DE PRIORIDADE
     else if (cmd.includes("vai") || cmd.includes("abrir")) {
       resposta = Navega.ir(cmd);
     }
@@ -192,17 +210,25 @@ const KAI_BRAIN = {
     else if (cmd.includes("hora") || cmd.includes("salvar") || cmd.includes("memória") || cmd.includes("data") || cmd.includes("status")) {
       resposta = await Sistema.executar(cmd);
     }
+    // 5 NOVAS GAVETAS
+    else if (cmd.includes("buscar") || cmd.includes("pesquisar")) {
+      resposta = await Busca.executar(cmd);
+    }
+    else if (cmd.includes("calcular") || cmd.includes("somar") || cmd.includes("dividir") || cmd.includes("multiplicar") || cmd.includes("%")) {
+      resposta = await Calculo.executar(cmd);
+    }
+    else if (cmd.includes("postar") || cmd.includes("instagram") || cmd.includes("social") || cmd.includes("story") || cmd.includes("reels")) {
+      resposta = await Social.executar(cmd);
+    }
+    else if (cmd.includes("lead") || cmd.includes("venda") || cmd.includes("proposta") || cmd.includes("crm") || cmd.includes("cliente")) {
+      resposta = await Vendas.executar(cmd);
+    }
+    else if (cmd.includes("aula") || cmd.includes("curso") || cmd.includes("aprender") || cmd.includes("exercício") || cmd.includes("estudar")) {
+      resposta = await Educacao.executar(cmd);
+    }
+    // FALLBACK
     else {
-      resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, que horas são`;
-    else if (cmd.includes("buscar") || cmd.includes("pesquisar")) { resposta = await Busca.executar(cmd); }
-    }
-    else if (cmd.includes("calcular") || cmd.includes("somar") || cmd.includes("%")) { resposta = await Calculo.executar(cmd); }
-    }
-    else if (cmd.includes("postar") || cmd.includes("instagram") || cmd.includes("social")) { resposta = await Social.executar(cmd); }
-    }
-    else if (cmd.includes("lead") || cmd.includes("venda") || cmd.includes("proposta")) { resposta = await Vendas.executar(cmd); }
-    }
-    else if (cmd.includes("aula") || cmd.includes("curso") || cmd.includes("aprender")) { resposta = await Educacao.executar(cmd); }
+      resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, pesquisar algo, calcular 10%`;
     }
 
     KAI_UI.falar(resposta);
