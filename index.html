@@ -8,31 +8,45 @@
 :root{--c:#00FFFF;--c2:#A8FFE6}*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
 canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset:0;z-index:1;pointer-events:none}
+
 .word{position:absolute;color:rgba(0,255,255,.25);font-size:14px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;text-shadow:0 0 20px rgba(0,255,255,.6);animation-fill-mode:forwards; pointer-events:none; opacity:0;}
 .fadeIn{animation:fadeIn 1.5s forwards}@keyframes fadeIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 .fadeOut{animation:fadeOut 1.5s forwards}@keyframes fadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.7)}}
 .pulse{animation:pulseWord 5s infinite}@keyframes pulseWord{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 .slideL{animation:slideLeft 5s infinite}@keyframes slideLeft{0%,100%{transform:translateX(0)}50%{transform:translateX(-15px)}}
 .slideR{animation:slideRight 5s infinite}@keyframes slideRight{0%,100%{transform:translateX(0)}50%{transform:translateX(15px)}}
+
 .card{background:rgba(0,0,0,.78);backdrop-filter:blur(30px);border:1px solid rgba(0,255,255,.2);border-radius:24px;padding:35px;width:90%;max-width:480px;position:relative;z-index:10;animation:fadeInUp.8s;box-shadow:0 0 60px rgba(0,255,255,.3); max-height:92vh; overflow-y:auto}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
 .logo-area{display:flex;justify-content:center;margin-bottom:25px}
-.logo-img{max-width:280px;width:100%;height:auto;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c);animation:pulseLogo 2s ease-in-out infinite;padding:6px;background:#000;}
+.logo-img{
+  max-width:280px;
+  width:100%;
+  height:auto;
+  border-radius:16px; /* cantos arredondados */
+  border:2px solid var(--c); /* borda ciano */
+  box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c); /* brilho duplo */
+  animation:pulseLogo 2s ease-in-out infinite;
+  padding:6px; /* respiro da moldura */
+  background:#000; /* fundo preto */
+}
 @keyframes pulseLogo{0%,100%{transform:scale(1);box-shadow:0 0 20px var(--c)40, 0 0 35px var(--c)}50%{transform:scale(1.07);box-shadow:0 0 30px var(--c)60, 0 0 50px var(--c)}}
-.tabs{display:flex;gap:12px;margin-bottom:15px}.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
+
+.tabs{display:flex;gap:12px;margin-bottom:25px}.tab{flex:1;padding:14px;border:2px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);color:var(--c);cursor:pointer;border-radius:12px;font-weight:900;font-size:15px;transition:.4s}
 .tab.active{background:linear-gradient(135deg,var(--c),var(--c2));color:#000;border-color:var(--c);box-shadow:0 0 25px var(--c)}
-.btn-kai{width:100%;padding:16px;border:2px solid var(--c);background:rgba(0,255,255,.1);color:var(--c);font-weight:900;font-size:15px;border-radius:12px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px;transition:.3s;letter-spacing:1px}
-.btn-kai:hover{transform:scale(1.03); background:linear-gradient(135deg,var(--c),var(--c2)); color:#000; box-shadow:0 0 25px var(--c)}
 .form{display:none;flex-direction:column;gap:16px}.form.active{display:flex}
 label{font-size:13px; font-weight:700; margin-left:4px; color:var(--c2); display:block; margin-bottom:4px}
 .input-group{display:flex; flex-direction:column; gap:4px}
 .input-wrap{display:flex; gap:8px; align-items:flex-end}
+
 .input-pass{position:relative; display:flex; align-items:center;}
 .input-pass input{padding-right:50px;}
 .toggle-pass{position:absolute; right:15px; cursor:pointer; width:22px; height:22px; fill:var(--c2); transition:.3s; z-index:2;}
 .toggle-pass:hover{fill:var(--c); transform:scale(1.1);}
 .toggle-pass.active{fill:var(--c);}
 .eye-closed{display:none;}
+
 input{width:100%;padding:16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;font-size:16px;font-weight:600;transition:.3s}
 input:focus{border-color:var(--c); box-shadow:0 0 15px rgba(0,255,255,.3)}
 input[readonly]{opacity:0.6; cursor:not-allowed;}
@@ -51,12 +65,7 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
   <div class="logo-area">
     <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/assets/images/korvil-logo.png" class="logo-img">
   </div>
-
   <div class="tabs"><button type="button" class="tab active" id="tabLogin">ENTRAR</button><button type="button" class="tab" id="tabCadastro">NOVO USUÁRIO</button></div>
-
-  <button type="button" class="btn-kai" onclick="window.location.href='kai-core/index.html'">
-    🤖 ASSISTENTE VIRTUAL K-AI
-  </button>
 
   <form id="login" class="form active">
     <input type="email" id="loginEmail" placeholder="Digite seu E-mail" required>
@@ -107,7 +116,10 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
   </form>
 </div>
 <script>
+// 1. INICIA TUDO PRIMEIRO, SUPABASE DEPOIS
 let db;
+
+// PALAVRAS RODA IMEDIATO
 window.onload = function() {
   iniciarAnimacoes();
   iniciarParticulas();
@@ -120,6 +132,7 @@ function iniciarAnimacoes(){
   const wordsBg = document.getElementById('wordsBg');
   const animacoes = ['pulse','slideL','slideR'];
   let palavrasAtivas = [];
+
   function criarPalavra(){
     if(palavrasAtivas.length >= 60) return;
     const el = document.createElement('div');
@@ -139,6 +152,7 @@ function iniciarParticulas(){
   const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;let pts=[];for(let i=0;i<30;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2});function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}draw();
 }
 
+// 2. SÓ DEPOIS INICIA SUPABASE
 document.addEventListener('DOMContentLoaded', ()=>{
   try{
     const { createClient } = supabase;
@@ -148,6 +162,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
   const TABELA = 'Cadastro de usuários do KORVIL';
 
+  // OLHINHO
   document.querySelectorAll('.toggle-pass').forEach(eye => {
     eye.addEventListener('click', function(){
       const input = document.getElementById(this.dataset.target);
@@ -157,6 +172,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   });
 
+  // MASCARAS
   const mCPF = v=>v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
   const mCEP = v=>v.replace(/\D/g,"").replace(/^(\d{5})(\d)/,"$1-$2");
   const mTel = v=>v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2");
@@ -164,14 +180,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('cep').oninput = e => e.target.value = mCEP(e.target.value);
   document.getElementById('whatsapp').oninput = e => e.target.value = mTel(e.target.value);
 
+  // IDADE
   document.getElementById('data_nasc').onchange = ()=>{const d=new Date(document.getElementById('data_nasc').value); let i=new Date().getFullYear()-d.getFullYear(); document.getElementById('idadeDisplay').innerText = i>=0?`Idade: ${i} anos`:''};
 
+  // TABS
   const showTab = tab=>{document.querySelectorAll('.tab,.form').forEach(x=>x.classList.remove('active'));document.getElementById(tab==='login'?'tabLogin':'tabCadastro').classList.add('active');document.getElementById(tab).classList.add('active');}
   document.getElementById('tabLogin').onclick = ()=>showTab('login');
   document.getElementById('tabCadastro').onclick = ()=>showTab('cadastro');
   const msg = (t,c,i)=>document.getElementById(i).innerHTML=t?`<p class="${c}">${t}</p>`:'';
   const loading = (b,on)=>{b.disabled=on;b.innerHTML=on?'<span class="loader"></span>PROCESSANDO':b.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'};
 
+  // CEP
   document.getElementById('btnBuscarCep').onclick = async ()=>{
     const cep = document.getElementById('cep').value.replace(/\D/g,'');
     if(cep.length!=8) return msg('Digite 8 números','error','msgCadastro');
@@ -182,12 +201,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }catch{ msg('Erro na busca','error','msgCadastro'); }
   }
 
+  // CADASTRO
   document.getElementById('cadastro').onsubmit = async e=>{
     e.preventDefault(); const btn=document.getElementById('btnCadastro');
     if(document.getElementById('pass').value!=document.getElementById('pass2').value) return msg('Senhas diferentes','error','msgCadastro');
     loading(btn,true);
     const { data, error } = await db.auth.signUp({email:document.getElementById('email').value,password:document.getElementById('pass').value});
-    if(error){ msg(error.message,'error','msgCadastro'); loading(btn,false); }
+    if(error){ msg(error.message,'error','msgCadastro'); }
     else{
       await db.from(TABELA).insert({
         id:data.user.id,email:document.getElementById('email').value,nome_completo:document.getElementById('nome').value,
@@ -195,24 +215,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
         whatsapp:document.getElementById('whatsapp').value.replace(/\D/g,''),cep:document.getElementById('cep').value.replace(/\D/g,''),
         rua:document.getElementById('rua').value,numero:document.getElementById('numero').value,bairro:document.getElementById('bairro').value
       });
-      msg('Cadastro OK! Redirecionando...','ok','msgCadastro');
-      setTimeout(()=>{ window.location.href = REDIRECT; }, 1500);
+      msg('Cadastro OK!','ok','msgCadastro'); setTimeout(()=>window.location.href=REDIRECT,1000);
     }
+    loading(btn,false);
   }
 
+  // LOGIN
   document.getElementById('login').onsubmit = async e=>{
-    e.preventDefault();
-    const btn=document.getElementById('btnLogin');
-    loading(btn,true);
-    const { data, error } = await db.auth.signInWithPassword({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPass').value});
-    if(error){
-      msg('E-mail ou senha inválidos','error','msgLogin');
-      loading(btn,false);
-    } else {
-      msg('Login OK! Redirecionando...','ok','msgLogin');
-      await new Promise(r => setTimeout(r, 1000));
-      window.location.href = REDIRECT;
-    }
+    e.preventDefault(); const btn=document.getElementById('btnLogin'); loading(btn,true);
+    const { error } = await db.auth.signInWithPassword({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPass').value});
+    if(error){ msg('Login inválido','error','msgLogin'); }
+    else{ msg('Login OK!','ok','msgLogin'); setTimeout(()=>window.location.href=REDIRECT,800); }
+    loading(btn,false);
   }
 });
 </script>
