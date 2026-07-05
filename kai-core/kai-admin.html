@@ -3,21 +3,101 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-AI ORIGINAL | ADMIN</title>
-<link rel="stylesheet" href="kai-style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--c:#00FFFF;--c2:#A8FFE6}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{background:#000;overflow:hidden;color:var(--c)}
+#canvas3d{position:fixed;inset:0;z-index:0}
+.ui{position:fixed;z-index:10;pointer-events:none}
+.logo{top:30px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:900;letter-spacing:6px;text-shadow:0 0 25px var(--c)}
+.logo span{color:var(--c2);font-size:14px;letter-spacing:2px;display:block;text-align:center;margin-top:5px}
+.modo{top:30px;right:20px;font-size:12px;font-weight:900;padding:8px 14px;border:1px solid #00ff88;border-radius:20px;background:rgba(0,255,136,.1);color:#00ff88;box-shadow:0 0 15px #00ff88;pointer-events:auto}
+.status{bottom:30px;left:50%;transform:translateX(-50%);font-size:14px;text-align:center}
+.mic{bottom:80px;left:50%;transform:translateX(-50%);width:90px;height:90px;border:3px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;cursor:pointer;pointer-events:auto;transition:.3s;box-shadow:0 0 40px var(--c);background:rgba(0,255,255,.05)}
+.mic:hover{transform:translateX(-50%) scale(1.1);box-shadow:0 0 70px var(--c)}
+.mic.listening{animation:pulse 0.8s infinite;background:rgba(0,255,255,.3)}
+@keyframes pulse{0%,100%{box-shadow:0 0 40px var(--c)}50%{box-shadow:0 0 90px var(--c2)}}
+.chat{bottom:190px;left:50%;transform:translateX(-50%);width:90%;max-width:650px;background:rgba(0,0,0,.75);border:1px solid var(--c);border-radius:15px;padding:18px;max-height:220px;overflow-y:auto;backdrop-filter:blur(15px)}
+.msg{margin:10px 0;font-size:15px;line-height:1.5}
+.msg.user{color:var(--c2);text-align:right}
+.msg.kai{color:var(--c)}
+</style>
 </head>
 <body>
 <canvas id="canvas3d"></canvas>
 <div class="ui logo">K-AI<span>ORIGINAL - MODO ADMINISTRADOR</span></div>
 <div class="ui chat" id="chat"></div>
 <div class="ui mic" id="micBtn">🎙️</div>
-<div class="ui status" id="status">Sistema KORVIL Online</div>
-<div class="ui modo admin">MODO: ADMIN ILIMITADO</div>
+<div class="ui status" id="status">Inicializando sistemas...</div>
+<div class="ui modo">MODO: ADMIN ILIMITADO</div>
 <audio id="bgMusic" loop></audio>
 
-<script src="kai-config.js"></script>
-<script src="kai-voice.js"></script>
-<script src="kai-ui.js"></script>
-<script src="kai-admin.js"></script>
+<script>
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
+let recognition; let isListening = false;
+const micBtn = document.getElementById('micBtn');
+const chat = document.getElementById('chat');
+const status = document.getElementById('status');
+
+if(SpeechRecognition){
+  recognition = new SpeechRecognition();
+  recognition.lang = 'pt-BR'; recognition.continuous = false;
+  recognition.onstart = ()=>{isListening=true; micBtn.classList.add('listening'); status.innerText='K-AI ouvindo...';}
+  recognition.onend = ()=>{isListening=false; micBtn.classList.remove('listening'); status.innerText='Clique para falar';}
+  recognition.onresult = (e)=>{const cmd=e.results[0][0].transcript.toLowerCase(); addMsg('user', cmd); processarComando(cmd);}
+}
+micBtn.onclick = ()=>{if(!isListening && recognition) recognition.start();}
+
+function addMsg(tipo, texto){
+  const div = document.createElement('div');
+  div.className = 'msg ' + tipo;
+  div.innerText = tipo==='user'? 'Você: ' + texto : 'K-AI: ' + texto;
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+}
+function falar(texto){
+  addMsg('kai', texto);
+  const utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = 'pt-BR'; utter.rate = 1.05; utter.pitch = 1.1;
+  synth.speak(utter);
+}
+
+// 3D JARVIS
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+const geometry = new THREE.IcosahedronGeometry(1.8, 2);
+const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.6, shininess:120, transparent:true, opacity:0.9});
+const nucleo = new THREE.Mesh(geometry, material); scene.add(nucleo);
+const ringGeo = new THREE.TorusGeometry(2.5, 0.1, 16, 100);
+const ringMat = new THREE.MeshBasicMaterial({color:0x00FFFF, wireframe:true});
+const ring1 = new THREE.Mesh(ringGeo, ringMat); const ring2 = new THREE.Mesh(ringGeo, ringMat); ring2.rotation.x = Math.PI/2;
+scene.add(ring1, ring2);
+scene.add(new THREE.PointLight(0x00FFFF, 2.5, 50).position.set(5,5,5));
+scene.add(new THREE.PointLight(0xA8FFE6, 1.5, 50).position.set(-5,-5,-5));
+camera.position.z = 6;
+const particles = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(Array(4000).fill().map(()=> (Math.random()-0.5)*25), 3)), new THREE.PointsMaterial({color:0x00FFFF, size:0.025})); scene.add(particles);
+function animate(){requestAnimationFrame(animate); nucleo.rotation.x += 0.008; nucleo.rotation.y += 0.015; ring1.rotation.y += 0.02; ring2.rotation.z += 0.015; particles.rotation.y += 0.0008; material.emissiveIntensity = 0.5 + Math.sin(Date.now()*0.003)*0.2; renderer.render(scene, camera);}
+animate();
+
+// CÉREBRO ADMIN
+function processarComando(cmd){
+  if(cmd.includes('olá') || cmd.includes('k-ai')){ falar('K-AI Original online. Acesso total liberado, Korvil. Como posso auxiliar?'); }
+  else if(cmd.includes('horas')) falar('Horário KORVIL: ' + new Date().toLocaleTimeString('pt-BR'));
+  else if(cmd.includes('data')) falar('Data de hoje: ' + new Date().toLocaleDateString('pt-BR'));
+  else if(cmd.includes('editar sistema')) falar('Modo de edição ativado. Qual sistema deseja modificar?');
+  else if(cmd.includes('criar')) falar('Modo criação ativo. Me diga o que quer criar agora.');
+  else if(cmd.includes('corvo')) falar('Iniciando protocolo do Corvo. Mascote KORVIL online.');
+  else if(cmd.includes('abrir app')) {falar('Abrindo painel KORVIL'); window.open('../app.html','_blank');}
+  else if(cmd.includes('shutdown')) falar('Requer confirmação de voz para desligar o sistema.');
+  else if(cmd.includes('status')) falar('Todos os sistemas KORVIL operando em 100%. Núcleo estável.');
+  else falar('Comando não mapeado. Diga: horas, criar, editar sistema, abrir app');
+}
+setTimeout(()=>falar('K-AI Original inicializado. Todos os sistemas KORVIL operando.'), 2500);
+window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth, window.innerHeight);});
+</script>
 </body>
 </html>
