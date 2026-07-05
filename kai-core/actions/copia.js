@@ -32,13 +32,19 @@ const Copia = {
       "barcode": this.copiarBarcode, "assinatura": this.copiarAssinatura, "backup": this.copiarBackup,
       "log": this.copiarLog, "erro": this.copiarErro, "sucesso": this.copiarSucesso,
       "alerta": this.copiarAlerta, "notificacao": this.copiarNotificacao, "tarefa": this.copiarTarefa,
-      "lembrete": this.copiarLembrete, "agenda": this.copiarAgenda, "tudo korvil": this.copiarTudoKORVIL
+      "lembrete": this.copiarLembrete, "agenda": this.copiarAgenda, "tudo korvil": this.copiarTudoKORVIL,
+      
+      // NOVOS COMANDOS JARVIS
+      "fale sobre": this.falarSobrePagina,
+      "explique": this.falarSobrePagina,
+      "mostre": this.falarSobrePagina,
+      "ler pagina": this.falarSobrePagina
     };
     for(let chave in mapa){ if(cmd.includes(chave)) return await mapa[chave].call(this, cmd); }
     return "Use: copiar texto, resumir, analisar, traduzir, pdf, cliente";
   },
 
-  // LOGICA BASE
+  // ===== SUAS 100 FUNÇÕES ANTIGAS CONTINUAM AQUI IGUAL =====
   async copiarTextoSelecionado(){ const t=window.getSelection().toString(); if(!t)return "Selecione um texto"; await navigator.clipboard.writeText(t); return `Copiei ${t.length} caracteres`},
   async copiarTudoDaPagina(){ const t=document.body.innerText; await navigator.clipboard.writeText(t); return `Copiei tudo. ${t.length} chars`},
   async copiarLinkAtual(){ await navigator.clipboard.writeText(window.location.href); return "Link copiado"},
@@ -74,7 +80,6 @@ const Copia = {
   async copiarHabitos(){ return "Hábitos do K-FOCO copiados"},
   async copiarFinancas(){ return "Dados financeiros copiados"},
   async copiarContatos(){ return "Contatos copiados"},
-  // 51-100 são variações rápidas
   async copiarTextoMinusculo(){ const t=window.getSelection().toString(); await navigator.clipboard.writeText(t.toLowerCase()); return "Copiado minusculo"},
   async copiarTextoCapitalizado(){ const t=window.getSelection().toString(); await navigator.clipboard.writeText(t.charAt(0).toUpperCase()+t.slice(1)); return "Copiado capitalizado"},
   async copiarSemEspaco(){ const t=window.getSelection().toString(); await navigator.clipboard.writeText(t.replace(/\s/g,'')); return "Sem espaço"},
@@ -123,5 +128,30 @@ const Copia = {
   async copiarTarefa(){ return "Tarefa copiada"},
   async copiarLembrete(){ return "Lembrete copiado"},
   async copiarAgenda(){ return "Agenda copiada"},
-  async copiarTudoKORVIL(){ await navigator.clipboard.writeText(document.body.innerText); return "Tudo KORVIL copiado"}
+  async copiarTudoKORVIL(){ await navigator.clipboard.writeText(document.body.innerText); return "Tudo KORVIL copiado"},
+
+  // ===== NOVAS FUNÇÕES JARVIS ADICIONADAS =====
+  async falarSobrePagina(cmd){
+    const texto = document.body.innerText;
+    const url = window.location.href;
+
+    // SE ESTIVER NO K-TP
+    if(url.includes("k-tp")){
+      if(cmd.includes("serviços") || cmd.includes("servicos")){
+        return "No K-TP temos 3 pilares: 1. Projeto Transformação. Treino + Nutrição. 2. Mentoria 1 a 1 comigo. 3. Aulas Online. Qual você quer detalhar Chefe?";
+      }
+      if(cmd.includes("transformação") || cmd.includes("transformacao")){
+        return "Projeto Transformação: Foco em corpo, mente e hábito. Plano Presencial e Online. 3x na semana. Qual plano você quer ver?";
+      }
+    }
+
+    // SE ESTIVER EM SERVIÇOS
+    if(url.includes("servicos")){
+      return "Aqui estão todos os serviços do KORVIL: Sistema K, K-TP, K-Afortunado, K-Alma, Negócios e mais. Diga o número que eu abro pra você.";
+    }
+
+    // RESPOSTA PADRÃO
+    const resumo = texto.substring(0, 250);
+    return `Estou vendo aqui: ${resumo}... Quer que eu clique em algo ou explique melhor?`;
+  }
 }
