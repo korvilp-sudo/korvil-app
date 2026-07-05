@@ -62,9 +62,16 @@ body{background:#000;overflow:hidden;color:var(--c)}
   <button onclick="executar('resumir isso')">Resumir</button>
   <button onclick="executar('copiar emails')">Copiar Emails</button>
 
+  <h3>BUSCAR</h3>
+  <button onclick="executar('pesquisar k-tp')">Pesquisar</button>
+  <button onclick="executar('calcular 20% de 500')">Calcular</button>
+
+  <h3>MEMÓRIA</h3>
+  <button onclick="executar('estatísticas')">Estatísticas</button>
+  <button onclick="executar('limpar memória')">Limpar Memória</button>
+
   <h3>SISTEMA</h3>
   <button onclick="executar('que horas são')">Que horas são</button>
-  <button onclick="executar('salvar memória')">Salvar Memória</button>
   <button onclick="executar('parar de ouvir')">Parar de ouvir</button>
   <button onclick="executar('voltar a ouvir')">Voltar a ouvir</button>
 </div>
@@ -79,129 +86,37 @@ body{background:#000;overflow:hidden;color:var(--c)}
   </div>
 </div>
 
-<!-- CARREGA AS 3 GAVETAS -->
+<!-- CARREGA TODAS AS GAVETAS NA ORDEM CERTA -->
 <script src="actions/navega.js"></script>
 <script src="actions/copia.js"></script>
 <script src="actions/cria.js"></script>
 <script src="actions/sistema.js"></script>
-<script src="actions/kai-ui.js"></script>
 <script src="actions/busca.js"></script>
 <script src="actions/calculo.js"></script>
 <script src="actions/social.js"></script>
 <script src="actions/vendas.js"></script>
 <script src="actions/educacao.js"></script>
+<script src="kai-memory.js"></script>
+<script src="kai-ui.js"></script>
 
 <script>
 const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe" }
-let recognition;
 
-// ===== CENA 3D CORVO =====
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 2), new THREE.MeshPhongMaterial({color:0x00f5ff, emissive:0x00f5ff, emissiveIntensity:0.7, transparent:true, opacity:0.9}));
-scene.add(nucleo);
-const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.08, 16, 100), new THREE.MeshBasicMaterial({color:0x00f5ff, wireframe:true}));
-const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.08, 16, 100), new THREE.MeshBasicMaterial({color:0x00f5ff, wireframe:true})); ring2.rotation.x = Math.PI/2;
-scene.add(ring1, ring2); scene.add(new THREE.PointLight(0x00f5ff, 2, 50).position.set(5,5,5)); camera.position.z = 5;
-function animate(){ requestAnimationFrame(animate); nucleo.rotation.x += 0.01; nucleo.rotation.y += 0.018; ring1.rotation.y += 0.025; ring2.rotation.z += 0.018; renderer.render(scene, camera); }
-animate(); window.pulsarCore = () => { nucleo.material.emissiveIntensity = 1.5; setTimeout(()=>nucleo.material.emissiveIntensity=0.7,250) }
+// FUNÇÕES GLOBAIS PRO HTML CHAMAR
+function toggleMenu(){ KAI_UI.toggleMenu(); }
+function toggleMic(){ KAI_UI.toggleMic(); }
+function enviarTexto(){ KAI_UI.enviarTexto(); }
+function executar(cmd){ KAI_UI.executar(cmd); }
+function anexarArquivo(){ KAI_UI.anexarArquivo(); }
 
-// ===== VOZ TEMPO REAL =====
-const chat = document.getElementById('chat');
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-function iniciarReconhecimento(){
-  if(!SpeechRecognition) return;
-  recognition = new SpeechRecognition();
-  recognition.lang = 'pt-BR';
-  recognition.continuous = true;
-  recognition.interimResults = false;
-  recognition.onresult = (e)=>{
-    const cmd = e.results[e.results.length-1][0].transcript;
-    if(cmd.length > 2){ addMsg('user',cmd); processarComando(cmd); }
-  }
-  recognition.onend = ()=>{ if(KAI_CONFIG.autoOuvir) recognition.start(); }
-  recognition.start();
+// INICIAR TUDO
+async function iniciarKAI(){
+  await KAI_MEMORY.carregar(); // 1. CARREGA MEMÓRIA
+  Sistema.carregar(); // 2. CARREGA SISTEMA
+  KAI_UI.init(); // 3. INICIA UI
 }
 
-function toggleMic(){
-  KAI_CONFIG.autoOuvir =!KAI_CONFIG.autoOuvir;
-  document.getElementById('autoListen').style.display = KAI_CONFIG.autoOuvir? 'block':'none';
-  if(!KAI_CONFIG.autoOuvir && recognition) recognition.stop();
-  else if(KAI_CONFIG.autoOuvir && recognition) recognition.start();
-}
-
-function toggleMenu(){ document.getElementById('menu').style.display = document.getElementById('menu').style.display==='block'?'none':'block'; }
-
-function addMsg(tipo, texto){
-  const div = document.createElement('div'); div.className = 'msg ' + tipo;
-  div.innerHTML = tipo==='user'? `<b>Você:</b> ${texto}` : `<b>K-AI:</b> ${texto}`;
-  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
-}
-
-function falar(texto){
-  addMsg('kai', texto);
-  const utter = new SpeechSynthesisUtterance(texto);
-  utter.lang = 'pt-BR'; utter.pitch = 0.6; utter.rate = 0.95; // VOZ CORVO GRAVE
-  utter.onstart = pulsarCore; speechSynthesis.speak(utter);
-}
-
-function enviarTexto(){
-  const input = document.getElementById('userInput');
-  if(!input.value) return;
-  addMsg('user', input.value);
-  processarComando(input.value);
-  input.value = "";
-}
-
-function executar(cmd){
-  toggleMenu(); addMsg('user', cmd); processarComando(cmd);
-}
-
-function anexarArquivo(){
-  const input = document.createElement('input'); input.type = 'file';
-  input.onchange = async (e)=>{
-    const file = e.target.files[0];
-    addMsg('user', `Arquivo: ${file.name}`);
-    const res = await Copia.lerArquivo(file);
-    falar(res);
-  }
-  input.click();
-}
-
-// ===== CÉREBRO PRINCIPAL COM AS 4 GAVETAS =====
-async function processarComando(cmdOriginal){
-  const cmd = cmdOriginal.toLowerCase(); let resposta = "";
-
-  // ATALHOS SISTEMA
-  if(cmd.includes("parar de ouvir")) { KAI_CONFIG.autoOuvir=false; recognition.stop(); resposta="Modo manual ativado Chefe"; }
-  else if(cmd.includes("voltar a ouvir")) { KAI_CONFIG.autoOuvir=true; recognition.start(); resposta="Voltando a ouvir"; }
-
-  // CHAMADAS DAS GAVETAS - ORDEM IMPORTA
-  else if (cmd.includes("vai") || cmd.includes("abrir")) { resposta = Navega.ir(cmd); }
-  else if (cmd.includes("cria")) { resposta = await Cria.executar(cmd); }
-  else if (cmd.includes("copia") || cmd.includes("resuma") || cmd.includes("analisa") || cmd.includes("traduz")) { resposta = await Copia.executar(cmd); }
-  else if (cmd.includes("hora") || cmd.includes("salvar") || cmd.includes("memória") || cmd.includes("data") || cmd.includes("status")) { resposta = await Sistema.executar(cmd); }
-
-  else { resposta = `Comando recebido: "${cmdOriginal}". Tente: criar post, copiar tudo, que horas são`; }
-
-  falar(resposta);
-}
-
-// INICIAR
-setTimeout(()=>{
-  Sistema.carregar();
-  iniciarReconhecimento();
-  falar(`K-AI online. Modo Chefe ativo. Pronto para comandos.`);
-}, 800);
-
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+setTimeout(iniciarKAI, 800);
 </script>
 </body>
 </html>
