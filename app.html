@@ -30,7 +30,18 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
 .btn-app{background:transparent;border:1.5px solid var(--borda);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
 .btn-app:active{border-color:var(--c);transform:scale(.96);box-shadow:0 0 12px var(--c)30;}
-.btn-app img{width:100%;height:60px;object-fit:contain;border-radius:8px;background:#111;}
+.btn-app img{
+  width:100%;
+  height:60px;
+  object-fit:contain;
+  border-radius:12px; /* arredondado */
+  background:#111;
+  border:1.5px solid var(--c); /* BORDA CIANO */
+  box-shadow:0 0 10px var(--c)40; /* BRILHO */
+  padding:4px; /* respiro */
+  transition:.3s;
+}
+.btn-app:active img{box-shadow:0 0 18px var(--c)80;} /* brilho maior ao clicar */
 .btn-app span{font-size:11px;font-weight:800;color:var(--text);text-align:center;line-height:1.2;}
 
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
@@ -56,7 +67,7 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:none;z-index:100;backdrop-filter:blur(4px);}
 .overlay.ativo{display:block;}
 
-.logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;}
+.logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;}
 iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;}
 
 .modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
@@ -109,23 +120,22 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
     <h3 class="sectitle">SETORES:</h3>
     <div class="grid-4">
-      <div class="grid-4">
-  <div class="btn-app" onclick="abrirTela('sistema')">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/sistemak/images/logosistemak.png" alt="Sistema K">
-    <span>Sistema K</span>
-  </div>
-  <div class="btn-app" onclick="irParaKTP()">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/ktp/images/logoktp.png" alt="K-TP">
-    <span>K-TP</span>
-  </div>
-  <div class="btn-app" onclick="abrirTela('kafortunado')">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
-    <span>K-AFORTUNADO</span>
-  </div>
-  <div class="btn-app" onclick="abrirTela('kalma')">
-    <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
-    <span>K-ALMA</span>
-  </div>
+      <div class="btn-app" onclick="abrirTela('sistema')">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/sistemak/images/logosistemak.png" alt="Sistema K">
+        <span>Sistema K</span>
+      </div>
+      <div class="btn-app" onclick="irParaKTP()">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/ktp/images/logoktp.png" alt="K-TP">
+        <span>K-TP</span>
+      </div>
+      <div class="btn-app" onclick="abrirTela('kafortunado')">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kafortunado/images/logokafortunado.png" alt="K-AFORTUNADO">
+        <span>K-AFORTUNADO</span>
+      </div>
+      <div class="btn-app" onclick="abrirTela('kalma')">
+        <img src="https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/sections/kalma/images/logokalma.png" alt="K-ALMA">
+        <span>K-ALMA</span>
+      </div>
     </div>
 
     <h3 class="sectitle">CENTRAL:</h3>
@@ -158,7 +168,6 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   <section id="kai-sobre" class="tela"><h1>SOBRE O KORVIL</h1><div class="card"><h4>11 ANOS DE KORVIL</h4><p><b>Sistema K:</b> Servicos Gerais</p><p><b>K-TP:</b> Projeto Transformacao</p><p><b>K-AFORTUNADO:</b> Financas</p><p><b>K-ALMA:</b> Saude e Beleza</p><p><b>Cursos:</b> Tecnologia, Educacao Fisica, Empreendedorismo</p></div><button class="btn" onclick="abrirWhats('KORVIL - Sobre')">Falar sobre KORVIL no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kai-politica" class="tela"><h1>POLITICA E PRIVACIDADE</h1><div class="card"><p><b>KORVIL LTDA</b></p><p>LGPD: Seus dados sao usados so para contato. Nao vendemos dados. Whats oficial: 13997690898</p></div><button class="btn" onclick="abrirWhats('KORVIL - Politica e Privacidade')">Duvidas no Whats</button><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
 
-  <!-- TELA K-TP APONTANDO DIRETO PROJETO TRANSFORMAÇÃO -->
   <section id="ktp-iframe" class="tela">
     <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
     <iframe class="korvil-frame" src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetransformacao.html"></iframe>
