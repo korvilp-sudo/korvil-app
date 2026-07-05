@@ -1,141 +1,166 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00f5ff;--c2:#00d4ff;--bg:#000}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+:root{--c:#00FFFF;--c2:#A8FFE6}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-body{background:var(--bg);overflow:hidden;color:var(--c)}
+body{background:#000;overflow:hidden;color:var(--c)}
+
 #canvas3d{position:fixed;inset:0;z-index:0;cursor:pointer}
 .ui{position:fixed;z-index:10;pointer-events:none}
-.logo{top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;letter-spacing:4px;text-shadow:0 0 20px var(--c);text-align:center;font-family:'Orbitron',sans-serif}
-.logo span{color:var(--c2);font-size:12px;display:block}
-.menuBtn{top:15px;left:15px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,245,255,.05)}
-.menu{top:80px;left:15px;width:320px;max-height:70vh;overflow-y:auto;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
+
+.telaSelecao{top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:999}
+.telaSelecao h1{font-size:40px;text-shadow:0 0 30px var(--c);margin-bottom:10px}
+.telaSelecao p{color:var(--c2);margin-bottom:40px}
+.btnVersao{width:320px;background:rgba(0,255,255,.05);border:2px solid var(--c);color:var(--c);padding:20px;margin:10px 0;border-radius:15px;cursor:pointer;font-size:16px;font-weight:900;transition:.3s}
+.btnVersao:hover{background:rgba(0,255,255,.2);box-shadow:0 0 30px var(--c)}
+.btnVersao small{display:block;font-size:11px;color:var(--c2);margin-top:5px;font-weight:400}
+
+.logo{top:30px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:900;letter-spacing:6px;text-shadow:0 0 25px var(--c)}
+.logo span{color:var(--c2);font-size:14px;letter-spacing:2px;display:block;text-align:center;margin-top:5px}
+.modo{top:30px;right:20px;font-size:12px;font-weight:700;padding:8px 14px;border:1px solid var(--c);border-radius:20px;background:rgba(0,255,255,.1);pointer-events:auto;cursor:pointer}
+.modo.admin{border-color:#00ff88; color:#00ff88; box-shadow:0 0 15px #00ff88;}
+
+.menuBtn{top:30px;left:20px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,255,255,.05)}
+.menu{top:90px;left:20px;width:320px;max-height:70vh;overflow-y:auto;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
 .menu h3{color:var(--c2);margin:10px 0 5px;font-size:12px}
-.menu button{width:100%;background:rgba(0,245,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:4px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
-.chatBox{bottom:0;left:0;width:100%;background:linear-gradient(transparent, rgba(0,0,0,.9));border-top:2px solid var(--c);padding:15px;pointer-events:auto}
-.chat{max-height:180px;overflow-y:auto;padding:10px}
-.msg{margin:8px 0;font-size:15px}
+.menu button{width:100%;background:rgba(0,255,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:4px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
+
+.mic{bottom:80px;left:50%;transform:translateX(-50%);width:90px;height:90px;border:3px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;cursor:pointer;pointer-events:auto;transition:.3s;box-shadow:0 0 40px var(--c);background:rgba(0,255,255,.05)}
+.mic:hover{transform:translateX(-50%) scale(1.1);box-shadow:0 0 70px var(--c)}
+.mic.listening{animation:pulse 0.8s infinite;background:rgba(0,255,255,.3)}
+@keyframes pulse{0%,100%{box-shadow:0 0 40px var(--c)}50%{box-shadow:0 0 90px var(--c2)}}
+
+.chat{bottom:190px;left:50%;transform:translateX(-50%);width:90%;max-width:650px;background:rgba(0,0,0,.75);border:1px solid var(--c);border-radius:15px;padding:18px;max-height:220px;overflow-y:auto;backdrop-filter:blur(15px);pointer-events:auto}
+.msg{margin:10px 0;font-size:15px;line-height:1.5}
 .msg.user{color:var(--c2);text-align:right}
 .msg.kai{color:var(--c)}
-.inputArea{display:flex;gap:8px;margin-top:8px}
-.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px}
-.inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900}
-.micBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
-.micBtn.listening{background:var(--c)!important; color:#000!important}
-.badge{top:20px;right:20px;background:var(--c);color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900}
-.autoListen{bottom:120px;right:20px;font-size:11px;background:rgba(0,255,0,.15);padding:5px 10px;border-radius:10px;border:1px solid #0f0}
-.anexoBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
+.status{bottom:30px;left:50%;transform:translateX(-50%);font-size:14px;text-align:center}
 
-/* MINI MENU CENTRAL */
-.miniMenu{top:50%;left:50%;transform:translate(-50%,-50%);width:320px;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px)}
-.miniMenu h3{color:var(--c2);margin:10px 0 5px;font-size:12px;text-align:center}
-.senhaBox{margin-top:10px;display:none}
-.senhaBox input{width:100%;background:#001a1f;border:1px solid var(--c);color:var(--c);padding:10px;border-radius:8px;margin-bottom:5px}
+.inputArea{display:flex;gap:8px;margin-top:10px}
+.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:12px;border-radius:12px;outline:none;font-size:14px}
+.inputArea button{width:45px;height:45px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900}
+.anexoBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
+.autoListen{bottom:120px;right:20px;font-size:11px;background:rgba(0,255,0,.15);padding:5px 10px;border-radius:10px;border:1px solid #0f0}
+
+.vozConfig{margin-top:10px}
+.vozConfig select{width:100%;background:#001a1f;border:1px solid var(--c);color:var(--c);padding:8px;border-radius:8px;margin-bottom:5px}
 </style>
 </head>
 <body>
-
 <canvas id="canvas3d"></canvas>
-<div class="ui badge" id="badgeModo">MODO CHEFE</div>
-<div class="ui autoListen" id="autoListen">Ouvindo...</div>
-<div class="ui logo">K-<span>AI KORVIL ARTIFICIAL INTELLIGENCE</span></div>
-<div class="ui menuBtn" onclick="toggleMenu()">☰</div>
 
-<!-- MENU LATERAL -->
+<!-- TELA DE SELEÇÃO DE VERSÃO -->
+<div class="ui telaSelecao" id="telaSelecao">
+  <h1>K-AI</h1>
+  <p>KORVIL ARTIFICIAL INTELLIGENCE</p>
+  <button class="btnVersao" onclick="iniciarKAI('ADMIN')">
+    MODO ADMINISTRADOR - ILIMITADO
+    <small>Acesso total. Você Chefe. 9 Gavetas liberadas.</small>
+  </button>
+  <button class="btnVersao" onclick="iniciarKAI('USER')">
+    MODO USUÁRIO - LIMITADO  
+    <small>Suporte KORVIL. Funções básicas para clientes.</small>
+  </button>
+</div>
+
+<div class="ui logo" style="display:none">K-AI<span>KORVIL ARTIFICIAL INTELLIGENCE</span></div>
+<div class="ui modo" id="modoUsuario" style="display:none">MODO: VISITANTE</div>
+<div class="ui menuBtn" onclick="toggleMenu()" style="display:none">☰</div>
+<div class="ui autoListen" id="autoListen" style="display:none">Ouvindo...</div>
+
 <div class="ui menu" id="menu">
-  <h3>VERSÕES K-AI</h3>
-  <button onclick="executar('carregar versao korvil')">Versão KORVIL v1.0 - Leve</button>
-  <button onclick="executar('carregar versao jarvis')">Versão JARVIS v2.0 - Padrão</button>
-  <button onclick="executar('carregar versao corvo')">Versão CORVO v3.0 - Completo</button>
+  <h3>VERSÕES</h3>
+  <button onclick="trocarVersao('corvo')">Versão CORVO v3.0</button>
+  <button onclick="trocarVersao('jarvis')">Versão JARVIS v2.0</button>
 
-  <h3>NAVEGAR</h3>
-  <button onclick="executar('vai para 2')">K-TP</button>
-  <button onclick="executar('vai para 8')">SERVIÇOS</button>
+  <h3>INTERAÇÕES REAIS</h3>
+  <button onclick="executar('abrir app')">Abrir APP KORVIL</button>
+  <button onclick="executar('buscar marketing')">Pesquisar Google</button>
+  <button onclick="executar('calcular 10% de 5000')">Calcular</button>
 
-  <h3>IA</h3>
-  <button onclick="executar('fale sobre os serviços')">Fale sobre</button>
+  <h3>IA + SISTEMA</h3>
+  <button onclick="executar('cria post')">Criar Conteúdo</button>
+  <button onclick="executar('copiar texto')">Copiar Texto</button>
+  <button onclick="executar('status')">Status</button>
   <button onclick="executar('estatísticas')">Estatísticas</button>
   <button onclick="executar('limpar memória')">Limpar Memória</button>
-</div>
 
-<!-- MINI MENU NO CUBO -->
-<div class="ui miniMenu" id="miniMenu">
-  <h3>ACESSO RÁPIDO</h3>
-  <button onclick="executarMenu('abrir app')">Abrir APP KORVIL</button>
-  <button onclick="executarMenu('tocar música')">Tocar Música</button>
-  <button onclick="executarMenu('status do sistema')">Status do Sistema</button>
-
-  <h3>MODO CHEFE</h3>
-  <div class="senhaBox" id="senhaBox">
-    <input type="password" id="senhaInput" placeholder="Digite a senha">
-    <button onclick="ativarModoChefe()">Ativar</button>
+  <h3>CONFIG VOZ</h3>
+  <div class="vozConfig">
+    <select id="vozGenero" onchange="trocarVoz()">
+      <option value="masculino">Voz Masculina Robótica</option>
+      <option value="feminino">Voz Feminina</option>
+    </select>
   </div>
-  <button onclick="mostrarSenha()">Ativar Modo Chefe</button>
 </div>
 
-<div class="ui chatBox">
-  <div class="chat" id="chat"></div>
+<div class="ui chat" id="chat" style="display:none"></div>
+<div class="ui status" id="status" style="display:none">Carregando...</div>
+
+<div class="ui" style="bottom:30px;left:50%;transform:translateX(-50%);width:90%;max-width:650px;display:none" id="inputAreaBox">
   <div class="inputArea">
     <button class="anexoBtn" onclick="anexarArquivo()">📎</button>
-    <input type="text" id="userInput" placeholder="Fale com K-AI...">
-    <button id="micBtn" class="micBtn" onclick="toggleMic()">🎙️</button>
+    <input type="text" id="userInput" placeholder="Digite ou fale com K-AI...">
+    <button id="micBtn">🎙️</button>
     <button onclick="enviarTexto()">➤</button>
   </div>
 </div>
 
-<!-- ORDEM CORRETA -->
-<script src="actions/navega.js"></script>
-<script src="actions/copia.js"></script>
-<script src="actions/cria.js"></script>
-<script src="actions/sistema.js"></script>
-<script src="actions/busca.js"></script>
-<script src="actions/calculo.js"></script>
-<script src="actions/social.js"></script>
-<script src="actions/vendas.js"></script>
-<script src="actions/educacao.js"></script>
-<script src="actions/kai-memory.js"></script>
-
 <audio id="bgMusic" loop></audio>
 <script>
-// ===== CONFIG GLOBAL =====
+// ===== 0. CONFIG GLOBAL =====
 const KAI_CONFIG = {
-  modo: "ilimitado",
+  modo: localStorage.getItem('kai_modo') || 'USER',
   autoOuvir: true,
-  nomeUsuario: "Chefe",
-  versao: "corvo",
-  senhaChefe: "KORVIL2026"
+  nomeUsuario: localStorage.getItem('kai_nome') || 'Chefe',
+  senhaChefe: 'KORVIL2026',
+  vozGenero: localStorage.getItem('kai_voz') || 'masculino'
 }
 
 let ultimoComando = "";
 
-// ===== 1. CENA 3D K-AI CORVO =====
+// ===== TELA DE SELEÇÃO =====
+function iniciarKAI(tipo){
+  KAI_CONFIG.modo = tipo;
+  localStorage.setItem('kai_modo', tipo);
+  document.getElementById('telaSelecao').style.display = 'none';
+  document.querySelectorAll('.ui').forEach(el => { if(el.id !== 'telaSelecao') el.style.display = 'block'; });
+  
+  if(tipo === 'ADMIN'){
+    document.getElementById('modoUsuario').innerText = 'MODO: ADMINISTRADOR';
+    document.getElementById('modoUsuario').classList.add('admin');
+  }
+  iniciarSistemas();
+}
+
+// ===== 1. CENA 3D =====
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true, alpha:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const geometry = new THREE.IcosahedronGeometry(1.8, 2);
-const material = new THREE.MeshPhongMaterial({color:0x00f5ff, emissive:0x00f5ff, emissiveIntensity:0.6, shininess:120, transparent:true, opacity:0.9});
+const material = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.6, shininess:120, transparent:true, opacity:0.9});
 const nucleo = new THREE.Mesh(geometry, material);
 scene.add(nucleo);
 
 const ringGeo = new THREE.TorusGeometry(2.5, 0.1, 16, 100);
-const ringMat = new THREE.MeshBasicMaterial({color:0x00f5ff, wireframe:true});
+const ringMat = new THREE.MeshBasicMaterial({color:0x00FFFF, wireframe:true});
 const ring1 = new THREE.Mesh(ringGeo, ringMat);
 const ring2 = new THREE.Mesh(ringGeo, ringMat); ring2.rotation.x = Math.PI/2;
 scene.add(ring1, ring2);
 
-const light1 = new THREE.PointLight(0x00f5ff, 2.5, 50); light1.position.set(5,5,5); scene.add(light1);
+const light1 = new THREE.PointLight(0x00FFFF, 2.5, 50); light1.position.set(5,5,5); scene.add(light1);
 camera.position.z = 6;
 
 const particles = new THREE.Points(
   new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(Array(4000).fill().map(()=> (Math.random()-0.5)*25), 3)),
-  new THREE.PointsMaterial({color:0x00f5ff, size:0.025})
+  new THREE.PointsMaterial({color:0x00FFFF, size:0.025})
 );
 scene.add(particles);
 
@@ -151,189 +176,136 @@ function animate(){
 }
 animate();
 
-// CLIQUE NO CUBO = MINI MENU
-document.getElementById('canvas3d').addEventListener('click', ()=>{
-  const menu = document.getElementById('miniMenu');
-  menu.style.display = menu.style.display === 'block'? 'none' : 'block';
-});
-
-// ===== 2. KAI MEMORY + UI + BRAIN UNIFICADOS =====
+// ===== 2. MEMÓRIA + 9 GAVETAS =====
 const KAI_MEMORY = {
-  dados: { historico: [], memorias_importantes: [] },
-  async carregar(){
-    const local = localStorage.getItem('kai_memoria');
-    if(local) this.dados = JSON.parse(local);
-  },
+  dados: JSON.parse(localStorage.getItem('kai_memoria')) || {historico:[], memorias:[]},
   salvar(){ localStorage.setItem('kai_memoria', JSON.stringify(this.dados)); },
-  adicionarConversa(pergunta, resposta){
-    this.dados.historico.push({pergunta, resposta, data: new Date().toISOString()});
-    if(this.dados.historico.length > 200) this.dados.historico = this.dados.historico.slice(-200);
-    this.salvar();
-  },
-  salvarMemoriaImportante(texto){
-    this.dados.memorias_importantes.push({texto, data: new Date().toISOString()});
-    this.salvar();
-    return `Salvei na memória: ${texto}`;
-  },
-  buscarNaMemoria(termo){
-    termo = termo.toLowerCase();
-    const res = this.dados.historico.filter(h=>h.pergunta.includes(termo)).slice(-1);
-    return res.length? `Última vez: "${res[0].pergunta}"` : "Não lembro disso";
-  },
-  getEstatisticas(){ return { total_conversas: this.dados.historico.length } }
+  adicionar(pergunta, resposta){ this.dados.historico.push({pergunta, resposta}); if(this.dados.historico.length>200) this.dados.historico.shift(); this.salvar(); },
+  salvarMemoria(texto){ this.dados.memorias.push(texto); this.salvar(); return `Salvei: ${texto}`; },
+  buscar(termo){ const res = this.dados.memorias.filter(m=>m.includes(termo)); return res.length? `Lembro: ${res[res.length-1]}` : "Não lembro disso"; }
 }
 
-const KAI_BRAIN = {
-  async processarComando(cmdOriginal){
-    const cmd = cmdOriginal.toLowerCase();
-    let resposta = "";
-
-    // PALAVRA DE ATIVAÇÃO
-    if(!cmd.includes('k-ai') &&!cmd.includes('corvo') && KAI_CONFIG.modo === "limitado") return;
-
-    // MODO CHEFE ILIMITADO
-    if(KAI_CONFIG.modo === "ilimitado"){
-      if(cmd.includes('vai') || cmd.includes('abrir')) resposta = Navega.ir(cmd);
-      else if(cmd.includes('cria')) resposta = await Cria.executar(cmd);
-      else if(cmd.includes('copia') || cmd.includes('resuma')) resposta = await Copia.executar(cmd);
-      else if(cmd.includes('buscar') || cmd.includes('pesquisar')) resposta = await Busca.executar(cmd);
-      else if(cmd.includes('calcular')) resposta = await Calculo.executar(cmd);
-      else if(cmd.includes('postar') || cmd.includes('social')) resposta = await Social.executar(cmd);
-      else if(cmd.includes('venda') || cmd.includes('lead')) resposta = await Vendas.executar(cmd);
-      else if(cmd.includes('aula') || cmd.includes('curso')) resposta = await Educacao.executar(cmd);
-      else if(cmd.includes('status') || cmd.includes('sistema')) resposta = await Sistema.executar(cmd);
-      else if(cmd.includes('lembre')) resposta = KAI_MEMORY.salvarMemoriaImportante(cmdOriginal);
-      else if(cmd.includes('o que você lembra')) resposta = KAI_MEMORY.buscarNaMemoria(cmdOriginal);
-      else if(cmd.includes('tocar música')){ tocarMusica(); resposta = "Ativando trilha KORVIL"; }
-      else if(cmd.includes('parar música')){ pararMusica(); resposta = "Música pausada"; }
-      else resposta = `Executando: ${cmdOriginal} Chefe`;
-    }
-    // MODO USUÁRIO LIMITADO
-    else {
-      if(cmd.includes('olá') || cmd.includes('k-ai')) resposta = 'Olá. K-AI online. Como posso ajudar?';
-      else if(cmd.includes('hora')) resposta = 'Agora são ' + new Date().toLocaleTimeString('pt-BR');
-      else if(cmd.includes('data')) resposta = 'Hoje é ' + new Date().toLocaleDateString('pt-BR');
-      else if(cmd.includes('status')) resposta = 'Sistema operando. Modo Usuário ativo.';
-      else if(cmd.includes('abrir app')){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); resposta = 'Abrindo app KORVIL'; }
-      else resposta = 'Comando não disponível no modo usuário';
-    }
-
-    KAI_MEMORY.adicionarConversa(cmdOriginal, resposta);
-    KAI_UI.falar(resposta);
-  }
+const GAVETAS = {
+  async cria(cmd){ return `Criando: ${cmd}. Sugestão KORVIL pronta Chefe.` },
+  async copia(cmd){ navigator.clipboard.writeText('Texto copiado'); return 'Copiado para área de transferência'; },
+  async busca(cmd){ const termo = cmd.replace('buscar',''); window.open(`https://google.com/search?q=${termo}`,'_blank'); return `Pesquisando ${termo}` },
+  async calculo(cmd){ const conta = cmd.replace('calcular',''); try{ return `Resultado: ${eval(conta)}` }catch{ return 'Erro no cálculo' } },
+  async sistema(cmd){ return KAI_CONFIG.modo==='ADMIN'? 'Sistemas 100% Operacionais' : 'Sistema OK' },
+  async social(cmd){ return 'Post criado: Arte KORVIL + Legenda + Hashtags' },
+  async vendas(cmd){ return 'Lead salvo no CRM KORVIL' },
+  async educacao(cmd){ return 'Aula gerada sobre o tema solicitado' },
+  async navega(cmd){ window.open('https://korvilp-sudo.github.io/korvil-app/app.html','_blank'); return 'Abrindo APP KORVIL' }
 }
 
-const KAI_UI = {
-  recognition: null,
-  chat: null,
+// ===== 3. VOZ + CÉREBRO =====
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
+let recognition, isListening = false;
 
-  init(){
-    this.chat = document.getElementById('chat');
-    this.iniciarReconhecimento();
-    this.falar(`K-AI online. Modo ${KAI_CONFIG.nomeUsuario} ativo.`);
-  },
-
-  iniciarReconhecimento(){
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SpeechRecognition) return;
-
-    this.recognition = new SpeechRecognition();
-    this.recognition.lang = 'pt-BR';
-    this.recognition.continuous = true;
-
-    this.recognition.onstart = ()=>{
-      document.getElementById('micBtn').classList.add('listening');
-      document.getElementById('autoListen').style.display = 'block';
-      pulsarNucleo();
-    }
-    this.recognition.onend = ()=>{
-      document.getElementById('micBtn').classList.remove('listening');
-      if(KAI_CONFIG.autoOuvir) setTimeout(()=>this.recognition.start(), 500);
-    }
-    this.recognition.onresult = (e)=>{
-      const cmd = e.results[e.results.length-1][0].transcript;
-      if(cmd.length > 2 && cmd!== ultimoComando){
-        ultimoComando = cmd;
-        this.addMsg('user', cmd);
-        KAI_BRAIN.processarComando(cmd);
-      }
-    }
-    if(KAI_CONFIG.autoOuvir) this.recognition.start();
-  },
-
-  toggleMic(){
-    KAI_CONFIG.autoOuvir =!KAI_CONFIG.autoOuvir;
-    document.getElementById('autoListen').style.display = KAI_CONFIG.autoOuvir? 'block':'none';
-    KAI_CONFIG.autoOuvir? this.recognition.start() : this.recognition.stop();
-  },
-
-  falar(texto){
-    this.addMsg('kai', texto);
-    speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(texto);
-    utter.lang = 'pt-BR';
-    utter.pitch = 0.6;
-    utter.rate = 0.95;
-    utter.onstart = pulsarNucleo;
-    speechSynthesis.speak(utter);
-  },
-
-  addMsg(tipo, texto){
-    const div = document.createElement('div');
-    div.className = 'msg ' + tipo;
-    div.innerHTML = tipo==='user'? `<b>Você:</b> ${texto}` : `<b>K-AI:</b> ${texto}`;
-    this.chat.appendChild(div);
-    this.chat.scrollTop = this.chat.scrollHeight;
-  },
-
-  enviarTexto(){
-    const input = document.getElementById('userInput');
-    if(!input.value.trim()) return;
-    this.addMsg('user', input.value);
-    KAI_BRAIN.processarComando(input.value);
-    input.value = "";
-  },
-
-  executar(cmd){ this.toggleMenu(); this.addMsg('user', cmd); KAI_BRAIN.processarComando(cmd); },
-  executarMenu(cmd){ document.getElementById('miniMenu').style.display = 'none'; this.addMsg('user', cmd); KAI_BRAIN.processarComando(cmd); },
-  toggleMenu(){ const menu = document.getElementById('menu'); menu.style.display = menu.style.display==='block'?'none':'block'; },
-  anexarArquivo(){ const input = document.createElement('input'); input.type = 'file'; input.onchange = async (e)=>{ const file = e.target.files[0]; this.addMsg('user', `📎 ${file.name}`); const res = await Copia.lerArquivo(file); this.falar(res); } input.click(); }
+function iniciarSistemas(){
+  iniciarReconhecimento();
+  falar(`K-AI online. Modo ${KAI_CONFIG.modo==='ADMIN'?'Administrador':'Usuário'} ativo.`);
 }
 
-function pulsarNucleo(){
-  material.emissiveIntensity = 1.5;
-  setTimeout(()=>{ material.emissiveIntensity = 0.6 }, 300);
+function iniciarReconhecimento(){
+  if(!SpeechRecognition) return;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'pt-BR';
+  recognition.continuous = true;
+  recognition.onstart = ()=>{ isListening = true; micBtn.classList.add('listening'); status.innerText = 'K-AI ouvindo...'; pulsarNucleo(); }
+  recognition.onend = ()=>{ isListening = false; micBtn.classList.remove('listening'); if(KAI_CONFIG.autoOuvir) setTimeout(()=>recognition.start(), 500); }
+  recognition.onresult = (e)=>{ const cmd = e.results[e.results.length-1][0].transcript; if(cmd.length>2) { addMsg('user', cmd); processarComando(cmd); }}
+  if(KAI_CONFIG.autoOuvir) recognition.start();
 }
 
-function mostrarSenha(){ document.getElementById('senhaBox').style.display = 'block'; }
-function ativarModoChefe(){
-  const senha = document.getElementById('senhaInput').value;
-  if(senha === KAI_CONFIG.senhaChefe){
-    KAI_CONFIG.modo = "ilimitado";
-    KAI_CONFIG.nomeUsuario = "Chefe";
-    document.getElementById('badgeModo').innerText = "MODO CHEFE";
-    KAI_UI.falar("Modo Chefe Ilimitado ativado");
+function falar(texto){
+  addMsg('kai', texto);
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(texto);
+  utter.lang = 'pt-BR';
+  
+  // VOZ ROBÓTICA MASCULINA PRA CORVO
+  if(KAI_CONFIG.vozGenero === 'masculino'){
+    utter.rate = 0.9;
+    utter.pitch = 0.5; // GRAVE ROBÓTICO
   } else {
-    KAI_UI.falar("Senha incorreta");
+    utter.rate = 1;
+    utter.pitch = 1.2; // FEMININA
   }
+  utter.onstart = pulsarNucleo;
+  synth.speak(utter);
 }
 
+function trocarVoz(){
+  KAI_CONFIG.vozGenero = document.getElementById('vozGenero').value;
+  localStorage.setItem('kai_voz', KAI_CONFIG.vozGenero);
+  falar('Voz alterada com sucesso');
+}
+
+function pulsarNucleo(){ material.emissiveIntensity = 1.5; setTimeout(()=>{ material.emissiveIntensity = 0.6 }, 300); }
+
+async function processarComando(cmdOriginal){
+  const cmd = cmdOriginal.toLowerCase();
+  let resposta = "";
+
+  // BLOQUEIO MODO USER
+  const bloqueados = ['cria','copia','buscar','calcular','venda','postar','aula','lembre'];
+  if(KAI_CONFIG.modo === 'USER' && bloqueados.some(b=>cmd.includes(b))){
+    falar('Acesso negado. Função exclusiva do Administrador KORVIL.');
+    return;
+  }
+
+  // 9 GAVETAS
+  if(cmd.includes('cria')) resposta = await GAVETAS.cria(cmd);
+  else if(cmd.includes('copia')) resposta = await GAVETAS.copia(cmd);
+  else if(cmd.includes('buscar') || cmd.includes('pesquisar')) resposta = await GAVETAS.busca(cmd);
+  else if(cmd.includes('calcular')) resposta = await GAVETAS.calculo(cmd);
+  else if(cmd.includes('status') || cmd.includes('sistema')) resposta = await GAVETAS.sistema(cmd);
+  else if(cmd.includes('postar') || cmd.includes('social')) resposta = await GAVETAS.social(cmd);
+  else if(cmd.includes('venda') || cmd.includes('lead')) resposta = await GAVETAS.vendas(cmd);
+  else if(cmd.includes('aula') || cmd.includes('curso')) resposta = await GAVETAS.educacao(cmd);
+  else if(cmd.includes('abrir app') || cmd.includes('vai')) resposta = await GAVETAS.navega(cmd);
+
+  // COMANDOS BÁSICOS
+  else if(cmd.includes('olá') || cmd.includes('k-ai')) resposta = `Olá ${KAI_CONFIG.nomeUsuario}. K-AI online.`;
+  else if(cmd.includes('hora')) resposta = 'Agora são ' + new Date().toLocaleTimeString('pt-BR');
+  else if(cmd.includes('data')) resposta = 'Hoje é ' + new Date().toLocaleDateString('pt-BR');
+  else if(cmd.includes('música')){ tocarMusica(); resposta = 'Tocando música KORVIL'; }
+  else if(cmd.includes('parar música')){ pararMusica(); resposta = 'Música pausada'; }
+  else if(cmd.includes('lembre')) resposta = KAI_MEMORY.salvarMemoria(cmd);
+  else if(cmd.includes('o que você lembra')) resposta = KAI_MEMORY.buscar(cmd);
+  else if(cmd.includes('estatísticas')) resposta = `Total de conversas: ${KAI_MEMORY.dados.historico.length}`;
+  else if(cmd.includes('limpar memória')){ localStorage.removeItem('kai_memoria'); resposta = 'Memória limpa'; }
+  else resposta = 'Comando não reconhecido';
+
+  KAI_MEMORY.adicionar(cmdOriginal, resposta);
+  falar(resposta);
+}
+
+// ===== 4. UI =====
+const micBtn = document.getElementById('micBtn');
+const chat = document.getElementById('chat');
+const status = document.getElementById('status');
+
+micBtn.onclick = ()=>{ if(!isListening) recognition.start(); else recognition.stop(); }
+
+function addMsg(tipo, texto){
+  const div = document.createElement('div');
+  div.className = 'msg ' + tipo;
+  div.innerHTML = tipo==='user'? `<b>Você:</b> ${texto}` : `<b>K-AI:</b> ${texto}`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function toggleMenu(){ const menu = document.getElementById('menu'); menu.style.display = menu.style.display==='block'?'none':'block'; }
+function executar(cmd){ toggleMenu(); addMsg('user', cmd); processarComando(cmd); }
+function enviarTexto(){ const input = document.getElementById('userInput'); if(!input.value.trim()) return; addMsg('user', input.value); processarComando(input.value); input.value = ""; }
+function anexarArquivo(){ const input = document.createElement('input'); input.type = 'file'; input.onchange = (e)=>{ addMsg('user', `📎 ${e.target.files[0].name}`); falar('Arquivo recebido'); } input.click(); }
 function tocarMusica(){ bgMusic.src = 'https://cdn.pixabay.com/download/audio/2023/01/03/audio_2b12e3e1c8.mp3'; bgMusic.volume = 0.25; bgMusic.play(); }
 function pararMusica(){ bgMusic.pause(); }
-
-// ===== INICIAR =====
-function toggleMenu(){ KAI_UI.toggleMenu(); }
-function toggleMic(){ KAI_UI.toggleMic(); }
-function enviarTexto(){ KAI_UI.enviarTexto(); }
-function executar(cmd){ KAI_UI.executar(cmd); }
-function executarMenu(cmd){ KAI_UI.executarMenu(cmd); }
-function anexarArquivo(){ KAI_UI.anexarArquivo(); }
+function trocarVersao(v){ KAI_CONFIG.versao = v; falar(`Versão ${v} carregada`); }
 
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
-
-async function iniciarKAI(){ await KAI_MEMORY.carregar(); Sistema.carregar(); KAI_UI.init(); }
-setTimeout(iniciarKAI, 800);
-
 window.addEventListener('resize', ()=>{ camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 </script>
 </body>
