@@ -8,22 +8,12 @@
 :root{--c:#00FFFF;--c2:#A8FFE6}*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#000;color:var(--c);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;padding:16px}
 canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-
-.word{position:absolute;color:rgba(0,255,255,.28);font-size:17px;font-weight:900;letter-spacing:2px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards; transition: opacity 1s;}
+.word{position:absolute;color:rgba(0,255,255,.28);font-size:16px;font-weight:900;letter-spacing:1.5px;white-space:nowrap;text-shadow:0 0 25px rgba(0,255,255,.6);animation-fill-mode:forwards; transition: opacity 1s;}
 .type1{animation:fadeInOut 5s}@keyframes fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
 .type2{animation:pulseWord 5s}@keyframes pulseWord{0%{opacity:0;transform:scale(.8)}10%{opacity:1;transform:scale(1)}50%{transform:scale(1.15)}90%{opacity:1}100%{opacity:0;transform:scale(.9)}}
 .type3{animation:slideLeft 5s}@keyframes slideLeft{0%{opacity:0;transform:translateX(-100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(50px)}}
 .type4{animation:slideRight 5s}@keyframes slideRight{0%{opacity:0;transform:translateX(100px)}10%{opacity:1;transform:translateX(0)}90%{opacity:1}100%{opacity:0;transform:translateX(-50px)}}
-
-/* ANIMAÇÃO DIGITAÇÃO NOVA */
-.type5{display:inline-block}
-.type5.cursor{
-  color:var(--c);
-  animation: blink 0.7s infinite;
-  margin-left:2px;
-}
-@keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
-
+.type5{display:inline-block}.type5.cursor{color:var(--c);animation: blink 0.7s infinite;margin-left:2px;}@keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
 .card{background:rgba(0,0,0,.7);backdrop-filter:blur(30px);border:1px solid rgba(0,255,255,.2);border-radius:24px;padding:35px;width:90%;max-width:480px;position:relative;z-index:10;animation:fadeInUp.8s;box-shadow:0 0 60px rgba(0,255,255,.3); max-height:92vh; overflow-y:auto}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .logo-area{display:flex;justify-content:center;margin-bottom:25px}.logo-img{max-width:280px;width:100%;height:auto;filter:drop-shadow(0 0 35px var(--c));animation:pulseLogo 2s ease-in-out infinite}
@@ -34,6 +24,10 @@ canvas#particles{position:fixed;inset:0;z-index:0}.words-bg{position:fixed;inset
 label{font-size:13px; font-weight:700; margin-left:4px; color:var(--c2); display:block; margin-bottom:4px}
 .input-group{display:flex; flex-direction:column; gap:4px}
 .input-wrap{display:flex; gap:8px; align-items:flex-end}
+.input-pass{position:relative; display:flex; align-items:center;}
+.input-pass input{padding-right:50px;}
+.input-pass.toggle-pass{position:absolute; right:15px; cursor:pointer; font-size:20px; color:var(--c2); user-select:none; transition:.3s;}
+.input-pass.toggle-pass:hover{color:var(--c); transform:scale(1.1);}
 input{width:100%;padding:16px 18px;border:2px solid rgba(0,255,255,.4);background:rgba(0,0,0,.85);color:#fff;border-radius:12px;outline:none;font-size:16px;font-weight:600;transition:.3s}
 input:focus{border-color:var(--c); box-shadow:0 0 15px rgba(0,255,255,.3)}
 input[readonly]{opacity:0.6; cursor:not-allowed;}
@@ -55,7 +49,10 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
 
   <form id="login" class="form active">
     <input type="email" id="loginEmail" placeholder="Digite seu E-mail" required>
-    <input type="password" id="loginPass" placeholder="Digite sua Senha" required>
+    <div class="input-pass">
+      <input type="password" id="loginPass" placeholder="Digite sua Senha" required>
+      <span class="toggle-pass" onclick="togglePass('loginPass', this)">👁️</span>
+    </div>
     <button class="btn" type="submit" id="btnLogin">ACESSAR</button>
     <div id="msgLogin"></div>
   </form>
@@ -63,31 +60,27 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
   <form id="cadastro" class="form">
     <div class="input-group"><label>Nome completo</label><input type="text" id="nome" placeholder="Digite seu nome" required></div>
     <div class="input-group"><label>E-mail</label><input type="email" id="email" placeholder="seu@email.com" required></div>
-
     <div class="grid-2">
       <div class="input-group"><label>CPF</label><input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required></div>
-      <div class="input-group">
-        <label>Data de Nascimento</label>
-        <input type="date" id="data_nasc" required>
-        <div id="idadeDisplay"></div>
-      </div>
+      <div class="input-group"><label>Data de Nascimento</label><input type="date" id="data_nasc" required><div id="idadeDisplay"></div></div>
     </div>
-
     <div class="input-group"><label>WhatsApp</label><input type="text" id="whatsapp" placeholder="(00) 00000-0000" maxlength="15" required></div>
-
-    <div class="input-wrap">
-      <div class="input-group" style="flex:1"><label>CEP</label><input type="text" id="cep" placeholder="00000-000" maxlength="9" required></div>
-      <button type="button" class="btn btn-sec" onclick="buscarCep()">BUSCAR</button>
-    </div>
-
-    <div class="grid-2">
-      <div class="input-group"><label>N° Casa</label><input type="text" id="numero" placeholder="123" required></div>
-      <div class="input-group"><label>Bairro</label><input type="text" id="bairro" placeholder="Bairro" readonly></div>
-    </div>
+    <div class="input-wrap"><div class="input-group" style="flex:1"><label>CEP</label><input type="text" id="cep" placeholder="00000-000" maxlength="9" required></div><button type="button" class="btn btn-sec" onclick="buscarCep()">BUSCAR</button></div>
+    <div class="grid-2"><div class="input-group"><label>N° Casa</label><input type="text" id="numero" placeholder="123" required></div><div class="input-group"><label>Bairro</label><input type="text" id="bairro" placeholder="Bairro" readonly></div></div>
     <div class="input-group"><label>Rua</label><input type="text" id="rua" placeholder="Rua" readonly></div>
 
-    <div class="input-group"><label>Crie uma Senha</label><input type="password" id="pass" placeholder="Mínimo 6 caracteres" required></div>
-    <div class="input-group"><label>Repita a Senha</label><input type="password" id="pass2" placeholder="Repita a senha" required></div>
+    <div class="input-group"><label>Crie uma Senha</label>
+      <div class="input-pass">
+        <input type="password" id="pass" placeholder="Mínimo 6 caracteres" required>
+        <span class="toggle-pass" onclick="togglePass('pass', this)">👁️</span>
+      </div>
+    </div>
+    <div class="input-group"><label>Repita a Senha</label>
+      <div class="input-pass">
+        <input type="password" id="pass2" placeholder="Repita a senha" required>
+        <span class="toggle-pass" onclick="togglePass('pass2', this)">👁️</span>
+      </div>
+    </div>
 
     <button class="btn" type="submit" id="btnCadastro">CRIAR ACESSO</button>
     <div id="msgCadastro"></div>
@@ -98,66 +91,26 @@ const { createClient } = supabase;
 const db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
 const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/app.html";
 
-// ANIMAÇÕES COM DIGITAÇÃO REAL
-const palavras = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE',
-  'LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO',
-  'K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA',
-  'MARKETING DIGITAL','EDUCAÇÃO','JESUS','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS',
-  'FRANQUIAS','PLATAFORMA','DE TUDO UM POUCO','NETWORKING','MENTORIA','GESTÃO','SUPORTE',
-  'COMUNIDADE K','EVENTOS','VIDA','AMOR','CONHECIMENTO','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS',
-  'K-CONECTA','K-NETWORK','TRÁFEGO PAGO','ALEGRIA','DIVERSÃO','INOVAÇÃO','COPYWRITING','FUNIL DE VENDAS',
-  'LIDERANÇA','PRODUTIVIDADE','CONQUISTAS','SEJA INVENCÍVEL','METAS','PERFORMANCE','ATENDIMENTO','DEUS',
-  'PALESTRAS','WORKSHOPS','FÉ','WEBINARS','PODCAST','YOUTUBE K','LIVE K',
-  'APP KORVIL','CRM K','ÁREA DO ALUNO','FORMAÇÕES','CERTIFICADOS',
-  'EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO',
-  'LIBERDADE','FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO'];
-const wordsBg = document.getElementById('wordsBg');
-const animacoes = ['type1','type2','type3','type4','type5'];
-
-function digitarPalavra(elemento, texto, velocidade = 80){
-  let i = 0;
-  elemento.innerHTML = '';
-  const cursor = document.createElement('span');
-  cursor.className = 'cursor';
-  cursor.innerText = '|';
-  elemento.appendChild(cursor);
-
-  const intervalo = setInterval(()=>{
-    cursor.before(texto.charAt(i));
-    i++;
-    if(i >= texto.length){
-      clearInterval(intervalo);
-      // Para 1.5s com a palavra completa e o | piscando
-      setTimeout(()=>{
-        elemento.style.opacity = '0';
-        setTimeout(()=> elemento.remove(), 1000);
-      }, 1500);
-    }
-  }, velocidade);
-}
-
-function spawnWordBlock(){
-  for(let i=0; i<15; i++){
-    const w = document.createElement('div');
-    const anim = animacoes[Math.floor(Math.random()*5)];
-    const palavra = palavras[Math.floor(Math.random()*palavras.length)];
-
-    w.className = 'word ' + anim;
-    w.style.left = Math.random()*85 + '%';
-    w.style.top = Math.random()*85 + '%';
-    wordsBg.appendChild(w);
-
-    if(anim === 'type5'){
-      digitarPalavra(w, palavra, 60 + Math.random()*40);
-    } else {
-      w.innerText = palavra;
-      setTimeout(()=> w.remove(), 5000);
-    }
+// FUNÇÃO OLHINHO
+function togglePass(id, el){
+  const input = document.getElementById(id);
+  if(input.type === 'password'){
+    input.type = 'text';
+    el.innerText = '🙈';
+  } else {
+    input.type = 'password';
+    el.innerText = '👁️';
   }
 }
-setInterval(spawnWordBlock, 2000);
-spawnWordBlock();
 
+// FRASES KORVIL + VERSÍCULOS
+const frasesKorvil = ['DESENVOLVIMENTO HUMANO','NEGÓCIOS','SERVIÇOS','CURSOS','ECOMMERCE','LOJAS','PRODUTOS','SISTEMA K','TECNOLOGIA','K-TP TREINAMENTO PERSONALIZADO','K-AFORTUNADO','EMPREENDEDORISMO','FINANÇAS','K-ALMA','SAÚDE','BELEZA','MARKETING DIGITAL','EDUCAÇÃO','JESUS','CONSULTORIA','INOVAÇÃO','COACHING','VENDAS','FRANQUIAS','PLATAFORMA','DE TUDO UM POUCO','NETWORKING','MENTORIA','GESTÃO','SUPORTE','COMUNIDADE K','EVENTOS','VIDA','AMOR','CONHECIMENTO','PARCERIAS','CONTEÚDO','ACADEMIA K','RESULTADOS','K-CONECTA','K-NETWORK','TRÁFEGO PAGO','ALEGRIA','DIVERSÃO','COPYWRITING','FUNIL DE VENDAS','LIDERANÇA','PRODUTIVIDADE','CONQUISTAS','SEJA INVENCÍVEL','METAS','PERFORMANCE','ATENDIMENTO','DEUS','PALESTRAS','WORKSHOPS','FÉ','WEBINARS','PODCAST','YOUTUBE K','LIVE K','APP KORVIL','CRM K','ÁREA DO ALUNO','FORMAÇÕES','CERTIFICADOS','EXCELÊNCIA','DISCIPLINA','FOCO','TRANSFORMAÇÃO','SUCESSO','LIBERDADE FINANCEIRA','ABUNDÂNCIA','VIP','EXCLUSIVO','ACESSO ILIMITADO','VIVA SEUS SONHOS','ACREDITE EM VOCÊ','EVOLUA TODO DIA','MINDSET VENCEDOR','PROSPERE'];
+const versiculos = ['TUDO POSSO NAQUELE QUE ME FORTALECE - FP 4:13','O SENHOR É MEU PASTOR E NADA ME FALTARÁ - SL 23:1','LANÇANDO SOBRE ELE TODA A VOSSA ANSIEDADE - 1PE 5:7','PORQUE EU BEM SEI OS PLANOS QUE TENHO PARA VÓS - JR 29:11','NÃO TEMAS, PORQUE EU SOU CONTIGO - IS 41:10','O GOZO DO SENHOR É A VOSSA FORÇA - NE 8:10','ENTREGA O TEU CAMINHO AO SENHOR - SL 37:5','DEUS É O NOSSO REFÚGIO E FORTALEZA - SL 46:1','SEJA FORTE E CORAJOSO - JS 1:9','A FÉ É O FIRME FUNDAMENTO - HB 11:1','EU SOU O CAMINHO, A VERDADE E A VIDA - JO 14:6','AMAI-VOS UNS AOS OUTROS - JO 13:34','BUSCAI PRIMEIRO O REINO DEUS - MT 6:33','A PAZ DEUS GUARDARÁ O VOSSO CORAÇÃO - FP 4:7','RENOVA-SE A CADA MANHÃ - LM 3:23','OS QUE ESPERAM NO SENHOR RENOVARÃO AS FORÇAS - IS 40:31','O SENHOR PELEJARÁ POR VÓS - EX 14:14','NÃO ANDES ANSIOSO POR COISA ALGUMA - FP 4:6','EM TUDO DAI GRAÇAS - 1TS 5:18','DEUS SUPRIRÁ TODAS AS VOSSAS NECESSIDADES - FP 4:19','A VERDADE VOS LIBERTARÁ - JO 8:32','EU VIM PARA QUE TENHAM VIDA E A TENHAM EM ABUNDÂNCIA - JO 10:10','O SENHOR É A MINHA LUZ E A MINHA SALVAÇÃO - SL 27:1','LANÇA O TEU PÃO SOBRE AS ÁGUAS - EC 11:1','ONDE ESTÁ O ESPÍRITO DO SENHOR, AÍ HÁ LIBERDADE - 2CO 3:17','FAZEI TUDO PARA A GLÓRIA DEUS - 1CO 10:31','A ORAÇÃO DE UM JUSTO PODE MUITO - TG 5:16','CONFIA NO SENHOR DE TODO O TEU CORAÇÃO - PV 3:5','EU SOU A VIDEIRA, VÓS OS RAMOS - JO 15:5','O AMOR NUNCA FALHA - 1CO 13:8'];
+const palavras = [...frasesKorvil,...versiculos];
+const wordsBg = document.getElementById('wordsBg');const animacoes = ['type1','type2','type3','type4','type5'];
+function digitarPalavra(elemento, texto, velocidade = 70){let i = 0;elemento.innerHTML = '';const cursor = document.createElement('span');cursor.className = 'cursor';cursor.innerText = '|';elemento.appendChild(cursor);const intervalo = setInterval(()=>{cursor.before(texto.charAt(i));i++;if(i >= texto.length){clearInterval(intervalo);setTimeout(()=>{elemento.style.opacity = '0';setTimeout(()=> elemento.remove(), 1000);}, 2000);}}, velocidade);}
+function spawnWordBlock(){for(let i=0; i<20; i++){const w = document.createElement('div');const anim = animacoes[Math.floor(Math.random()*5)];const palavra = palavras[Math.floor(Math.random()*palavras.length)];w.className = 'word ' + anim;w.style.left = Math.random()*85 + '%';w.style.top = Math.random()*85 + '%';wordsBg.appendChild(w);if(anim === 'type5'){digitarPalavra(w, palavra, 50 + Math.random()*50);} else {w.innerText = palavra;setTimeout(()=> w.remove(), 5000);}}}
+setInterval(spawnWordBlock, 1500);spawnWordBlock();
 const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;let pts=[];for(let i=0;i<30;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2});function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#00FFFF';pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw)}draw();
 
 // MÁSCARAS
@@ -168,43 +121,20 @@ document.getElementById('cpf').oninput = e => e.target.value = mascaraCPF(e.targ
 document.getElementById('cep').oninput = e => e.target.value = mascaraCEP(e.target.value);
 document.getElementById('whatsapp').oninput = e => e.target.value = mascaraTel(e.target.value);
 
-// CALCULO IDADE AUTOMATICO
-document.getElementById('data_nasc').addEventListener('change', ()=>{
-  const data = document.getElementById('data_nasc').value;
-  if(!data) return;
-  const hoje = new Date();
-  const nasc = new Date(data + 'T00:00:00');
-  let idade = hoje.getFullYear() - nasc.getFullYear();
-  const m = hoje.getMonth() - nasc.getMonth();
-  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
-  document.getElementById('idadeDisplay').innerText = idade >= 0? `Idade: ${idade} anos` : '';
-});
+// CALCULO IDADE
+document.getElementById('data_nasc').addEventListener('change', ()=>{const data = document.getElementById('data_nasc').value;if(!data) return;const hoje = new Date();const nasc = new Date(data + 'T00:00:00');let idade = hoje.getFullYear() - nasc.getFullYear();const m = hoje.getMonth() - nasc.getMonth();if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;document.getElementById('idadeDisplay').innerText = idade >= 0? `Idade: ${idade} anos` : '';});
 
 // FUNÇÕES
 function showTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));document.getElementById(tab==='login'?'tabLogin':'tabCadastro').classList.add('active');document.getElementById(tab).classList.add('active'); msg('', '','msgLogin'); msg('', '','msgCadastro');}
 function msg(t,cls,id){document.getElementById(id).innerHTML=t?`<p class="${cls}">${t}</p>`:''}
 function loading(btn,on){btn.disabled=on;btn.innerHTML=on?'<span class="loader"></span>PROCESSANDO':btn.id==='btnLogin'?'ACESSAR':'CRIAR ACESSO'}
-
 document.getElementById('tabLogin').onclick = () => showTab('login');
 document.getElementById('tabCadastro').onclick = () => showTab('cadastro');
 
-// BUSCA CEP AUTOMÁTICA COM BOTÃO
-async function buscarCep(){
-  const cep = document.getElementById('cep').value.replace(/\D/g,'');
-  if(cep.length!== 8) return msg('Digite um CEP válido','error','msgCadastro');
-  msg('Buscando CEP...','ok','msgCadastro');
-  try{
-    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const data = await res.json();
-    if(!data.erro){
-      document.getElementById('rua').value = data.logradouro;
-      document.getElementById('bairro').value = data.bairro;
-      msg('CEP encontrado!','ok','msgCadastro');
-    } else { msg('CEP não encontrado','error','msgCadastro'); }
-  }catch{ msg('Erro ao buscar CEP','error','msgCadastro'); }
-}
+// BUSCA CEP
+async function buscarCep(){const cep = document.getElementById('cep').value.replace(/\D/g,'');if(cep.length!== 8) return msg('Digite um CEP válido','error','msgCadastro');msg('Buscando CEP...','ok','msgCadastro');try{const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);const data = await res.json();if(!data.erro){document.getElementById('rua').value = data.logradouro;document.getElementById('bairro').value = data.bairro;msg('CEP encontrado!','ok','msgCadastro');} else { msg('CEP não encontrado','error','msgCadastro'); }}catch{ msg('Erro ao buscar CEP','error','msgCadastro'); }}
 
-// CADASTRO - SALVA TUDO NO SQL
+// CADASTRO SUPABASE
 document.getElementById('cadastro').addEventListener('submit', async e=>{
   e.preventDefault(); const btn = document.getElementById('btnCadastro');
   if(document.getElementById('pass').value!==document.getElementById('pass2').value)return msg('Senhas diferentes','error','msgCadastro');
@@ -213,16 +143,10 @@ document.getElementById('cadastro').addEventListener('submit', async e=>{
   if(error){msg(error.message,'error','msgCadastro')}
   else{
     const { error: profileError } = await db.from('profiles').insert({
-      id: data.user.id,
-      email: document.getElementById('email').value,
-      full_name: document.getElementById('nome').value,
-      cpf: document.getElementById('cpf').value.replace(/\D/g,''),
-      data_nascimento: document.getElementById('data_nasc').value,
-      cep: document.getElementById('cep').value.replace(/\D/g,''),
-      rua: document.getElementById('rua').value,
-      numero: document.getElementById('numero').value,
-      bairro: document.getElementById('bairro').value,
-      whatsapp: document.getElementById('whatsapp').value.replace(/\D/g,'')
+      id: data.user.id,email: document.getElementById('email').value,full_name: document.getElementById('nome').value,
+      cpf: document.getElementById('cpf').value.replace(/\D/g,''),data_nascimento: document.getElementById('data_nasc').value,
+      cep: document.getElementById('cep').value.replace(/\D/g,''),rua: document.getElementById('rua').value,numero: document.getElementById('numero').value,
+      bairro: document.getElementById('bairro').value,whatsapp: document.getElementById('whatsapp').value.replace(/\D/g,'')
     });
     if(profileError){ msg('Erro ao salvar dados: '+profileError.message,'error','msgCadastro') }
     else { msg('Cadastro realizado! Faça login.','ok','msgCadastro'); showTab('login'); }
@@ -230,11 +154,12 @@ document.getElementById('cadastro').addEventListener('submit', async e=>{
   loading(btn,false);
 });
 
-// LOGIN - REDIRECIONA PRA PAGINA CERTA
+// LOGIN
 document.getElementById('login').addEventListener('submit', async e=>{
   e.preventDefault(); const btn = document.getElementById('btnLogin'); loading(btn,true);
-  const {error} = await db.auth.signInWithPassword({email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value});
-  if(error){msg('E-mail ou senha inválidos','error','msgLogin')} else{window.location.href = REDIRECT;}
+  const { data, error } = await db.auth.signInWithPassword({email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value});
+  if(error){msg('E-mail ou senha inválidos','error','msgLogin')}
+  else{msg('Login ok! Redirecionando...','ok','msgLogin');setTimeout(()=>{ window.location.href = REDIRECT; }, 800);}
   loading(btn,false);
 });
 </script>
