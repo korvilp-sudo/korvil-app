@@ -3,16 +3,31 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-AI | SELEÇÃO DE ACESSO</title>
-<link rel="stylesheet" href="kai-style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--c:#00FFFF;--c2:#A8FFE6}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{background:#000;overflow:hidden;color:var(--c)}
+#canvas3d{position:fixed;inset:0;z-index:0;opacity:0.4}
+.selector{text-align:center;z-index:10;position:relative;top:50%;transform:translateY(-50%)}
+.logo{font-size:42px;font-weight:900;letter-spacing:8px;text-shadow:0 0 30px var(--c);margin-bottom:10px}
+.logo span{color:var(--c2);font-size:16px;letter-spacing:3px;display:block;text-align:center;margin-top:8px}
+.sub{color:#aaa;margin-bottom:40px;font-size:14px}
+.card-opcao{background:rgba(0,255,255,.08);border:2px solid var(--c);border-radius:20px;padding:25px;margin:20px auto;width:340px;cursor:pointer;transition:.3s;backdrop-filter:blur(15px)}
+.card-opcao:hover{transform:scale(1.05);box-shadow:0 0 50px var(--c);background:rgba(0,255,255,.15)}
+.card-opcao h2{color:var(--c);margin-bottom:10px;font-size:20px}
+.card-opcao p{color:#ccc;font-size:13px;margin-bottom:12px;line-height:1.5}
+.card-opcao span{font-size:11px;font-weight:900;color:var(--c2);letter-spacing:2px}
+</style>
 </head>
 <body>
 <canvas id="canvas3d"></canvas>
 
 <div class="selector">
   <div class="logo">K-AI<span>KORVIL ARTIFICIAL INTELLIGENCE</span></div>
-  <p class="sub">Escolha o modo de acesso</p>
-  
+  <p class="sub">Selecione o modo de acesso</p>
+
   <div class="card-opcao" onclick="entrar('ADMIN')">
     <h2>🔮 K-AI ORIGINAL</h2>
     <p>Acesso Ilimitado • Administrador KORVIL<br>Criação, edição e controle total do sistema</p>
@@ -39,7 +54,20 @@ function entrar(modo){
 if(localStorage.getItem('kai_modo') === 'ADMIN'){
   window.location.href = 'kai-admin.html';
 }
+
+// 3D Fundo
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+const particles = new THREE.Points(
+  new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(Array(6000).fill().map(()=> (Math.random()-0.5)*30), 3)),
+  new THREE.PointsMaterial({color:0x00FFFF, size:0.03})
+); scene.add(particles);
+scene.add(new THREE.PointLight(0x00FFFF, 1, 50).position.set(5,5,5));
+camera.position.z = 8;
+function animate(){requestAnimationFrame(animate); particles.rotation.y += 0.0005; renderer.render(scene, camera);}
+animate();
 </script>
-<script src="kai-ui.js"></script>
 </body>
 </html>
