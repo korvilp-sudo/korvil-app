@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-AI JARVIS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--c:#00f5ff;--c2:#00d4ff}
+:root{--c:#00f5ff;--c2:#00d4ff;--bg:#000}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{background:#000;overflow:hidden;color:var(--c)}
+body{background:var(--bg);overflow:hidden;color:var(--c)}
 #canvas3d{position:fixed;inset:0;z-index:0}
 .ui{position:fixed;z-index:10;pointer-events:none}
-.logo{top:15px;left:50%;transform:translateX(-50%);font-size:22px;font-weight:900;letter-spacing:3px;text-shadow:0 0 15px var(--c);text-align:center}
-.menuBtn{top:15px;left:15px;width:45px;height:45px;border:2px solid var(--c);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;pointer-events:auto;background:rgba(0,245,255,.1)}
-.menu{top:70px;left:15px;width:300px;max-height:75vh;overflow-y:auto;background:rgba(0,0,0,.95);border:2px solid var(--c);border-radius:12px;padding:12px;display:none;pointer-events:auto;backdrop-filter:blur(10px)}
-.menu h3{color:var(--c2);margin:8px 0 4px;font-size:13px}
-.menu button{width:100%;background:transparent;border:1px solid #222;color:var(--c);padding:10px;margin:3px 0;border-radius:8px;text-align:left;cursor:pointer;font-size:13px;font-weight:700}
-.menu button:active{background:var(--c);color:#000}
-.chatBox{bottom:0;left:0;width:100%;background:rgba(0,0,0,.9);border-top:2px solid var(--c);padding:10px;pointer-events:auto}
-.chat{max-height:160px;overflow-y:auto;padding:8px}
-.msg{margin:6px 0;font-size:14px;line-height:1.4}
+
+.logo{top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;letter-spacing:4px;text-shadow:0 0 20px var(--c);text-align:center}
+.logo span{color:var(--c2)}
+
+.menuBtn{top:15px;left:15px;width:50px;height:50px;border:2px solid var(--c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(0,245,255,.05);transition:.3s}
+.menuBtn:hover{box-shadow:0 0 20px var(--c)}
+
+.menu{top:80px;left:15px;width:320px;max-height:70vh;overflow-y:auto;background:rgba(0,20,30,.95);border:2px solid var(--c);border-radius:15px;padding:15px;display:none;pointer-events:auto;backdrop-filter:blur(15px);box-shadow:0 0 30px rgba(0,245,255,.2)}
+.menu h3{color:var(--c2);margin:10px 0 5px;font-size:12px;letter-spacing:1px}
+.menu button{width:100%;background:rgba(0,245,255,.05);border:1px solid #00333a;color:var(--c);padding:12px;margin:4px 0;border-radius:10px;text-align:left;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
+.menu button:hover{background:var(--c);color:#000}
+
+.chatBox{bottom:0;left:0;width:100%;background:linear-gradient(transparent, rgba(0,0,0,.9));border-top:2px solid var(--c);padding:15px;pointer-events:auto}
+.chat{max-height:180px;overflow-y:auto;padding:10px}
+.msg{margin:8px 0;font-size:15px;line-height:1.5;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}}
 .msg.user{color:var(--c2);text-align:right}
 .msg.kai{color:var(--c)}
-.inputArea{display:flex;gap:6px;margin-top:6px}
-.inputArea input{flex:1;background:#111;border:2px solid var(--c);color:var(--c);padding:12px;border-radius:10px;outline:none;font-size:14px}
-.inputArea button{width:48px;height:48px;background:var(--c);color:#000;border:none;border-radius:10px;cursor:pointer;font-size:18px;font-weight:900}
+
+.inputArea{display:flex;gap:8px;margin-top:8px}
+.inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px;box-shadow:inset 0 0 10px rgba(0,245,255,.1)}
+.inputArea input:focus{box-shadow:0 0 15px var(--c)}
+.inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900;transition:.2s}
+.inputArea button:hover{box-shadow:0 0 20px var(--c)}
 .micBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
 .micBtn.listening{animation:pulse 0.8s infinite;background:rgba(0,245,255,.2)!important}
-@keyframes pulse{0%,100%{box-shadow:0 0 15px var(--c)}50%{box-shadow:0 0 30px var(--c2)}}
-.badge{top:15px;right:15px;background:var(--c);color:#000;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:900}
-.autoListen{bottom:110px;right:15px;font-size:10px;background:rgba(0,255,0,.2);padding:3px 8px;border-radius:8px}
-.fecharBtn{top:15px;right:80px;width:45px;height:45px;border:2px solid #f00;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;pointer-events:auto;background:rgba(255,0,0,.1);color:#f00}
+@keyframes pulse{0%,100%{box-shadow:0 0 15px var(--c)}50%{box-shadow:0 0 40px var(--c2)}}
+
+.badge{top:20px;right:20px;background:var(--c);color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900;box-shadow:0 0 15px var(--c)}
+.autoListen{bottom:120px;right:20px;font-size:11px;background:rgba(0,255,0,.15);padding:5px 10px;border-radius:10px;border:1px solid #0f0}
+.fecharBtn{top:15px;right:90px;width:50px;height:50px;border:2px solid #f00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;pointer-events:auto;background:rgba(255,0,0,.1);color:#f00;transition:.3s}
+.fecharBtn:hover{box-shadow:0 0 20px #f00}
 </style>
 </head>
 <body>
@@ -37,43 +50,28 @@ body{background:#000;overflow:hidden;color:var(--c)}
 <canvas id="canvas3d"></canvas>
 <div class="ui badge" id="badgeModo">MODO CHEFE</div>
 <div class="ui autoListen" id="autoListen">Ouvindo...</div>
-<div class="ui logo">K-AI</div>
+<div class="ui logo">K-<span>AI</span></div>
 <div class="ui menuBtn" onclick="toggleMenu()">☰</div>
 <div class="ui fecharBtn" onclick="window.parent.fecharKAI()">X</div>
 
 <div class="ui menu" id="menu">
   <h3>NAVEGAR KORVIL</h3>
   <button onclick="executar('vai para 5')">5. CENTRAL</button>
-  <button onclick="executar('vai para 1')">1. SISTEMA K</button>
   <button onclick="executar('vai para 2')">2. K-TP</button>
-  <button onclick="executar('vai para 3')">3. K-AFORTUNADO</button>
-  <button onclick="executar('vai para 4')">4. K-ALMA</button>
-  <button onclick="executar('vai para 6')">6. DESENVOLVIMENTO HUMANO</button>
   <button onclick="executar('vai para 7')">7. NEGOCIOS</button>
-  <button onclick="executar('vai para 8')">8. SERVICOS</button>
 
-  <h3>CRIAR</h3>
+  <h3>IA</h3>
   <button onclick="executar('criar post')">Criar Post</button>
-  <button onclick="executar('criar roteiro')">Criar Roteiro</button>
-  <button onclick="executar('criar imagem')">Criar Imagem</button>
-
-  <h3>COPIAR</h3>
   <button onclick="executar('copiar tudo')">Copiar Tudo</button>
-  <button onclick="executar('resumir isso')">Resumir</button>
-  <button onclick="executar('copiar emails')">Copiar Emails</button>
-
-  <h3>BUSCAR</h3>
-  <button onclick="executar('pesquisar k-tp')">Pesquisar</button>
-  <button onclick="executar('calcular 20% de 500')">Calcular</button>
+  <button onclick="executar('pesquisar marketing')">Pesquisar</button>
 
   <h3>MEMÓRIA</h3>
+  <button onclick="executar('lembrar que')">Salvar Memória</button>
   <button onclick="executar('estatísticas')">Estatísticas</button>
-  <button onclick="executar('limpar memória')">Limpar Memória</button>
 
   <h3>SISTEMA</h3>
   <button onclick="executar('que horas são')">Que horas são</button>
   <button onclick="executar('parar de ouvir')">Parar de ouvir</button>
-  <button onclick="executar('voltar a ouvir')">Voltar a ouvir</button>
 </div>
 
 <div class="ui chatBox">
@@ -86,7 +84,7 @@ body{background:#000;overflow:hidden;color:var(--c)}
   </div>
 </div>
 
-<!-- CARREGA TODAS AS GAVETAS NA ORDEM CERTA -->
+<!-- CARREGA TODOS OS MÓDULOS -->
 <script src="actions/navega.js"></script>
 <script src="actions/copia.js"></script>
 <script src="actions/cria.js"></script>
@@ -102,21 +100,19 @@ body{background:#000;overflow:hidden;color:var(--c)}
 <script>
 const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe" }
 
-// FUNÇÕES GLOBAIS PRO HTML CHAMAR
 function toggleMenu(){ KAI_UI.toggleMenu(); }
 function toggleMic(){ KAI_UI.toggleMic(); }
 function enviarTexto(){ KAI_UI.enviarTexto(); }
 function executar(cmd){ KAI_UI.executar(cmd); }
 function anexarArquivo(){ KAI_UI.anexarArquivo(); }
 
-// INICIAR TUDO
 async function iniciarKAI(){
-  await KAI_MEMORY.carregar(); // 1. CARREGA MEMÓRIA
-  Sistema.carregar(); // 2. CARREGA SISTEMA
-  KAI_UI.init(); // 3. INICIA UI
+  await KAI_MEMORY.carregar();
+  Sistema.carregar();
+  KAI_UI.init();
 }
 
-setTimeout(iniciarKAI, 800);
+setTimeout(iniciarKAI, 500);
 </script>
 </body>
 </html>
