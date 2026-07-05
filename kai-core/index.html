@@ -55,7 +55,7 @@ body{background:var(--bg);overflow:hidden;color:var(--c)}
   </div>
 </div>
 
-<!-- ORDEM CORRETA: PRIMEIRO ACTIONS, DEPOIS MEMORY, DEPOIS UI -->
+<!-- ORDEM CORRETA -->
 <script src="actions/navega.js"></script>
 <script src="actions/copia.js"></script>
 <script src="actions/cria.js"></script>
@@ -65,8 +65,10 @@ body{background:var(--bg);overflow:hidden;color:var(--c)}
 <script src="actions/social.js"></script>
 <script src="actions/vendas.js"></script>
 <script src="actions/educacao.js"></script>
-<script src="actions/kai-ui.js"></script>  <!-- CORRIGIDO: tava na actions -->
-<script src="actions/kai-memory.js"></script> <!-- CORRIGIDO: tava na actions -->
+<script src="actions/kai-memory.js"></script>
+<script src="actions/kai-ui.js"></script>
+<script src="kai-brain.js"></script>
+<script src="kai-voice.js"></script>
 
 <script>
 const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe" }
@@ -76,7 +78,7 @@ function enviarTexto(){ KAI_UI.enviarTexto(); }
 function executar(cmd){ KAI_UI.executar(cmd); }
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
 async function iniciarKAI(){ await KAI_MEMORY.carregar(); Sistema.carregar(); KAI_UI.init(); }
-setTimeout(iniciarKAI, 500);
+setTimeout(iniciarKAI, 800);
 </script>
 </body>
 </html>
