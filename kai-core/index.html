@@ -25,8 +25,10 @@ body{background:var(--bg);overflow:hidden;color:var(--c)}
 .inputArea input{flex:1;background:#001a1f;border:2px solid var(--c);color:var(--c);padding:14px;border-radius:12px;outline:none;font-size:15px}
 .inputArea button{width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:12px;cursor:pointer;font-size:20px;font-weight:900}
 .micBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
+.micBtn.listening{background:var(--c)!important; color:#000!important}
 .badge{top:20px;right:20px;background:var(--c);color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900}
 .autoListen{bottom:120px;right:20px;font-size:11px;background:rgba(0,255,0,.15);padding:5px 10px;border-radius:10px;border:1px solid #0f0}
+.anexoBtn{background:transparent!important; border:2px solid var(--c)!important; color:var(--c)!important}
 </style>
 </head>
 <body>
@@ -38,19 +40,27 @@ body{background:var(--bg);overflow:hidden;color:var(--c)}
 <div class="ui menuBtn" onclick="toggleMenu()">☰</div>
 
 <div class="ui menu" id="menu">
+  <h3>VERSÕES K-AI</h3>
+  <button onclick="executar('carregar versao korvil')">Versão KORVIL v1.0</button>
+  <button onclick="executar('carregar versao jarvis')">Versão JARVIS v2.0</button>
+  <button onclick="executar('carregar versao corvo')">Versão CORVO v3.0</button>
+  
   <h3>NAVEGAR</h3>
   <button onclick="executar('vai para 2')">K-TP</button>
   <button onclick="executar('vai para 8')">SERVIÇOS</button>
+  
   <h3>IA</h3>
   <button onclick="executar('fale sobre os serviços')">Fale sobre</button>
   <button onclick="executar('estatísticas')">Estatísticas</button>
+  <button onclick="executar('limpar memória')">Limpar Memória</button>
 </div>
 
 <div class="ui chatBox">
   <div class="chat" id="chat"></div>
   <div class="inputArea">
+    <button class="anexoBtn" onclick="anexarArquivo()">📎</button>
     <input type="text" id="userInput" placeholder="Fale com K-AI...">
-    <button id="micBtn" onclick="toggleMic()">🎙️</button>
+    <button id="micBtn" class="micBtn" onclick="toggleMic()">🎙️</button>
     <button onclick="enviarTexto()">➤</button>
   </div>
 </div>
@@ -67,15 +77,14 @@ body{background:var(--bg);overflow:hidden;color:var(--c)}
 <script src="actions/educacao.js"></script>
 <script src="actions/kai-memory.js"></script>
 <script src="actions/kai-ui.js"></script>
-<script src="kai-brain.js"></script>
-<script src="kai-voice.js"></script>
 
 <script>
-const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe" }
+const KAI_CONFIG = { modo: "ilimitado", autoOuvir: true, nomeUsuario: "Chefe", versao: "corvo" }
 function toggleMenu(){ KAI_UI.toggleMenu(); }
 function toggleMic(){ KAI_UI.toggleMic(); }
 function enviarTexto(){ KAI_UI.enviarTexto(); }
 function executar(cmd){ KAI_UI.executar(cmd); }
+function anexarArquivo(){ KAI_UI.anexarArquivo(); }
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') enviarTexto(); });
 async function iniciarKAI(){ await KAI_MEMORY.carregar(); Sistema.carregar(); KAI_UI.init(); }
 setTimeout(iniciarKAI, 800);
