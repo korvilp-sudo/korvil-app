@@ -414,6 +414,17 @@ setInterval(()=>{ document.getElementById('hora').innerText = new Date().toLocal
 document.getElementById('input').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
 window.addEventListener('resize', ()=>{ if(armaduraCamera){armaduraCamera.aspect=window.innerWidth/window.innerHeight;armaduraCamera.updateProjectionMatrix();armaduraRenderer.setSize(window.innerWidth,window.innerHeight)} });
 
+// VERIFICA SE VEIO DA TRANSFORMAÇÃO
+window.addEventListener('load', () => {
+  const abrir = localStorage.getItem('abrirArmadura');
+  if(abrir === 'atual'){
+    localStorage.removeItem('abrirArmadura');
+    setTimeout(() => {
+      mostrarArmadura('atual');
+    }, 1500);
+  }
+});
+
 setTimeout(()=>{ falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
 </script>
 </body>
