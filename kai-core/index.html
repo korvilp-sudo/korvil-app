@@ -12,23 +12,24 @@
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9edef;font-family:'Segoe UI',Roboto,sans-serif}
 .phone{width:100%;height:100dvh;background:var(--chat);position:relative;display:flex;flex-direction:column}
 
-/* SETAS NEON CYBER */
-.arrow{position:absolute;z-index:102;pointer-events:none;display:flex;justify-content:center;align-items:center}
-.arrow svg{width:42px;height:42px;stroke:var(--c);stroke-width:2.5;filter:drop-shadow(0 0 12px var(--c))}
-.arrow-down{top:0;left:50%;transform:translateX(-50%);width:100%;height:70px}
+/* SETAS NEON CYBER 2X MAIORES */
+.arrow{position:absolute;z-index:102;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:opacity.3s}
+.arrow.hidden{opacity:0;pointer-events:none}
+.arrow svg{width:72px;height:72px;stroke:var(--c);stroke-width:3;filter:drop-shadow(0 0 20px var(--c))}
+.arrow-down{top:36px;left:50%;transform:translateX(-50%);width:100%;height:80px}
 .arrow-down svg{animation:arrowDown 1.4s infinite}
-@keyframes arrowDown{0%,100%{transform:translateY(-6px);opacity:.5}50%{transform:translateY(6px);opacity:1}}
-.arrow-right{top:50%;left:0;transform:translateY(-50%);width:70px;height:100%}
+@keyframes arrowDown{0%,100%{transform:translateY(-8px);opacity:.6}50%{transform:translateY(8px);opacity:1}}
+.arrow-right{top:50%;left:0;transform:translateY(-50%);width:80px;height:100%}
 .arrow-right svg{animation:arrowRight 1.4s infinite}
-@keyframes arrowRight{0%,100%{transform:translateX(-6px);opacity:.5}50%{transform:translateX(6px);opacity:1}}
-.arrow-left{top:50%;right:0;transform:translateY(-50%);width:70px;height:100%}
+@keyframes arrowRight{0%,100%{transform:translateX(-8px);opacity:.6}50%{transform:translateX(8px);opacity:1}}
+.arrow-left{top:50%;right:0;transform:translateY(-50%);width:80px;height:100%}
 .arrow-left svg{animation:arrowLeft 1.4s infinite}
-@keyframes arrowLeft{0%,100%{transform:translateX(6px);opacity:.5}50%{transform:translateX(-6px);opacity:1}}
-.arrow-up{bottom:95px;left:50%;transform:translateX(-50%);width:100%;height:70px}
+@keyframes arrowLeft{0%,100%{transform:translateX(8px);opacity:.6}50%{transform:translateX(-8px);opacity:1}}
+.arrow-up{bottom:95px;left:50%;transform:translateX(-50%);width:100%;height:80px}
 .arrow-up svg{animation:arrowUp 1.4s infinite}
-@keyframes arrowUp{0%,100%{transform:translateY(6px);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
+@keyframes arrowUp{0%,100%{transform:translateY(8px);opacity:.6}50%{transform:translateY(-8px);opacity:1}}
 
-.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:15px;font-weight:700;color:var(--c);flex-shrink:0;border-bottom:2px solid var(--c);box-shadow:0 0 15px var(--c)40}
+.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:15px;font-weight:700;color:var(--c);flex-shrink:0;border-bottom:2px solid var(--c);box-shadow:0 0 15px var(--c)40;position:relative;z-index:5}
 #notiPanel{position:absolute;top:-480px;left:0;width:100%;height:480px;background:linear-gradient(180deg,#0d1a20 0%,#000 100%);z-index:100;transition:top.35s cubic-bezier(.4,0,.2,1);border-bottom:2px solid var(--c);box-shadow:0 10px 30px var(--c)50}
 #notiPanel.open{top:36px}
 .handle{width:70px;height:7px;background:linear-gradient(90deg,var(--c),var(--c2));border-radius:4px;margin:12px auto;box-shadow:0 0 15px var(--c)}
@@ -52,12 +53,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .sideItem:hover{background:#132e36;border-left:4px solid var(--c);padding-left:22px}
 .sideItem small{color:#8696a0;font-size:13px;display:block;margin-top:4px;font-weight:400}
 
-.header{height:75px;background:linear-gradient(180deg,var(--top),#000);display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:2px solid var(--c);flex-shrink:0;box-shadow:0 5px 20px var(--c)40}
-.header.menuBtn{font-size:36px;color:var(--c);cursor:pointer;font-weight:900;text-shadow:0 0 15px var(--c);transition:.2s}
+.header{height:75px;background:linear-gradient(180deg,var(--top),#000);display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:2px solid var(--c);flex-shrink:0;box-shadow:0 5px 20px var(--c)40;position:relative;z-index:5}
+/* ICONE MENU 3X MAIOR */
+.header.menuBtn{font-size:48px;color:var(--c);cursor:pointer;font-weight:900;text-shadow:0 0 20px var(--c);transition:.2s}
 .header.menuBtn:active{transform:scale(.9)}
 .header.titulo{flex:1;text-align:center;color:var(--c);font-weight:900;letter-spacing:3px;font-size:16px;text-shadow:0 0 20px var(--c)}
 
-#chat{flex:1;display:flex;flex-direction:column-reverse;overflow-y:auto;padding:14px;background:var(--chat);position:relative}
+#chat{flex:1;display:flex;flex-direction:column-reverse;overflow-y:auto;padding:14px;background:var(--chat);position:relative;z-index:3}
 #canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.12;pointer-events:none;z-index:0}
 
 .bubble{max-width:82%;padding:14px 18px;border-radius:12px;margin-bottom:12px;font-size:16px;line-height:1.5;position:relative;z-index:2;font-weight:500}
@@ -65,7 +67,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .bubble.kai{background:linear-gradient(135deg,var(--balao),#0f1f25);border:2px solid var(--c);border-radius:0 12px 12px 12px;box-shadow:0 0 18px var(--c)25}
 .bubble.time{font-size:12px;color:var(--c2);text-align:right;margin-top:6px;font-weight:700}
 
-.footer{height:95px;background:linear-gradient(0deg,var(--top),#000);display:flex;align-items:center;padding:0 16px;gap:14px;border-top:2px solid var(--c);flex-shrink:0;box-shadow:0 -5px 20px var(--c)40}
+.footer{height:95px;background:linear-gradient(0deg,var(--top),#000);display:flex;align-items:center;padding:0 16px;gap:14px;border-top:2px solid var(--c);flex-shrink:0;box-shadow:0 -5px 20px var(--c)40;position:relative;z-index:5}
 .footer input{flex:1;height:65px;background:linear-gradient(145deg,#132e36,#0a1419);border:2.5px solid var(--c);border-radius:32px;padding:0 24px;color:#fff;font-size:17px;font-weight:700;outline:none;box-shadow:inset 0 0 18px #000}
 .footer input::placeholder{color:var(--c2);font-weight:600}
 .footer.btn{width:65px;height:65px;border-radius:50%;background:linear-gradient(145deg,var(--c),var(--c2));color:#000;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;cursor:pointer;box-shadow:0 0 25px var(--c)70;border:2.5px solid var(--c);transition:.2s}
@@ -80,7 +82,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 #tableRight{top:50%;right:12px;transform:translateY(-50%);width:88%;max-width:420px}
 #tableBottom{bottom:110px;left:50%;transform:translateX(-50%);width:96%;max-width:650px}
 
-/* VISUALIZADOR ARMADURA OVERLAY */
 #armaduraOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:transparent;pointer-events:auto}
 #armaduraCanvas{width:100%;height:100%}
 .btn-fechar-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer;box-shadow:0 0 15px var(--c);font-family:'Segoe UI',Arial}
@@ -89,16 +90,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 </head>
 <body>
 <div class="phone">
-  <div class="arrow arrow-down"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
-  <div class="arrow arrow-right"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
-  <div class="arrow arrow-left"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
-  <div class="arrow arrow-up"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
+  <div class="arrow arrow-down" onclick="openPanel()"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
+  <div class="arrow arrow-right" onclick="openTable('right')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
+  <div class="arrow arrow-left" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
+  <div class="arrow arrow-up" onclick="openTable('bottom')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
 
   <div class="status" id="statusBar">
     <div id="hora">16:10</div>
     <span>KORVIL 5G 🔋 100%</span>
   </div>
-  <div class="overlay" id="overlay" onclick="closePanel()"></div>
+  <div class="overlay" id="overlay" onclick="closeAllMenus()"></div>
 
   <div id="notiPanel">
     <div class="handle"></div>
@@ -153,13 +154,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
       <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA <small>Saúde e Beleza</small></div>
       <div class="sideItem" onclick="goPage('central')">5. Central KORVIL <small>Painel Geral</small></div>
     </div>
-
-    <!-- NOVA SEÇÃO K-AI TRANSFORMAR -->
     <div class="sideSection">
       <div class="sideTitle">K-AI TRANSFORMAR</div>
       <div class="sideItem" onclick="mostrarArmadura('v-2026')">Armadura: v-2026 <small>Protocolo Say Korvil</small></div>
     </div>
-
     <div class="sideSection">
       <div class="sideTitle">2. CRIAR</div>
       <div class="sideItem" onclick="executar('criar post')">Criar Post</div>
@@ -189,7 +187,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
   <div id="chat"><canvas id="canvas3d"></canvas></div>
 
-  <!-- OVERLAY DA ARMADURA -->
   <div id="armaduraOverlay">
     <canvas id="armaduraCanvas"></canvas>
     <div class="hud-armor">K-AI ARMOR v-2026 | PROTOCOLO: SAY KORVIL</div>
@@ -217,7 +214,6 @@ const PAGINAS = {
   'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
 }
 
-// 3D DO CHAT
 try{
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -236,9 +232,22 @@ try{
 }catch(e){}
 
 const chatEl = document.getElementById('chat');
-const panel = document.getElementById('notiPanel'); const overlay = document.getElementById('overlay');
+const panel = document.getElementById('notiPanel');
+const overlay = document.getElementById('overlay');
+const arrows = document.querySelectorAll('.arrow');
 
-// GESTOS
+function closeAllMenus(){
+  panel.classList.remove('open');
+  document.getElementById('sideMenu').classList.remove('open');
+  closeTable('right');
+  closeTable('bottom');
+  overlay.classList.remove('show');
+  showArrows();
+}
+
+function hideArrows(){ arrows.forEach(a => a.classList.add('hidden')); }
+function showArrows(){ arrows.forEach(a => a.classList.remove('hidden')); }
+
 document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
 document.addEventListener('touchend', e => {
   let dx = e.changedTouches[0].clientX - touchStartX;
@@ -249,11 +258,25 @@ document.addEventListener('touchend', e => {
   if(touchStartY > window.innerHeight - 130 && dy < -90) openTable('bottom');
 });
 
-function openPanel(){ panel.classList.add('open'); overlay.classList.add('show'); }
-function closePanel(){ panel.classList.remove('open'); overlay.classList.remove('show'); }
-function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); }
-function openTable(side){ document.getElementById('table'+side.charAt(0).toUpperCase()+side.slice(1)).style.display='block'; updateStats(); }
-function closeTable(side){ document.getElementById('table'+side.charAt(0).toUpperCase()+side.slice(1)).style.display='none'; }
+function openPanel(){ panel.classList.add('open'); overlay.classList.add('show'); hideArrows(); }
+function closePanel(){ panel.classList.remove('open'); overlay.classList.remove('show'); showArrows(); }
+function toggleMenu(){
+  const menu = document.getElementById('sideMenu');
+  menu.classList.toggle('open');
+  if(menu.classList.contains('open')){ overlay.classList.add('show'); hideArrows(); }
+  else{ overlay.classList.remove('show'); showArrows(); }
+}
+function openTable(side){
+  document.getElementById('table'+side.charAt(0).toUpperCase()+side.slice(1)).style.display='block';
+  overlay.classList.add('show');
+  hideArrows();
+  updateStats();
+}
+function closeTable(side){
+  document.getElementById('table'+side.charAt(0).toUpperCase()+side.slice(1)).style.display='none';
+  overlay.classList.remove('show');
+  showArrows();
+}
 function updateStats(){ document.getElementById('statConv').innerText = memoria.hist.length; document.getElementById('statMem').innerText = memoria.mems.length; document.getElementById('statCmd').innerText = memoria.hist.length * 2; }
 
 function addNoti(txt){ document.getElementById('notis').innerHTML = `<div class="noti">${txt}</div>` + document.getElementById('notis').innerHTML; }
@@ -270,10 +293,9 @@ function goPage(pagina){
   toggleMenu(); closePanel();
 }
 
-// ===== FUNÇÃO MOSTRAR ARMADURA =====
 function mostrarArmadura(versao){
   document.getElementById('armaduraOverlay').style.display = 'block';
-  toggleMenu(); closePanel();
+  toggleMenu(); closePanel(); hideArrows();
   falar(`Protocolo SAY KORVIL ativado. Exibindo Armadura ${versao}`);
   addNoti(`🛡️ ARMADURA ${versao} ATIVADA`);
   if(!armaduraScene) initArmadura();
@@ -281,6 +303,7 @@ function mostrarArmadura(versao){
 
 function fecharArmadura(){
   document.getElementById('armaduraOverlay').style.display = 'none';
+  showArrows();
   falar('Armadura desativada. Voltando ao modo normal');
 }
 
@@ -288,30 +311,23 @@ function initArmadura(){
   armaduraScene = new THREE.Scene();
   armaduraCamera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
   armaduraCamera.position.set(0, 2, 12);
-
   armaduraRenderer = new THREE.WebGLRenderer({canvas:document.getElementById('armaduraCanvas'), alpha:true, antialias:true});
   armaduraRenderer.setSize(window.innerWidth, window.innerHeight);
   armaduraRenderer.setClearColor(0x000, 0);
-
   const luz1 = new THREE.PointLight(0x00FFFF, 2, 50); luz1.position.set(5,5,5);
   const luz2 = new THREE.PointLight(0x00FFFF, 1.5, 50); luz2.position.set(-5,-5,-5);
   const luzAmb = new THREE.AmbientLight(0x00FFFF, 0.3);
   armaduraScene.add(luz1, luz2, luzAmb);
-
   armaduraControls = new THREE.OrbitControls(armaduraCamera, armaduraRenderer.domElement);
   armaduraControls.enableDamping = true; armaduraControls.dampingFactor = 0.05;
   armaduraControls.autoRotate = true; armaduraControls.autoRotateSpeed = 0.5;
-
-  criarArmadura();
-  animateArmadura();
+  criarArmadura(); animateArmadura();
 }
 
 function criarArmadura(){
   armaduraGroup = new THREE.Group();
   const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, shininess:100, transparent:true, opacity:0.9});
   const matWire = new THREE.MeshPhongMaterial({color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:0.8, wireframe:true});
-
-  // CABEÇA CORVO
   const cabeca = new THREE.Group();
   const cranio = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 32), mat);
   const bicoGeo = new THREE.ConeGeometry(0.4, 1.2, 4); bicoGeo.rotateX(Math.PI/2);
@@ -321,27 +337,18 @@ function criarArmadura(){
   olhos = new THREE.Group(); olhos.add(olhoL, olhoR);
   cabeca.add(cranio, bico, olhos); cabeca.position.y = 3.5;
   armaduraGroup.add(cabeca);
-
-  // TORSO
   const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 3, 8), mat); torso.position.y = 1; armaduraGroup.add(torso);
-
-  // ASAS
   asas = new THREE.Group();
   const asaGeo = new THREE.BoxGeometry(4, 0.1, 2);
   const asaL = new THREE.Mesh(asaGeo, matWire); asaL.position.set(-2.5, 1.5, 0); asaL.rotation.z = -0.3;
   const asaR = asaL.clone(); asaR.position.x = 2.5; asaR.rotation.z = 0.3;
   asas.add(asaL, asaR); armaduraGroup.add(asas);
-
-  // BRAÇOS E PERNAS
   const bracoGeo = new THREE.CylinderGeometry(0.3, 0.25, 2.5, 8);
   const bracoL = new THREE.Mesh(bracoGeo, mat); bracoL.position.set(-1.8, 0.5, 0);
   const bracoR = bracoL.clone(); bracoR.position.x = 1.8; armaduraGroup.add(bracoL, bracoR);
-
   const pernaGeo = new THREE.CylinderGeometry(0.4, 0.35, 3, 8);
   const pernaL = new THREE.Mesh(pernaGeo, mat); pernaL.position.set(-0.6, -2, 0);
   const pernaR = pernaL.clone(); pernaR.position.x = 0.6; armaduraGroup.add(pernaL, pernaR);
-
-  // GARRAS
   garras = new THREE.Group();
   for(let i=0; i<3; i++){
     const garra = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.6, 3), matWire);
