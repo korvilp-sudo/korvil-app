@@ -370,6 +370,13 @@ function animateArmadura(){
 
 function executar(cmd){
   cmd = cmd.toLowerCase(); toggleMenu(); closePanel();
+ function executar(cmd){
+  cmd = cmd.toLowerCase();
+  
+  if(cmd.includes('k-ai transformar') || cmd.includes('transformar')){ 
+    toggleMenu(); closePanel(); 
+    return iniciarTransformacao(); 
+  }
   if(cmd.includes('armadura') || cmd.includes('mostrar armadura')) return mostrarArmadura('v-2026');
   if(cmd.includes('ir para') || cmd.includes('abrir') || cmd.includes('navegar')){
     if(cmd.includes('sistema k')) return goPage('sistema k');
