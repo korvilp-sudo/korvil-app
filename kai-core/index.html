@@ -1,3 +1,4 @@
+Faz você 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -94,7 +95,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
  <div class="arrow arrow-right" onclick="openTable('right')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
  <div class="arrow arrow-left" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
  <div class="arrow arrow-up" onclick="openTable('bottom')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
-
  <div class="status" id="statusBar">
     <div id="hora">16:10</div>
     <span>KORVIL 5G 🔋 100%</span>
@@ -320,102 +320,4 @@ function initArmadura(){
   armaduraScene.add(luz1, luz2, luzAmb);
   armaduraControls = new THREE.OrbitControls(armaduraCamera, armaduraRenderer.domElement);
   armaduraControls.enableDamping = true; armaduraControls.dampingFactor = 0.05;
-  armaduraControls.autoRotate = true; armaduraControls.autoRotateSpeed = 0.5;
-  criarArmadura(); animateArmadura();
-}
-
-function criarArmadura(){
-  armaduraGroup = new THREE.Group();
-  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, shininess:100, transparent:true, opacity:0.9});
-  const matWire = new THREE.MeshPhongMaterial({color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:0.8, wireframe:true});
-  const cabeca = new THREE.Group();
-  const cranio = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 32), mat);
-  const bicoGeo = new THREE.ConeGeometry(0.4, 1.2, 4); bicoGeo.rotateX(Math.PI/2);
-  const bico = new THREE.Mesh(bicoGeo, matWire); bico.position.z = 1.2;
-  const olhoL = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), matWire); olhoL.position.set(-0.4,0.2,1);
-  const olhoR = olhoL.clone(); olhoR.position.x = 0.4;
-  olhos = new THREE.Group(); olhos.add(olhoL, olhoR);
-  cabeca.add(cranio, bico, olhos); cabeca.position.y = 3.5;
-  armaduraGroup.add(cabeca);
-  const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 3, 8), mat); torso.position.y = 1; armaduraGroup.add(torso);
-  asas = new THREE.Group();
-  const asaGeo = new THREE.BoxGeometry(4, 0.1, 2);
-  const asaL = new THREE.Mesh(asaGeo, matWire); asaL.position.set(-2.5, 1.5, 0); asaL.rotation.z = -0.3;
-  const asaR = asaL.clone(); asaR.position.x = 2.5; asaR.rotation.z = 0.3;
-  asas.add(asaL, asaR); armaduraGroup.add(asas);
-  const bracoGeo = new THREE.CylinderGeometry(0.3, 0.25, 2.5, 8);
-  const bracoL = new THREE.Mesh(bracoGeo, mat); bracoL.position.set(-1.8, 0.5, 0);
-  const bracoR = bracoL.clone(); bracoR.position.x = 1.8; armaduraGroup.add(bracoL, bracoR);
-  const pernaGeo = new THREE.CylinderGeometry(0.4, 0.35, 3, 8);
-  const pernaL = new THREE.Mesh(pernaGeo, mat); pernaL.position.set(-0.6, -2, 0);
-  const pernaR = pernaL.clone(); pernaR.position.x = 0.6; armaduraGroup.add(pernaL, pernaR);
-  garras = new THREE.Group();
-  for(let i=0; i<3; i++){
-    const garra = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.6, 3), matWire);
-    garra.rotation.x = Math.PI/2; garra.position.set(-0.2 + i*0.2, -3.6, 0.3);
-    garras.add(garra); const garra2 = garra.clone(); garra2.position.x += 0.6; garras.add(garra2);
-  }
-  armaduraGroup.add(garras);
-  armaduraScene.add(armaduraGroup);
-}
-
-function animateArmadura(){
-  requestAnimationFrame(animateArmadura);
-  tempo += 0.02;
-  if(asas){ asas.children[0].rotation.z = -0.3 + Math.sin(tempo*3)*0.2; asas.children[1].rotation.z = 0.3 - Math.sin(tempo*3)*0.2; }
-  if(olhos){ olhos.children.forEach(o => o.material.emissiveIntensity = 0.8 + Math.sin(tempo*5)*0.2); }
-  if(garras){ garras.children.forEach(g => g.rotation.y += 0.01); }
-  armaduraControls.update();
-  armaduraRenderer.render(armaduraScene, armaduraCamera);
-}
-
-function executar(cmd){
-  cmd = cmd.toLowerCase(); toggleMenu(); closePanel();
-  if(cmd.includes('armadura') || cmd.includes('mostrar armadura')) return mostrarArmadura('v-2026');
-  if(cmd.includes('ir para') || cmd.includes('abrir') || cmd.includes('navegar')){
-    if(cmd.includes('sistema k')) return goPage('sistema k');
-    if(cmd.includes('ktp')) return goPage('ktp');
-    if(cmd.includes('kafortunado')) return goPage('kafortunado');
-    if(cmd.includes('kalma')) return goPage('kalma');
-    if(cmd.includes('central')) return goPage('central');
-  }
-  if(cmd.includes('criar post')) return falar('Abrindo Criador de Post KORVIL');
-  if(cmd.includes('criar imagem')) return falar('Abrindo Gerador de Imagem IA');
-  if(cmd.includes('resumir')) return falar('Modo Resumir ativado');
-  if(cmd.includes('anexar')) return falar('Função Anexar Arquivo ativada');
-  if(cmd.includes('horas')) return falar('Agora são ' + new Date().toLocaleTimeString('pt-BR'));
-  if(cmd.includes('salvar memória')){ memoria.mems.push('Memória salva'); localStorage.setItem('kai',JSON.stringify(memoria)); addNoti('🧠 Memória salva'); return falar('Memória salva Chefe'); }
-  if(cmd.includes('estatísticas')){ openTable('right'); return falar('Abrindo estatísticas'); }
-  if(cmd.includes('limpar memória')){ localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; addNoti('🧠 Memória limpa'); return falar('Memória limpa'); }
-  if(cmd.includes('voz')) return falar('Voz alterada. K-AI pronto');
-  falar('Entendi: ' + cmd);
-}
-
-function send(){ const val = document.getElementById('input').value; if(!val) return; addMsg('me',val); executar(val); document.getElementById('input').value=''; }
-function toggleBtn(el, tipo){ el.classList.toggle('active'); if(tipo=='mic') document.getElementById('mic').click(); }
-function limparMem(){ localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; addNoti('🧠 Memória limpa'); return 'Memória limpa Chefe'; }
-
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-if(SR){
-  const rec = new SR(); rec.lang='pt-BR';
-  document.getElementById('mic').onclick = ()=>{
-    document.getElementById('mic').classList.toggle('rec');
-    rec.start();
-    rec.onresult = e => {
-      let txt = e.results[0][0].transcript;
-      if(txt.toLowerCase().includes('k-ai')) txt = txt.toLowerCase().replace('k-ai','');
-      addMsg('me',txt); executar(txt);
-      document.getElementById('mic').classList.remove('rec');
-    }
-    rec.onend = ()=>{ document.getElementById('mic').classList.remove('rec'); }
-  }
-}
-
-setInterval(()=>{ document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) },1000);
-document.getElementById('input').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
-window.addEventListener('resize', ()=>{ if(armaduraCamera){armaduraCamera.aspect=window.innerWidth/window.innerHeight;armaduraCamera.updateProjectionMatrix();armaduraRenderer.setSize(window.innerWidth,window.innerHeight)} });
-
-setTimeout(()=>{ falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
-</script>
-</body>
-</html>
+  armaduraControls.autoRotate
