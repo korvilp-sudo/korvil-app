@@ -252,10 +252,10 @@ document.addEventListener('touchstart', e => { touchStartX = e.touches[0].client
 document.addEventListener('touchend', e => {
   let dx = e.changedTouches[0].clientX - touchStartX;
   let dy = e.changedTouches[0].clientY - touchStartY;
-  if(touchStartY < 110 && dy > 90) openPanel();
-  if(touchStartX < 80 && dx > 90) toggleMenu();
-  if(touchStartX > window.innerWidth - 80 && dx < -90) openTable('right');
-  if(touchStartY > window.innerHeight - 130 && dy < -90) openTable('bottom');
+  if(touchStartY < 110 && dy > 90) openPanel(); // arrastar pra baixo no topo
+  if(touchStartX < 80 && dx > 90) toggleMenu(); // arrastar pra direita na esquerda = menu esquerdo
+  if(touchStartX > window.innerWidth - 80 && dx < -90) openTable('right'); // arrastar pra esquerda na direita = tabela direita
+  if(touchStartY > window.innerHeight - 130 && dy < -90) openTable('bottom'); // arrastar pra cima no rodapé
 });
 
 function openPanel(){ panel.classList.add('open'); overlay.classList.add('show'); hideArrows(); }
