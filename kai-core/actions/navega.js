@@ -52,15 +52,16 @@ const Navega = {
     comando = this.limparLixo(comando);
 
     // ===== COMANDO 1: K-AI TRANSFORMAR / ARMADURA =====
-    if(this.temPalavra(comando, this.verbosArmadura)){
+    // Só ativa animação se NÃO tiver "mostrar"
+    if(this.temPalavra(comando, this.verbosArmadura) &&!comando.includes("mostrar") &&!comando.includes("exibir")){
       this.iniciarTransformacao(this.armaduraAtual);
-      if(window.parent && window.parent.falar) window.parent.falar(`Protocolo SAY KORVIL ativado. Montando Armadura ${this.armaduraAtual}... 15 segundos.`);
-      return `Protocolo SAY KORVIL ativado. Montando Armadura ${this.armaduraAtual}... 15 segundos.`;
+      if(window.parent && window.parent.falar) window.parent.falar(`Protocolo SAY KORVIL ativado. Montando Armadura ${this.armaduraAtual}... 21 segundos.`);
+      return `Protocolo SAY KORVIL ativado. Montando Armadura ${this.armaduraAtual}... 21 segundos.`;
     }
 
     // ===== COMANDO 2: K-AI MOSTRAR ARMADURA =====
     if(comando.includes("mostrar armadura") || comando.includes("exibir armadura")){
-      this.mostrarArmadura(this.armaduraAtual);
+      this.mostrarArmadura(this.armaduraAtual); // Pula animação
       if(window.parent && window.parent.falar) window.parent.falar(`Exibindo Armadura ${this.armaduraAtual}. Protocolo ativo.`);
       return `Exibindo Armadura ${this.armaduraAtual}. Protocolo ativo.`;
     }
@@ -92,7 +93,7 @@ const Navega = {
       }
     }
 
-    return `Página "${comando}" não encontrada. Diga: central, sistema k, k-tp, k-afortunado, k-alma, humano, negocios ou servicos. Ou diga: K-AI transformar / K-AI mostrar armadura`;
+    return `Página "${comando}" não encontrada. Diga: central, sistema k, k-tp, k-afortunado, k-alma, humano, negocios ou servicos. Ou diga: K-AI transformar`;
   },
 
   // LIMPA WAKE WORD DO COMEÇO
@@ -118,25 +119,26 @@ const Navega = {
     return array.some(p => texto.includes(p));
   },
 
-  // ===== FUNÇÃO 1: TRANSIÇÃO 15S =====
+  // ===== FUNÇÃO 1: TRANSIÇÃO 21S =====
   iniciarTransformacao(versao){
-  const antigo = document.getElementById("transicaoFrame");
-  if(antigo) document.body.removeChild(antigo);
+    const antigo = document.getElementById("transicaoFrame");
+    if(antigo) document.body.removeChild(antigo);
 
-  const transicaoFrame = document.createElement('iframe');
-  transicaoFrame.id = "transicaoFrame";
-  transicaoFrame.src = `kai-transformar/transiction-transform.html?armadura=${versao}`;
-  transicaoFrame.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000;border:0;";
-  document.body.appendChild(transicaoFrame);
+    const transicaoFrame = document.createElement('iframe');
+    transicaoFrame.id = "transicaoFrame";
+    transicaoFrame.src = `kai-transformar/transiction-transform.html?armadura=${versao}`;
+    transicaoFrame.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000;border:0;";
+    document.body.appendChild(transicaoFrame);
 
-  setTimeout(()=>{
-    const frame = document.getElementById("transicaoFrame");
-    if(frame) document.body.removeChild(frame);
-    this.mostrarArmadura(versao);
-  }, 21000); // 21s - 3 etapas de 7s
-  }, 
+    // DEPOIS DE 21S FECHA TRANSIÇÃO E MOSTRA ARMADURA
+    setTimeout(()=>{
+      const frame = document.getElementById("transicaoFrame");
+      if(frame) document.body.removeChild(frame);
+      this.mostrarArmadura(versao);
+    }, 21000); // 21s
+  },
 
-  // ===== FUNÇÃO 2: MOSTRAR ARMADURA =====
+  // ===== FUNÇÃO 2: MOSTRAR ARMADURA MONTADA =====
   mostrarArmadura(versao){
     const antigo = document.getElementById("armaduraFrame");
     if(antigo) document.body.removeChild(antigo);
