@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <style>
 :root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#0d1a20;--chat:#0b141a;--balao:#132e36}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -17,15 +18,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .arrow-down{top:0;left:50%;transform:translateX(-50%);width:100%;height:70px}
 .arrow-down svg{animation:arrowDown 1.4s infinite}
 @keyframes arrowDown{0%,100%{transform:translateY(-6px);opacity:.5}50%{transform:translateY(6px);opacity:1}}
-
 .arrow-right{top:50%;left:0;transform:translateY(-50%);width:70px;height:100%}
 .arrow-right svg{animation:arrowRight 1.4s infinite}
 @keyframes arrowRight{0%,100%{transform:translateX(-6px);opacity:.5}50%{transform:translateX(6px);opacity:1}}
-
 .arrow-left{top:50%;right:0;transform:translateY(-50%);width:70px;height:100%}
 .arrow-left svg{animation:arrowLeft 1.4s infinite}
 @keyframes arrowLeft{0%,100%{transform:translateX(6px);opacity:.5}50%{transform:translateX(-6px);opacity:1}}
-
 .arrow-up{bottom:95px;left:50%;transform:translateX(-50%);width:100%;height:70px}
 .arrow-up svg{animation:arrowUp 1.4s infinite}
 @keyframes arrowUp{0%,100%{transform:translateY(6px);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
@@ -81,11 +79,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .table-box.close{position:absolute;top:10px;right:14px;color:var(--c);font-size:28px;cursor:pointer;font-weight:900;text-shadow:0 0 10px var(--c)}
 #tableRight{top:50%;right:12px;transform:translateY(-50%);width:88%;max-width:420px}
 #tableBottom{bottom:110px;left:50%;transform:translateX(-50%);width:96%;max-width:650px}
+
+/* VISUALIZADOR ARMADURA */
+#armaduraViewer{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:104;background:transparent;pointer-events:auto}
+#armaduraCanvas{width:100%;height:100%}
+.hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:105}
+.hud-text{position:absolute;color:#00FFFF;font-weight:900;font-size:13px;letter-spacing:2px;text-shadow:0 0 10px #00FFFF}
+.hud-top{top:90px;left:50%;transform:translateX(-50%);font-size:15px}
+.btn-close-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:8px 16px;border-radius:20px;font-weight:900;pointer-events:auto;cursor:pointer;box-shadow:0 0 15px var(--c)}
+.scanline{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00FFFF,transparent);animation:scan 3s linear infinite;box-shadow:0 0 10px #00FFFF}
+@keyframes scan{0%{top:80px}100%{top:100%}}
 </style>
 </head>
 <body>
 <div class="phone">
-  <!-- 4 SETAS NEON -->
   <div class="arrow arrow-down"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
   <div class="arrow arrow-right"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
   <div class="arrow arrow-left"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
@@ -108,7 +115,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
     <div class="notis" id="notis"></div>
   </div>
 
-  <!-- TABELA LATERAL DIREITA -->
   <div class="table-box" id="tableRight">
     <span class="close" onclick="closeTable('right')">×</span>
     <h3>ESTATÍSTICAS K-AI</h3>
@@ -119,7 +125,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
     </table>
   </div>
 
-  <!-- TABELA INFERIOR -->
   <div class="table-box" id="tableBottom">
     <span class="close" onclick="closeTable('bottom')">×</span>
     <h3>COMANDOS RÁPIDOS</h3>
@@ -152,6 +157,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
       <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA <small>Saúde e Beleza</small></div>
       <div class="sideItem" onclick="goPage('central')">5. Central KORVIL <small>Painel Geral</small></div>
     </div>
+    <!-- NOVA SEÇÃO TRANSFORMAR -->
+    <div class="sideSection">
+      <div class="sideTitle">K-AI TRANSFORMAR</div>
+      <div class="sideItem" onclick="mostrarArmadura('v-2026')">Armadura: v-2026 <small>Protocolo Say Korvil</small></div>
+    </div>
     <div class="sideSection">
       <div class="sideTitle">2. CRIAR</div>
       <div class="sideItem" onclick="executar('criar post')">Criar Post</div>
@@ -181,6 +191,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
   <div id="chat"><canvas id="canvas3d"></canvas></div>
 
+  <!-- VISUALIZADOR DA ARMADURA -->
+  <div id="armaduraViewer">
+    <canvas id="armaduraCanvas"></canvas>
+    <div class="hud">
+      <div class="hud-text hud-top">K-AI ARMOR v-2026 | PROTOCOLO: SAY KORVIL</div>
+      <button class="btn-close-armor" onclick="fecharArmadura()">FECHAR</button>
+      <div class="scanline"></div>
+    </div>
+  </div>
+
   <div class="footer">
     <input type="text" id="input" placeholder="Mensagem para K-AI...">
     <div class="btn" id="mic">🎤</div>
@@ -191,6 +211,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 <script>
 let memoria = JSON.parse(localStorage.getItem('kai')) || {hist:[], mems:[]};
 let touchStartX = 0, touchStartY = 0;
+let armaduraScene, armaduraCamera, armaduraRenderer, armaduraControls, armaduraGroup;
+let asas, olhos, garras, tempo = 0;
 
 const PAGINAS = {
   'sistema k': 'https://korvilp-sudo.github.io/korvil-app/sections/sistemak/index.html',
@@ -200,7 +222,7 @@ const PAGINAS = {
   'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
 }
 
-// 3D
+// 3D DO CHAT
 try{
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -226,14 +248,9 @@ document.addEventListener('touchstart', e => { touchStartX = e.touches[0].client
 document.addEventListener('touchend', e => {
   let dx = e.changedTouches[0].clientX - touchStartX;
   let dy = e.changedTouches[0].clientY - touchStartY;
-
-  // Seta topo: arrastar pra baixo
   if(touchStartY < 110 && dy > 90) openPanel();
-  // Seta esq: arrastar pra direita
   if(touchStartX < 80 && dx > 90) toggleMenu();
-  // Seta dir: arrastar pra esquerda
   if(touchStartX > window.innerWidth - 80 && dx < -90) openTable('right');
-  // Seta baixo: arrastar pra cima
   if(touchStartY > window.innerHeight - 130 && dy < -90) openTable('bottom');
 });
 
@@ -258,8 +275,107 @@ function goPage(pagina){
   toggleMenu(); closePanel();
 }
 
+// ===== FUNÇÕES ARMADURA =====
+function mostrarArmadura(versao){
+  document.getElementById('armaduraViewer').style.display = 'block';
+  toggleMenu(); closePanel();
+  falar('Protocolo Say Korvil ativado. Carregando Armadura v-2026');
+  addNoti('⚡ ARMADURA v-2026 ATIVADA');
+  if(!armaduraScene) initArmadura();
+}
+
+function fecharArmadura(){
+  document.getElementById('armaduraViewer').style.display = 'none';
+  falar('Armadura desativada. Voltando ao modo normal');
+}
+
+function initArmadura(){
+  armaduraScene = new THREE.Scene();
+  armaduraCamera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  armaduraCamera.position.set(0, 2, 12);
+
+  armaduraRenderer = new THREE.WebGLRenderer({canvas:document.getElementById('armaduraCanvas'), alpha:true, antialias:true});
+  armaduraRenderer.setSize(window.innerWidth, window.innerHeight);
+  armaduraRenderer.setClearColor(0x000, 0);
+
+  const luz1 = new THREE.PointLight(0x00FFFF, 2, 50); luz1.position.set(5,5,5);
+  const luz2 = new THREE.PointLight(0x00FFFF, 1.5, 50); luz2.position.set(-5,-5,-5);
+  const luzAmb = new THREE.AmbientLight(0x00FFFF, 0.3);
+  armaduraScene.add(luz1, luz2, luzAmb);
+
+  armaduraControls = new THREE.OrbitControls(armaduraCamera, armaduraRenderer.domElement);
+  armaduraControls.enableDamping = true;
+  armaduraControls.dampingFactor = 0.05;
+  armaduraControls.autoRotate = true;
+  armaduraControls.autoRotateSpeed = 0.5;
+
+  criarArmadura();
+  animateArmadura();
+}
+
+function criarArmadura(){
+  armaduraGroup = new THREE.Group();
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, shininess:100, transparent:true, opacity:0.9});
+  const matWire = new THREE.MeshPhongMaterial({color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:0.8, wireframe:true});
+
+  // CABEÇA CORVO
+  const cabeca = new THREE.Group();
+  const cranio = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 32), mat);
+  const bicoGeo = new THREE.ConeGeometry(0.4, 1.2, 4); bicoGeo.rotateX(Math.PI/2);
+  const bico = new THREE.Mesh(bicoGeo, matWire); bico.position.z = 1.2;
+  const olhoL = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), matWire); olhoL.position.set(-0.4,0.2,1);
+  const olhoR = olhoL.clone(); olhoR.position.x = 0.4;
+  olhos = new THREE.Group(); olhos.add(olhoL, olhoR);
+  cabeca.add(cranio, bico, olhos); cabeca.position.y = 3.5;
+  armaduraGroup.add(cabeca);
+
+  // TORSO
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 3, 8), mat);
+  torso.position.y = 1; armaduraGroup.add(torso);
+
+  // ASAS
+  asas = new THREE.Group();
+  const asaGeo = new THREE.BoxGeometry(4, 0.1, 2);
+  const asaL = new THREE.Mesh(asaGeo, matWire); asaL.position.set(-2.5, 1.5, 0); asaL.rotation.z = -0.3;
+  const asaR = asaL.clone(); asaR.position.x = 2.5; asaR.rotation.z = 0.3;
+  asas.add(asaL, asaR); armaduraGroup.add(asas);
+
+  // BRAÇOS E PERNAS
+  const bracoGeo = new THREE.CylinderGeometry(0.3, 0.25, 2.5, 8);
+  const bracoL = new THREE.Mesh(bracoGeo, mat); bracoL.position.set(-1.8, 0.5, 0);
+  const bracoR = bracoL.clone(); bracoR.position.x = 1.8;
+  armaduraGroup.add(bracoL, bracoR);
+
+  const pernaGeo = new THREE.CylinderGeometry(0.4, 0.35, 3, 8);
+  const pernaL = new THREE.Mesh(pernaGeo, mat); pernaL.position.set(-0.6, -2, 0);
+  const pernaR = pernaL.clone(); pernaR.position.x = 0.6;
+  armaduraGroup.add(pernaL, pernaR);
+
+  // GARRAS
+  garras = new THREE.Group();
+  for(let i=0; i<3; i++){
+    const garra = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.6, 3), matWire);
+    garra.rotation.x = Math.PI/2; garra.position.set(-0.2 + i*0.2, -3.6, 0.3);
+    garras.add(garra); const garra2 = garra.clone(); garra2.position.x += 0.6; garras.add(garra2);
+  }
+  armaduraGroup.add(garras);
+
+  armaduraScene.add(armaduraGroup);
+}
+
+function animateArmadura(){
+  requestAnimationFrame(animateArmadura);
+  tempo += 0.02;
+  if(asas){ asas.children[0].rotation.z = -0.3 + Math.sin(tempo*3)*0.2; asas.children[1].rotation.z = 0.3 - Math.sin(tempo*3)*0.2; }
+  if(olhos){ olhos.children.forEach(o => o.material.emissiveIntensity = 0.8 + Math.sin(tempo*5)*0.2); }
+  if(garras){ garras.children.forEach(g => g.rotation.y += 0.01); }
+  armaduraControls.update();
+  armaduraRenderer.render(armaduraScene, armaduraCamera);
+}
+
 function executar(cmd){
   cmd = cmd.toLowerCase(); toggleMenu(); closePanel();
+  if(cmd.includes('armadura') || cmd.includes('transformar')) return mostrarArmadura('v-2026');
   if(cmd.includes('ir para') || cmd.includes('abrir') || cmd.includes('navegar')){
     if(cmd.includes('sistema k')) return goPage('sistema k');
     if(cmd.includes('ktp')) return goPage('ktp');
@@ -301,8 +417,9 @@ if(SR){
 
 setInterval(()=>{ document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) },1000);
 document.getElementById('input').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
+window.addEventListener('resize', ()=>{ if(armaduraCamera){armaduraCamera.aspect=window.innerWidth/window.innerHeight;armaduraCamera.updateProjectionMatrix();armaduraRenderer.setSize(window.innerWidth,window.innerHeight)} });
 
-setTimeout(()=>{ falar(`K-AI: Sistema Online. Use as setas ciano`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
+setTimeout(()=>{ falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
 </script>
 </body>
 </html>
