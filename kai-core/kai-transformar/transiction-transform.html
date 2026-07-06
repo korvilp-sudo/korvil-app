@@ -1,73 +1,100 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-AI TRANSFORMATION</title>
+<title>K-AI TRANSFORMATION v-2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #canvas{width:100%;height:100%;display:block}
 
-/* HUD CYBER */
-.hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
-.scanline{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00FFFF,transparent);animation:scan 2s linear infinite;box-shadow:0 0 15px #00FFFF}
+/* HUD CYBERPUNK KORVIL */
+.hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;font-family:'Segoe UI',Arial}
+.grid{position:absolute;width:100%;height:100%;background:linear-gradient(transparent 48%,#00FFFF22 49%,#00FFFF22 51%,transparent 52%),linear-gradient(90deg,transparent 48%,#00FFFF22 49%,#00FFFF22 51%,transparent 52%);background-size:40px 40px;animation:gridMove 4s linear infinite}
+@keyframes gridMove{0%{transform:translateY(0)}100%{transform:translateY(40px)}}
+
+.scanline{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00FFFF,#A8FFE6,#00FFFF,transparent);animation:scan 2s linear infinite;box-shadow:0 0 20px #00FFFF}
 @keyframes scan{0%{top:0}100%{top:100%}}
 
-.status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#00FFFF;font-family:'Segoe UI',Arial;font-weight:900}
-.status h1{font-size:28px;letter-spacing:4px;text-shadow:0 0 20px #00FFFF;margin-bottom:10px}
-.status p{font-size:14px;letter-spacing:2px;opacity:.8}
-.progress{width:300px;height:4px;background:#001a1a;border:1px solid #00FFFF;margin:20px auto;position:relative;overflow:hidden}
-.bar{height:100%;width:0%;background:linear-gradient(90deg,#00FFFF,#A8FFE6);box-shadow:0 0 15px #00FFFF;transition:width 0.1s linear}
-.timer{font-size:20px;margin-top:10px}
+.status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#00FFFF}
+.status h1{font-size:32px;letter-spacing:6px;text-shadow:0 0 30px #00FFFF,0 0 60px #00FFFF;margin-bottom:15px;animation:pulse 1s infinite}
+.status.versao{font-size:14px;letter-spacing:3px;color:#A8FFE6;margin-bottom:20px}
+.status p{font-size:16px;letter-spacing:2px;margin-bottom:25px}
+
+.progress{width:400px;height:6px;background:#001a1a;border:2px solid #00FFFF;margin:0 auto;position:relative;overflow:hidden;box-shadow:0 0 15px #00FFFF}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#00FFFF,#A8FFE6,#00FFFF);box-shadow:0 0 20px #00FFFF;transition:width 0.1s linear}
+.timer{font-size:24px;margin-top:15px;font-weight:900}
+.fase{font-size:12px;color:#A8FFE6;letter-spacing:2px}
+
+.corners{position:absolute;width:100%;height:100%}
+.corner{position:absolute;width:60px;height:60px;border:3px solid #00FFFF}
+.corner.tl{top:40px;left:40px;border-right:0;border-bottom:0}
+.corner.tr{top:40px;right:40px;border-left:0;border-bottom:0}
+.corner.bl{bottom:40px;left:40px;border-right:0;border-top:0}
+.corner.br{bottom:40px;right:40px;border-left:0;border-top:0}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
 </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 
 <div class="hud">
+  <div class="grid"></div>
   <div class="scanline"></div>
+  <div class="corners">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
   <div class="status">
     <h1>PROTOCOLO SAY KORVIL</h1>
-    <p id="fase">INICIALIZANDO SISTEMA K-AI...</p>
+    <div class="versao" id="versaoText">ARMADURA v-2026</div>
+    <p id="fase">INICIALIZANDO SISTEMA...</p>
     <div class="progress"><div class="bar" id="bar"></div></div>
     <div class="timer" id="timer">15.0s</div>
+    <div class="fase" id="faseDetail">CARREGANDO NANOBOTS</div>
   </div>
 </div>
 
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const armaduraVersao = urlParams.get('armadura') || 'v-2026';
+document.getElementById('versaoText').innerText = `ARMADURA ${armaduraVersao.toUpperCase()}`;
 
 let scene, camera, renderer;
-let pecas = [], tempo = 0, duracao = 15; // 15 segundos
-let fase = 0;
+let pecas = [], tempo = 0, duracao = 15;
+let faseAtual = -1;
 
 const fases = [
-  "INICIALIZANDO SISTEMA K-AI...",
-  "SINCRONIZANDO COM SAY KORVIL...",
-  "MONTANDO CAPACETE CORVO...",
-  "ATIVANDO ASAS CYBER...",
-  "BLINDAGEM TORSO E BRAÇOS...",
-  "GARRAS E BOTAS ATIVADAS...",
-  "ARMADURA v-2026 COMPLETA"
+  {txt:"INICIALIZANDO SISTEMA...", detail:"CARREGANDO NANOBOTS", time:0},
+  {txt:"SINCRONIZANDO COM SAY KORVIL...", detail:"CONEXÃO NEURAL 100%", time:2},
+  {txt:"MONTANDO CAPACETE CORVO...", detail:"CRÂNIO + BICO + OLHOS", time:4},
+  {txt:"ATIVANDO ASAS CYBER...", detail:"PROPULSORES E ESTABILIZADORES", time:6},
+  {txt:"BLINDAGEM TORSO E BRAÇOS...", detail:"PLACAS DE TITÂNIO CYBER", time:8},
+  {txt:"GARRAS E BOTAS ATIVADAS...", detail:"ARMAS E PROPULSORES", time:10},
+  {txt:"CALIBRANDO SISTEMAS...", detail:"ARMA v-2026 ONLINE", time:12},
+  {txt:"TRANSFORMAÇÃO COMPLETA", detail:"PROTOCOLO ATIVO", time:15}
 ];
 
 function init(){
   scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x00FFFF, 0.02);
+
   camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 15);
+  camera.position.set(0, 0, 18);
 
   renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true, antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000, 0);
+  renderer.setClearColor(0x000, 1);
 
-  // LUZES HOLOGRAFICAS
-  scene.add(new THREE.AmbientLight(0x00FFFF, 0.5));
-  const luz1 = new THREE.PointLight(0x00FFFF, 3, 50); luz1.position.set(5,5,10);
-  const luz2 = new THREE.PointLight(0x00FFFF, 2, 50); luz2.position.set(-5,-5,-10);
+  // LUZES CYBERPUNK
+  scene.add(new THREE.AmbientLight(0x00FFFF, 0.4));
+  const luz1 = new THREE.PointLight(0x00FFFF, 4, 50); luz1.position.set(8,8,10);
+  const luz2 = new THREE.PointLight(0xA8FFE6, 3, 50); luz2.position.set(-8,-8,-10);
   scene.add(luz1, luz2);
 
   criarPecas();
@@ -75,90 +102,88 @@ function init(){
 }
 
 function criarPecas(){
-  const materiais = [
-    new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:1, transparent:true, opacity:0.9}),
-    new THREE.MeshPhongMaterial({color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:0.8, wireframe:true})
-  ];
+  const matCyber = new THREE.MeshPhongMaterial({
+    color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:1.5,
+    transparent:true, opacity:0.9, shininess:100
+  });
+  const matWire = new THREE.MeshPhongMaterial({
+    color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:1,
+    wireframe:true, transparent:true, opacity:0.7
+  });
 
-  // 30 PEÇAS VOANDO
-  for(let i=0; i<30; i++){
-    let geo;
-    if(i < 5) geo = new THREE.SphereGeometry(0.4, 16, 16); // cabeça
-    else if(i < 10) geo = new THREE.BoxGeometry(0.8, 0.1, 0.4); // asas
-    else if(i < 15) geo = new THREE.CylinderGeometry(0.3, 0.2, 1, 8); // braços
-    else if(i < 20) geo = new THREE.CylinderGeometry(0.4, 0.3, 1.5, 8); // pernas
-    else geo = new THREE.ConeGeometry(0.2, 0.6, 3); // garras
+  // 35 PEÇAS
+  for(let i=0; i<35; i++){
+    let geo, mat;
+    if(i < 5) { geo = new THREE.SphereGeometry(0.5, 16, 16); mat = matCyber; } // cabeça
+    else if(i < 10) { geo = new THREE.BoxGeometry(1, 0.15, 0.6); mat = matWire; } // asas
+    else if(i < 15) { geo = new THREE.CylinderGeometry(0.4, 0.3, 1.2, 8); mat = matCyber; } // braços
+    else if(i < 20) { geo = new THREE.CylinderGeometry(0.5, 0.4, 1.8, 8); mat = matCyber; } // pernas
+    else if(i < 25) { geo = new THREE.ConeGeometry(0.25, 0.8, 3); mat = matWire; } // garras
+    else { geo = new THREE.TorusGeometry(0.3, 0.1, 8, 16); mat = matCyber; } // detalhes
 
-    const peca = new THREE.Mesh(geo, materiais[i%2]);
-
-    // POSIÇÃO INICIAL ALEATÓRIA
-    peca.position.set(
-      Math.random()*20 - 10,
-      Math.random()*20 - 10,
-      Math.random()*20 - 10
-    );
-
-    // POSIÇÃO FINAL - ONDE VAI MONTAR
-    peca.userData.target = getTargetPosition(i);
-    peca.userData.speed = 0.01 + Math.random()*0.02;
-    peca.userData.rotSpeed = (Math.random()-0.5)*0.2;
-
+    const peca = new THREE.Mesh(geo, mat);
+    peca.position.set(Math.random()*25 - 12, Math.random()*25 - 12, Math.random()*25 - 12);
+    peca.userData = {
+      target: getTargetPosition(i),
+      speed: 0.008 + Math.random()*0.015,
+      rotSpeed: (Math.random()-0.5)*0.3,
+      fase: Math.floor(i/5) // cada 5 peças = 1 fase
+    };
     pecas.push(peca);
     scene.add(peca);
   }
 }
 
 function getTargetPosition(index){
-  // DEFINE ONDE CADA PEÇA VAI PARAR NA ARMADURA
   if(index < 5) return {x:0, y:3.5, z:0}; // cabeça
-  if(index < 10) return {x: index%2? -2.5 : 2.5, y:1.5, z:0}; // asas
+  if(index < 10) return {x: index%2? -2.8 : 2.8, y:1.5, z:0}; // asas
   if(index < 15) return {x: index%2? -1.8 : 1.8, y:0.5, z:0}; // braços
   if(index < 20) return {x: index%2? -0.6 : 0.6, y:-2, z:0}; // pernas
-  return {x: (index%3-1)*0.3, y:-3.6, z:0.3}; // garras
+  if(index < 25) return {x: (index%3-1)*0.4, y:-3.6, z:0.4}; // garras
+  return {x:(Math.random()-0.5)*2, y:(Math.random()-0.5)*2, z:(Math.random()-0.5)*2}; // detalhes
 }
 
 function animate(){
   requestAnimationFrame(animate);
-  tempo += 0.016; // ~60fps
+  tempo += 0.016;
 
-  let progresso = tempo / duracao;
+  let progresso = Math.min(tempo / duracao, 1);
   document.getElementById('bar').style.width = (progresso * 100) + '%';
   document.getElementById('timer').innerText = (duracao - tempo).toFixed(1) + 's';
 
-  // MUDA A FASE A CADA 2 SEGUNDOS
-  let novaFase = Math.floor(progresso * fases.length);
-  if(novaFase!== fase && novaFase < fases.length){
-    fase = novaFase;
-    document.getElementById('fase').innerText = fases[fase];
+  // MUDA FASE
+  for(let f of fases){
+    if(tempo >= f.time && f.time > faseAtual){
+      faseAtual = f.time;
+      document.getElementById('fase').innerText = f.txt;
+      document.getElementById('faseDetail').innerText = f.detail;
+    }
   }
 
-  // ANIMAÇÃO DAS PEÇAS SE MONTANDO
-  pecas.forEach((peca, i) => {
-    // Lerp até a posição final
-    peca.position.lerp(new THREE.Vector3(
-      peca.userData.target.x,
-      peca.userData.target.y,
-      peca.userData.target.z
-    ), peca.userData.speed * (1 + progresso*2));
-
-    // Rotação
+  // ANIMAÇÃO DAS PEÇAS POR FASE
+  pecas.forEach(peca => {
+    let targetFase = peca.userData.fase * 2;
+    if(tempo >= targetFase){
+      peca.position.lerp(new THREE.Vector3(
+        peca.userData.target.x,
+        peca.userData.target.y,
+        peca.userData.target.z
+      ), peca.userData.speed * (1 + progresso*3));
+    }
     peca.rotation.x += peca.userData.rotSpeed;
     peca.rotation.y += peca.userData.rotSpeed;
-
-    // BRILHO AUMENTA NO FINAL
-    peca.material.emissiveIntensity = 0.5 + progresso * 1.5;
+    peca.material.emissiveIntensity = 0.5 + progresso * 2 + Math.sin(tempo*5)*0.5;
   });
 
-  // CAMERA DA VOLTA LENTA
-  camera.position.x = Math.sin(tempo * 0.3) * 2;
+  camera.position.x = Math.sin(tempo * 0.4) * 3;
+  camera.position.y = Math.sin(tempo * 0.2) * 1;
   camera.lookAt(0,0,0);
 
   renderer.render(scene, camera);
 
-  // TERMINOU
   if(tempo >= duracao){
     document.getElementById('fase').innerText = "TRANSFORMAÇÃO COMPLETA";
-    setTimeout(()=>{ window.close(); }, 500);
+    setTimeout(()=>{ window.close(); }, 800);
   }
 }
 
