@@ -35,6 +35,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 .corner.bl{bottom:40px;left:40px;border-right:0;border-top:0}
 .corner.br{bottom:40px;right:40px;border-left:0;border-top:0}
 
+.etapa{position:absolute;bottom:140px;left:50%;transform:translateX(-50%);color:#00FFFF;font-size:18px;font-weight:900;letter-spacing:3px;text-shadow:0 0 15px #00FFFF}
+
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
 </style>
 </head>
@@ -51,13 +53,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
     <div class="corner br"></div>
   </div>
   <div class="status">
-    <h1>PROTOCOLO SAY KORVIL</h1>
+    <h1 id="titulo">PROTOCOLO SAY KORVIL</h1>
     <div class="versao" id="versaoText">ARMADURA v-2026</div>
-    <p id="fase">INICIALIZANDO SISTEMA...</p>
+    <p id="fase">CORVO APROXIMANDO...</p>
     <div class="progress"><div class="bar" id="bar"></div></div>
-    <div class="timer" id="timer">15.0s</div>
-    <div class="fase" id="faseDetail">CARREGANDO NANOBOTS</div>
+    <div class="timer" id="timer">21.0s</div>
+    <div class="fase" id="faseDetail">INICIANDO SEQUÊNCIA DE MONTAGEM</div>
   </div>
+  <div class="etapa" id="etapa">ETAPA 1/3</div>
 </div>
 
 <script>
@@ -65,125 +68,203 @@ const urlParams = new URLSearchParams(window.location.search);
 const armaduraVersao = urlParams.get('armadura') || 'v-2026';
 document.getElementById('versaoText').innerText = `ARMADURA ${armaduraVersao.toUpperCase()}`;
 
-let scene, camera, renderer;
-let pecas = [], tempo = 0, duracao = 15;
-let faseAtual = -1;
-
-const fases = [
-  {txt:"INICIALIZANDO SISTEMA...", detail:"CARREGANDO NANOBOTS", time:0},
-  {txt:"SINCRONIZANDO COM SAY KORVIL...", detail:"CONEXÃO NEURAL 100%", time:2},
-  {txt:"MONTANDO CAPACETE CORVO...", detail:"CRÂNIO + BICO + OLHOS", time:4},
-  {txt:"ATIVANDO ASAS CYBER...", detail:"PROPULSORES E ESTABILIZADORES", time:6},
-  {txt:"BLINDAGEM TORSO E BRAÇOS...", detail:"PLACAS DE TITÂNIO CYBER", time:8},
-  {txt:"GARRAS E BOTAS ATIVADAS...", detail:"ARMAS E PROPULSORES", time:10},
-  {txt:"CALIBRANDO SISTEMAS...", detail:"ARMA v-2026 ONLINE", time:12},
-  {txt:"TRANSFORMAÇÃO COMPLETA", detail:"PROTOCOLO ATIVO", time:15}
-];
+let scene, camera, renderer, clock;
+let corvoGroup, pecas = [], particulas;
+let tempo = 0, duracao = 21; // 21s = 3x7s
+let etapaAtual = 1;
 
 function init(){
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x00FFFF, 0.02);
+  scene.fog = new THREE.FogExp2(0x00FFFF, 0.025);
 
   camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 18);
+  camera.position.set(0, 2, 20);
 
   renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true, antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000, 1);
 
+  clock = new THREE.Clock();
+
   // LUZES CYBERPUNK
-  scene.add(new THREE.AmbientLight(0x00FFFF, 0.4));
-  const luz1 = new THREE.PointLight(0x00FFFF, 4, 50); luz1.position.set(8,8,10);
-  const luz2 = new THREE.PointLight(0xA8FFE6, 3, 50); luz2.position.set(-8,-8,-10);
+  scene.add(new THREE.AmbientLight(0x00FFFF, 0.3));
+  const luz1 = new THREE.PointLight(0x00FFFF, 4, 50); luz1.position.set(10,10,10);
+  const luz2 = new THREE.PointLight(0xA8FFE6, 3, 50); luz2.position.set(-10,-10,-10);
   scene.add(luz1, luz2);
 
-  criarPecas();
+  criarParticulas();
+  criarCorvo();
   animate();
 }
 
-function criarPecas(){
-  const matCyber = new THREE.MeshPhongMaterial({
-    color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:1.5,
-    transparent:true, opacity:0.9, shininess:100
-  });
-  const matWire = new THREE.MeshPhongMaterial({
-    color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:1,
-    wireframe:true, transparent:true, opacity:0.7
-  });
-
-  // 35 PEÇAS
-  for(let i=0; i<35; i++){
-    let geo, mat;
-    if(i < 5) { geo = new THREE.SphereGeometry(0.5, 16, 16); mat = matCyber; } // cabeça
-    else if(i < 10) { geo = new THREE.BoxGeometry(1, 0.15, 0.6); mat = matWire; } // asas
-    else if(i < 15) { geo = new THREE.CylinderGeometry(0.4, 0.3, 1.2, 8); mat = matCyber; } // braços
-    else if(i < 20) { geo = new THREE.CylinderGeometry(0.5, 0.4, 1.8, 8); mat = matCyber; } // pernas
-    else if(i < 25) { geo = new THREE.ConeGeometry(0.25, 0.8, 3); mat = matWire; } // garras
-    else { geo = new THREE.TorusGeometry(0.3, 0.1, 8, 16); mat = matCyber; } // detalhes
-
-    const peca = new THREE.Mesh(geo, mat);
-    peca.position.set(Math.random()*25 - 12, Math.random()*25 - 12, Math.random()*25 - 12);
-    peca.userData = {
-      target: getTargetPosition(i),
-      speed: 0.008 + Math.random()*0.015,
-      rotSpeed: (Math.random()-0.5)*0.3,
-      fase: Math.floor(i/5) // cada 5 peças = 1 fase
-    };
-    pecas.push(peca);
-    scene.add(peca);
-  }
+function criarParticulas(){
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(1500 * 3);
+  for(let i=0; i<1500*3; i++) positions[i] = (Math.random()-0.5)*120;
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  particulas = new THREE.Points(geo, new THREE.PointsMaterial({color:0x00FFFF, size:0.06}));
+  scene.add(particulas);
 }
 
-function getTargetPosition(index){
-  if(index < 5) return {x:0, y:3.5, z:0}; // cabeça
-  if(index < 10) return {x: index%2? -2.8 : 2.8, y:1.5, z:0}; // asas
-  if(index < 15) return {x: index%2? -1.8 : 1.8, y:0.5, z:0}; // braços
-  if(index < 20) return {x: index%2? -0.6 : 0.6, y:-2, z:0}; // pernas
-  if(index < 25) return {x: (index%3-1)*0.4, y:-3.6, z:0.4}; // garras
-  return {x:(Math.random()-0.5)*2, y:(Math.random()-0.5)*2, z:(Math.random()-0.5)*2}; // detalhes
+function criarCorvo(){
+  corvoGroup = new THREE.Group();
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:1.2, transparent:true, opacity:0.95});
+  const matWire = new THREE.MeshPhongMaterial({color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:1.5, wireframe:true, transparent:true, opacity:0.9});
+
+  // 1. CABEÇA E SUPERIORES
+  const cabeca = new THREE.Group(); cabeca.name = 'cabeca';
+  const cranio = new THREE.Mesh(new THREE.SphereGeometry(1.1, 32, 32), mat);
+  const bico = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.1, 4), matWire); bico.position.z = 1.1; bico.rotation.x = Math.PI/2;
+  const olhoL = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), matWire); olhoL.position.set(-0.38,0.25,1);
+  const olhoR = olhoL.clone(); olhoR.position.x = 0.38;
+  cabeca.add(cranio, bico, olhoL, olhoR);
+  cabeca.position.set(0, 5, -15);
+
+  // ASAS
+  const asaL = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.12, 2.2), matWire); asaL.position.set(-2.8, 2, -15); asaL.rotation.z = -0.35; asaL.name = 'asaL';
+  const asaR = asaL.clone(); asaR.position.x = 2.8; asaR.rotation.z = 0.35; asaR.name = 'asaR';
+
+  // 2. CORE E NÚCLEO 💠
+  const core = new THREE.Group(); core.name = 'core';
+  const nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 2), matWire); // símbolo 💠
+  const aura = new THREE.Mesh(new THREE.SphereGeometry(1.3, 16, 16), new THREE.MeshBasicMaterial({color:0x00FFFF, transparent:true, opacity:0.2}));
+  core.add(nucleo, aura);
+  core.position.set(0, 0, -15);
+
+  // 3. INFERIORES
+  const pernaL = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.3, 2.8, 8), mat); pernaL.position.set(-0.5, -2.5, -15); pernaL.name = 'pernaL';
+  const pernaR = pernaL.clone(); pernaR.position.x = 0.5; pernaR.name = 'pernaR';
+
+  const garraL = new THREE.Group(); garraL.name = 'garraL';
+  for(let i=0; i<3; i++){ const g = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 3), matWire); g.rotation.x = Math.PI/2; g.position.set(-0.2 + i*0.2, -4, 0.4); garraL.add(g); }
+  const garraR = garraL.clone(); garraR.position.x = 0.6;
+
+  corvoGroup.add(cabeca, asaL, asaR, core, pernaL, pernaR, garraL, garraR);
+  scene.add(corvoGroup);
+  pecas = {cabeca, asaL, asaR, core, pernaL, pernaR, garraL, garraR};
 }
 
 function animate(){
   requestAnimationFrame(animate);
-  tempo += 0.016;
+  const delta = clock.getDelta();
+  tempo += delta;
 
   let progresso = Math.min(tempo / duracao, 1);
   document.getElementById('bar').style.width = (progresso * 100) + '%';
   document.getElementById('timer').innerText = (duracao - tempo).toFixed(1) + 's';
 
-  // MUDA FASE
-  for(let f of fases){
-    if(tempo >= f.time && f.time > faseAtual){
-      faseAtual = f.time;
-      document.getElementById('fase').innerText = f.txt;
-      document.getElementById('faseDetail').innerText = f.detail;
+  particulas.rotation.y += 0.0008;
+
+  // ===== ETAPA 1: 0-7s CABEÇA E SUPERIORES =====
+  if(tempo <= 7){
+    document.getElementById('etapa').innerText = 'ETAPA 1/3: CABEÇA E SUPERIORES';
+    document.getElementById('fase').innerText = 'CORVO APROXIMANDO EM ALTA VELOCIDADE';
+    document.getElementById('faseDetail').innerText = 'CAPACETE ALINHANDO COM NEURAL LINK';
+
+    // Corvo voa pra frente
+    corvoGroup.position.z += delta * 2.2;
+    corvoGroup.rotation.y = Math.sin(tempo*2)*0.1;
+
+    // Cabeça desce na sua cabeça
+    pecas.cabeca.position.y -= delta * 0.7;
+    pecas.cabeca.rotation.x = -0.2 + Math.sin(tempo*3)*0.1;
+
+    // Olhos brilham e viram visor
+    pecas.cabeca.children[2].material.emissiveIntensity = 1.5 + Math.sin(tempo*10);
+    pecas.cabeca.children[3].material.emissiveIntensity = 1.5 + Math.sin(tempo*10);
+
+    // Asas batendo
+    pecas.asaL.rotation.z = -0.35 + Math.sin(tempo*8)*0.3;
+    pecas.asaR.rotation.z = 0.35 - Math.sin(tempo*8)*0.3;
+
+    if(tempo > 6.5){
+      document.getElementById('fase').innerText = 'CAPACETE ENCAIXADO. VISOR HUD ATIVO';
+      pecas.cabeca.scale.multiplyScalar(0.98);
     }
   }
 
-  // ANIMAÇÃO DAS PEÇAS POR FASE
-  pecas.forEach(peca => {
-    let targetFase = peca.userData.fase * 2;
-    if(tempo >= targetFase){
-      peca.position.lerp(new THREE.Vector3(
-        peca.userData.target.x,
-        peca.userData.target.y,
-        peca.userData.target.z
-      ), peca.userData.speed * (1 + progresso*3));
-    }
-    peca.rotation.x += peca.userData.rotSpeed;
-    peca.rotation.y += peca.userData.rotSpeed;
-    peca.material.emissiveIntensity = 0.5 + progresso * 2 + Math.sin(tempo*5)*0.5;
-  });
+  // ===== ETAPA 2: 7-14s CORE E NÚCLEO =====
+  else if(tempo <= 14){
+    if(etapaAtual === 1){ etapaAtual = 2; }
+    document.getElementById('etapa').innerText = 'ETAPA 2/3: CORE E NÚCLEO';
+    document.getElementById('fase').innerText = 'AS E NÚCLEO KORVIL SINCRONIZANDO';
+    document.getElementById('faseDetail').innerText = 'SISTEMA K 💠 ATIVANDO';
 
-  camera.position.x = Math.sin(tempo * 0.4) * 3;
-  camera.position.y = Math.sin(tempo * 0.2) * 1;
-  camera.lookAt(0,0,0);
+    const t = tempo - 7;
+
+    // Asas vão pras costas
+    pecas.asaL.position.x += delta * 0.5;
+    pecas.asaR.position.x -= delta * 0.5;
+    pecas.asaL.position.y = 1.2 + Math.sin(t*6)*0.3;
+    pecas.asaR.position.y = 1.2 + Math.sin(t*6)*0.3;
+    pecas.asaL.rotation.z = -0.35 + Math.sin(t*8)*0.4;
+    pecas.asaR.rotation.z = 0.35 - Math.sin(t*8)*0.4;
+
+    // Core gira e brilha tipo Homem de Ferro
+    pecas.core.position.z += delta * 2.3;
+    pecas.core.rotation.y += delta * 4;
+    pecas.core.children[0].material.emissiveIntensity = 1.5 + Math.sin(t*12)*0.8;
+    pecas.core.children[1].scale.set(1 + Math.sin(t*5)*0.3, 1 + Math.sin(t*5)*0.3, 1 + Math.sin(t*5)*0.3);
+
+    if(t > 6.5){
+      document.getElementById('fase').innerText = 'COLETE KORVIL ENCAIXADO. NÚCLEO ONLINE';
+      pecas.core.scale.multiplyScalar(0.98);
+    }
+  }
+
+  // ===== ETAPA 3: 14-21s INFERIORES =====
+  else if(tempo <= 21){
+    if(etapaAtual === 2){ etapaAtual = 3; }
+    document.getElementById('etapa').innerText = 'ETAPA 3/3: INFERIORES';
+    document.getElementById('fase').innerText = 'BOTAS E GARRAS ATIVANDO';
+    document.getElementById('faseDetail').innerText = 'SISTEMA DE PROPULSÃO FINALIZANDO';
+
+    const t = tempo - 14;
+
+    // Pernas e garras sobem e encaixam
+    pecas.pernaL.position.z += delta * 2.3;
+    pecas.pernaR.position.z += delta * 2.3;
+    pecas.garraL.position.z += delta * 2.3;
+    pecas.garraR.position.z += delta * 2.3;
+
+    pecas.pernaL.position.y += delta * 1.8;
+    pecas.pernaR.position.y += delta * 1.8;
+    pecas.garraL.position.y += delta * 1.8;
+    pecas.garraR.position.y += delta * 1.8;
+
+    // Rotação final
+    pecas.pernaL.rotation.x = -0.3 + t * 0.15;
+    pecas.pernaR.rotation.x = -0.3 + t * 0.15;
+
+    // Flash final
+    if(t > 6){
+      corvoGroup.children.forEach(obj => {
+        if(obj.material) obj.material.opacity = Math.max(0, 1 - (t-6)*2.5);
+      });
+      scene.background = new THREE.Color(0x00FFFF);
+      setTimeout(()=>{ scene.background = new THREE.Color(0x000); }, 150);
+    }
+
+    if(t > 6.5){
+      document.getElementById('titulo').innerText = 'MONTAGEM COMPLETA';
+      document.getElementById('fase').innerText = 'ARMADURA K-AI v-2026 OPERACIONAL';
+      document.getElementById('faseDetail').innerText = 'PROTOCOLO SAY KORVIL ATIVO';
+    }
+  }
+
+  // CAMERA SE APROXIMA
+  camera.position.z = 20 - tempo * 0.7;
+  camera.position.y = 2 + Math.sin(tempo*0.5)*0.5;
+  camera.lookAt(0, 0, 0);
 
   renderer.render(scene, camera);
 
   if(tempo >= duracao){
-    document.getElementById('fase').innerText = "TRANSFORMAÇÃO COMPLETA";
-    setTimeout(()=>{ window.close(); }, 800);
+    setTimeout(()=>{
+      if(window.parent && window.parent.document.getElementById("transicaoFrame")){
+        window.parent.document.body.removeChild(window.parent.document.getElementById("transicaoFrame"));
+      }
+    }, 500);
   }
 }
 
