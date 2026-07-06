@@ -369,15 +369,18 @@ function animateArmadura(){
 }
 
 function executar(cmd){
-  cmd = cmd.toLowerCase(); toggleMenu(); closePanel();
- function executar(cmd){
   cmd = cmd.toLowerCase();
   
   if(cmd.includes('k-ai transformar') || cmd.includes('transformar')){ 
     toggleMenu(); closePanel(); 
     return iniciarTransformacao(); 
   }
-  if(cmd.includes('armadura') || cmd.includes('mostrar armadura')) return mostrarArmadura('v-2026');
+  
+  if(cmd.includes('armadura') || cmd.includes('mostrar armadura')){ 
+    toggleMenu(); closePanel();
+    return mostrarArmadura('atual');
+  }
+  
   if(cmd.includes('ir para') || cmd.includes('abrir') || cmd.includes('navegar')){
     if(cmd.includes('sistema k')) return goPage('sistema k');
     if(cmd.includes('ktp')) return goPage('ktp');
@@ -385,6 +388,7 @@ function executar(cmd){
     if(cmd.includes('kalma')) return goPage('kalma');
     if(cmd.includes('central')) return goPage('central');
   }
+  
   if(cmd.includes('criar post')) return falar('Abrindo Criador de Post KORVIL');
   if(cmd.includes('criar imagem')) return falar('Abrindo Gerador de Imagem IA');
   if(cmd.includes('resumir')) return falar('Modo Resumir ativado');
