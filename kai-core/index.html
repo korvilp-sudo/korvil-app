@@ -2,156 +2,240 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-AI TRANSFORMATION v-2026 FULL HD</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <style>
-:root{--c:#00FFFF}
 *{margin:0;padding:0;box-sizing:border-box}
-body{width:100%;height:100dvh;background:#000;color:#fff;font-family:'Segoe UI',Arial;overflow:hidden}
-.header{height:70px;background:#0d1a20;display:flex;align-items:center;padding:0 20px;border-bottom:2px solid var(--c)}
-.menuBtn{font-size:32px;color:var(--c);cursor:pointer}
-#chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column-reverse}
-.bubble{max-width:80%;padding:12px 16px;border-radius:10px;margin-bottom:10px}
-.bubble.me{background:#005c4b;margin-left:auto}
-.bubble.kai{background:#132e36;border:2px solid var(--c)}
-.footer{height:90px;background:#0d1a20;display:flex;align-items:center;padding:0 15px;gap:10px;border-top:2px solid var(--c)}
-.footer input{flex:1;height:60px;background:#132e36;border:2px solid var(--c);border-radius:30px;padding:0 20px;color:#fff;font-size:16px}
-.footer.btn{width:60px;height:60px;border-radius:50%;background:var(--c);color:#000;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
-.footer.btn.rec{background:#ff3b30;color:#fff}
-#armaduraOverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000}
-#armaduraCanvas{width:100%;height:100%}
-.btn-fechar{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;cursor:pointer;z-index:1000}
-#wakeIndicator{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:1001}
-#wakeIndicator.active{display:block}
-.wakeCircle{width:120px;height:120px;border:3px solid var(--c);border-radius:50%;animation:pulse 1s infinite}
-@keyframes pulse{0%{transform:scale(1)}100%{transform:scale(1.3);opacity:0}}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+#canvas{width:100%;height:100%;display:block}
+
+/* HUD CYBERPUNK KORVIL FULL HD */
+.hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;font-family:'Segoe UI',Arial}
+.grid{position:absolute;width:100%;height:100%;background:linear-gradient(transparent 48%,#00FFFF11 49%,#00FFFF11 51%,transparent 52%),linear-gradient(90deg,transparent 48%,#00FFFF11 49%,#00FFFF11 51%,transparent 52%);background-size:60px 60px;animation:gridMove 3s linear infinite}
+@keyframes gridMove{0%{transform:translateY(0)}100%{transform:translateY(60px)}}
+
+.scanline{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#00FFFF,#A8FFE6,#00FFFF,transparent);animation:scan 1.8s linear infinite;box-shadow:0 0 25px #00FFFF}
+@keyframes scan{0%{top:0}100%{top:100%}}
+
+.status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#00FFFF}
+.status h1{font-size:42px;letter-spacing:8px;text-shadow:0 0 40px #00FFFF,0 0 80px #00FFFF;margin-bottom:20px;animation:pulse 0.8s infinite}
+.status.versao{font-size:18px;letter-spacing:4px;color:#A8FFE6;margin-bottom:25px;font-weight:900}
+.status p{font-size:20px;letter-spacing:3px;margin-bottom:30px;font-weight:700}
+
+.progress{width:500px;height:8px;background:#001a1a;border:3px solid #00FFFF;margin:0 auto;position:relative;overflow:hidden;box-shadow:0 0 25px #00FFFF}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#00FFFF,#A8FFE6,#00FFFF);box-shadow:0 0 30px #00FFFF;transition:width 0.1s linear}
+.timer{font-size:32px;margin-top:20px;font-weight:900;text-shadow:0 0 20px #00FFFF}
+.etapa{font-size:16px;color:#A8FFE6;letter-spacing:3px;margin-top:10px}
+
+.corners{position:absolute;width:100%;height:100%}
+.corner{position:absolute;width:80px;height:80px;border:4px solid #00FFFF}
+.corner.tl{top:60px;left:60px;border-right:0;border-bottom:0}
+.corner.tr{top:60px;right:60px;border-left:0;border-bottom:0}
+.corner.bl{bottom:60px;left:60px;border-right:0;border-top:0}
+.corner.br{bottom:60px;right:60px;border-left:0;border-top:0}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="menuBtn" onclick="toggleMenu()">☰</div>
-  <div style="flex:1;text-align:center;color:var(--c);font-weight:900">K-AI KORVIL</div>
+<canvas id="canvas"></canvas>
+
+<div class="hud">
+  <div class="grid"></div>
+  <div class="scanline"></div>
+  <div class="corners">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+  <div class="status">
+    <h1>PROTOCOLO SAY KORVIL</h1>
+    <div class="versao" id="versaoText">ARMADURA v-2026</div>
+    <p id="fase">CORVO CIBERNETICO APROXIMANDO...</p>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="timer" id="timer">21.0s</div>
+    <div class="etapa" id="etapa">ETAPA 1/3: CABEÇA E SUPERIORES</div>
+  </div>
 </div>
-
-<div id="chat"></div>
-
-<div id="armaduraOverlay">
-  <canvas id="armaduraCanvas"></canvas>
-  <button class="btn-fechar" onclick="fecharArmadura()">FECHAR</button>
-</div>
-
-<div id="wakeIndicator">
-  <div class="wakeCircle"></div>
-  <div style="color:var(--c);margin-top:15px;font-weight:900">ESCUTANDO...</div>
-</div>
-
-<div class="footer">
-  <input type="text" id="input" placeholder="Diga: K-AI abre o K-TP">
-  <div class="btn" id="mic">🎤</div>
-  <div class="btn" onclick="send()">➤</div>
-</div>
-
-<audio id="somAtivacao" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE"></audio>
 
 <script>
-let modoWake = false; let timeoutWake = null;
-let recognitionWake, recognitionComando;
-const PALAVRAS_WAKE = ['k-ai', 'kai', 'cai', 'key', 'kay'];
+const urlParams = new URLSearchParams(window.location.search);
+const armaduraVersao = urlParams.get('armadura') || 'v-2026';
+document.getElementById('versaoText').innerText = `ARMADURA ${armaduraVersao.toUpperCase()}`;
 
-function addMsg(who, txt){
-  const div = document.createElement('div'); div.className = 'bubble ' + who;
-  div.innerText = txt; document.getElementById('chat').prepend(div);
-}
-function falar(txt){ addMsg('kai',txt); speechSynthesis.speak(new SpeechSynthesisUtterance(txt)); }
+let scene, camera, renderer;
+let corvoGroup, pecas = [], tempo = 0, duracao = 21;
+let etapaAtual = 0;
+let corvoVoando = true;
 
-function iniciarWakeWord(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR) return falar("Seu navegador não suporta voz");
-  recognitionWake = new SR(); recognitionWake.lang = 'pt-BR'; recognitionWake.continuous = true;
-  recognitionWake.onresult = e => {
-    let txt = e.results[e.results.length-1][0].transcript.toLowerCase().trim();
-    console.log("Ouviu:", txt);
-    // COMANDO DIRETO
-    for(let p of PALAVRAS_WAKE){
-      if(txt.startsWith(p)){
-        let comando = txt.replace(p, '').replace(/pra mim|por favor/g,'').trim();
-        if(comando){ addMsg('me', txt); executar(comando); return; }
-        else { ativarKAI(); return; }
-      }
-    }
-  }
-  recognitionWake.start();
-}
+const etapas = [
+  {txt:"ETAPA 1/3: CABEÇA E SUPERIORES", detail:"CAPACETE CORVO ENCAIXANDO...", time:0, end:7},
+  {txt:"ETAPA 2/3: CORE E NÚCLEO", detail:"AS E NÚCLEO 💠 KORVIL", time:7, end:14},
+  {txt:"ETAPA 3/3: INFERIORES", detail:"GARRAS E BOTAS CYBER", time:14, end:21}
+];
 
-function ativarKAI(){
-  modoWake = true;
-  document.getElementById('somAtivacao').play();
-  document.getElementById('mic').classList.add('rec');
-  document.getElementById('wakeIndicator').classList.add('active');
-  falar("Pois não?");
-  iniciarComando();
-  clearTimeout(timeoutWake);
-  timeoutWake = setTimeout(desativarKAI, 5000);
-}
+function init(){
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x00FFFF, 0.025);
 
-function iniciarComando(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognitionComando = new SR(); recognitionComando.lang = 'pt-BR';
-  recognitionComando.onresult = e => {
-    let comando = e.results[0][0].transcript;
-    addMsg('me', comando); executar(comando); desativarKAI();
-  }
-  recognitionComando.start();
-}
+  camera = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 3, 25);
 
-function desativarKAI(){
-  modoWake = false; clearTimeout(timeoutWake);
-  document.getElementById('mic').classList.remove('rec');
-  document.getElementById('wakeIndicator').classList.remove('active');
-  if(recognitionComando) recognitionComando.stop();
-}
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true, antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x000, 1);
 
-function executar(cmd){
-  cmd = cmd.toLowerCase().trim();
-  if(cmd.includes('armadura') || cmd.includes('transformar')) return mostrarArmadura('v-2026');
-  if(cmd.includes('ktp') || cmd.includes('treinamento')) return falar("Abrindo K-TP");
-  if(cmd.includes('sistema')) return falar("Abrindo Sistema K");
-  if(cmd.includes('hora')) return falar('Agora são ' + new Date().toLocaleTimeString('pt-BR'));
-  falar("Entendi: " + cmd);
-}
+  // LUZES FULL HD CYBERPUNK
+  scene.add(new THREE.AmbientLight(0x00FFFF, 0.5));
+  const luz1 = new THREE.PointLight(0x00FFFF, 5, 60); luz1.position.set(10,10,15);
+  const luz2 = new THREE.PointLight(0xA8FFE6, 4, 60); luz2.position.set(-10,-10,-15);
+  const luz3 = new THREE.SpotLight(0x00FFFF, 3, 50, Math.PI/4); luz3.position.set(0,20,10);
+  scene.add(luz1, luz2, luz3);
 
-function mostrarArmadura(v){
-  document.getElementById('armaduraOverlay').style.display = 'block';
-  falar("Montando armadura " + v);
-  if(!armaduraScene) initArmadura();
-}
-
-function fecharArmadura(){
-  document.getElementById('armaduraOverlay').style.display = 'none';
-  falar("Armadura desativada");
-}
-
-let armaduraScene, armaduraCamera, armaduraRenderer, armaduraControls;
-function initArmadura(){
-  armaduraScene = new THREE.Scene();
-  armaduraCamera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
-  armaduraCamera.position.set(0, 2, 12);
-  armaduraRenderer = new THREE.WebGLRenderer({canvas:document.getElementById('armaduraCanvas'), alpha:true, antialias:true});
-  armaduraRenderer.setSize(window.innerWidth, window.innerHeight);
-  armaduraScene.add(new THREE.AmbientLight(0x00FFFF, 0.5));
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF}));
-  armaduraScene.add(mesh);
-  armaduraControls = new THREE.OrbitControls(armaduraCamera, armaduraRenderer.domElement);
-  function animate(){ requestAnimationFrame(animate); mesh.rotation.y += 0.01; armaduraControls.update(); armaduraRenderer.render(armaduraScene, armaduraCamera); }
+  criarCorvo();
   animate();
 }
 
-function send(){ const val = document.getElementById('input').value; if(!val) return; addMsg('me',val); executar(val); document.getElementById('input').value=''; }
-document.getElementById('mic').onclick = () => { if(modoWake) desativarKAI(); else ativarKAI(); }
+function criarCorvo(){
+  corvoGroup = new THREE.Group();
+  const matCyber = new THREE.MeshPhongMaterial({
+    color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:2,
+    transparent:true, opacity:0.95, shininess:150
+  });
+  const matWire = new THREE.MeshPhongMaterial({
+    color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:1.5,
+    wireframe:true, transparent:true, opacity:0.8
+  });
+  const matNucleo = new THREE.MeshPhongMaterial({
+    color:0xA8FFE6, emissive:0xA8FFE6, emissiveIntensity:3,
+    transparent:true, opacity:1
+  });
 
-setTimeout(()=>{ falar("K-AI Online. Diga K-AI"); iniciarWakeWord(); }, 1000);
+  // CORPO DO CORVO COMPLETO
+  // 1. CABEÇA + CAPACETE
+  const cabeca = new THREE.Group();
+  const cranio = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), matCyber);
+  const bicoGeo = new THREE.ConeGeometry(0.6, 1.8, 4); bicoGeo.rotateX(Math.PI/2);
+  const bico = new THREE.Mesh(bicoGeo, matWire); bico.position.z = 1.5;
+  const olhoL = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), matWire); olhoL.position.set(-0.5,0.3,1.3);
+  const olhoR = olhoL.clone(); olhoR.position.x = 0.5;
+  cabeca.add(cranio, bico, olhoL, olhoR);
+  cabeca.userData = {tipo:"cabeca", target:{x:0, y:3.5, z:0}};
+  corvoGroup.add(cabeca);
+
+  // 2. ASAS
+  const asaL = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 3), matWire); asaL.position.set(-3, 0.5, 0);
+  const asaR = asaL.clone(); asaR.position.x = 3;
+  asaL.userData = {tipo:"asa", target:{x:-2.8, y:1.5, z:0}};
+  asaR.userData = {tipo:"asa", target:{x:2.8, y:1.5, z:0}};
+  corvoGroup.add(asaL, asaR);
+
+  // 3. NÚCLEO KORVIL 💠 NO PEITO
+  const nucleoGeo = new THREE.OctahedronGeometry(1.2, 0);
+  const nucleo = new THREE.Mesh(nucleoGeo, matNucleo);
+  nucleo.position.y = -0.5;
+  nucleo.userData = {tipo:"nucleo", target:{x:0, y:0.5, z:0.8}};
+  corvoGroup.add(nucleo);
+
+  // 4. TORSO/COLETE
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.5, 3.5, 8), matCyber);
+  torso.userData = {tipo:"torso", target:{x:0, y:0.5, z:0}};
+  corvoGroup.add(torso);
+
+  // 5. GARRAS/BOTAS
+  for(let i=0; i<2; i++){
+    const perna = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 3.5, 8), matCyber);
+    perna.position.set(i? 0.8 : -0.8, -2.5, 0);
+    const garra = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1, 3), matWire);
+    garra.rotation.x = Math.PI/2; garra.position.y = -1.8;
+    perna.add(garra);
+    perna.userData = {tipo:"perna", target:{x:i? 0.7 : -0.7, y:-2.8, z:0}};
+    corvoGroup.add(perna);
+  }
+
+  // POSIÇÃO INICIAL: VOANDO LONGE
+  corvoGroup.position.set(0, 0, -40);
+  corvoGroup.scale.set(1.5, 1.5, 1.5);
+  scene.add(corvoGroup);
+
+  // SALVAR TODAS PEÇAS
+  corvoGroup.traverse(child => {
+    if(child.userData && child.userData.target){
+      pecas.push(child);
+    }
+  });
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  tempo += 0.016;
+
+  let progresso = Math.min(tempo / duracao, 1);
+  document.getElementById('bar').style.width = (progresso * 100) + '%';
+  document.getElementById('timer').innerText = (duracao - tempo).toFixed(1) + 's';
+
+  // ATUALIZA ETAPA
+  for(let e of etapas){
+    if(tempo >= e.time && tempo < e.end){
+      document.getElementById('etapa').innerText = e.txt;
+      document.getElementById('fase').innerText = e.detail;
+    }
+  }
+
+  // ANIMAÇÃO: CORVO VOANDO -> SE DESMONTA -> REMONTA EM VOCÊ
+  if(tempo < 3){
+    // VOANDO EM DIREÇÃO
+    corvoGroup.position.z += 1.2;
+    corvoGroup.rotation.y = Math.sin(tempo*3)*0.2;
+  } else if(tempo < 7){
+    // ETAPA 1: CABEÇA
+    corvoGroup.children[0].position.lerp(new THREE.Vector3(0, 3.5, 0), 0.08);
+    corvoGroup.children[0].children[2].material.emissiveIntensity = 2 + Math.sin(tempo*6)*1; // olhos viram visor
+    corvoGroup.children[0].children[3].material.emissiveIntensity = 2 + Math.sin(tempo*6)*1;
+  } else if(tempo < 14){
+    // ETAPA 2: ASAS + NÚCLEO
+    corvoGroup.children[1].position.lerp(new THREE.Vector3(-2.8, 1.5, 0), 0.06);
+    corvoGroup.children[2].position.lerp(new THREE.Vector3(2.8, 1.5, 0), 0.06);
+    corvoGroup.children[3].position.lerp(new THREE.Vector3(0, 0.5, 0.8), 0.08);
+    corvoGroup.children[3].rotation.y += 0.05; // núcleo girando 💠
+    corvoGroup.children[1].rotation.z = -0.3 + Math.sin(tempo*4)*0.2; // asas batendo
+    corvoGroup.children[2].rotation.z = 0.3 - Math.sin(tempo*4)*0.2;
+  } else if(tempo < 21){
+    // ETAPA 3: PERNAS/GARRAS
+    corvoGroup.children[4].position.lerp(new THREE.Vector3(-0.7, -2.8, 0), 0.07);
+    corvoGroup.children[5].position.lerp(new THREE.Vector3(0.7, -2.8, 0), 0.07);
+  }
+
+  // BRILHO AUMENTA
+  corvoGroup.traverse(child => {
+    if(child.material){
+      child.material.emissiveIntensity = 0.8 + progresso * 2 + Math.sin(tempo*5)*0.5;
+    }
+  });
+
+  // CAMERA ORBITANDO
+  camera.position.x = Math.sin(tempo * 0.3) * 4;
+  camera.position.y = 2 + Math.sin(tempo * 0.2);
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+
+  if(tempo >= duracao){
+    document.getElementById('fase').innerText = "TRANSFORMAÇÃO COMPLETA - K-AI ONLINE";
+    setTimeout(()=>{ window.close(); }, 1000);
+  }
+}
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+init();
 </script>
 </body>
 </html>
