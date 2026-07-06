@@ -13,21 +13,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .phone{width:100%;height:100dvh;background:var(--chat);position:relative;display:flex;flex-direction:column}
 
 /* SETAS NEON CYBER 2X MAIORES */
-.arrow{position:absolute;z-index:102;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:opacity.3s}
-.arrow.hidden{opacity:0;pointer-events:none}
-.arrow svg{width:72px;height:72px;stroke:var(--c);stroke-width:3;filter:drop-shadow(0 0 20px var(--c))}
-.arrow-down{top:36px;left:50%;transform:translateX(-50%);width:100%;height:80px}
+.arrow{position:absolute;z-index:999;pointer-events:auto !important;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:opacity .3s}
+.arrow.hidden{opacity:0 !important;pointer-events:none !important}
+.arrow svg{width:80px;height:80px;stroke:var(--c);stroke-width:3.5;filter:drop-shadow(0 0 25px var(--c))}
+.arrow-down{top:40px;left:50%;transform:translateX(-50%);width:100%;height:90px}
 .arrow-down svg{animation:arrowDown 1.4s infinite}
-@keyframes arrowDown{0%,100%{transform:translateY(-8px);opacity:.6}50%{transform:translateY(8px);opacity:1}}
-.arrow-right{top:50%;left:0;transform:translateY(-50%);width:80px;height:100%}
+@keyframes arrowDown{0%,100%{transform:translateY(-10px);opacity:.6}50%{transform:translateY(10px);opacity:1}}
+.arrow-right{top:50%;left:0;transform:translateY(-50%);width:90px;height:100%}
 .arrow-right svg{animation:arrowRight 1.4s infinite}
-@keyframes arrowRight{0%,100%{transform:translateX(-8px);opacity:.6}50%{transform:translateX(8px);opacity:1}}
-.arrow-left{top:50%;right:0;transform:translateY(-50%);width:80px;height:100%}
+@keyframes arrowRight{0%,100%{transform:translateX(-10px);opacity:.6}50%{transform:translateX(10px);opacity:1}}
+.arrow-left{top:50%;right:0;transform:translateY(-50%);width:90px;height:100%}
 .arrow-left svg{animation:arrowLeft 1.4s infinite}
-@keyframes arrowLeft{0%,100%{transform:translateX(8px);opacity:.6}50%{transform:translateX(-8px);opacity:1}}
-.arrow-up{bottom:95px;left:50%;transform:translateX(-50%);width:100%;height:80px}
+@keyframes arrowLeft{0%,100%{transform:translateX(10px);opacity:.6}50%{transform:translateX(-10px);opacity:1}}
+.arrow-up{bottom:100px;left:50%;transform:translateX(-50%);width:100%;height:90px}
 .arrow-up svg{animation:arrowUp 1.4s infinite}
-@keyframes arrowUp{0%,100%{transform:translateY(8px);opacity:.6}50%{transform:translateY(-8px);opacity:1}}
+@keyframes arrowUp{0%,100%{transform:translateY(10px);opacity:.6}50%{transform:translateY(-10px);opacity:1}}
 
 .status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:15px;font-weight:700;color:var(--c);flex-shrink:0;border-bottom:2px solid var(--c);box-shadow:0 0 15px var(--c)40;position:relative;z-index:5}
 #notiPanel{position:absolute;top:-480px;left:0;width:100%;height:480px;background:linear-gradient(180deg,#0d1a20 0%,#000 100%);z-index:100;transition:top.35s cubic-bezier(.4,0,.2,1);border-bottom:2px solid var(--c);box-shadow:0 10px 30px var(--c)50}
@@ -55,7 +55,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
 .header{height:75px;background:linear-gradient(180deg,var(--top),#000);display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:2px solid var(--c);flex-shrink:0;box-shadow:0 5px 20px var(--c)40;position:relative;z-index:5}
 /* ICONE MENU 3X MAIOR */
-.header.menuBtn{font-size:48px;color:var(--c);cursor:pointer;font-weight:900;text-shadow:0 0 20px var(--c);transition:.2s}
+.header.menuBtn{font-size:52px;color:var(--c);cursor:pointer;font-weight:900;text-shadow:0 0 15px var(--c);transition:.2s} 0 20px var(--c);transition:.2s}
 .header.menuBtn:active{transform:scale(.9)}
 .header.titulo{flex:1;text-align:center;color:var(--c);font-weight:900;letter-spacing:3px;font-size:16px;text-shadow:0 0 20px var(--c)}
 
