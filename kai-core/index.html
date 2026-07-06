@@ -80,15 +80,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 #tableRight{top:50%;right:12px;transform:translateY(-50%);width:88%;max-width:420px}
 #tableBottom{bottom:110px;left:50%;transform:translateX(-50%);width:96%;max-width:650px}
 
-/* VISUALIZADOR ARMADURA */
-#armaduraViewer{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:104;background:transparent;pointer-events:auto}
+/* VISUALIZADOR ARMADURA OVERLAY */
+#armaduraOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:transparent;pointer-events:auto}
 #armaduraCanvas{width:100%;height:100%}
-.hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:105}
-.hud-text{position:absolute;color:#00FFFF;font-weight:900;font-size:13px;letter-spacing:2px;text-shadow:0 0 10px #00FFFF}
-.hud-top{top:90px;left:50%;transform:translateX(-50%);font-size:15px}
-.btn-close-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:8px 16px;border-radius:20px;font-weight:900;pointer-events:auto;cursor:pointer;box-shadow:0 0 15px var(--c)}
-.scanline{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00FFFF,transparent);animation:scan 3s linear infinite;box-shadow:0 0 10px #00FFFF}
-@keyframes scan{0%{top:80px}100%{top:100%}}
+.btn-fechar-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer;box-shadow:0 0 15px var(--c);font-family:'Segoe UI',Arial}
+.hud-armor{position:absolute;top:90px;left:50%;transform:translateX(-50%);color:#00FFFF;font-weight:900;font-size:15px;letter-spacing:2px;text-shadow:0 0 10px #00FFFF;z-index:201}
 </style>
 </head>
 <body>
@@ -157,11 +153,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
       <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA <small>Saúde e Beleza</small></div>
       <div class="sideItem" onclick="goPage('central')">5. Central KORVIL <small>Painel Geral</small></div>
     </div>
-    <!-- NOVA SEÇÃO TRANSFORMAR -->
+
+    <!-- NOVA SEÇÃO K-AI TRANSFORMAR -->
     <div class="sideSection">
       <div class="sideTitle">K-AI TRANSFORMAR</div>
       <div class="sideItem" onclick="mostrarArmadura('v-2026')">Armadura: v-2026 <small>Protocolo Say Korvil</small></div>
     </div>
+
     <div class="sideSection">
       <div class="sideTitle">2. CRIAR</div>
       <div class="sideItem" onclick="executar('criar post')">Criar Post</div>
@@ -191,14 +189,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
   <div id="chat"><canvas id="canvas3d"></canvas></div>
 
-  <!-- VISUALIZADOR DA ARMADURA -->
-  <div id="armaduraViewer">
+  <!-- OVERLAY DA ARMADURA -->
+  <div id="armaduraOverlay">
     <canvas id="armaduraCanvas"></canvas>
-    <div class="hud">
-      <div class="hud-text hud-top">K-AI ARMOR v-2026 | PROTOCOLO: SAY KORVIL</div>
-      <button class="btn-close-armor" onclick="fecharArmadura()">FECHAR</button>
-      <div class="scanline"></div>
-    </div>
+    <div class="hud-armor">K-AI ARMOR v-2026 | PROTOCOLO: SAY KORVIL</div>
+    <button class="btn-fechar-armor" onclick="fecharArmadura()">FECHAR</button>
   </div>
 
   <div class="footer">
@@ -275,17 +270,17 @@ function goPage(pagina){
   toggleMenu(); closePanel();
 }
 
-// ===== FUNÇÕES ARMADURA =====
+// ===== FUNÇÃO MOSTRAR ARMADURA =====
 function mostrarArmadura(versao){
-  document.getElementById('armaduraViewer').style.display = 'block';
+  document.getElementById('armaduraOverlay').style.display = 'block';
   toggleMenu(); closePanel();
-  falar('Protocolo Say Korvil ativado. Carregando Armadura v-2026');
-  addNoti('⚡ ARMADURA v-2026 ATIVADA');
+  falar(`Protocolo SAY KORVIL ativado. Exibindo Armadura ${versao}`);
+  addNoti(`🛡️ ARMADURA ${versao} ATIVADA`);
   if(!armaduraScene) initArmadura();
 }
 
 function fecharArmadura(){
-  document.getElementById('armaduraViewer').style.display = 'none';
+  document.getElementById('armaduraOverlay').style.display = 'none';
   falar('Armadura desativada. Voltando ao modo normal');
 }
 
@@ -304,10 +299,8 @@ function initArmadura(){
   armaduraScene.add(luz1, luz2, luzAmb);
 
   armaduraControls = new THREE.OrbitControls(armaduraCamera, armaduraRenderer.domElement);
-  armaduraControls.enableDamping = true;
-  armaduraControls.dampingFactor = 0.05;
-  armaduraControls.autoRotate = true;
-  armaduraControls.autoRotateSpeed = 0.5;
+  armaduraControls.enableDamping = true; armaduraControls.dampingFactor = 0.05;
+  armaduraControls.autoRotate = true; armaduraControls.autoRotateSpeed = 0.5;
 
   criarArmadura();
   animateArmadura();
@@ -330,8 +323,7 @@ function criarArmadura(){
   armaduraGroup.add(cabeca);
 
   // TORSO
-  const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 3, 8), mat);
-  torso.position.y = 1; armaduraGroup.add(torso);
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 3, 8), mat); torso.position.y = 1; armaduraGroup.add(torso);
 
   // ASAS
   asas = new THREE.Group();
@@ -343,13 +335,11 @@ function criarArmadura(){
   // BRAÇOS E PERNAS
   const bracoGeo = new THREE.CylinderGeometry(0.3, 0.25, 2.5, 8);
   const bracoL = new THREE.Mesh(bracoGeo, mat); bracoL.position.set(-1.8, 0.5, 0);
-  const bracoR = bracoL.clone(); bracoR.position.x = 1.8;
-  armaduraGroup.add(bracoL, bracoR);
+  const bracoR = bracoL.clone(); bracoR.position.x = 1.8; armaduraGroup.add(bracoL, bracoR);
 
   const pernaGeo = new THREE.CylinderGeometry(0.4, 0.35, 3, 8);
   const pernaL = new THREE.Mesh(pernaGeo, mat); pernaL.position.set(-0.6, -2, 0);
-  const pernaR = pernaL.clone(); pernaR.position.x = 0.6;
-  armaduraGroup.add(pernaL, pernaR);
+  const pernaR = pernaL.clone(); pernaR.position.x = 0.6; armaduraGroup.add(pernaL, pernaR);
 
   // GARRAS
   garras = new THREE.Group();
@@ -359,7 +349,6 @@ function criarArmadura(){
     garras.add(garra); const garra2 = garra.clone(); garra2.position.x += 0.6; garras.add(garra2);
   }
   armaduraGroup.add(garras);
-
   armaduraScene.add(armaduraGroup);
 }
 
@@ -375,7 +364,7 @@ function animateArmadura(){
 
 function executar(cmd){
   cmd = cmd.toLowerCase(); toggleMenu(); closePanel();
-  if(cmd.includes('armadura') || cmd.includes('transformar')) return mostrarArmadura('v-2026');
+  if(cmd.includes('armadura') || cmd.includes('mostrar armadura')) return mostrarArmadura('v-2026');
   if(cmd.includes('ir para') || cmd.includes('abrir') || cmd.includes('navegar')){
     if(cmd.includes('sistema k')) return goPage('sistema k');
     if(cmd.includes('ktp')) return goPage('ktp');
