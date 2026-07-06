@@ -120,21 +120,21 @@ const Navega = {
 
   // ===== FUNÇÃO 1: TRANSIÇÃO 15S =====
   iniciarTransformacao(versao){
-    const antigo = document.getElementById("transicaoFrame");
-    if(antigo) document.body.removeChild(antigo);
+  const antigo = document.getElementById("transicaoFrame");
+  if(antigo) document.body.removeChild(antigo);
 
-    const transicaoFrame = document.createElement('iframe');
-    transicaoFrame.id = "transicaoFrame";
-    transicaoFrame.src = `kai-transformar/transiction-transform.html?armadura=${versao}`;
-    transicaoFrame.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000;border:0;";
-    document.body.appendChild(transicaoFrame);
+  const transicaoFrame = document.createElement('iframe');
+  transicaoFrame.id = "transicaoFrame";
+  transicaoFrame.src = `kai-transformar/transiction-transform.html?armadura=${versao}`;
+  transicaoFrame.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000;border:0;";
+  document.body.appendChild(transicaoFrame);
 
-    setTimeout(()=>{
-      const frame = document.getElementById("transicaoFrame");
-      if(frame) document.body.removeChild(frame);
-      this.mostrarArmadura(versao);
-    }, 21000); // 21s agora com a animação nova
-  },
+  setTimeout(()=>{
+    const frame = document.getElementById("transicaoFrame");
+    if(frame) document.body.removeChild(frame);
+    this.mostrarArmadura(versao);
+  }, 21000); // 21s - 3 etapas de 7s
+  }, 
 
   // ===== FUNÇÃO 2: MOSTRAR ARMADURA =====
   mostrarArmadura(versao){
