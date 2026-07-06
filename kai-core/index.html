@@ -394,29 +394,59 @@ function executar(cmd){
   falar('Entendi: ' + cmd);
 }
 
-function send(){ const val = document.getElementById('input').value; if(!val) return; addMsg('me',val); executar(val); document.getElementById('input').value=''; }
-function toggleBtn(el, tipo){ el.classList.toggle('active'); if(tipo=='mic') document.getElementById('mic').click(); }
-function limparMem(){ localStorage.removeItem('kai'); memoria={hist:[],mems:[]}; addNoti('🧠 Memória limpa'); return 'Memória limpa Chefe'; }
+function send(){
+  const val = document.getElementById('input').value;
+  if(!val) return;
+  addMsg('me',val);
+  executar(val);
+  document.getElementById('input').value='';
+}
+
+function toggleBtn(el, tipo){
+  el.classList.toggle('active');
+  if(tipo=='mic') document.getElementById('mic').click();
+}
+
+function limparMem(){
+  localStorage.removeItem('kai');
+  memoria={hist:[],mems:[]};
+  addNoti('🧠 Memória limpa');
+  return 'Memória limpa Chefe';
+}
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 if(SR){
-  const rec = new SR(); rec.lang='pt-BR';
+  const rec = new SR();
+  rec.lang='pt-BR';
   document.getElementById('mic').onclick = ()=>{
     document.getElementById('mic').classList.toggle('rec');
     rec.start();
     rec.onresult = e => {
       let txt = e.results[0][0].transcript;
       if(txt.toLowerCase().includes('k-ai')) txt = txt.toLowerCase().replace('k-ai','');
-      addMsg('me',txt); executar(txt);
+      addMsg('me',txt);
+      executar(txt);
       document.getElementById('mic').classList.remove('rec');
     }
     rec.onend = ()=>{ document.getElementById('mic').classList.remove('rec'); }
   }
 }
 
-setInterval(()=>{ document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) },1000);
-document.getElementById('input').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
-window.addEventListener('resize', ()=>{ if(armaduraCamera){armaduraCamera.aspect=window.innerWidth/window.innerHeight;armaduraCamera.updateProjectionMatrix();armaduraRenderer.setSize(window.innerWidth,window.innerHeight)} });
+setInterval(()=>{
+  document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+},1000);
+
+document.getElementById('input').addEventListener('keydown', e => {
+  if(e.key==='Enter') send();
+});
+
+window.addEventListener('resize', ()=>{
+  if(armaduraCamera){
+    armaduraCamera.aspect=window.innerWidth/window.innerHeight;
+    armaduraCamera.updateProjectionMatrix();
+    armaduraRenderer.setSize(window.innerWidth,window.innerHeight)
+  }
+});
 
 // VERIFICA SE VEIO DA TRANSFORMAÇÃO
 window.addEventListener('load', () => {
@@ -429,7 +459,10 @@ window.addEventListener('load', () => {
   }
 });
 
-setTimeout(()=>{ falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
+setTimeout(()=>{
+  falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`);
+  addNoti('🔵 K-AI Sistema Iniciado');
+}, 1000);
 </script>
 </body>
 </html>
