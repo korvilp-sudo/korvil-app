@@ -119,12 +119,81 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
   </section>
 
-  <section id="humano" class="tela"><h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="negocios" class="tela"><h1>NEGOCIOS</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="servicos" class="tela"><h1>SERVICOS</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="sistema" class="tela"><h1>SISTEMA K</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  <section id="kalma" class="tela"><h1>K-ALMA</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
+  <!-- TELAS ADICIONADAS -->
+  <section id="humano" class="tela">
+    <h1>DESENVOLVIMENTO HUMANO</h1><h2>CURSOS</h2>
+    <div class="sub-aba">
+      <h4>AREAS</h4>
+      <h4>Tecnologias:</h4><ul><li>1. Manutencao de Celular</li></ul>
+      <h4>Educacao Fisica Bacharelado:</h4><ul><li>1. Treinamento Personalizado</li></ul>
+      <h4>Empreendedorismo:</h4><ul><li>1. Negocio Proprio</li></ul>
+      <h4>Saude:</h4><ul><li onclick="irParaKTH()">1. K-TH Terapia Holistica →</li></ul>
+      <h4>Beleza:</h4><ul><li>1. Cabeleireiro Unissex</li></ul>
+    </div>
+    <button class="btn" onclick="abrirWhats('Cursos KORVIL - Desenvolvimento Humano')">Falar com Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="negocios" class="tela">
+    <h1>NEGOCIOS</h1>
+    <div class="sub-aba">
+      <h4>PARCERIAS COM PROFISSIONAIS</h4>
+      <p>Profissionais das areas KORVIL.</p>
+    </div>
+    <button class="btn" onclick="abrirWhats('Parcerias KORVIL - Negocios')">Falar com Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="servicos" class="tela">
+    <h1>SERVICOS</h1>
+    <div class="sub-aba"><h4>1. CONCERTOS DE CELULAR</h4><p>Profissionais tecnicos.</p></div>
+    <div class="sub-aba"><h4>2. TREINAMENTO</h4><p>Profissionais KORVIL.</p></div>
+    <div class="sub-aba"><h4>3. CONSULTORIA</h4><p>Profissionais em Financas.</p></div>
+    <div class="sub-aba"><h4>4. SAUDE E BELEZA</h4><p>Profissionais da area.</p></div>
+    <button class="btn" onclick="abrirWhats('Servicos KORVIL - Servicos')">Contratar Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="sistema" class="tela">
+    <h1>SISTEMA K</h1><h2>SERVICOS GERAIS PROFISSIONAIS</h2>
+    <div class="sub-aba">
+      <ul>
+        <li>Eletricista</li><li>Carpinteiro</li><li>Faxineira</li>
+        <li>Encanador</li><li>Pintor</li><li>Pedreiro</li>
+      </ul>
+    </div>
+    <button class="btn" onclick="abrirWhats('Sistema K - Servicos Gerais')">Contratar Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="kafortunado" class="tela">
+    <h1>K-AFORTUNADO</h1>
+    <div class="sub-aba">
+      <h4>CONSULTORIA FINANCEIRA</h4>
+      <p>Profissionais em estrategia.</p>
+    </div>
+    <button class="btn" onclick="abrirWhats('K-AFORTUNADO - Consultoria Financeira')">Agendar Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
+
+  <section id="kalma" class="tela">
+    <h1>K-ALMA</h1><h2>SAUDE</h2>
+    <div class="sub-aba">
+      <ul>
+        <li>Terapeuta Holistico</li><li>Dentista</li>
+        <li>Fisioterapeuta</li><li>Medico</li>
+      </ul>
+    </div>
+    <h2>BELEZA</h2>
+    <div class="sub-aba">
+      <ul>
+        <li>Cabeleireiro Unissex</li><li>Barbeiro</li>
+        <li>Esteticista</li><li>Manicure</li><li>Sobrancelhas</li>
+      </ul>
+    </div>
+    <button class="btn" onclick="abrirWhats('K-ALMA - Saude e Beleza')">Agendar Profissionais</button>
+    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
+  </section>
   
   <section id="ktp-iframe" class="tela">
     <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
@@ -162,7 +231,7 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
 <script>
 const WHATS_NUMBER = '5513997690898';
-const KAI_URL = 'https://korvilp-sudo.github.io/korvil-app/kai-core/index.html'; // MESMA PAGINA DO BOTAO LOGIN
+const KAI_URL = 'https://korvilp-sudo.github.io/korvil-app/kai-core/index.html';
 let textoWhats = '';
 let holdTimer = null;
 let contagemAtiva = false;
@@ -171,6 +240,10 @@ let isHolding = false;
 function irParaKTP(){ 
   abrirTela('ktp-iframe'); 
   document.getElementById('iframeKTP').src = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetransformacao.html";
+}
+
+function irParaKTH(){
+  window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/kalma/k-th/index.html";
 }
 
 function abrirTela(id){ 
@@ -233,7 +306,6 @@ function iniciarContagem(){
       clearInterval(contTimer);
       cubeMsg.innerText = 'Abrindo K-AI...';
       setTimeout(()=>{ 
-        // REDIRECIONA DIRETO IGUAL O BOTAO DO LOGIN
         window.location.href = KAI_URL; 
         contagemAtiva = false;
       }, 800);
@@ -241,12 +313,10 @@ function iniciarContagem(){
   }, 1000);
 }
 
-// Clique normal = Mini Menu
 cube.addEventListener('click', (e) => {
   if(!contagemAtiva && !isHolding) toggleKaiMenu();
 });
 
-// BLOQUEAR MENU DO NAVEGADOR
 cube.addEventListener('contextmenu', e => e.preventDefault());
 cube.addEventListener('mousedown', iniciarSegurar);
 cube.addEventListener('mouseup', cancelarSegurar);
