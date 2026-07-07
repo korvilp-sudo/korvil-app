@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000">
 <title>K-TP PROJETO TRANSFORMAÇÃO</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
+:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
@@ -14,111 +14,186 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;}
 .plano:hover{border-color:var(--c);}
-.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
-.plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
+.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
+.plano.bloqueado{opacity:0.4;cursor:not-allowed;}
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
+.plano.desc{font-size:11px;color:var(--text2);margin:4px 0;}
 .plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
-.btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.voltar{background:#222;color:var(--text);}
+.btn:disabled{background:#333;color:#666;cursor:not-allowed;}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
-.input-group textarea{min-height:60px;resize:vertical;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
-.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.info-box{background:linear-gradient(135deg,#0a1419,#000);border:1.5px solid var(--c);border-radius:10px;padding:14px;margin:12px 0;box-shadow:0 0 15px var(--c)20;}
+.info-box.item{margin-bottom:10px;font-size:12px;line-height:1.5;}
+.info-box.item strong{color:var(--c);}
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
+.timeline{margin:16px 0;}
+.fase{background:#111;border-left:3px solid var(--c);padding:12px;margin-bottom:12px;border-radius:8px;}
+.fase.titulo-fase{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
+.fase.meses{font-size:11px;color:var(--ok);font-weight:700;margin-bottom:6px;}
+.lista{font-size:12px;color:var(--text2);line-height:1.8;margin-left:8px;}
+.lista li{margin-bottom:4px;list-style:none;}
+.lista li:before{content:"✓ ";color:var(--c);font-weight:900;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
 .passos.etapa.num{font-weight:900;font-size:12px;display:block;}
 .passos.ativo{color:var(--c);}
-.alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
-.cep-loading{font-size:10px;color:var(--c);}
-.info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
-.check{color:var(--ok);margin-right:6px;}
-.aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
+.passos.ativo.num{color:var(--c);}
 </style>
 </head>
 <body>
 
-<!-- TELA 1: ANAMNESE -->
+<!-- TELA 1: APRESENTAÇÃO -->
 <div id="tela1">
-  <h1>K-T.P KORVIL</h1>
+  <div class="card"> <!-- CORRIGI: O CARD AGORA ESTA DENTRO DA TELA1 -->
+
+  <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" alt="Logo K-TP" class="logo">
+
   <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
+  </div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" alt="Projeto Transformação" class="logo-projeto">
+    <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+    <div class="info-box">
+      <div class="item"><strong>Treinador</strong></div>
+      <div class="item"><strong>Terapeuta Holístico</strong></div>
+      <div class="item"><strong>Especialista em Resultados</strong></div>
+    </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <ul class="lista">
+      <li>Crianças a partir de 10 anos</li>
+      <li>Jovens</li>
+      <li>Adultos</li>
+      <li>Idosos</li>
+      <li>Praticantes</li>
+      <li>Atletas</li>
+    </ul>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <ul class="lista">
+      <li>1. Manutenção</li>
+      <li>2. Resistência</li>
+      <li>3. Força</li>
+      <li>4. Hipertrofia</li>
+    </ul>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+
+    <div class="timeline">
+      <div class="fase">
+        <div class="titulo-fase">FASE 1. OFF SEASON</div>
+        <div class="meses">Janeiro e Fevereiro</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 2. BULKING</div>
+        <div class="meses">Março, Abril e Maio</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 3. MAINTENANCE</div>
+        <div class="meses">Junho, Julho e Agosto</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 4. CUTTING</div>
+        <div class="meses">Setembro, Outubro e Novembro</div>
+      </div>
+      <div class="fase" style="border-left-color:var(--ok);">
+        <div class="titulo-fase" style="color:var(--ok);">DEZEMBRO: FÉRIAS</div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
+  </div> <!-- FECHEI O CARD AQUI DENTRO -->
+</div>
+
+<!-- TELA 2: ANAMNESE -->
+<div id="tela2" class="oculto">
+  <h1>K-T.P KORVIL</h1>
+
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| FICHA DE ANAMNESE</div>
-    <div class="sub-titulo">Responda com sinceridade para um treino mais seguro</div>
-    
-    <div class="input-group">
-      <label>Você tem alguma lesão ou dor? *</label>
-      <textarea id="lesao" placeholder="Ex: Dor no joelho, coluna..."></textarea>
+    <div class="titulo-secao">| DADOS PESSOAIS + ANAMNESE</div>
+    <div class="input-group"><label>Nome Completo</label><input type="text" id="nome"></div>
+    <div class="grid-2">
+      <div class="input-group"><label>CPF</label><input type="text" id="cpf"></div>
+      <div class="input-group"><label>Data Nasc</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
     </div>
-    <div class="input-group">
-      <label>Tem alguma doença crônica? *</label>
-      <select id="doenca"><option>Selecione</option><option>Não</option><option>Sim - Hipertensão</option><option>Sim - Diabetes</option><option>Sim - Outra</option></select>
+    <div class="grid-2">
+      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
+      <div class="input-group"><label>Faixa Etária</label><input type="text" id="faixa" readonly></div>
     </div>
-    <div class="input-group">
-      <label>Já pratica atividade física? *</label>
-      <select id="atividade"><option>Selecione</option><option>Sedentário</option><option>1 a 2x na semana</option><option>3 a 4x na semana</option><option>5x ou mais</option></select>
+    <div class="grid-2">
+      <div class="input-group"><label>Público</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
+      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
     </div>
-    <div class="input-group">
-      <label>Objetivo principal *</label>
-      <select id="objetivo"><option>Selecione</option><option>Emagrecimento</option><option>Hipertrofia</option><option>Saúde e Qualidade de vida</option><option>Condicionamento</option></select>
+    <div class="grid-2">
+      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
+      <div class="input-group"><label>Nível</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
     </div>
-    <div class="input-group">
-      <label>Observações</label>
-      <textarea id="obs" placeholder="Algo mais que precisamos saber?"></textarea>
-    </div>
+    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+    <div class="input-group"><label>WhatsApp</label><input type="tel" id="whats"></div>
 
-    <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
+    <button class="btn" onclick="mostrarTela('tela3')">CONTINUAR PARA PLANOS</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 2: PLANOS + HORÁRIO -->
-<div id="tela2" class="oculto">
+<!-- TELA 3: PLANOS -->
+<div id="tela3" class="oculto">
   <h1>K-T.P KORVIL</h1>
+
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">3</span>PLANOS</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 1. ESCOLHA O PLANO - SEG A SEXTA</div>
-    <div class="input-group"><label>Nível *</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
+    <div class="titulo-secao">| 1. ESCOLHA O PLANO</div>
 
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-freq="0"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-freq="0"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Online - R$20,00"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Presencial - R$20,00"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
     </div>
 
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-freq="0"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Online Mensal - R$60,00/mês"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
 
     <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
     <div class="grid-2">
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 1)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 2)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 3)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 4)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 5)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
     </div>
   </div>
 
   <div id="cardDias" class="card oculto">
-    <div class="aviso-dias" id="avisoDias"></div>
     <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
-    <div class="sub-titulo">Pode ser qualquer ordem entre Segunda a Sexta-feira</div>
+    <div class="sub-titulo" id="subDias">Selecione os dias</div>
     <div class="grid-5">
       <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
       <div class="plano" onclick="selecionarDia(this)" data-dia="Terça"><div>TER</div></div>
@@ -130,199 +205,81 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
-    <div style="font-size:11px;color:var(--ok);margin-bottom:8px;">MANHÃ</div>
-    <div class="grid-4" id="horariosManha"></div>
-    <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
-    <div class="grid-4" id="horariosTarde"></div>
-    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
-  </div>
-</div>
-
-<!-- TELA 3: DADOS PESSOAIS -->
-<div id="tela3" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
+    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO</div>
+    <div class="grid-4">
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00" style="text-align:center;"><div>06:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00" style="text-align:center;"><div>18:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00" style="text-align:center;"><div>19:00</div><div class="vagas">7 vagas</div></div>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
-    <div class="info-login">Facilite seu preenchimento</div>
-    <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
-
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-    <div class="grid-2">
-      <div class="input-group"><label>CPF *</label><input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCPF(this)"></div>
-      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-      <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
-    </div>
-    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-
-    <div class="titulo-secao" style="margin-top:12px;">| ENDEREÇO</div>
-    <div class="grid-2">
-      <div class="input-group">
-        <label>CEP *</label>
-        <input type="text" id="cep" maxlength="9" placeholder="00000-000" onblur="buscarCEP(this.value)" oninput="mascaraCEP(this)">
-        <div id="cepStatus" class="cep-loading"></div>
-      </div>
-      <div class="input-group"><label>N° da Casa *</label><input type="text" id="numero"></div>
-    </div>
-    <div class="input-group"><label>Rua / Logradouro</label><input type="text" id="rua" readonly></div>
-    <div class="grid-3">
-      <div class="input-group"><label>Bairro</label><input type="text" id="bairro" readonly></div>
-      <div class="input-group"><label>Cidade</label><input type="text" id="cidade" readonly></div>
-      <div class="input-group"><label>UF</label><input type="text" id="uf" readonly></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
-      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
-    </div>
-    <button class="btn" onclick="enviarInscricao()">CONFIRMAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
-  </div>
+  <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
+  <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
 </div>
 
 <script>
 let frequenciaMaxima = 0;
 let diasSelecionados = [];
-let planoSelecionado = '';
-let horarioSelecionado = '';
-let dadosAnamnese = {};
-
-const horariosFixos = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
-
-const dadosLoginKorvil = {
-  nome: "João da Silva", cpf: "123.456.789-00", email: "joao@email.com", whats: "(11) 98765-4321",
-  cep: "01001-000", rua: "Praça da Sé", bairro: "Sé", cidade: "São Paulo", uf: "SP",
-  nasc: "1995-05-10", publico: "Masculino"
-};
-
-window.onload = montarHorarios;
 
 function mostrarTela(id){
-  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
+  document.getElementById('tela1').classList.add('oculto');
+  document.getElementById('tela2').classList.add('oculto');
+  document.getElementById('tela3').classList.add('oculto');
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
 }
 
-function irParaPlanos(){
-  if(document.getElementById('lesao').value === '' || document.getElementById('doenca').value === 'Selecione'){ alert('Preencha a Anamnese'); return; }
-  dadosAnamnese = {
-    lesao: document.getElementById('lesao').value,
-    doenca: document.getElementById('doenca').value,
-    atividade: document.getElementById('atividade').value,
-    objetivo: document.getElementById('objetivo').value,
-    obs: document.getElementById('obs').value
-  }
-  mostrarTela('tela2');
+function selecionarUnico(el, grupo){
+  document.querySelectorAll('.plano').forEach(item => {
+    if(item.onclick && item.onclick.toString().includes(grupo)){
+      item.classList.remove('selecionado');
+    }
+  });
+  el.classList.add('selecionado');
+  if(grupo === 'plano'){ document.getElementById('cardDias').classList.add('oculto'); frequenciaMaxima = 0; diasSelecionados = []; }
 }
 
-function selecionarPlano(el){
-  document.querySelectorAll('#tela2.plano').forEach(p => p.classList.remove('selecionado'));
-  el.classList.add('selecionado');
-  planoSelecionado = el.getAttribute('data-valor');
-  frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
+function selecionarPlanoFrequencia(el, freq){
+  selecionarUnico(el, 'plano');
+  frequenciaMaxima = freq;
   diasSelecionados = [];
-
-  if(frequenciaMaxima > 0){
-    document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('avisoDias').innerText = `Você escolheu ${frequenciaMaxima}x por semana. Selecione exatamente ${frequenciaMaxima} dia(s)`;
-  } else {
-    document.getElementById('cardDias').classList.add('oculto');
-  }
+  document.getElementById('cardDias').classList.remove('oculto');
+  document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione ${freq} dia(s)`;
 }
 
 function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
-  el.classList.toggle('selecionado');
-  diasSelecionados = Array.from(document.querySelectorAll('#cardDias.selecionado')).map(d => d.getAttribute('data-dia'));
-  
-  if(diasSelecionados.length > frequenciaMaxima){
+  if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
-    diasSelecionados.pop();
-    document.getElementById('alertaDias').innerText = `Só pode selecionar ${frequenciaMaxima} dia(s)`;
+    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
-    document.getElementById('alertaDias').innerText = '';
+    if(diasSelecionados.length >= frequenciaMaxima){ return; }
+    el.classList.add('selecionado');
+    diasSelecionados.push(el.getAttribute('data-dia'));
   }
-}
-
-function montarHorarios(){
-  const manha = horariosFixos.slice(0,5);
-  const tarde = horariosFixos.slice(5);
-  document.getElementById('horariosManha').innerHTML = manha.map(h =>
-    `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`
-  ).join('');
-  document.getElementById('horariosTarde').innerHTML = tarde.map(h =>
-    `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`
-  ).join('');
-}
-
-function selecionarHorario(el){
-  document.querySelectorAll('#tela2.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
-  el.classList.add('selecionado');
-  horarioSelecionado = el.getAttribute('data-horario');
-}
-
-function irParaDados(){
-  if(document.getElementById('nivel').value === 'Selecione'){ alert('Selecione Nível'); return; }
-  if(!planoSelecionado){ alert('Escolha um plano'); return; }
-  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
-  if(!horarioSelecionado){ alert('Escolha um horário'); return; }
-  mostrarTela('tela3');
-}
-
-function usarDadosLogin(){
-  Object.keys(dadosLoginKorvil).forEach(k => {
-    if(document.getElementById(k)) document.getElementById(k).value = dadosLoginKorvil[k];
+  document.querySelectorAll('#cardDias.plano').forEach(d => {
+    if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
+    else { d.classList.remove('bloqueado'); }
   });
-  calcularIdade();
-  document.getElementById('cepStatus').innerText = 'Dados do login carregados!';
 }
 
 function calcularIdade(){
   let nasc = document.getElementById('nasc').value;
   if(!nasc) return;
-  let idade = new Date().getFullYear() - new Date(nasc).getFullYear();
+  let dataNasc = new Date(nasc);
+  let hoje = new Date();
+  let idade = hoje.getFullYear() - dataNasc.getFullYear();
+  let mes = hoje.getMonth() - dataNasc.getMonth();
+  if(mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) idade--;
   document.getElementById('idade').value = idade + ' anos';
-  let categoria = idade < 13? 'Criança' : idade < 18? 'Jovem' : idade < 60? 'Adulto' : 'Idoso';
-  document.getElementById('categoria').value = categoria;
+  let faixa = idade >= 10 && idade <= 17? 'Adolescente' : idade >= 18 && idade <= 25? 'Jovem' : idade >= 26 && idade <= 35? 'Adulto Jovem' : idade >= 36 && idade <= 45? 'Adulto' : idade >= 46 && idade <= 59? 'Adulto Maduro' : idade >= 60? 'Idoso' : '';
+  document.getElementById('faixa').value = faixa;
 }
 
-async function buscarCEP(cep){
-  cep = cep.replace(/\D/g, '');
-  if(cep.length!== 8) return;
-  document.getElementById('cepStatus').innerText = 'Buscando...';
-  const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-  const data = await res.json();
-  if(!data.erro){
-    document.getElementById('rua').value = data.logradouro;
-    document.getElementById('bairro').value = data.bairro;
-    document.getElementById('cidade').value = data.localidade;
-    document.getElementById('uf').value = data.uf;
-    document.getElementById('cepStatus').innerText = 'Endereço encontrado!';
-  }
-}
-
-function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
-function mascaraCEP(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,"$1-$2"); }
-function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
-
-function enviarInscricao(){
-  const dadosFinais = {...dadosAnamnese, plano: planoSelecionado, horario: horarioSelecionado, dias: diasSelecionados, nome: document.getElementById('nome').value };
-  console.log(dadosFinais);
-  alert('Inscrição enviada! Agora vamos conectar com o Supabase.');
+function enviarWhatsApp(){
+  alert('Enviado!');
 }
 </script>
+
 </body>
 </html>
