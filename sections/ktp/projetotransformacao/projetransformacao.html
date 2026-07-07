@@ -13,125 +13,47 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;}
 .plano:hover{border-color:var(--c);}
-.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 10px var(--c)40;}
-.plano.bloqueado{opacity:0.4;cursor:not-allowed;pointer-events:none;}
-.plano.objetivo{border:1.5px solid #222;background:#111;}
-.plano.objetivo.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 10px var(--c)40;}
+.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
+.plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
 .plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
+.btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
-.input-group textarea{min-height:70px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
-.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
 .passos.etapa.num{font-weight:900;font-size:12px;display:block;}
 .passos.ativo{color:var(--c);}
 .alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
+.cep-loading{font-size:10px;color:var(--c);}
+.info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
 </style>
 </head>
 <body>
 
-<!-- TELA 1: APRESENTAÇÃO -->
-<div id="tela1">
-  <div class="card">
-    <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <div class="passos">
-      <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
-      <div class="etapa"><span class="num">2</span>PLANOS</div>
-      <div class="etapa"><span class="num">3</span>FINALIZAR</div>
-    </div>
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-    <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
-    <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
-  </div>
-</div>
-
-<!-- TELA 2: ANAMNESE + DADOS PESSOAIS -->
-<div id="tela2" class="oculto">
+<div id="tela3">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
     <div class="etapa"><span class="num">1</span>ANAMNESE</div>
     <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>FINALIZAR</div>
-  </div>
-  <div class="aviso">Preencha todos os dados. Na próxima tela você escolhe plano e horário.</div>
-
-  <div class="card">
-    <div class="titulo-secao">| DADOS PESSOAIS</div>
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-    <div class="grid-2">
-      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdadeECategoria()"></div>
-      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
-      <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
-      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
-    </div>
-    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats"></div>
-  </div>
-
-  <div class="card">
-    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
-    <div class="grid-2">
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Ganho de Peso"><div class="nome">Ganho de Peso</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Emagrecimento"><div class="nome">Emagrecimento</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Definição Muscular"><div class="nome">Definição Muscular</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Saúde"><div class="nome">Saúde</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Condicionamento Físico"><div class="nome">Condicionamento Físico</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Hipertrofia"><div class="nome">Hipertrofia</div></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1"></textarea></div>
-    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2"></textarea></div>
-    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3"></textarea></div>
-    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4"></textarea></div>
-    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5"></textarea></div>
-    <div class="input-group"><label>6. Possui alguma DEFICIÊNCIA ou LIMITAÇÃO física? *</label><textarea id="q6"></textarea></div>
-    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7"></textarea></div>
-    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO físico ou psicológico? *</label><textarea id="q8"></textarea></div>
-    <div class="input-group"><label>9. Está fazendo USO de MEDICAMENTOS? Quais? *</label><textarea id="q9"></textarea></div>
-    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10"></textarea></div>
-    <div class="input-group"><label>11. Descrição e observações: aluno põe tudo que quiser descrever *</label><textarea id="q11"></textarea></div>
-    <button class="btn" onclick="validarAnamnese()">CONTINUAR PARA PLANOS</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
-  </div>
-</div>
-
-<!-- TELA 3: PLANOS + HORÁRIO -->
-<div id="tela3" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>FINALIZAR</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
     <div class="titulo-secao">| 1. ESCOLHA O PLANO - SEG A SEXTA</div>
-    <div class="input-group"><label>Nível *</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
+    <div class="input-group"><label>Nivel *</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
 
     <div class="grid-2">
       <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-freq="0"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
@@ -151,7 +73,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div id="cardDias" class="card oculto">
-    <div class="titulo-secao">| 2. ESCOLHA OS DIAS - SEG A SEXTA</div>
+    <div class="titulo-secao">| 2. ESCOLHA OS DIAS DE TREINO</div>
     <div class="sub-titulo" id="subDias">Selecione os dias. Pode ser qualquer ordem.</div>
     <div class="grid-5">
       <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
@@ -171,56 +93,116 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="grid-4" id="horariosTarde"></div>
   </div>
 
+  <div class="card">
+    <div class="titulo-secao">| 4. DADOS PESSOAIS</div>
+    <div class="info-login">Facilite seu preenchimento</div>
+    <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
+
+    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
+    <div class="grid-2">
+      <div class="input-group"><label>CPF *</label><input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCPF(this)"></div>
+      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
+      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
+      <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
+    </div>
+    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+
+    <div class="titulo-secao" style="margin-top:12px;">| ENDEREÇO</div>
+    <div class="grid-2">
+      <div class="input-group">
+        <label>CEP *</label>
+        <input type="text" id="cep" maxlength="9" placeholder="00000-000" onblur="buscarCEP(this.value)" oninput="mascaraCEP(this)">
+        <div id="cepStatus" class="cep-loading"></div>
+      </div>
+      <div class="input-group"><label>N° da Casa *</label><input type="text" id="numero"></div>
+    </div>
+    <div class="input-group"><label>Rua / Logradouro</label><input type="text" id="rua" readonly></div>
+    <div class="grid-3">
+      <div class="input-group"><label>Bairro</label><input type="text" id="bairro" readonly></div>
+      <div class="input-group"><label>Cidade</label><input type="text" id="cidade" readonly></div>
+      <div class="input-group"><label>UF</label><input type="text" id="uf" readonly></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
+      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
+    </div>
+  </div>
+
   <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
-  <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
+  <button class="btn voltar" onclick="history.back()">Voltar</button>
 </div>
 
 <script>
 let frequenciaMaxima = 0;
 let diasSelecionados = [];
-let objetivosSelecionados = [];
 let planoSelecionado = '';
 let horarioSelecionado = '';
 
-const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
+const horariosFixos = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 
-function mostrarTela(id){
-  document.getElementById('tela1').classList.add('oculto');
-  document.getElementById('tela2').classList.add('oculto');
-  document.getElementById('tela3').classList.add('oculto');
-  document.getElementById(id).classList.remove('oculto');
-  if(id === 'tela3') montarHorarios();
-  window.scrollTo(0,0);
-}
+// DADOS SIMULADOS DO LOGIN KORVIL. TROCAR PELO REAL DEPOIS
+const dadosLoginKorvil = {
+  nome: "João da Silva",
+  cpf: "123.456.789-00",
+  email: "joao@email.com",
+  whats: "(11) 98765-4321",
+  cep: "01001-000",
+  rua: "Praça da Sé",
+  bairro: "Sé",
+  cidade: "São Paulo",
+  uf: "SP",
+  nasc: "1995-05-10",
+  publico: "Masculino"
+};
 
-function selecionarObjetivo(el){
-  el.classList.toggle('selecionado'); // TOGGLE
-  const valor = el.getAttribute('data-valor');
-  if(el.classList.contains('selecionado')){ if(!objetivosSelecionados.includes(valor)) objetivosSelecionados.push(valor); }
-  else { objetivosSelecionados = objetivosSelecionados.filter(o => o!== valor); }
+window.onload = montarHorarios;
+
+function usarDadosLogin(){
+  if(!dadosLoginKorvil.nome){
+    alert('Nenhum dado de login encontrado.');
+    return;
+  }
+  document.getElementById('nome').value = dadosLoginKorvil.nome;
+  document.getElementById('cpf').value = dadosLoginKorvil.cpf;
+  document.getElementById('email').value = dadosLoginKorvil.email;
+  document.getElementById('whats').value = dadosLoginKorvil.whats;
+  document.getElementById('cep').value = dadosLoginKorvil.cep;
+  document.getElementById('nasc').value = dadosLoginKorvil.nasc;
+  document.getElementById('publico').value = dadosLoginKorvil.publico;
+  document.getElementById('rua').value = dadosLoginKorvil.rua;
+  document.getElementById('bairro').value = dadosLoginKorvil.bairro;
+  document.getElementById('cidade').value = dadosLoginKorvil.cidade;
+  document.getElementById('uf').value = dadosLoginKorvil.uf;
+  calcularIdade();
+  document.getElementById('cepStatus').innerText = 'Dados do login carregados! Pode editar.';
 }
 
 function selecionarPlano(el){
-  // TOGGLE NO PLANO
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     planoSelecionado = '';
     frequenciaMaxima = 0;
     document.getElementById('cardDias').classList.add('oculto');
     diasSelecionados = [];
+    document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado'));
     return;
   }
-
-  document.querySelectorAll('#tela3.plano').forEach(p => p.classList.remove('selecionado'));
+  document.querySelectorAll('.plano').forEach(p => {
+    if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado');
+  });
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
   diasSelecionados = [];
-
   if(frequenciaMaxima > 0){
     document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('subDias').innerText = `Você escolheu ${frequenciaMaxima}x. Selecione exatamente ${frequenciaMaxima} dia(s). Qualquer ordem.`;
-    document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado','bloqueado'));
+    document.getElementById('subDias').innerText = `Você escolheu ${frequenciaMaxima}x. Selecione exatamente ${frequenciaMaxima} dia(s)`;
   } else {
     document.getElementById('cardDias').classList.add('oculto');
   }
@@ -228,23 +210,18 @@ function selecionarPlano(el){
 
 function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
-
-  el.classList.toggle('selecionado'); // TOGGLE NO DIA
-  const dia = el.getAttribute('data-dia');
-
   if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
+  } else {
     if(diasSelecionados.length >= frequenciaMaxima){
-      el.classList.remove('selecionado');
       document.getElementById('alertaDias').innerText = `Só pode escolher ${frequenciaMaxima} dia(s)`;
       return;
     }
-    diasSelecionados.push(dia);
+    el.classList.add('selecionado');
+    diasSelecionados.push(el.getAttribute('data-dia'));
     document.getElementById('alertaDias').innerText = '';
-  } else {
-    diasSelecionados = diasSelecionados.filter(d => d!== dia);
   }
-
-  // Bloqueia extras
   document.querySelectorAll('#cardDias.plano').forEach(d => {
     if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
     else { d.classList.remove('bloqueado'); }
@@ -252,8 +229,8 @@ function selecionarDia(el){
 }
 
 function montarHorarios(){
-  const manha = horarios.slice(0,5);
-  const tarde = horarios.slice(5);
+  const manha = horariosFixos.slice(0,5);
+  const tarde = horariosFixos.slice(5);
   document.getElementById('horariosManha').innerHTML = manha.map(h =>
     `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`
   ).join('');
@@ -263,19 +240,17 @@ function montarHorarios(){
 }
 
 function selecionarHorario(el){
-  el.classList.toggle('selecionado'); // TOGGLE NO HORARIO
-  const horario = el.getAttribute('data-horario');
-
   if(el.classList.contains('selecionado')){
-    // Desmarca outros horários
-    document.querySelectorAll('#tela3.plano[data-horario]').forEach(h => { if(h!== el) h.classList.remove('selecionado'); });
-    horarioSelecionado = horario;
-  } else {
+    el.classList.remove('selecionado');
     horarioSelecionado = '';
+    return;
   }
+  document.querySelectorAll('.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
+  el.classList.add('selecionado');
+  horarioSelecionado = el.getAttribute('data-horario');
 }
 
-function calcularIdadeECategoria(){
+function calcularIdade(){
   let nasc = document.getElementById('nasc').value;
   if(!nasc) return;
   let dataNasc = new Date(nasc + 'T00:00:00');
@@ -288,14 +263,40 @@ function calcularIdadeECategoria(){
   document.getElementById('categoria').value = categoria;
 }
 
-function validarAnamnese(){
-  if(!document.getElementById('nome').value.trim()){ alert('Preencha Nome Completo'); return; }
-  if(!document.getElementById('nasc').value){ alert('Preencha Data de Nascimento'); return; }
-  if(!document.getElementById('publico').value || document.getElementById('publico').value === 'Selecione'){ alert('Selecione Gênero'); return; }
-  if(!document.getElementById('whats').value.trim()){ alert('Preencha WhatsApp'); return; }
-  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
-  if(!document.getElementById('q11').value.trim()){ alert('Preencha a Descrição e observações'); return; }
-  mostrarTela('tela3');
+async function buscarCEP(cep){
+  cep = cep.replace(/\D/g, '');
+  if(cep.length!== 8){ document.getElementById('cepStatus').innerText = ''; return; }
+  document.getElementById('cepStatus').innerText = 'Buscando endereço...';
+  try{
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await response.json();
+    if(data.erro){ document.getElementById('cepStatus').innerText = 'CEP não encontrado'; return; }
+    document.getElementById('rua').value = data.logradouro;
+    document.getElementById('bairro').value = data.bairro;
+    document.getElementById('cidade').value = data.localidade;
+    document.getElementById('uf').value = data.uf;
+    document.getElementById('cepStatus').innerText = 'Endereço encontrado!';
+    document.getElementById('numero').focus();
+  } catch(e){ document.getElementById('cepStatus').innerText = 'Erro ao buscar CEP'; }
+}
+
+function mascaraCPF(i){
+  let v = i.value.replace(/\D/g,'');
+  v = v.replace(/(\d{3})(\d)/,"$1.$2");
+  v = v.replace(/(\d{3})(\d)/,"$1.$2");
+  v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+  i.value = v;
+}
+function mascaraCEP(i){
+  let v = i.value.replace(/\D/g,'');
+  v = v.replace(/(\d{5})(\d)/,"$1-$2");
+  i.value = v;
+}
+function mascaraWhats(i){
+  let v = i.value.replace(/\D/g,'');
+  v = v.replace(/(\d{2})(\d)/,"($1) $2");
+  v = v.replace(/(\d{5})(\d)/,"$1-$2");
+  i.value = v;
 }
 
 function enviarWhatsApp(){
@@ -303,7 +304,14 @@ function enviarWhatsApp(){
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
-  alert('Inscrição Enviada!');
+  if(!document.getElementById('nome').value.trim()){ alert('Preencha Nome Completo'); return; }
+  if(!document.getElementById('cpf').value.trim()){ alert('Preencha CPF'); return; }
+  if(!document.getElementById('nasc').value){ alert('Preencha Data de Nascimento'); return; }
+  if(!document.getElementById('publico').value || document.getElementById('publico').value === 'Selecione'){ alert('Selecione Gênero'); return; }
+  if(!document.getElementById('whats').value.trim()){ alert('Preencha WhatsApp'); return; }
+  if(!document.getElementById('cep').value.trim()){ alert('Preencha CEP'); return; }
+  if(!document.getElementById('numero').value.trim()){ alert('Preencha N° da Casa'); return; }
+  alert('Inscrição Enviada com Sucesso!');
 }
 </script>
 
