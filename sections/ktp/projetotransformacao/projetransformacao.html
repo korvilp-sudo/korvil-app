@@ -39,34 +39,24 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
-<!-- SUA APRESENTAÇÃO ORIGINAL INTACTA -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
-
     <div class="titulo-secao">| SOBRE O PROGRAMA</div>
     <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
-
-    <div class="card" style="background:#111;border:1.5px solid var(--c);">
-      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
-    </div>
-
     <div class="titulo-secao">| PARTICIPANTES</div>
     <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
-
     <div class="titulo-secao">| METODOLOGIA</div>
     <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
-
     <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
     <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
     <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
     <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
     <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
     <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
-
     <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
 </div>
@@ -81,7 +71,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
+    <div class="aviso-dias">Preencha todos os dados para avançar.</div>
 
     <div class="titulo-secao">| OBJETIVOS - MÍNIMO 1</div>
     <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
@@ -160,6 +150,7 @@ function toggleObjetivo(el){
     span.className = 'numero-prioridade';
     el.appendChild(span);
   }
+  // CORRIGIDO: espaço entre #tela1 e.plano
   objetivosSelecionados = [];
   document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => {
     let numEl = item.querySelector('.numero-prioridade');
@@ -168,7 +159,19 @@ function toggleObjetivo(el){
 }
 
 function irParaPlanos(){
-  // CORREÇÃO FINAL: SÓ VALIDA OBJETIVO
+  // 1. VALIDA NIVEL
+  if(document.getElementById('nivelAtividade').value === ''){
+    alert('Selecione seu Nível de Atividade Física');
+    return;
+  }
+  // 2. VALIDA 11 PERGUNTAS - CONTEUDO NAO IMPORTA, SO NAO PODE ESTAR VAZIO
+  for(let i=1;i<=11;i++){
+    if(document.getElementById('q'+i).value.trim() === ''){
+      alert('Preencha todas as perguntas obrigatórias da Anamnese');
+      return;
+    }
+  }
+  // 3. VALIDA OBJETIVO - AGORA VAI FUNCIONAR
   if(objetivosSelecionados.length < 1){
     alert('Selecione pelo menos 1 objetivo');
     return;
