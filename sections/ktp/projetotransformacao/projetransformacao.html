@@ -31,8 +31,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .input-group textarea{min-height:60px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
-.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
@@ -48,16 +48,39 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
+<!-- APRESENTAÇÃO ORIGINAL -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+
+    <div class="card" style="background:#111;border:1.5px solid var(--c);">
+      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
+    </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
+
     <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
 </div>
 
+<!-- TELA 1: ANAMNESE -->
 <div id="tela1" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -110,6 +133,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
+<!-- TELA 2: PLANOS -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -120,6 +144,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="card"><div class="titulo-secao">| PLANOS</div></div>
 </div>
 
+<!-- TELA 3: DADOS PESSOAIS -->
 <div id="tela3" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -176,7 +201,7 @@ function toggleObjetivo(el){
     el.appendChild(span);
   }
   objetivosSelecionados = [];
-  document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => { // CORRIGIDO AQUI: tinha espaço
+  document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => {
     let numEl = item.querySelector('.numero-prioridade');
     if(numEl) numEl.innerText = index + 1;
     let objNome = item.getAttribute('data-obj');
