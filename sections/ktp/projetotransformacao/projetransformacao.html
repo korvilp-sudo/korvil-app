@@ -21,8 +21,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
-.plano.nome{font-weight:800;color:var(--c);font-size:13px;}
-.plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
 .btn.voltar{background:#222;color:var(--text);}
@@ -44,18 +42,16 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
 .check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
-.fase-box.titulo{font-weight:800;color:var(--c);}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 </style>
 </head>
 <body>
 
-<!-- APRESENTAÇÃO FIXA -->
+<!-- APRESENTAÇÃO - NÃO É TELA -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
 
@@ -67,20 +63,17 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
 
     <div class="titulo-secao">| PARTICIPANTES</div>
-    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br>
-    <span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br>
-    <span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
 
     <div class="titulo-secao">| METODOLOGIA</div>
-    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br>
-    <span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
 
     <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="fase-box"><span class="titulo">FASE 1. OFF SEASON</span><br>Janeiro e Fevereiro</div>
-    <div class="fase-box"><span class="titulo">FASE 2. BULKING</span><br>Março, Abril e Maio</div>
-    <div class="fase-box"><span class="titulo">FASE 3. MAINTENANCE</span><br>Junho, Julho e Agosto</div>
-    <div class="fase-box"><span class="titulo">FASE 4. CUTTING</span><br>Setembro, Outubro e Novembro</div>
-    <div class="fase-box"><span class="titulo" style="color:var(--ok);">DEZEMBRO: FÉRIAS</span></div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
 
     <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
@@ -112,7 +105,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-
     <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
     <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
     <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
@@ -124,7 +116,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="input-group"><label>9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label><textarea id="q9" rows="2"></textarea></div>
     <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10" rows="2"></textarea></div>
     <div class="input-group"><label>11. Descrição e observações: aluno pode tudo que quiser descrever *</label><textarea id="q11" rows="3"></textarea></div>
-
     <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
   </div>
 </div>
@@ -143,19 +134,19 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="input-group"><label>Nível *</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
 
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-freq="0"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-freq="0"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-freq="0"><div style="font-weight:800;color:var(--c)">AULA AVULSA ONLINE</div><div style="font-weight:900;color:var(--ok)">R$20,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-freq="0"><div style="font-weight:800;color:var(--c)">AULA AVULSA PRESENCIAL</div><div style="font-weight:900;color:var(--ok)">R$20,00</div></div>
     </div>
 
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-freq="0"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
+    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-freq="0"><div style="font-weight:800;color:var(--c)">ONLINE MENSAL</div><div style="font-weight:900;color:var(--ok)">R$60,00 / MÊS</div></div>
 
     <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
     <div class="grid-2">
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
-      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
+      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div style="font-weight:800;color:var(--c)">1x na semana</div><div style="font-weight:900;color:var(--ok)">R$60,00</div></div>
+      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div style="font-weight:800;color:var(--c)">2x na semana</div><div style="font-weight:900;color:var(--ok)">R$80,00</div></div>
+      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div style="font-weight:800;color:var(--c)">3x na semana</div><div style="font-weight:900;color:var(--ok)">R$100,00</div></div>
+      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div style="font-weight:800;color:var(--c)">4x na semana</div><div style="font-weight:900;color:var(--ok)">R$130,00</div></div>
+      <div class="plano plano-freq" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div style="font-weight:800;color:var(--c)">5x na semana</div><div style="font-weight:900;color:var(--ok)">R$150,00</div></div>
     </div>
   </div>
 
@@ -215,11 +206,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
     <div class="titulo-secao" style="margin-top:12px;">| ENDEREÇO</div>
     <div class="grid-2">
-      <div class="input-group">
-        <label>CEP *</label>
-        <input type="text" id="cep" maxlength="9" placeholder="00000-000" onblur="buscarCEP(this.value)" oninput="mascaraCEP(this)">
-        <div id="cepStatus" class="cep-loading"></div>
-      </div>
+      <div class="input-group"><label>CEP *</label><input type="text" id="cep" maxlength="9" placeholder="00000-000" onblur="buscarCEP(this.value)" oninput="mascaraCEP(this)"><div id="cepStatus" class="cep-loading"></div></div>
       <div class="input-group"><label>N° da Casa *</label><input type="text" id="numero"></div>
     </div>
     <div class="input-group"><label>Rua / Logradouro</label><input type="text" id="rua" readonly></div>
@@ -268,20 +255,10 @@ function toggleObjetivo(el){
 }
 
 function irParaPlanos(){
-  for(let i=1;i<=9;i++){
-    if(document.getElementById('q'+i).value.trim() === ''){
-      alert('Preencha todas as perguntas obrigatórias da Anamnese');
-      return;
-    }
-  }
-  if(objetivosSelecionados.length === 0){
-    alert('Selecione pelo menos 1 objetivo');
-    return;
-  }
-
+  for(let i=1;i<=9;i++){ if(document.getElementById('q'+i).value.trim() === ''){ alert('Preencha todas as perguntas obrigatórias da Anamnese'); return; } }
+  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 objetivo'); return; }
   dadosAnamnese = {objetivos: objetivosSelecionados};
   for(let i=1;i<=11;i++){ dadosAnamnese['q'+i] = document.getElementById('q'+i).value; }
-
   mostrarTela('tela2');
 }
 
@@ -292,28 +269,20 @@ function selecionarPlano(el){
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
   diasSelecionados = [];
   document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado','bloqueado'));
-
   if(frequenciaMaxima > 0){
     document.getElementById('cardDias').classList.remove('oculto');
     document.getElementById('avisoDias').innerText = `Você escolheu ${frequenciaMaxima}x por semana. Selecione exatamente ${frequenciaMaxima} dia(s)`;
-  } else {
-    document.getElementById('cardDias').classList.add('oculto');
-  }
+  } else { document.getElementById('cardDias').classList.add('oculto'); }
 }
 
 function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
   el.classList.toggle('selecionado');
   diasSelecionados = Array.from(document.querySelectorAll('#cardDias.plano.selecionado')).map(d => d.getAttribute('data-dia'));
-
   if(diasSelecionados.length > frequenciaMaxima){
-    el.classList.remove('selecionado');
-    diasSelecionados.pop();
+    el.classList.remove('selecionado'); diasSelecionados.pop();
     document.getElementById('alertaDias').innerText = `Só pode selecionar ${frequenciaMaxima} dia(s)`;
-  } else {
-    document.getElementById('alertaDias').innerText = '';
-  }
-
+  } else { document.getElementById('alertaDias').innerText = ''; }
   document.querySelectorAll('#cardDias.plano').forEach(d => {
     if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
     else { d.classList.remove('bloqueado'); }
@@ -323,12 +292,8 @@ function selecionarDia(el){
 function montarHorarios(){
   const manha = horariosFixos.slice(0,5);
   const tarde = horariosFixos.slice(5);
-  document.getElementById('horariosManha').innerHTML = manha.map(h =>
-    `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`
-  ).join('');
-  document.getElementById('horariosTarde').innerHTML = tarde.map(h =>
-    `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`
-  ).join('');
+  document.getElementById('horariosManha').innerHTML = manha.map(h => `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`).join('');
+  document.getElementById('horariosTarde').innerHTML = tarde.map(h => `<div class="plano" onclick="selecionarHorario(this)" data-horario="${h}"><div>${h}</div><div class="vagas">7 vagas</div></div>`).join('');
 }
 
 function selecionarHorario(el){
@@ -346,16 +311,13 @@ function irParaDados(){
 }
 
 function usarDadosLogin(){
-  Object.keys(dadosLoginKorvil).forEach(k => {
-    if(document.getElementById(k)) document.getElementById(k).value = dadosLoginKorvil[k];
-  });
+  Object.keys(dadosLoginKorvil).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = dadosLoginKorvil[k]; });
   calcularIdade();
   document.getElementById('cepStatus').innerText = 'Dados do login carregados!';
 }
 
 function calcularIdade(){
-  let nasc = document.getElementById('nasc').value;
-  if(!nasc) return;
+  let nasc = document.getElementById('nasc').value; if(!nasc) return;
   let idade = new Date().getFullYear() - new Date(nasc).getFullYear();
   document.getElementById('idade').value = idade + ' anos';
   let categoria = idade < 13? 'Criança' : idade < 18? 'Jovem' : idade < 60? 'Adulto' : 'Idoso';
@@ -363,11 +325,9 @@ function calcularIdade(){
 }
 
 async function buscarCEP(cep){
-  cep = cep.replace(/\D/g, '');
-  if(cep.length!== 8) return;
+  cep = cep.replace(/\D/g, ''); if(cep.length!== 8) return;
   document.getElementById('cepStatus').innerText = 'Buscando...';
-  const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-  const data = await res.json();
+  const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`); const data = await res.json();
   if(!data.erro){
     document.getElementById('rua').value = data.logradouro;
     document.getElementById('bairro').value = data.bairro;
