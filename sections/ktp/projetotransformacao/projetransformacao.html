@@ -12,172 +12,178 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
-.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;position:relative;}
-.plano:hover{border-color:var(--c);}
-.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
-.plano.numero-prioridade{position:absolute;top:5px;right:5px;background:var(--c);color:#000;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
-.btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
-.input-group{margin-bottom:10px;}
-.input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
-.input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
-.input-group textarea{min-height:60px;resize:vertical;}
-.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.oculto{display:none;}
-.passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
-.passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
-.passos.etapa.num{font-weight:900;font-size:12px;display:block;}
-.passos.ativo{color:var(--c);}
-.check{color:var(--ok);margin-right:6px;}
-.fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
-.aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
+.subtitulo{font-size:12px;color:var(--text2);margin-bottom:12px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer;margin-top:12px;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.input{width:100%;padding:12px;background:#111;border:1px solid var(--borda);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:10px;}
+.label{font-size:13px;color:var(--text2);margin-bottom:4px;display:block;}
+.tabs{display:flex;gap:8px;margin-bottom:16px;}
+.tab{flex:1;text-align:center;padding:10px;border-radius:8px;background:#111;color:var(--text2);font-size:12px;font-weight:700;}
+.tab.ativo{background:var(--c);color:#000;}
+.obj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.obj-btn{padding:12px;background:#111;border:1px solid var(--borda);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;}
+.obj-btn.selecionado{border-color:var(--c);background:#0a1a1a;color:var(--c);}
 </style>
 </head>
 <body>
+<h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
 
-<div id="apresentacao">
-  <div class="card">
-    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
-    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
-    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
-    <div class="titulo-secao">| PARTICIPANTES</div>
-    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
-    <div class="titulo-secao">| METODOLOGIA</div>
-    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
-    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
-    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
-    <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
+<div class="tabs">
+  <div class="tab ativo">1ANAMNESE</div>
+  <div class="tab">2PLANOS</div>
+  <div class="tab">3DADOS</div>
+</div>
+
+<div class="card">
+  <div class="titulo-secao">K-TP PROJETO TRANSFORMAÇÃO</div>
+  <div class="subtitulo">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados e condições do participante para o profissional criar todos os protocolos dele.</div>
+</div>
+
+<div class="card">
+  <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
+  <div class="obj-grid" id="objetivos">
+    <button class="obj-btn" data-val="Ganho de Peso">Ganho de Peso</button>
+    <button class="obj-btn" data-val="Emagrecimento">Emagrecimento</button>
+    <button class="obj-btn" data-val="Definição Muscular">Definição Muscular</button>
+    <button class="obj-btn" data-val="Saúde">Saúde</button>
+    <button class="obj-btn" data-val="Condicionamento Físico">Condicionamento Físico</button>
+    <button class="obj-btn" data-val="Hipertrofia">Hipertrofia</button>
   </div>
 </div>
 
-<div id="tela1" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
-  </div>
+<div class="card">
+  <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
+  <label class="label">1. Ja praticou atividade fisica antes? *</label>
+  <input type="text" class="input" id="q1">
+  
+  <label class="label">2. Como você descreve sua ALIMENTAÇÃO atual? *</label>
+  <input type="text" class="input" id="q2">
+  
+  <label class="label">3. Quantas horas você DORME por noite? *</label>
+  <input type="text" class="input" id="q3">
+  
+  <label class="label">8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico? *</label>
+  <input type="text" class="input" id="q8">
+  
+  <label class="label">9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label>
+  <input type="text" class="input" id="q9">
+  
+  <label class="label">10. Alguma OBSERVAÇÃO para o treinador?</label>
+  <input type="text" class="input" id="q10">
+  
+  <label class="label">11. Descrição e observação: aluno pode tudo que quiser descrever *</label>
+  <input type="text" class="input" id="q11">
+  
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
+<title>K-TP PROJETO TRANSFORMAÇÃO</title>
+<style>
+:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
+h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
+.subtitulo{font-size:12px;color:var(--text2);margin-bottom:12px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer;margin-top:12px;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.input{width:100%;padding:12px;background:#111;border:1px solid var(--borda);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:10px;}
+.label{font-size:13px;color:var(--text2);margin-bottom:4px;display:block;}
+.tabs{display:flex;gap:8px;margin-bottom:16px;}
+.tab{flex:1;text-align:center;padding:10px;border-radius:8px;background:#111;color:var(--text2);font-size:12px;font-weight:700;}
+.tab.ativo{background:var(--c);color:#000;}
+.obj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.obj-btn{padding:12px;background:#111;border:1px solid var(--borda);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;}
+.obj-btn.selecionado{border-color:var(--c);background:#0a1a1a;color:var(--c);}
+</style>
+</head>
+<body>
+<h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
 
-  <div class="card">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <div class="aviso-dias">Preencha todos os dados para avançar.</div>
+<div class="tabs">
+  <div class="tab ativo">1ANAMNESE</div>
+  <div class="tab">2PLANOS</div>
+  <div class="tab">3DADOS</div>
+</div>
 
-    <div class="titulo-secao">| OBJETIVOS - MÍNIMO 1</div>
-    <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Reabilitação">Reabilitação</div>
-    </div>
-  </div>
+<div class="card">
+  <div class="titulo-secao">K-TP PROJETO TRANSFORMAÇÃO</div>
+  <div class="subtitulo">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados e condições do participante para o profissional criar todos os protocolos dele.</div>
+</div>
 
-  <div class="card">
-    <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-    <div class="input-group"><label>Nível de Atividade Física *</label>
-      <select id="nivelAtividade">
-        <option value="">Selecione</option>
-        <option value="Iniciante">Iniciante</option>
-        <option value="Intermediário">Intermediário</option>
-        <option value="Avançado">Avançado</option>
-      </select>
-    </div>
-    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
-    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
-    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
-    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4" rows="2"></textarea></div>
-    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5" rows="2"></textarea></div>
-    <div class="input-group"><label>6. Possui alguma DEFICIENCIA ou LIMITAÇÃO fisica? *</label><textarea id="q6" rows="2"></textarea></div>
-    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7" rows="2"></textarea></div>
-    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico? *</label><textarea id="q8" rows="2"></textarea></div>
-    <div class="input-group"><label>9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label><textarea id="q9" rows="2"></textarea></div>
-    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10" rows="2"></textarea></div>
-    <div class="input-group"><label>11. Descrição e observações: aluno pode tudo que quiser descrever *</label><textarea id="q11" rows="3"></textarea></div>
-    <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
+<div class="card">
+  <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
+  <div class="obj-grid" id="objetivos">
+    <button class="obj-btn" data-val="Ganho de Peso">Ganho de Peso</button>
+    <button class="obj-btn" data-val="Emagrecimento">Emagrecimento</button>
+    <button class="obj-btn" data-val="Definição Muscular">Definição Muscular</button>
+    <button class="obj-btn" data-val="Saúde">Saúde</button>
+    <button class="obj-btn" data-val="Condicionamento Físico">Condicionamento Físico</button>
+    <button class="obj-btn" data-val="Hipertrofia">Hipertrofia</button>
   </div>
 </div>
 
-<div id="tela2" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
-  </div>
-  <div class="card"><div class="titulo-secao">| PLANOS</div></div>
-</div>
-
-<div id="tela3" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
-  </div>
+<div class="card">
+  <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
+  <label class="label">1. Ja praticou atividade fisica antes? *</label>
+  <input type="text" class="input" id="q1">
+  
+  <label class="label">2. Como você descreve sua ALIMENTAÇÃO atual? *</label>
+  <input type="text" class="input" id="q2">
+  
+  <label class="label">3. Quantas horas você DORME por noite? *</label>
+  <input type="text" class="input" id="q3">
+  
+  <label class="label">8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico? *</label>
+  <input type="text" class="input" id="q8">
+  
+  <label class="label">9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label>
+  <input type="text" class="input" id="q9">
+  
+  <label class="label">10. Alguma OBSERVAÇÃO para o treinador?</label>
+  <input type="text" class="input" id="q10">
+  
+  <label class="label">11. Descrição e observação: aluno pode tudo que quiser descrever *</label>
+  <input type="text" class="input" id="q11">
+  
+  <button class="btn" id="btnContinuar">CONTINUAR</button>
 </div>
 
 <script>
-let objetivosSelecionados = [];
+const objetivos = [];
+document.querySelectorAll('.obj-btn').forEach(btn=>{
+  btn.onclick = () => {
+    btn.classList.toggle('selecionado');
+    const val = btn.dataset.val;
+    if(objetivos.includes(val)) objetivos.splice(objetivos.indexOf(val),1);
+    else objetivos.push(val);
+  }
+});
 
-function mostrarTela(id){
-  document.getElementById('apresentacao').classList.add('oculto');
-  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
-  document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0,0);
-}
-
-function toggleObjetivo(el){
-  if(el.classList.contains('selecionado')){
-    el.classList.remove('selecionado');
-    el.querySelector('.numero-prioridade')?.remove();
-  } else {
-    el.classList.add('selecionado');
-    let span = document.createElement('span');
-    span.className = 'numero-prioridade';
-    el.appendChild(span);
-  }
-  // CORRIGIDO: espaço entre #tela1 e.plano
-  objetivosSelecionados = [];
-  document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => {
-    let numEl = item.querySelector('.numero-prioridade');
-    if(numEl) numEl.innerText = index + 1;
-  });
-}
-
-function irParaPlanos(){
-  // 1. VALIDA NIVEL
-  if(document.getElementById('nivelAtividade').value === ''){
-    alert('Selecione seu Nível de Atividade Física');
-    return;
-  }
-  // 2. VALIDA 11 PERGUNTAS - CONTEUDO NAO IMPORTA, SO NAO PODE ESTAR VAZIO
-  for(let i=1;i<=11;i++){
-    if(document.getElementById('q'+i).value.trim() === ''){
-      alert('Preencha todas as perguntas obrigatórias da Anamnese');
-      return;
-    }
-  }
-  // 3. VALIDA OBJETIVO - AGORA VAI FUNCIONAR
-  if(objetivosSelecionados.length < 1){
-    alert('Selecione pelo menos 1 objetivo');
-    return;
-  }
-  mostrarTela('tela2');
+document.getElementById('btnContinuar').onclick = () => {
+  // REMOVI O BLOQUEIO AQUI
+  // Antes tinha: if(objetivos.length === 0){ alert('Selecione pelo menos 1 objetivo'); return; }
+  
+  const dados = {
+    objetivos: objetivos,
+    q1: document.getElementById('q1').value,
+    q2: document.getElementById('q2').value,
+    q3: document.getElementById('q3').value,
+    q8: document.getElementById('q8').value,
+    q9: document.getElementById('q9').value,
+    q10: document.getElementById('q10').value,
+    q11: document.getElementById('q11').value
+  };
+  
+  console.log(dados);
+  alert('Dados salvos! Indo para próxima tela...');
+  // aqui você coloca proximaTela()
 }
 </script>
+
 </body>
 </html>
