@@ -44,6 +44,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
+.preco{font-size:18px;font-weight:900;color:var(--c);margin:6px 0;}
+.dias-horario{font-size:11px;color:var(--text2);line-height:1.5;}
 </style>
 </head>
 <body>
@@ -133,7 +135,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-<!-- TELA 2: PLANOS -->
+<!-- TELA 2: PLANOS VOLTOU -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -141,7 +143,48 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
     <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
-  <div class="card"><div class="titulo-secao">| PLANOS</div></div>
+  <div class="card">
+    <div class="titulo-secao">| PLANOS DISPONÍVEIS</div>
+    <div class="sub-titulo">Escolha 1 plano para continuar</div>
+    
+    <div class="plano" onclick="selecionarPlano(this, 'Plano Starter')">
+      <div style="font-weight:900;">PLANO STARTER</div>
+      <div class="preco">R$ 149,90/mês</div>
+      <div class="dias-horario">2x por semana<br>Seg e Qua - 07:00 às 08:00</div>
+      <div class="vagas">12 vagas disponíveis</div>
+    </div>
+
+    <div class="plano" onclick="selecionarPlano(this, 'Plano Pro')">
+      <div style="font-weight:900;">PLANO PRO</div>
+      <div class="preco">R$ 249,90/mês</div>
+      <div class="dias-horario">3x por semana<br>Seg, Qua e Sex - 07:00 às 08:00</div>
+      <div class="vagas">8 vagas disponíveis</div>
+    </div>
+
+    <div class="plano" onclick="selecionarPlano(this, 'Plano Master')">
+      <div style="font-weight:900;">PLANO MASTER</div>
+      <div class="preco">R$ 349,90/mês</div>
+      <div class="dias-horario">5x por semana<br>Seg à Sex - 07:00 às 08:00</div>
+      <div class="vagas">5 vagas disponíveis</div>
+    </div>
+
+    <div class="plano" onclick="selecionarPlano(this, 'Plano Elite')">
+      <div style="font-weight:900;">PLANO ELITE</div>
+      <div class="preco">R$ 499,90/mês</div>
+      <div class="dias-horario">5x por semana + Sábado<br>Horário Flexível</div>
+      <div class="vagas">3 vagas disponíveis</div>
+    </div>
+
+    <div class="plano" onclick="selecionarPlano(this, 'Plano Personal')">
+      <div style="font-weight:900;">PLANO PERSONAL 1:1</div>
+      <div class="preco">R$ 899,90/mês</div>
+      <div class="dias-horario">3x por semana<br>Horário exclusivo com o treinador</div>
+      <div class="vagas">2 vagas disponíveis</div>
+    </div>
+
+    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
+  </div>
 </div>
 
 <!-- TELA 3: DADOS PESSOAIS -->
@@ -177,6 +220,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <script>
 let objetivosSelecionados = [];
+let planoSelecionado = '';
 const dadosLoginKorvil = {
   nome: "João da Silva", cpf: "123.456.789-00", email: "joao@email.com", whats: "(11) 98765-4321",
   nasc: "1995-05-10", publico: "Masculino"
@@ -222,6 +266,20 @@ function irParaPlanos(){
   }
   // BLOQUEIO DE OBJETIVO REMOVIDO
   mostrarTela('tela2');
+}
+
+function selecionarPlano(el, nome){
+  document.querySelectorAll('#tela2.plano').forEach(p => p.classList.remove('selecionado'));
+  el.classList.add('selecionado');
+  planoSelecionado = nome;
+}
+
+function irParaDados(){
+  if(planoSelecionado === ''){
+    alert('Selecione um plano para continuar');
+    return;
+  }
+  mostrarTela('tela3');
 }
 
 function usarDadosLogin(){
