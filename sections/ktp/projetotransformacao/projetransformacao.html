@@ -17,10 +17,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;position:relative;}
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
+.plano.numero-prioridade{position:absolute;top:5px;right:5px;background:var(--c);color:#000;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
 .btn.voltar{background:#222;color:var(--text);}
@@ -92,7 +93,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
     <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
 
-    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
+    <div class="titulo-secao">| OBJETIVOS - MÍNIMO 1</div>
+    <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
@@ -100,11 +102,22 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
+      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Reabilitação">Reabilitação</div>
     </div>
   </div>
 
   <div class="card">
     <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
+
+    <div class="input-group"><label>Nível de Atividade Física *</label>
+      <select id="nivelAtividade">
+        <option value="">Selecione</option>
+        <option value="Iniciante">Iniciante</option>
+        <option value="Intermediário">Intermediário</option>
+        <option value="Avançado">Avançado</option>
+      </select>
+    </div>
+
     <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
     <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
     <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
@@ -231,6 +244,8 @@ let planoSelecionado = '';
 let horarioSelecionado = '';
 let objetivosSelecionados = [];
 let dadosAnamnese = {};
+let dadosPlanos = {};
+let dadosPessoais = {};
 
 const horariosFixos = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 
@@ -250,15 +265,54 @@ function mostrarTela(id){
 }
 
 function toggleObjetivo(el){
-  el.classList.toggle('selecionado');
-  objetivosSelecionados = Array.from(document.querySelectorAll('#tela1.plano.selecionado')).map(d => d.getAttribute('data-obj'));
+  let obj = el.getAttribute('data-obj');
+
+  if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    el.querySelector('.numero-prioridade')?.remove();
+    objetivosSelecionados = objetivosSelecionados.filter(o => o.obj!== obj);
+  } else {
+    el.classList.add('selecionado');
+    let ordem = objetivosSelecionados.length + 1;
+    objetivosSelecionados.push({obj: obj, ordem: ordem});
+
+    let span = document.createElement('span');
+    span.className = 'numero-prioridade';
+    span.innerText = ordem;
+    el.appendChild(span);
+  }
+
+  document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => {
+    let numEl = item.querySelector('.numero-prioridade');
+    if(numEl) numEl.innerText = index + 1;
+    let objNome = item.getAttribute('data-obj');
+    let objIndex = objetivosSelecionados.findIndex(o => o.obj === objNome);
+    if(objIndex!== -1) objetivosSelecionados[objIndex].ordem = index + 1;
+  });
 }
 
 function irParaPlanos(){
-  for(let i=1;i<=9;i++){ if(document.getElementById('q'+i).value.trim() === ''){ alert('Preencha todas as perguntas obrigatórias da Anamnese'); return; } }
-  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 objetivo'); return; }
-  dadosAnamnese = {objetivos: objetivosSelecionados};
+  if(document.getElementById('nivelAtividade').value === ''){
+    alert('Selecione seu Nível de Atividade Física');
+    return;
+  }
+  for(let i=1;i<=9;i++){
+    if(document.getElementById('q'+i).value.trim() === ''){
+      alert('Preencha todas as perguntas obrigatórias da Anamnese');
+      return;
+    }
+  }
+  if(objetivosSelecionados.length < 1){
+    alert('Selecione pelo menos 1 objetivo');
+    return;
+  }
+
+  dadosAnamnese = {
+    nivelAtividade: document.getElementById('nivelAtividade').value,
+    objetivos: objetivosSelecionados
+  };
   for(let i=1;i<=11;i++){ dadosAnamnese['q'+i] = document.getElementById('q'+i).value; }
+
   mostrarTela('tela2');
 }
 
@@ -307,13 +361,23 @@ function irParaDados(){
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
+
+  dadosPlanos = {
+    nivel: document.getElementById('nivel').value,
+    plano: planoSelecionado,
+    frequencia: frequenciaMaxima,
+    dias: diasSelecionados,
+    horario: horarioSelecionado
+  };
+
   mostrarTela('tela3');
 }
 
 function usarDadosLogin(){
   Object.keys(dadosLoginKorvil).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = dadosLoginKorvil[k]; });
   calcularIdade();
-  document.getElementById('cepStatus').innerText = 'Dados do login carregados!';
+  buscarCEP(document.getElementById('cep').value); // já busca endereço
+  document.getElementById('cepStatus').innerText = 'Dados do login carregados! Você pode editar qualquer campo.';
 }
 
 function calcularIdade(){
@@ -334,6 +398,8 @@ async function buscarCEP(cep){
     document.getElementById('cidade').value = data.localidade;
     document.getElementById('uf').value = data.uf;
     document.getElementById('cepStatus').innerText = 'Endereço encontrado!';
+  } else {
+    document.getElementById('cepStatus').innerText = '';
   }
 }
 
@@ -342,9 +408,35 @@ function mascaraCEP(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{5})(\d)
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
 function enviarInscricao(){
-  const dadosFinais = {...dadosAnamnese, plano: planoSelecionado, horario: horarioSelecionado, dias: diasSelecionados, nome: document.getElementById('nome').value };
-  console.log(dadosFinais);
-  alert('Inscrição enviada com Anamnese completa!');
+  dadosPessoais = {
+    nome: document.getElementById('nome').value,
+    cpf: document.getElementById('cpf').value,
+    nasc: document.getElementById('nasc').value,
+    idade: document.getElementById('idade').value,
+    categoria: document.getElementById('categoria').value,
+    genero: document.getElementById('publico').value,
+    whats: document.getElementById('whats').value,
+    email: document.getElementById('email').value,
+    cep: document.getElementById('cep').value,
+    numero: document.getElementById('numero').value,
+    rua: document.getElementById('rua').value,
+    bairro: document.getElementById('bairro').value,
+    cidade: document.getElementById('cidade').value,
+    uf: document.getElementById('uf').value,
+    peso: document.getElementById('peso').value,
+    altura: document.getElementById('altura').value
+  }
+
+  const dadosFinais = {
+    anamnese: dadosAnamnese,
+    planos: dadosPlanos,
+    dados_pessoais: dadosPessoais,
+    data_inscricao: new Date().toISOString()
+  }
+
+  console.log("DADOS PARA SALVAR NO SUPABASE:", dadosFinais);
+
+  alert('Inscrição enviada com sucesso! Todos os dados das 3 telas foram coletados.');
 }
 </script>
 </body>
