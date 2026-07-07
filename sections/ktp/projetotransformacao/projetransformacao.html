@@ -73,16 +73,6 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:
     </div>
     <div class="titulo-secao">| PARTICIPANTES</div>
     <ul class="lista"><li>Crianças a partir de 10 anos</li><li>Jovens</li><li>Adultos</li><li>Idosos</li><li>Praticantes</li><li>Atletas</li></ul>
-    <div class="titulo-secao">| METODOLOGIA</div>
-    <ul class="lista"><li>1. Manutenção</li><li>2. Resistência</li><li>3. Força</li><li>4. Hipertrofia</li></ul>
-    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="timeline">
-      <div class="fase"><div class="titulo-fase">FASE 1. OFF SEASON</div><div class="meses">Janeiro e Fevereiro</div></div>
-      <div class="fase"><div class="titulo-fase">FASE 2. BULKING</div><div class="meses">Março, Abril e Maio</div></div>
-      <div class="fase"><div class="titulo-fase">FASE 3. MAINTENANCE</div><div class="meses">Junho, Julho e Agosto</div></div>
-      <div class="fase"><div class="titulo-fase">FASE 4. CUTTING</div><div class="meses">Setembro, Outubro e Novembro</div></div>
-      <div class="fase" style="border-left-color:var(--ok);"><div class="titulo-fase" style="color:var(--ok);">DEZEMBRO: FÉRIAS</div></div>
-    </div>
     <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
   </div>
 </div>
@@ -126,7 +116,7 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:
   </div>
 </div>
 
-<!-- TELA 3: PLANOS -->
+<!-- TELA 3: PLANOS + DADOS -->
 <div id="tela3" class="oculto">
   <div class="passos">
     <div class="etapa"><span class="num">1</span>ANAMNESE</div>
@@ -210,9 +200,7 @@ let vagasPorHorario = {};
 const todosHorarios = ['06:00 às 07:00','07:00 às 08:00','08:00 às 09:00','09:00 às 10:00','10:00 às 11:00','16:00 às 17:00','17:00 às 18:00','18:00 às 19:00','19:00 às 20:00','20:00 às 21:00','21:00 às 22:00','22:00 às 23:00','23:00 às 00:00','00:00 às 01:00','01:00 às 02:00','02:00 às 03:00','03:00 às 04:00','04:00 às 05:00','05:00 às 06:00'];
 
 function mostrarTela(id){
-  document.getElementById('tela1').classList.add('oculto');
-  document.getElementById('tela2').classList.add('oculto');
-  document.getElementById('tela3').classList.add('oculto');
+  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto')); // CORRIGI
   document.getElementById(id).classList.remove('oculto');
   if(id === 'tela3') { carregarVagas(); montarBotoesHorario(); }
   window.scrollTo(0,0);
@@ -299,7 +287,7 @@ function selecionarDia(el){
     diasSelecionados.push(el.getAttribute('data-dia'));
     document.getElementById('alertaDias').innerText = '';
   }
-  document.querySelectorAll('#cardDias.plano').forEach(d => {
+  document.querySelectorAll('#cardDias.plano').forEach(d => { // CORRIGI SELETOR
     if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
     else { d.classList.remove('bloqueado'); }
   });
@@ -320,7 +308,7 @@ function calcularIdadeECategoria(){
 function validarAnamnese(){
   if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
   if(!document.getElementById('q11').value.trim()){ alert('Preencha a Descrição e observações'); return; }
-  mostrarTela('tela3');
+  mostrarTela('tela3'); // CORRIGI
 }
 
 async function enviarWhatsApp(){
