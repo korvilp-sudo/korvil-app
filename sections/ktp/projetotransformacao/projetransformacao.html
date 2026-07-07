@@ -14,62 +14,69 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;}
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
-.plano .nome{font-weight:800;color:var(--c);font-size:13px;}
-.plano .desc{font-size:11px;color:var(--text2);margin:4px 0;}
-.plano .valor{font-weight:900;color:var(--ok);font-size:16px;}
+.plano.bloqueado{opacity:0.4;cursor:not-allowed;}
+.plano.nome{font-weight:800;color:var(--c);font-size:13px;}
+.plano.desc{font-size:11px;color:var(--text2);margin:4px 0;}
+.plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.voltar{background:#222;color:var(--text);}
+.btn:disabled{background:#333;color:#666;cursor:not-allowed;}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
 .input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
 .matricula-badge{background:#222;border:1.5px solid var(--c);border-radius:8px;padding:10px;margin:8px 0;text-align:center;}
-.matricula-badge .label{font-size:11px;color:var(--text2);font-weight:700;}
-.matricula-badge .valor{font-size:18px;color:var(--c);font-weight:900;}
+.matricula-badge.label{font-size:11px;color:var(--text2);font-weight:700;}
+.matricula-badge.valor{font-size:18px;color:var(--c);font-weight:900;}
 .info-box{background:linear-gradient(135deg,#0a1419,#000);border:1.5px solid var(--c);border-radius:10px;padding:14px;margin:12px 0;box-shadow:0 0 15px var(--c)20;}
-.info-box .item{margin-bottom:10px;font-size:12px;line-height:1.5;}
-.info-box .item strong{color:var(--c);}
+.info-box.item{margin-bottom:10px;font-size:12px;line-height:1.5;}
+.info-box.item strong{color:var(--c);}
 .dica{font-size:10px;color:var(--c2);margin-top:4px;font-style:italic;}
-.logo{display:block;margin:0 auto 10px;max-width:140px;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:220px;}
+
+/* LOGOS AJUSTADAS */
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
+.logo-projeto{display:block;margin:0 auto 16px;width:160px;height:160px;border:2px solid var(--c);border-radius:14px;padding:8px;background:#111;box-shadow:0 0 20px var(--c)40;object-fit:contain;}
+
 .timeline{margin:16px 0;}
 .fase{background:#111;border-left:3px solid var(--c);padding:12px;margin-bottom:12px;border-radius:8px;}
-.fase .titulo-fase{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
-.fase .meses{font-size:11px;color:var(--ok);font-weight:700;margin-bottom:6px;}
-.fase .desc{font-size:11px;color:var(--text2);line-height:1.5;}
-.fase .desc span{display:block;margin-top:3px;}
+.fase.titulo-fase{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
+.fase.meses{font-size:11px;color:var(--ok);font-weight:700;margin-bottom:6px;}
+.fase.desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.fase.desc span{display:block;margin-top:3px;}
 .lista{font-size:12px;color:var(--text2);line-height:1.8;margin-left:8px;}
 .lista li{margin-bottom:4px;list-style:none;}
 .lista li:before{content:"✓ ";color:var(--c);font-weight:900;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
-.passos .etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
-.passos .etapa .num{font-weight:900;font-size:12px;display:block;}
-.passos .ativo{color:var(--c);}
-.passos .ativo .num{color:var(--c);}
+.passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
+.passos.etapa.num{font-weight:900;font-size:12px;display:block;}
+.passos.ativo{color:var(--c);}
+.passos.ativo.num{color:var(--c);}
 </style>
 </head>
 <body>
 
 <!-- TELA 1: APRESENTAÇÃO -->
+   <div class="card">
 <div id="tela1">
-  <h1>K-T.P KORVIL</h1>
-  
+
+  <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" alt="Logo K-TP" class="logo">
+
   <div class="passos">
     <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
     <div class="etapa"><span class="num">2</span>ANAMNESE</div>
     <div class="etapa"><span class="num">3</span>PLANOS</div>
   </div>
 
-  <div class="card">
-    <img src="korvil-app/sections/ktp/images/logoktp.png" alt="Logo K-TP" class="logo">
-    <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
-    
-    <img src="korvil-app/sections/ktp/images/logoprojetotransformacao.png" alt="Projeto Transformação" class="logo-projeto">
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" alt="Projeto Transformação" class="logo-projeto">
     <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
 
     <div class="titulo-secao">| SOBRE O PROGRAMA</div>
@@ -81,7 +88,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
 
     <div class="titulo-secao">| PARTICIPANTES</div>
-    <div class="sub-titulo">O projeto é para todos os níveis e idades</div>
     <ul class="lista">
       <li>Crianças a partir de 10 anos</li>
       <li>Jovens</li>
@@ -92,7 +98,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </ul>
 
     <div class="titulo-secao">| METODOLOGIA</div>
-    <div class="sub-titulo">4 métodos aplicados no seu treino</div>
     <ul class="lista">
       <li>1. Manutenção</li>
       <li>2. Resistência</li>
@@ -101,56 +106,26 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </ul>
 
     <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="sub-titulo">12 meses de evolução com acompanhamento profissional</div>
 
     <div class="timeline">
       <div class="fase">
         <div class="titulo-fase">FASE 1. OFF SEASON</div>
         <div class="meses">Janeiro e Fevereiro</div>
-        <div class="desc">
-          <span>✓ Ganho de peso ou volume muscular</span>
-          <span>✓ Regeneração</span>
-          <span>✓ Adaptações</span>
-          <span>✓ Aprendizados</span>
-        </div>
       </div>
-
       <div class="fase">
         <div class="titulo-fase">FASE 2. BULKING</div>
         <div class="meses">Março, Abril e Maio</div>
-        <div class="desc">
-          <span>✓ Foco principal: Ganhar massa muscular</span>
-          <span>✓ Cumprir metas</span>
-          <span>✓ Melhorar performance</span>
-          <span>✓ Evolução</span>
-        </div>
       </div>
-
       <div class="fase">
         <div class="titulo-fase">FASE 3. MAINTENANCE</div>
         <div class="meses">Junho, Julho e Agosto</div>
-        <div class="desc">
-          <span>✓ Manter todos os ganhos da fase anterior em bulking</span>
-          <span>✓ Preservar massa muscular magra</span>
-          <span>✓ Preparo pra próxima fase em cutting</span>
-        </div>
       </div>
-
       <div class="fase">
         <div class="titulo-fase">FASE 4. CUTTING</div>
         <div class="meses">Setembro, Outubro e Novembro</div>
-        <div class="desc">
-          <span>✓ Eliminar máximo de gordura</span>
-          <span>✓ Manter máximo de massa muscular magra</span>
-          <span>✓ Manter todos os ganhos das fases anteriores</span>
-          <span>✓ Modelagem do físico</span>
-        </div>
       </div>
-
       <div class="fase" style="border-left-color:var(--ok);">
         <div class="titulo-fase" style="color:var(--ok);">DEZEMBRO: FÉRIAS</div>
-        <div class="meses">Mostrar os resultados</div>
-        <div class="desc">Celebração e avaliação de todo o projeto</div>
       </div>
     </div>
 
@@ -161,7 +136,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 <!-- TELA 2: ANAMNESE -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
-  
+
   <div class="passos">
     <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
     <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
@@ -170,35 +145,25 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo-secao">| DADOS PESSOAIS + ANAMNESE</div>
-    <div class="sub-titulo">Preencha corretamente. Essas informações servem pra montar seu treino e dieta personalizada.</div>
-    
-    <div class="input-group"><label>Nome Completo</label><input type="text" id="nome" placeholder="Digite seu nome completo"></div>
+    <div class="input-group"><label>Nome Completo</label><input type="text" id="nome"></div>
     <div class="grid-2">
-      <div class="input-group"><label>CPF</label><input type="text" id="cpf" placeholder="000.000.000-00"></div>
-      <div class="input-group"><label>Data Nasc</label><input type="date" id="nasc"></div>
+      <div class="input-group"><label>CPF</label><input type="text" id="cpf"></div>
+      <div class="input-group"><label>Data Nasc</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
     </div>
     <div class="grid-2">
-      <div class="input-group"><label>Idade</label>
-        <select id="idade"><option>Selecione</option><option>10-17</option><option>18-25</option><option>26-35</option><option>36-45</option><option>46+</option></select>
-      </div>
-      <div class="input-group"><label>Público</label>
-        <select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select>
-      </div>
+      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
+      <div class="input-group"><label>Faixa Etária</label><input type="text" id="faixa" readonly></div>
     </div>
     <div class="grid-2">
-      <div class="input-group"><label>Peso kg</label><input type="number" id="peso" placeholder="Ex: 75"></div>
-      <div class="input-group"><label>Altura cm</label><input type="number" id="altura" placeholder="Ex: 175"></div>
+      <div class="input-group"><label>Público</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
+      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
     </div>
-    <div class="input-group"><label>Nível de Treino</label>
-      <select id="nivel">
-        <option>Selecione seu nível</option>
-        <option>Iniciante - Nunca treinei</option>
-        <option>Intermediário - Treino a 6 meses</option>
-        <option>Avançado - Treino a mais de 1 ano</option>
-      </select>
+    <div class="grid-2">
+      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
+      <div class="input-group"><label>Nível</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
     </div>
-    <div class="input-group"><label>Email</label><input type="email" id="email" placeholder="seuemail@gmail.com"></div>
-    <div class="input-group"><label>WhatsApp</label><input type="tel" id="whats" placeholder="13 9 0000 0000"></div>
+    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+    <div class="input-group"><label>WhatsApp</label><input type="tel" id="whats"></div>
 
     <button class="btn" onclick="mostrarTela('tela3')">CONTINUAR PARA PLANOS</button>
     <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
@@ -216,114 +181,44 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div style="text-align:center;margin-bottom:12px;">
-      <div style="font-size:12px;color:var(--text2);font-weight:700;">K-T.P KORVIL</div>
-      <div style="font-size:16px;font-weight:900;color:var(--c);">PROJETO TRANSFORMAÇÃO 2026</div>
-      <div style="font-size:11px;color:var(--c2);margin-top:4px;">ACADEMIA 24H | SEG A SEX | ATÉ 7 VAGAS POR HORÁRIO</div>
-    </div>
-
     <div class="titulo-secao">| 1. ESCOLHA O PLANO</div>
-    <div class="sub-titulo">Selecione APENAS 1 opção. Leia a descrição pra escolher o ideal pra você.</div>
-    
+
     <div class="grid-2">
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Online - R$20,00">
-        <div class="nome">AULA AVULSA ONLINE</div>
-        <div class="desc">Treino enviado por WhatsApp. Você faz em casa.</div>
-        <div class="valor">R$20,00</div>
-        <div class="desc">MATRÍCULA: GRÁTIS</div>
-        <div class="dica">Ideal pra quem viaja ou treina em casa</div>
-      </div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Presencial - R$20,00">
-        <div class="nome">AULA AVULSA PRESENCIAL</div>
-        <div class="desc">1 treino na academia comigo no horário escolhido.</div>
-        <div class="valor">R$20,00</div>
-        <div class="desc">MATRÍCULA: GRÁTIS | Pagar por horário</div>
-        <div class="dica">Ideal pra testar antes de fechar mensal</div>
-      </div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Online - R$20,00"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Presencial - R$20,00"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
     </div>
 
-    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Online Mensal - R$60,00/mês">
-      <div class="nome">ONLINE MENSAL</div>
-      <div class="desc">Treinos novos toda semana + acompanhamento diário por WhatsApp</div>
-      <div class="valor">R$60,00 / MÊS</div>
-      <div class="matricula-badge">
-        <div class="label">MATRÍCULA NOVO</div>
-        <div class="valor">R$50,00</div>
-      </div>
-      <div class="dica">Você recebe treino, dieta e tira dúvidas todos os dias</div>
-      <div style="font-size:10px;color:var(--text2);margin-top:6px;text-align:center;">PAGAMENTO DA MATRÍCULA OBRIGATÓRIO PARA NOVOS PARTICIPANTES</div>
-    </div>
-
-    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial Mensal">
-      <div class="nome">PRESENCIAL MENSAL</div>
-      <div class="desc">Treino na academia com acompanhamento profissional direto</div>
-      <div class="valor">A partir de R$60,00 / MÊS</div>
-      <div class="matricula-badge">
-        <div class="label">MATRÍCULA</div>
-        <div class="valor">R$50,00</div>
-      </div>
-      <div class="dica">Escolha abaixo quantas vezes vai treinar por semana</div>
-      <div style="font-size:10px;color:var(--text2);margin-top:6px;text-align:center;">OBRIGATÓRIO PARA NOVOS PARTICIPANTES</div>
-    </div>
+    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Online Mensal - R$60,00/mês"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
 
     <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
     <div class="grid-2">
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial 1x semana - R$60,00"><div class="nome">1x na semana</div><div class="desc">Treino 1 dia fixo</div><div class="valor">R$60,00</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial 2x semana - R$80,00"><div class="nome">2x na semana</div><div class="desc">Treino 2 dias fixos</div><div class="valor">R$80,00</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial 3x semana - R$100,00"><div class="nome">3x na semana</div><div class="desc">Treino 3 dias fixos</div><div class="valor">R$100,00</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial 4x semana - R$130,00"><div class="nome">4x na semana</div><div class="desc">Treino 4 dias fixos</div><div class="valor">R$130,00</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial 5x semana - R$150,00"><div class="nome">5x na semana</div><div class="desc">Treino 5 dias fixos</div><div class="valor">R$150,00</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Presencial Ilimitado 24H - R$150,00"><div class="nome">ILIMITADO 24H</div><div class="desc">Treinar todos os dias</div><div class="valor">R$150,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 1)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 2)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 3)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 4)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 5)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="titulo-secao">| COMO FUNCIONA O PROJETO</div>
-    <div class="info-box">
-      <div class="item"><strong>1. HORÁRIO E DIAS FIXOS:</strong> De acordo com o plano escolhido, você terá dias e horários fixos na semana com acompanhamento profissional direto comigo.</div>
-      <div class="item"><strong>2. PROJETO:</strong> Segunda a Sexta-feira comigo. Treino personalizado e supervisionado.</div>
-      <div class="item"><strong>3. ACADEMIA 24H:</strong> A academia funciona 24h todos os dias. Se precisar ir em outro dia ou horário fora da sua grade do projeto, pode ir tranquilo.</div>
-      <div class="item"><strong>4. LIBERDADE:</strong> Sua matrícula libera acesso 24h. O projeto é o acompanhamento, mas a estrutura é sua 24h por dia, 7 dias por semana.</div>
+  <div id="cardDias" class="card oculto">
+    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
+    <div class="sub-titulo" id="subDias">Selecione os dias</div>
+    <div class="grid-5">
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Terça"><div>TER</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Quarta"><div>QUA</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Quinta"><div>QUI</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Sexta"><div>SEX</div></div>
     </div>
+    <div id="alertaDias" class="alerta"></div>
   </div>
 
   <div class="card">
     <div class="titulo-secao">| 2. ESCOLHA HORÁRIO</div>
-    <div class="sub-titulo">Selecione APENAS 1 horário. São 7 vagas por horário. Seg a Sex.</div>
     <div class="grid-4">
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00" style="text-align:center;padding:10px;"><div>06:00 às 07:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="07:00 às 08:00" style="text-align:center;padding:10px;"><div>07:00 às 08:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="08:00 às 09:00" style="text-align:center;padding:10px;"><div>08:00 às 09:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="09:00 às 10:00" style="text-align:center;padding:10px;"><div>09:00 às 10:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="10:00 às 11:00" style="text-align:center;padding:10px;"><div>10:00 às 11:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="16:00 às 17:00" style="text-align:center;padding:10px;"><div>16:00 às 17:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="17:00 às 18:00" style="text-align:center;padding:10px;"><div>17:00 às 18:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00" style="text-align:center;padding:10px;"><div>18:00 às 19:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00" style="text-align:center;padding:10px;"><div>19:00 às 20:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="20:00 às 21:00" style="text-align:center;padding:10px;"><div>20:00 às 21:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="21:00 às 22:00" style="text-align:center;padding:10px;"><div>21:00 às 22:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="22:00 às 23:00" style="text-align:center;padding:10px;"><div>22:00 às 23:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="23:00 às 00:00" style="text-align:center;padding:10px;"><div>23:00 às 00:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="00:00 às 01:00" style="text-align:center;padding:10px;"><div>00:00 às 01:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="01:00 às 02:00" style="text-align:center;padding:10px;"><div>01:00 às 02:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="02:00 às 03:00" style="text-align:center;padding:10px;"><div>02:00 às 03:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="03:00 às 04:00" style="text-align:center;padding:10px;"><div>03:00 às 04:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="04:00 às 05:00" style="text-align:center;padding:10px;"><div>04:00 às 05:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="05:00 às 06:00" style="text-align:center;padding:10px;"><div>05:00 às 06:00</div><div class="vagas">7 vagas</div></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="titulo-secao">| 3. ESCOLHA SEU OBJETIVO</div>
-    <div class="sub-titulo">Pode escolher mais de 1. Marque tudo que combina com sua meta.</div>
-    <div class="grid-2">
-      <div class="plano" onclick="toggle(this)" data-valor="Ganho de Peso" style="text-align:center;">1. GANHO DE PESO<br><span style="font-size:10px;">Aumentar massa e volume muscular</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Emagrecimento" style="text-align:center;">2. EMAGRECIMENTO<br><span style="font-size:10px;">Queimar gordura e perder medidas</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Definição Muscular" style="text-align:center;">3. DEFINIÇÃO MUSCULAR<br><span style="font-size:10px;">Secar e deixar o músculo aparente</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Saúde" style="text-align:center;">4. SAÚDE<br><span style="font-size:10px;">Melhorar qualidade de vida e disposição</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Condicionamento Físico" style="text-align:center;">5. CONDICIONAMENTO FÍSICO<br><span style="font-size:10px;">Aumentar resistência e fôlego</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Hipertrofia" style="text-align:center;">6. HIPERTROFIA<br><span style="font-size:10px;">Foco total em ganho de massa</span></div>
-      <div class="plano" onclick="toggle(this)" data-valor="Reabilitação Física" style="text-align:center;grid-column:1 / 3;">7. REABILITAÇÃO FÍSICA<br><span style="font-size:10px;">Recuperação de lesão e prevenção</span></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00" style="text-align:center;"><div>06:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00" style="text-align:center;"><div>18:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00" style="text-align:center;"><div>19:00</div><div class="vagas">7 vagas</div></div>
     </div>
   </div>
 
@@ -332,7 +227,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </div>
 
 <script>
-let dados = {};
+let frequenciaMaxima = 0;
+let diasSelecionados = [];
 
 function mostrarTela(id){
   document.getElementById('tela1').classList.add('oculto');
@@ -349,61 +245,48 @@ function selecionarUnico(el, grupo){
     }
   });
   el.classList.add('selecionado');
+  if(grupo === 'plano'){ document.getElementById('cardDias').classList.add('oculto'); frequenciaMaxima = 0; diasSelecionados = []; }
 }
 
-function toggle(el){
-  el.classList.toggle('selecionado');
+function selecionarPlanoFrequencia(el, freq){
+  selecionarUnico(el, 'plano');
+  frequenciaMaxima = freq;
+  diasSelecionados = [];
+  document.getElementById('cardDias').classList.remove('oculto');
+  document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione ${freq} dia(s)`;
+}
+
+function selecionarDia(el){
+  if(el.classList.contains('bloqueado')) return;
+  if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
+  } else {
+    if(diasSelecionados.length >= frequenciaMaxima){ return; }
+    el.classList.add('selecionado');
+    diasSelecionados.push(el.getAttribute('data-dia'));
+  }
+  document.querySelectorAll('#cardDias.plano').forEach(d => {
+    if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
+    else { d.classList.remove('bloqueado'); }
+  });
+}
+
+function calcularIdade(){
+  let nasc = document.getElementById('nasc').value;
+  if(!nasc) return;
+  let dataNasc = new Date(nasc);
+  let hoje = new Date();
+  let idade = hoje.getFullYear() - dataNasc.getFullYear();
+  let mes = hoje.getMonth() - dataNasc.getMonth();
+  if(mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) idade--;
+  document.getElementById('idade').value = idade + ' anos';
+  let faixa = idade >= 10 && idade <= 17? 'Adolescente' : idade >= 18 && idade <= 25? 'Jovem' : idade >= 26 && idade <= 35? 'Adulto Jovem' : idade >= 36 && idade <= 45? 'Adulto' : idade >= 46 && idade <= 59? 'Adulto Maduro' : idade >= 60? 'Idoso' : '';
+  document.getElementById('faixa').value = faixa;
 }
 
 function enviarWhatsApp(){
-  dados.nome = document.getElementById('nome').value;
-  dados.cpf = document.getElementById('cpf').value;
-  dados.nasc = document.getElementById('nasc').value;
-  dados.idade = document.getElementById('idade').value;
-  dados.publico = document.getElementById('publico').value;
-  dados.peso = document.getElementById('peso').value;
-  dados.altura = document.getElementById('altura').value;
-  dados.nivel = document.getElementById('nivel').value;
-  dados.email = document.getElementById('email').value;
-  dados.whats = document.getElementById('whats').value;
-
-  let planoSel = document.querySelector('#tela3 .plano.selecionado[data-valor]');
-  dados.plano = planoSel ? planoSel.getAttribute('data-valor') : 'Não selecionado';
-
-  dados.horario = 'Não selecionado';
-  document.querySelectorAll('#tela3 .plano.selecionado[data-valor]').forEach(item => {
-    if(item.getAttribute('data-valor').includes(':')){
-      dados.horario = item.getAttribute('data-valor');
-    }
-  });
-
-  let objetivos = [];
-  document.querySelectorAll('#tela3 .plano.selecionado[data-valor]').forEach(item => {
-    let val = item.getAttribute('data-valor');
-    if(!val.includes('R$') && !val.includes(':') && !val.includes('semana') && !val.includes('Online') && !val.includes('Presencial')){
-      objetivos.push(val);
-    }
-  });
-  dados.objetivos = objetivos.length > 0 ? objetivos.join(', ') : 'Não selecionado';
-
-  let mensagem = `*NOVA INSCRIÇÃO - PROJETO TRANSFORMAÇÃO KTP*%0A%0A`;
-  mensagem += `*DADOS PESSOAIS*%0A`;
-  mensagem += `Nome: ${dados.nome}%0A`;
-  mensagem += `CPF: ${dados.cpf}%0A`;
-  mensagem += `Data Nasc: ${dados.nasc}%0A`;
-  mensagem += `Idade: ${dados.idade}%0A`;
-  mensagem += `Público: ${dados.publico}%0A`;
-  mensagem += `Peso: ${dados.peso}kg | Altura: ${dados.altura}cm%0A`;
-  mensagem += `Nível: ${dados.nivel}%0A`;
-  mensagem += `Email: ${dados.email}%0A`;
-  mensagem += `WhatsApp: ${dados.whats}%0A%0A`;
-  mensagem += `*PLANO ESCOLHIDO*%0A`;
-  mensagem += `Plano: ${dados.plano}%0A`;
-  mensagem += `Horário: ${dados.horario}%0A%0A`;
-  mensagem += `*OBJETIVOS*%0A`;
-  mensagem += `${dados.objetivos}`;
-
-  window.open(`https://wa.me/5513997690898?text=${mensagem}`, '_blank');
+  alert('Enviado!');
 }
 </script>
 
