@@ -20,7 +20,9 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;}
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
-.plano.bloqueado{opacity:0.4;cursor:not-allowed;}
+.plano.bloqueado{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+.plano.objetivo{border:1.5px solid #222;background:#111;} /* NOVO ESTILO OBJETIVO */
+.plano.objetivo.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 10px var(--c)40;} /* SELECIONADO IGUAL PRINT */
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
 .plano.desc{font-size:11px;color:var(--text2);margin:4px 0;}
 .plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
@@ -52,6 +54,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .passos.etapa.num{font-weight:900;font-size:12px;display:block;}
 .passos.ativo{color:var(--c);}
 .passos.ativo.num{color:var(--c);}
+.alerta{font-size:11px;color:#ff4444;margin-top:6px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -108,12 +111,12 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="card">
     <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
     <div class="grid-2">
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Ganho de Peso"><div class="nome">Ganho de Peso</div></div>
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Emagrecimento"><div class="nome">Emagrecimento</div></div>
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Definição Muscular"><div class="nome">Definição Muscular</div></div>
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Saúde"><div class="nome">Saúde</div></div>
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Condicionamento Físico"><div class="nome">Condicionamento Físico</div></div>
-      <div class="plano" onclick="selecionarObjetivo(this)" data-valor="Hipertrofia"><div class="nome">Hipertrofia</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Ganho de Peso"><div class="nome">Ganho de Peso</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Emagrecimento"><div class="nome">Emagrecimento</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Definição Muscular"><div class="nome">Definição Muscular</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Saúde"><div class="nome">Saúde</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Condicionamento Físico"><div class="nome">Condicionamento Físico</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Hipertrofia"><div class="nome">Hipertrofia</div></div>
     </div>
   </div>
 
@@ -222,15 +225,19 @@ function mostrarTela(id){
 }
 
 function selecionarObjetivo(el){
-  el.classList.toggle('selecionado');
+  el.classList.toggle('selecionado'); // 1 clique = marca. 2 clique = desmarca
   const valor = el.getAttribute('data-valor');
-  if(el.classList.contains('selecionado')){ if(!objetivosSelecionados.includes(valor)) objetivosSelecionados.push(valor); }
-  else { objetivosSelecionados = objetivosSelecionados.filter(o => o!== valor); }
+  if(el.classList.contains('selecionado')){
+    if(!objetivosSelecionados.includes(valor)) objetivosSelecionados.push(valor);
+  }
+  else {
+    objetivosSelecionados = objetivosSelecionados.filter(o => o!== valor); // remove se desmarcar
+  }
 }
 
 function selecionarUnico(el, grupo){
   document.querySelectorAll('.plano').forEach(item => {
-    if(item.onclick && item.onclick.toString().includes(grupo)){
+    if(item.onclick && item.onclick.toString().includes(grupo) &&!item.classList.contains('objetivo')){
       item.classList.remove('selecionado');
     }
   });
