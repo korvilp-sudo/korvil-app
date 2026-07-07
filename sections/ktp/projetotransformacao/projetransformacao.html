@@ -50,18 +50,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
-<!-- TELA 1: APRESENTAÇÃO -->
-<div id="tela1">
+<!-- APRESENTAÇÃO FIXA - NÃO É TELA -->
+<div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-
-    <div class="passos">
-      <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
-      <div class="etapa"><span class="num">2</span>ANAMNESE</div>
-      <div class="etapa"><span class="num">3</span>PLANOS</div>
-      <div class="etapa"><span class="num">4</span>DADOS</div>
-    </div>
 
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
@@ -88,19 +81,16 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="fase-box"><span class="titulo">FASE 3. MAINTENANCE</span><br>Junho, Julho e Agosto</div>
     <div class="fase-box"><span class="titulo">FASE 4. CUTTING</span><br>Setembro, Outubro e Novembro</div>
     <div class="fase-box"><span class="titulo" style="color:var(--ok);">DEZEMBRO: FÉRIAS</span></div>
-
-    <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
   </div>
 </div>
 
-<!-- TELA 2: ANAMNESE COM 11 PERGUNTAS -->
-<div id="tela2" class="oculto">
+<!-- TELA 1: ANAMNESE COM 11 PERGUNTAS -->
+<div id="tela1">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
-    <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">3</span>PLANOS</div>
-    <div class="etapa"><span class="num">4</span>DADOS</div>
+    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -134,18 +124,16 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="input-group"><label>11. Descrição e observações: aluno pode tudo que quiser descrever *</label><textarea id="q11" rows="3"></textarea></div>
 
     <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 3: PLANOS + HORÁRIO -->
-<div id="tela3" class="oculto">
+<!-- TELA 2: PLANOS + HORÁRIO -->
+<div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
-    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">3</span>PLANOS</div>
-    <div class="etapa"><span class="num">4</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -190,18 +178,17 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
     <div class="grid-4" id="horariosTarde"></div>
     <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 4: DADOS PESSOAIS -->
-<div id="tela4" class="oculto">
+<!-- TELA 3: DADOS PESSOAIS -->
+<div id="tela3" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
-    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">3</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">4</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANOS</div>
+    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -244,7 +231,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
     </div>
     <button class="btn" onclick="enviarInscricao()">CONFIRMAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela3')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
 </div>
 
@@ -267,14 +254,14 @@ const dadosLoginKorvil = {
 window.onload = montarHorarios;
 
 function mostrarTela(id){
-  document.querySelectorAll('#tela1, #tela2, #tela3, #tela4').forEach(t => t.classList.add('oculto'));
+  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0,0);
+  window.scrollTo(0, document.getElementById('apresentacao').offsetHeight + 20);
 }
 
 function toggleObjetivo(el){
   el.classList.toggle('selecionado');
-  objetivosSelecionados = Array.from(document.querySelectorAll('#tela2.plano.selecionado')).map(d => d.getAttribute('data-obj'));
+  objetivosSelecionados = Array.from(document.querySelectorAll('#tela1.plano.selecionado')).map(d => d.getAttribute('data-obj'));
 }
 
 function irParaPlanos(){
@@ -292,11 +279,11 @@ function irParaPlanos(){
   dadosAnamnese = {objetivos: objetivosSelecionados};
   for(let i=1;i<=11;i++){ dadosAnamnese['q'+i] = document.getElementById('q'+i).value; }
 
-  mostrarTela('tela3');
+  mostrarTela('tela2');
 }
 
 function selecionarPlano(el){
-  document.querySelectorAll('#tela3.plano').forEach(p => { if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado'); });
+  document.querySelectorAll('#tela2.plano').forEach(p => { if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado'); });
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
@@ -342,7 +329,7 @@ function montarHorarios(){
 }
 
 function selecionarHorario(el){
-  document.querySelectorAll('#tela3.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
+  document.querySelectorAll('#tela2.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
   el.classList.add('selecionado');
   horarioSelecionado = el.getAttribute('data-horario');
 }
@@ -352,7 +339,7 @@ function irParaDados(){
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
-  mostrarTela('tela4');
+  mostrarTela('tela3');
 }
 
 function usarDadosLogin(){
