@@ -25,14 +25,13 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .input-group textarea{min-height:60px;resize:vertical;}
-.logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
 .passos.etapa.num{font-weight:900;font-size:12px;display:block;}
 .passos.ativo{color:var(--c);}
-.info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
 .check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
@@ -40,16 +39,34 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
+<!-- SUA APRESENTAÇÃO ORIGINAL INTACTA -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
     <div class="titulo-secao">| SOBRE O PROGRAMA</div>
     <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+
+    <div class="card" style="background:#111;border:1.5px solid var(--c);">
+      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
+    </div>
+
     <div class="titulo-secao">| PARTICIPANTES</div>
     <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
+
     <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
 </div>
@@ -64,7 +81,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados.</div>
+    <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
 
     <div class="titulo-secao">| OBJETIVOS - MÍNIMO 1</div>
     <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
@@ -121,16 +138,10 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="etapa"><span class="num">2</span>PLANOS</div>
     <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
-  <div class="card">
-    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
-    <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-  </div>
 </div>
 
 <script>
 let objetivosSelecionados = [];
-const dadosLoginKorvil = {nome: "João da Silva"};
 
 function mostrarTela(id){
   document.getElementById('apresentacao').classList.add('oculto');
@@ -157,25 +168,12 @@ function toggleObjetivo(el){
 }
 
 function irParaPlanos(){
-  if(document.getElementById('nivelAtividade').value === ''){
-    alert('Selecione seu Nível de Atividade Física');
-    return;
-  }
-  for(let i=1;i<=11;i++){
-    if(document.getElementById('q'+i).value.trim() === ''){
-      alert('Preencha todas as perguntas obrigatórias da Anamnese');
-      return;
-    }
-  }
+  // CORREÇÃO FINAL: SÓ VALIDA OBJETIVO
   if(objetivosSelecionados.length < 1){
     alert('Selecione pelo menos 1 objetivo');
     return;
   }
   mostrarTela('tela2');
-}
-
-function usarDadosLogin(){
-  document.getElementById('nome').value = dadosLoginKorvil.nome;
 }
 </script>
 </body>
