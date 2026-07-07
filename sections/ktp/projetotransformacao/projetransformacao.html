@@ -13,6 +13,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
+.aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
@@ -72,9 +73,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
   </div>
 
+  <!-- CAIXA DE DIAS APARECE DINÂMICO -->
   <div id="cardDias" class="card oculto">
-    <div class="titulo-secao">| 2. ESCOLHA OS DIAS DE TREINO</div>
-    <div class="sub-titulo" id="subDias">Selecione os dias. Pode ser qualquer ordem.</div>
+    <div class="aviso-dias" id="avisoDias"></div>
+    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
+    <div class="sub-titulo">Pode ser qualquer ordem entre Segunda a Sexta-feira</div>
     <div class="grid-5">
       <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
       <div class="plano" onclick="selecionarDia(this)" data-dia="Terça"><div>TER</div></div>
@@ -86,7 +89,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 3. ESCOLHA HORÁRIO FIXO</div>
+    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
     <div style="font-size:11px;color:var(--ok);margin-bottom:8px;">MANHÃ</div>
     <div class="grid-4" id="horariosManha"></div>
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
@@ -94,7 +97,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 4. DADOS PESSOAIS</div>
+    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
     <div class="info-login">Facilite seu preenchimento</div>
     <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
 
@@ -146,28 +149,17 @@ let horarioSelecionado = '';
 
 const horariosFixos = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 
-// DADOS SIMULADOS DO LOGIN KORVIL. TROCAR PELO REAL DEPOIS
+// DADOS SIMULADOS DO LOGIN KORVIL
 const dadosLoginKorvil = {
-  nome: "João da Silva",
-  cpf: "123.456.789-00",
-  email: "joao@email.com",
-  whats: "(11) 98765-4321",
-  cep: "01001-000",
-  rua: "Praça da Sé",
-  bairro: "Sé",
-  cidade: "São Paulo",
-  uf: "SP",
-  nasc: "1995-05-10",
-  publico: "Masculino"
+  nome: "João da Silva", cpf: "123.456.789-00", email: "joao@email.com", whats: "(11) 98765-4321",
+  cep: "01001-000", rua: "Praça da Sé", bairro: "Sé", cidade: "São Paulo", uf: "SP",
+  nasc: "1995-05-10", publico: "Masculino"
 };
 
 window.onload = montarHorarios;
 
 function usarDadosLogin(){
-  if(!dadosLoginKorvil.nome){
-    alert('Nenhum dado de login encontrado.');
-    return;
-  }
+  if(!dadosLoginKorvil.nome){ alert('Nenhum dado de login encontrado.'); return; }
   document.getElementById('nome').value = dadosLoginKorvil.nome;
   document.getElementById('cpf').value = dadosLoginKorvil.cpf;
   document.getElementById('email').value = dadosLoginKorvil.email;
@@ -184,6 +176,7 @@ function usarDadosLogin(){
 }
 
 function selecionarPlano(el){
+  // TOGGLE PLANO
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     planoSelecionado = '';
@@ -193,16 +186,21 @@ function selecionarPlano(el){
     document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado'));
     return;
   }
+
   document.querySelectorAll('.plano').forEach(p => {
     if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado');
   });
   el.classList.add('selecionado');
+
   planoSelecionado = el.getAttribute('data-valor');
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
   diasSelecionados = [];
+
+  // MOSTRA CAIXA DE DIAS AUTOMATICO SE FOR PRESENCIAL
   if(frequenciaMaxima > 0){
     document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('subDias').innerText = `Você escolheu ${frequenciaMaxima}x. Selecione exatamente ${frequenciaMaxima} dia(s)`;
+    document.getElementById('avisoDias').innerText = `Você escolheu ${frequenciaMaxima}x por semana. Selecione exatamente ${frequenciaMaxima} dia(s)`;
+    document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado','bloqueado'));
   } else {
     document.getElementById('cardDias').classList.add('oculto');
   }
@@ -210,18 +208,22 @@ function selecionarPlano(el){
 
 function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
+
+  // TOGGLE DIA
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
     if(diasSelecionados.length >= frequenciaMaxima){
-      document.getElementById('alertaDias').innerText = `Só pode escolher ${frequenciaMaxima} dia(s)`;
+      document.getElementById('alertaDias').innerText = `Você escolheu ${frequenciaMaxima}x. Só pode selecionar ${frequenciaMaxima} dia(s)`;
       return;
     }
     el.classList.add('selecionado');
     diasSelecionados.push(el.getAttribute('data-dia'));
     document.getElementById('alertaDias').innerText = '';
   }
+
+  // BLOQUEIA SE ATINGIU O LIMITE
   document.querySelectorAll('#cardDias.plano').forEach(d => {
     if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
     else { d.classList.remove('bloqueado'); }
@@ -240,6 +242,7 @@ function montarHorarios(){
 }
 
 function selecionarHorario(el){
+  // TOGGLE HORARIO
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     horarioSelecionado = '';
@@ -311,7 +314,7 @@ function enviarWhatsApp(){
   if(!document.getElementById('whats').value.trim()){ alert('Preencha WhatsApp'); return; }
   if(!document.getElementById('cep').value.trim()){ alert('Preencha CEP'); return; }
   if(!document.getElementById('numero').value.trim()){ alert('Preencha N° da Casa'); return; }
-  alert('Inscrição Enviada com Sucesso!');
+  alert('Inscrição Enviada com Sucesso!\nPlano: '+planoSelecionado+'\nDias: '+diasSelecionados.join(', ')+'\nHorario: '+horarioSelecionado);
 }
 </script>
 
