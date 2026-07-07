@@ -50,7 +50,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
-<!-- APRESENTAÇÃO FIXA - NÃO É TELA -->
+<!-- APRESENTAÇÃO FIXA -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
@@ -81,11 +81,13 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="fase-box"><span class="titulo">FASE 3. MAINTENANCE</span><br>Junho, Julho e Agosto</div>
     <div class="fase-box"><span class="titulo">FASE 4. CUTTING</span><br>Setembro, Outubro e Novembro</div>
     <div class="fase-box"><span class="titulo" style="color:var(--ok);">DEZEMBRO: FÉRIAS</span></div>
+
+    <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
 </div>
 
-<!-- TELA 1: ANAMNESE COM 11 PERGUNTAS -->
-<div id="tela1">
+<!-- TELA 1: ANAMNESE -->
+<div id="tela1" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
     <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
@@ -127,7 +129,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-<!-- TELA 2: PLANOS + HORÁRIO -->
+<!-- TELA 2: PLANOS -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -254,9 +256,10 @@ const dadosLoginKorvil = {
 window.onload = montarHorarios;
 
 function mostrarTela(id){
+  document.getElementById('apresentacao').classList.add('oculto');
   document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0, document.getElementById('apresentacao').offsetHeight + 20);
+  window.scrollTo(0,0);
 }
 
 function toggleObjetivo(el){
