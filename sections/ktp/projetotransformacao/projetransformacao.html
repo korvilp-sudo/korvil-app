@@ -13,7 +13,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
@@ -23,8 +22,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
-.plano.objetivo{border:1.5px solid #222;background:#111;}
-.plano.objetivo.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
 .plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
@@ -32,9 +29,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
-.input-group textarea{min-height:70px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
 .logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
@@ -46,54 +42,60 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
 .cep-loading{font-size:10px;color:var(--c);}
 .info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
+.check{color:var(--ok);margin-right:6px;}
+.fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
+.fase-box.titulo{font-weight:800;color:var(--c);}
 </style>
 </head>
 <body>
 
-<!-- TELA 1: ANAMNESE -->
+<!-- TELA 1: APRESENTAÇÃO - IGUAL 2ª IMAGEM -->
 <div id="tela1">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
-  </div>
-  <div class="aviso">Preencha a anamnese completa antes de escolher o plano.</div>
-
   <div class="card">
-    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
-    <div class="grid-2">
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Ganho de Peso"><div class="nome">Ganho de Peso</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Emagrecimento"><div class="nome">Emagrecimento</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Definição Muscular"><div class="nome">Definição Muscular</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Saúde"><div class="nome">Saúde</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Condicionamento Físico"><div class="nome">Condicionamento Físico</div></div>
-      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Hipertrofia"><div class="nome">Hipertrofia</div></div>
+    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
+    
+    <div class="passos">
+      <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
+      <div class="etapa"><span class="num">2</span>PLANOS</div>
+      <div class="etapa"><span class="num">3</span>DADOS</div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1"></textarea></div>
-    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2"></textarea></div>
-    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3"></textarea></div>
-    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4"></textarea></div>
-    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5"></textarea></div>
-    <div class="input-group"><label>6. Possui alguma DEFICIÊNCIA ou LIMITAÇÃO física? *</label><textarea id="q6"></textarea></div>
-    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7"></textarea></div>
-    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO físico ou psicológico? *</label><textarea id="q8"></textarea></div>
-    <div class="input-group"><label>9. Está fazendo USO de MEDICAMENTOS? Quais? *</label><textarea id="q9"></textarea></div>
-    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10"></textarea></div>
-    <div class="input-group"><label>11. Descrição e observações: aluno põe tudo que quiser descrever *</label><textarea id="q11"></textarea></div>
-    <button class="btn" onclick="validarAnamnese()">CONTINUAR PARA PLANOS</button>
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
+    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+
+    <div class="card" style="background:#111;border:1.5px solid var(--c);">
+      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
+    </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br>
+    <span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br>
+    <span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br>
+    <span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="fase-box"><span class="titulo">FASE 1. OFF SEASON</span><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><span class="titulo">FASE 2. BULKING</span><br>Março, Abril e Maio</div>
+    <div class="fase-box"><span class="titulo">FASE 3. MAINTENANCE</span><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><span class="titulo">FASE 4. CUTTING</span><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><span class="titulo" style="color:var(--ok);">DEZEMBRO: FÉRIAS</span></div>
+
+    <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
   </div>
 </div>
 
-<!-- TELA 2: PLANOS + DIAS + HORÁRIO -->
+<!-- TELA 2: PLANOS + HORÁRIO - IGUAL 1ª IMAGEM -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
     <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
     <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
@@ -121,7 +123,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div id="cardDias" class="card oculto">
     <div class="aviso-dias" id="avisoDias"></div>
-    <div class="titulo-secao">| 2. ESCOLHA OS DIAS DE TREINO</div>
+    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
     <div class="sub-titulo">Pode ser qualquer ordem entre Segunda a Sexta-feira</div>
     <div class="grid-5">
       <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
@@ -134,12 +136,12 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 3. ESCOLHA HORÁRIO FIXO</div>
+    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
     <div style="font-size:11px;color:var(--ok);margin-bottom:8px;">MANHÃ</div>
     <div class="grid-4" id="horariosManha"></div>
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
     <div class="grid-4" id="horariosTarde"></div>
-    <button class="btn" onclick="irParaDados()">CONTINUAR PARA DADOS</button>
+    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
     <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
@@ -148,13 +150,13 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 <div id="tela3" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
     <div class="etapa"><span class="num">2</span>PLANOS</div>
     <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| DADOS PESSOAIS</div>
+    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
     <div class="info-login">Facilite seu preenchimento</div>
     <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
 
@@ -200,13 +202,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 <script>
 let frequenciaMaxima = 0;
 let diasSelecionados = [];
-let objetivosSelecionados = [];
 let planoSelecionado = '';
 let horarioSelecionado = '';
 
 const horariosFixos = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 
-// DADOS SIMULADOS DO LOGIN KORVIL
 const dadosLoginKorvil = {
   nome: "João da Silva", cpf: "123.456.789-00", email: "joao@email.com", whats: "(11) 98765-4321",
   cep: "01001-000", rua: "Praça da Sé", bairro: "Sé", cidade: "São Paulo", uf: "SP",
@@ -221,19 +221,6 @@ function mostrarTela(id){
   document.getElementById('tela3').classList.add('oculto');
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
-}
-
-function selecionarObjetivo(el){
-  el.classList.toggle('selecionado');
-  const valor = el.getAttribute('data-valor');
-  if(el.classList.contains('selecionado')){ if(!objetivosSelecionados.includes(valor)) objetivosSelecionados.push(valor); }
-  else { objetivosSelecionados = objetivosSelecionados.filter(o => o!== valor); }
-}
-
-function validarAnamnese(){
-  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
-  if(!document.getElementById('q11').value.trim()){ alert('Preencha a Descrição e observações'); return; }
-  mostrarTela('tela2');
 }
 
 function selecionarPlano(el){
@@ -270,7 +257,7 @@ function selecionarDia(el){
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
     if(diasSelecionados.length >= frequenciaMaxima){
-      document.getElementById('alertaDias').innerText = `Você escolheu ${frequenciaMaxima}x. Só pode selecionar ${frequenciaMaxima} dia(s)`;
+      document.getElementById('alertaDias').innerText = `Só pode selecionar ${frequenciaMaxima} dia(s)`;
       return;
     }
     el.classList.add('selecionado');
@@ -327,7 +314,7 @@ function usarDadosLogin(){
   document.getElementById('cidade').value = dadosLoginKorvil.cidade;
   document.getElementById('uf').value = dadosLoginKorvil.uf;
   calcularIdade();
-  document.getElementById('cepStatus').innerText = 'Dados do login carregados! Pode editar.';
+  document.getElementById('cepStatus').innerText = 'Dados do login carregados!';
 }
 
 function calcularIdade(){
@@ -360,24 +347,9 @@ async function buscarCEP(cep){
   } catch(e){ document.getElementById('cepStatus').innerText = 'Erro ao buscar CEP'; }
 }
 
-function mascaraCPF(i){
-  let v = i.value.replace(/\D/g,'');
-  v = v.replace(/(\d{3})(\d)/,"$1.$2");
-  v = v.replace(/(\d{3})(\d)/,"$1.$2");
-  v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-  i.value = v;
-}
-function mascaraCEP(i){
-  let v = i.value.replace(/\D/g,'');
-  v = v.replace(/(\d{5})(\d)/,"$1-$2");
-  i.value = v;
-}
-function mascaraWhats(i){
-  let v = i.value.replace(/\D/g,'');
-  v = v.replace(/(\d{2})(\d)/,"($1) $2");
-  v = v.replace(/(\d{5})(\d)/,"$1-$2");
-  i.value = v;
-}
+function mascaraCPF(i){ let v = i.value.replace(/\D/g,''); v = v.replace(/(\d{3})(\d)/,"$1.$2"); v = v.replace(/(\d{3})(\d)/,"$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); i.value = v; }
+function mascaraCEP(i){ let v = i.value.replace(/\D/g,''); v = v.replace(/(\d{5})(\d)/,"$1-$2"); i.value = v; }
+function mascaraWhats(i){ let v = i.value.replace(/\D/g,''); v = v.replace(/(\d{2})(\d)/,"($1) $2"); v = v.replace(/(\d{5})(\d)/,"$1-$2"); i.value = v; }
 
 function enviarWhatsApp(){
   if(!document.getElementById('nome').value.trim()){ alert('Preencha Nome Completo'); return; }
