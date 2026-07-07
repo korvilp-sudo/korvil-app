@@ -136,54 +136,39 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </div>
 
 <!-- TELA 2: PLANOS -->
-<div id="tela2" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+<div class="card">
+  <div class="titulo-secao">| 3. ESCOLHA HORÁRIO</div>
+  <div class="sub-titulo">Projeto Transformação: Segunda à Sexta | Até 7 vagas por horário</div>
+  
+  <div style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;">TURNO MANHÃ</div>
+  <div class="grid-4">
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00"><div>06:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="07:00 às 08:00"><div>07:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="08:00 às 09:00"><div>08:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="09:00 às 10:00"><div>09:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="10:00 às 11:00"><div>10:00</div><div class="vagas">7 vagas</div></div>
   </div>
-  <div class="card">
-    <div class="titulo-secao">| PLANOS DISPONÍVEIS</div>
-    <div class="sub-titulo">Escolha 1 plano para continuar</div>
 
-    <div class="plano" onclick="selecionarPlano(this, 'Plano Starter')">
-      <div style="font-weight:900;">PLANO STARTER</div>
-      <div class="preco">R$ 149,90/mês</div>
-      <div class="dias-horario">2x por semana<br>Seg e Qua - 07:00 às 08:00</div>
-      <div class="vagas">12 vagas disponíveis</div>
-    </div>
+  <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;font-weight:700;">TURNO TARDE/NOITE</div>
+  <div class="grid-4">
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="16:00 às 17:00"><div>16:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="17:00 às 18:00"><div>17:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00"><div>18:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00"><div>19:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="20:00 às 21:00"><div>20:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="21:00 às 22:00"><div>21:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="22:00 às 23:00"><div>22:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="23:00 às 00:00"><div>23:00</div><div class="vagas">7 vagas</div></div>
+  </div>
 
-    <div class="plano" onclick="selecionarPlano(this, 'Plano Pro')">
-      <div style="font-weight:900;">PLANO PRO</div>
-      <div class="preco">R$ 249,90/mês</div>
-      <div class="dias-horario">3x por semana<br>Seg, Qua e Sex - 07:00 às 08:00</div>
-      <div class="vagas">8 vagas disponíveis</div>
-    </div>
-
-    <div class="plano" onclick="selecionarPlano(this, 'Plano Master')">
-      <div style="font-weight:900;">PLANO MASTER</div>
-      <div class="preco">R$ 349,90/mês</div>
-      <div class="dias-horario">5x por semana<br>Seg à Sex - 07:00 às 08:00</div>
-      <div class="vagas">5 vagas disponíveis</div>
-    </div>
-
-    <div class="plano" onclick="selecionarPlano(this, 'Plano Elite')">
-      <div style="font-weight:900;">PLANO ELITE</div>
-      <div class="preco">R$ 499,90/mês</div>
-      <div class="dias-horario">5x por semana + Sábado<br>Horário Flexível</div>
-      <div class="vagas">3 vagas disponíveis</div>
-    </div>
-
-    <div class="plano" onclick="selecionarPlano(this, 'Plano Personal')">
-      <div style="font-weight:900;">PLANO PERSONAL 1:1</div>
-      <div class="preco">R$ 899,90/mês</div>
-      <div class="dias-horario">3x por semana<br>Horário exclusivo com o treinador</div>
-      <div class="vagas">2 vagas disponíveis</div>
-    </div>
-
-    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
+  <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;font-weight:700;">TURNO MADRUGADA 24H</div>
+  <div class="grid-4">
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="00:00 às 01:00"><div>00:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="01:00 às 02:00"><div>01:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="02:00 às 03:00"><div>02:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="03:00 às 04:00"><div>03:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="04:00 às 05:00"><div>04:00</div><div class="vagas">7 vagas</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="05:00 às 06:00"><div>05:00</div><div class="vagas">7 vagas</div></div>
   </div>
 </div>
 
