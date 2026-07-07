@@ -32,6 +32,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .input-group textarea{min-height:60px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
@@ -40,18 +42,65 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
 .cep-loading{font-size:10px;color:var(--c);}
 .info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
+.check{color:var(--ok);margin-right:6px;}
+.fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
+.fase-box.titulo{font-weight:800;color:var(--c);}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 </style>
 </head>
 <body>
 
-<!-- TELA 1: ANAMNESE COM 11 PERGUNTAS -->
+<!-- TELA 1: APRESENTAÇÃO -->
 <div id="tela1">
+  <div class="card">
+    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
+
+    <div class="passos">
+      <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
+      <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+      <div class="etapa"><span class="num">3</span>PLANOS</div>
+      <div class="etapa"><span class="num">4</span>DADOS</div>
+    </div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
+    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+
+    <div class="card" style="background:#111;border:1.5px solid var(--c);">
+      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
+    </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br>
+    <span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br>
+    <span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br>
+    <span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="fase-box"><span class="titulo">FASE 1. OFF SEASON</span><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><span class="titulo">FASE 2. BULKING</span><br>Março, Abril e Maio</div>
+    <div class="fase-box"><span class="titulo">FASE 3. MAINTENANCE</span><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><span class="titulo">FASE 4. CUTTING</span><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><span class="titulo" style="color:var(--ok);">DEZEMBRO: FÉRIAS</span></div>
+
+    <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
+  </div>
+</div>
+
+<!-- TELA 2: ANAMNESE COM 11 PERGUNTAS -->
+<div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
+    <div class="etapa"><span class="num">4</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -71,7 +120,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-    
+
     <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
     <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
     <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
@@ -85,16 +134,18 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="input-group"><label>11. Descrição e observações: aluno pode tudo que quiser descrever *</label><textarea id="q11" rows="3"></textarea></div>
 
     <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 2: PLANOS + HORÁRIO -->
-<div id="tela2" class="oculto">
+<!-- TELA 3: PLANOS + HORÁRIO -->
+<div id="tela3" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">3</span>PLANOS</div>
+    <div class="etapa"><span class="num">4</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -139,17 +190,18 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
     <div class="grid-4" id="horariosTarde"></div>
     <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 3: DADOS PESSOAIS -->
-<div id="tela3" class="oculto">
+<!-- TELA 4: DADOS PESSOAIS -->
+<div id="tela4" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
+    <div class="etapa ativo"><span class="num">4</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -192,7 +244,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
     </div>
     <button class="btn" onclick="enviarInscricao()">CONFIRMAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela3')">Voltar</button>
   </div>
 </div>
 
@@ -215,36 +267,36 @@ const dadosLoginKorvil = {
 window.onload = montarHorarios;
 
 function mostrarTela(id){
-  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
+  document.querySelectorAll('#tela1, #tela2, #tela3, #tela4').forEach(t => t.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
 }
 
 function toggleObjetivo(el){
   el.classList.toggle('selecionado');
-  objetivosSelecionados = Array.from(document.querySelectorAll('#tela1.plano.selecionado')).map(d => d.getAttribute('data-obj'));
+  objetivosSelecionados = Array.from(document.querySelectorAll('#tela2.plano.selecionado')).map(d => d.getAttribute('data-obj'));
 }
 
 function irParaPlanos(){
-  for(let i=1;i<=9;i++){ 
-    if(document.getElementById('q'+i).value.trim() === ''){ 
-      alert('Preencha todas as perguntas obrigatórias da Anamnese'); 
-      return; 
-    } 
+  for(let i=1;i<=9;i++){
+    if(document.getElementById('q'+i).value.trim() === ''){
+      alert('Preencha todas as perguntas obrigatórias da Anamnese');
+      return;
+    }
   }
-  if(objetivosSelecionados.length === 0){ 
-    alert('Selecione pelo menos 1 objetivo'); 
-    return; 
+  if(objetivosSelecionados.length === 0){
+    alert('Selecione pelo menos 1 objetivo');
+    return;
   }
-  
+
   dadosAnamnese = {objetivos: objetivosSelecionados};
   for(let i=1;i<=11;i++){ dadosAnamnese['q'+i] = document.getElementById('q'+i).value; }
-  
-  mostrarTela('tela2');
+
+  mostrarTela('tela3');
 }
 
 function selecionarPlano(el){
-  document.querySelectorAll('#tela2.plano').forEach(p => { if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado'); });
+  document.querySelectorAll('#tela3.plano').forEach(p => { if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado'); });
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
@@ -263,7 +315,7 @@ function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
   el.classList.toggle('selecionado');
   diasSelecionados = Array.from(document.querySelectorAll('#cardDias.plano.selecionado')).map(d => d.getAttribute('data-dia'));
-  
+
   if(diasSelecionados.length > frequenciaMaxima){
     el.classList.remove('selecionado');
     diasSelecionados.pop();
@@ -290,7 +342,7 @@ function montarHorarios(){
 }
 
 function selecionarHorario(el){
-  document.querySelectorAll('#tela2.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
+  document.querySelectorAll('#tela3.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
   el.classList.add('selecionado');
   horarioSelecionado = el.getAttribute('data-horario');
 }
@@ -300,7 +352,7 @@ function irParaDados(){
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
-  mostrarTela('tela3');
+  mostrarTela('tela4');
 }
 
 function usarDadosLogin(){
