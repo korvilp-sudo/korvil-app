@@ -13,7 +13,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;line-height:1.4;}
+.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;line-height:1.4;font-weight:700;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
@@ -22,6 +22,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
 .plano.bloqueado{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+.plano.nome{font-weight:800;color:var(--c);font-size:13px;}
+.plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
@@ -31,13 +33,24 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .input-group textarea{min-height:70px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
 .alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
+.info-box{background:linear-gradient(135deg,#0a1419,#000);border:1.5px solid var(--c);border-radius:10px;padding:14px;margin:12px 0;box-shadow:0 0 15px var(--c)20;}
+.info-box.item{margin-bottom:10px;font-size:12px;line-height:1.5;}
+.info-box.item strong{color:var(--c);}
 .logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
 .logo-projeto{display:block;margin:0 auto 16px;width:160px;height:160px;border:2px solid var(--c);border-radius:14px;padding:8px;background:#111;box-shadow:0 0 20px var(--c)40;object-fit:contain;}
+.timeline{margin:16px 0;}
+.fase{background:#111;border-left:3px solid var(--c);padding:12px;margin-bottom:12px;border-radius:8px;}
+.fase.titulo-fase{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
+.fase.meses{font-size:11px;color:var(--ok);font-weight:700;margin-bottom:6px;}
+.lista{font-size:12px;color:var(--text2);line-height:1.8;margin-left:8px;}
+.lista li{margin-bottom:4px;list-style:none;}
+.lista li:before{content:"✓ ";color:var(--c);font-weight:900;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
 .passos.etapa.num{font-weight:900;font-size:12px;display:block;}
 .passos.ativo{color:var(--c);}
+.passos.ativo.num{color:var(--c);}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -55,6 +68,25 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" alt="Projeto Transformação" class="logo-projeto">
     <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+    <div class="info-box">
+      <div class="item"><strong>Treinador</strong></div>
+      <div class="item"><strong>Terapeuta Holístico</strong></div>
+      <div class="item"><strong>Especialista em Resultados</strong></div>
+    </div>
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <ul class="lista"><li>Crianças a partir de 10 anos</li><li>Jovens</li><li>Adultos</li><li>Idosos</li><li>Praticantes</li><li>Atletas</li></ul>
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <ul class="lista"><li>1. Manutenção</li><li>2. Resistência</li><li>3. Força</li><li>4. Hipertrofia</li></ul>
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="timeline">
+      <div class="fase"><div class="titulo-fase">FASE 1. OFF SEASON</div><div class="meses">Janeiro e Fevereiro</div></div>
+      <div class="fase"><div class="titulo-fase">FASE 2. BULKING</div><div class="meses">Março, Abril e Maio</div></div>
+      <div class="fase"><div class="titulo-fase">FASE 3. MAINTENANCE</div><div class="meses">Junho, Julho e Agosto</div></div>
+      <div class="fase"><div class="titulo-fase">FASE 4. CUTTING</div><div class="meses">Setembro, Outubro e Novembro</div></div>
+      <div class="fase" style="border-left-color:var(--ok);"><div class="titulo-fase" style="color:var(--ok);">DEZEMBRO: FÉRIAS</div></div>
+    </div>
     <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
   </div>
 </div>
@@ -69,8 +101,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="aviso">
-    <strong>IMPORTANTE:</strong> Só pode avançar pra tela 3 se preencher todos os dados.
-    Assim o profissional terá todas as condições do participante para criar todos os protocolos dele.
+    Só pode avançar pra tela 3 se preencher todos os dados.
+    Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.
   </div>
 
   <div class="card">
@@ -108,17 +140,17 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo-secao">| HISTÓRICO DE SAÚDE E ROTINA - DESCREVA TUDO</div>
-    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1"></textarea></div>
-    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2"></textarea></div>
-    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3"></textarea></div>
-    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4"></textarea></div>
-    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5"></textarea></div>
-    <div class="input-group"><label>6. Possui alguma DEFICIÊNCIA ou LIMITAÇÃO física? *</label><textarea id="q6"></textarea></div>
-    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7"></textarea></div>
-    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO físico ou psicológico? *</label><textarea id="q8"></textarea></div>
-    <div class="input-group"><label>9. Está fazendo USO de MEDICAMENTOS? Quais? *</label><textarea id="q9"></textarea></div>
-    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador? </label><textarea id="q10"></textarea></div>
-    <div class="input-group"><label>11. Descrição e observações gerais: *</label><textarea id="q11"></textarea></div>
+    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" placeholder="Descreva sua experiência..."></textarea></div>
+    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" placeholder="Descreva sua rotina alimentar..."></textarea></div>
+    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" placeholder="Ex: 7 horas"></textarea></div>
+    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4" placeholder="Descreva se possui..."></textarea></div>
+    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5" placeholder="Descreva as áreas..."></textarea></div>
+    <div class="input-group"><label>6. Possui alguma DEFICIÊNCIA ou LIMITAÇÃO física? *</label><textarea id="q6" placeholder="Descreva se possui..."></textarea></div>
+    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7" placeholder="Descreva..."></textarea></div>
+    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO físico ou psicológico? *</label><textarea id="q8" placeholder="Descreva qual tratamento..."></textarea></div>
+    <div class="input-group"><label>9. Está fazendo USO de MEDICAMENTOS? Quais? *</label><textarea id="q9" placeholder="Liste os medicamentos..."></textarea></div>
+    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador? </label><textarea id="q10" placeholder="Observação opcional..."></textarea></div>
+    <div class="input-group"><label>11. Descrição e observações: aluno põe tudo que quiser descrever *</label><textarea id="q11" placeholder="Descreva aqui tudo que quiser. Rotina, trabalho, suplementos, etc"></textarea></div>
 
     <button class="btn" onclick="validarAnamnese()">CONTINUAR PARA PLANOS</button>
     <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
@@ -230,27 +262,21 @@ async function carregarVagas(){
 }
 
 function selecionarPlano(el){
-  document.querySelectorAll('.plano').forEach(item => { if(item.onclick && item.onclick.toString().includes('selecionarPlano')) item.classList.remove('selecionado'); });
+  document.querySelectorAll('#tela3.plano').forEach(item => item.classList.remove('selecionado'));
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
-  const freq = el.getAttribute('data-freq');
-  if(freq){
-    frequenciaMaxima = parseInt(freq);
-    diasSelecionados = [];
-    document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione exatamente ${freq} dia(s)`;
-  } else {
-    frequenciaMaxima = 0;
-    document.getElementById('cardDias').classList.add('oculto');
-  }
 }
 
 function selecionarPlanoFrequencia(el, freq){
   selecionarPlano(el);
+  frequenciaMaxima = freq;
+  diasSelecionados = [];
+  document.getElementById('cardDias').classList.remove('oculto');
+  document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione exatamente ${freq} dia(s)`;
 }
 
 function selecionarHorario(el){
-  document.querySelectorAll('.plano').forEach(item => { if(item.onclick && item.onclick.toString().includes('selecionarHorario')) item.classList.remove('selecionado'); });
+  document.querySelectorAll('#tela3.plano').forEach(item => { if(item.onclick && item.onclick.toString().includes('selecionarHorario')) item.classList.remove('selecionado'); });
   el.classList.add('selecionado');
   horarioSelecionado = el.getAttribute('data-valor');
 }
@@ -286,15 +312,26 @@ function calcularIdadeECategoria(){
 }
 
 function validarAnamnese(){
-  if(!document.getElementById('nome').value.trim()){ alert('Preencha o Nome'); return; }
-  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
-  if(!document.getElementById('q11').value.trim()){ alert('Preencha Descrição e observações'); return; }
+  let erros = [];
+  if(!document.getElementById('nome').value.trim()) erros.push('Nome');
+  if(!document.getElementById('cpf').value.trim()) erros.push('CPF');
+  if(!document.getElementById('nasc').value) erros.push('Data Nasc');
+  if(!document.getElementById('publico').value) erros.push('Gênero');
+  if(!document.getElementById('peso').value) erros.push('Peso');
+  if(!document.getElementById('altura').value) erros.push('Altura');
+  if(!document.getElementById('email').value.trim()) erros.push('Email');
+  if(!document.getElementById('whats').value.trim()) erros.push('WhatsApp');
+  if(objetivosSelecionados.length === 0) erros.push('Objetivos');
+  if(!document.getElementById('q11').value.trim()) erros.push('Descrição e observações');
+  if(erros.length > 0){ alert('Preencha os campos obrigatórios: \n' + erros.join(', ')); return; }
   mostrarTela('tela3');
 }
 
 async function enviarWhatsApp(){
   if(!document.getElementById('nivel').value){ alert('Selecione seu Nível de experiência'); return; }
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
+  if(diasSelecionados.length!== frequenciaMaxima && frequenciaMaxima > 0){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s).`); return; }
+  if(!horarioSelecionado){ alert('Escolha um horário'); return; }
   alert('Inscrição confirmada!');
 }
 </script>
