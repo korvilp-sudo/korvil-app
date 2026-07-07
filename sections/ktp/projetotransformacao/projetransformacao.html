@@ -2,54 +2,282 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
 <title>K-TP PROJETO TRANSFORMAÇÃO</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff;}
-body{background:var(--bg);color:var(--text);padding:16px;font-family:Arial;max-width:700px;margin:auto;}
-.card{background:var(--card);border:2px solid var(--c);border-radius:12px;padding:16px;margin-bottom:12px;}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;border:0;cursor:pointer;margin-top:14px;}
+:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
+h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
+.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;}
+.plano:hover{border-color:var(--c);}
+.plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);box-shadow:0 0 15px var(--c)30;}
+.plano.bloqueado{opacity:0.4;cursor:not-allowed;}
+.plano.nome{font-weight:800;color:var(--c);font-size:13px;}
+.plano.desc{font-size:11px;color:var(--text2);margin:4px 0;}
+.plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
+.btn.voltar{background:#222;color:var(--text);}
+.btn:disabled{background:#333;color:#666;cursor:not-allowed;}
+.input-group{margin-bottom:10px;}
+.input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
+.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
+.vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
+.info-box{background:linear-gradient(135deg,#0a1419,#000);border:1.5px solid var(--c);border-radius:10px;padding:14px;margin:12px 0;box-shadow:0 0 15px var(--c)20;}
+.info-box.item{margin-bottom:10px;font-size:12px;line-height:1.5;}
+.info-box.item strong{color:var(--c);}
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;box-shadow:0 0 15px var(--c)40;}
+.timeline{margin:16px 0;}
+.fase{background:#111;border-left:3px solid var(--c);padding:12px;margin-bottom:12px;border-radius:8px;}
+.fase.titulo-fase{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
+.fase.meses{font-size:11px;color:var(--ok);font-weight:700;margin-bottom:6px;}
+.lista{font-size:12px;color:var(--text2);line-height:1.8;margin-left:8px;}
+.lista li{margin-bottom:4px;list-style:none;}
+.lista li:before{content:"✓ ";color:var(--c);font-weight:900;}
 .oculto{display:none;}
-.logo{display:block;margin:0 auto 10px;max-width:220px;}
+.passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
+.passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
+.passos.etapa.num{font-weight:900;font-size:12px;display:block;}
+.passos.ativo{color:var(--c);}
+.passos.ativo.num{color:var(--c);}
 </style>
 </head>
 <body>
 
-<!-- TELA 1 -->
+<!-- TELA 1: APRESENTAÇÃO -->
 <div id="tela1">
-  <div class="card">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <h2 style="text-align:center;color:var(--c)">K-TP PROJETO TRANSFORMAÇÃO</h2>
-    <p>Conteúdo da apresentação aqui...</p>
+  <div class="card"> <!-- CORRIGI: O CARD AGORA ESTA DENTRO DA TELA1 -->
+
+  <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" alt="Logo K-TP" class="logo">
+
+  <div class="passos">
+    <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
+  </div>
+
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" alt="Projeto Transformação" class="logo-projeto">
+    <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+    <div class="info-box">
+      <div class="item"><strong>Treinador</strong></div>
+      <div class="item"><strong>Terapeuta Holístico</strong></div>
+      <div class="item"><strong>Especialista em Resultados</strong></div>
+    </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <ul class="lista">
+      <li>Crianças a partir de 10 anos</li>
+      <li>Jovens</li>
+      <li>Adultos</li>
+      <li>Idosos</li>
+      <li>Praticantes</li>
+      <li>Atletas</li>
+    </ul>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <ul class="lista">
+      <li>1. Manutenção</li>
+      <li>2. Resistência</li>
+      <li>3. Força</li>
+      <li>4. Hipertrofia</li>
+    </ul>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+
+    <div class="timeline">
+      <div class="fase">
+        <div class="titulo-fase">FASE 1. OFF SEASON</div>
+        <div class="meses">Janeiro e Fevereiro</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 2. BULKING</div>
+        <div class="meses">Março, Abril e Maio</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 3. MAINTENANCE</div>
+        <div class="meses">Junho, Julho e Agosto</div>
+      </div>
+      <div class="fase">
+        <div class="titulo-fase">FASE 4. CUTTING</div>
+        <div class="meses">Setembro, Outubro e Novembro</div>
+      </div>
+      <div class="fase" style="border-left-color:var(--ok);">
+        <div class="titulo-fase" style="color:var(--ok);">DEZEMBRO: FÉRIAS</div>
+      </div>
+    </div>
+
     <button class="btn" onclick="mostrarTela('tela2')">PARTICIPAR DO PROJETO</button>
-  </div>
+  </div> <!-- FECHEI O CARD AQUI DENTRO -->
 </div>
 
-<!-- TELA 2 -->
+<!-- TELA 2: ANAMNESE -->
 <div id="tela2" class="oculto">
+  <h1>K-T.P KORVIL</h1>
+
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">3</span>PLANOS</div>
+  </div>
+
   <div class="card">
-    <h2 style="text-align:center;color:var(--c)">ANAMNESE</h2>
-    <p>Formulário aqui...</p>
+    <div class="titulo-secao">| DADOS PESSOAIS + ANAMNESE</div>
+    <div class="input-group"><label>Nome Completo</label><input type="text" id="nome"></div>
+    <div class="grid-2">
+      <div class="input-group"><label>CPF</label><input type="text" id="cpf"></div>
+      <div class="input-group"><label>Data Nasc</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
+      <div class="input-group"><label>Faixa Etária</label><input type="text" id="faixa" readonly></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Público</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
+      <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
+      <div class="input-group"><label>Nível</label><select id="nivel"><option>Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
+    </div>
+    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+    <div class="input-group"><label>WhatsApp</label><input type="tel" id="whats"></div>
+
     <button class="btn" onclick="mostrarTela('tela3')">CONTINUAR PARA PLANOS</button>
-    <button class="btn" style="background:#333;color:#fff" onclick="mostrarTela('tela1')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 3 -->
+<!-- TELA 3: PLANOS -->
 <div id="tela3" class="oculto">
-  <div class="card">
-    <h2 style="text-align:center;color:var(--c)">PLANOS</h2>
-    <p>Planos aqui...</p>
-    <button class="btn" style="background:#333;color:#fff" onclick="mostrarTela('tela2')">Voltar</button>
+  <h1>K-T.P KORVIL</h1>
+
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
+    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">3</span>PLANOS</div>
   </div>
+
+  <div class="card">
+    <div class="titulo-secao">| 1. ESCOLHA O PLANO</div>
+
+    <div class="grid-2">
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Online - R$20,00"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Presencial - R$20,00"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
+    </div>
+
+    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Online Mensal - R$60,00/mês"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
+
+    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
+    <div class="grid-2">
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 1)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 2)" data-valor="Presencial 2x semana - R$80,00" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 3)" data-valor="Presencial 3x semana - R$100,00" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 4)" data-valor="Presencial 4x semana - R$130,00" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
+      <div class="plano" onclick="selecionarPlanoFrequencia(this, 5)" data-valor="Presencial 5x semana - R$150,00" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
+    </div>
+  </div>
+
+  <div id="cardDias" class="card oculto">
+    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
+    <div class="sub-titulo" id="subDias">Selecione os dias</div>
+    <div class="grid-5">
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Terça"><div>TER</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Quarta"><div>QUA</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Quinta"><div>QUI</div></div>
+      <div class="plano" onclick="selecionarDia(this)" data-dia="Sexta"><div>SEX</div></div>
+    </div>
+    <div id="alertaDias" class="alerta"></div>
+  </div>
+
+  <div class="card">
+    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO</div>
+    <div class="grid-4">
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00" style="text-align:center;"><div>06:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00" style="text-align:center;"><div>18:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00" style="text-align:center;"><div>19:00</div><div class="vagas">7 vagas</div></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
+  <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
 </div>
 
 <script>
+let frequenciaMaxima = 0;
+let diasSelecionados = [];
+
 function mostrarTela(id){
-  document.getElementById('tela1').style.display = 'none';
-  document.getElementById('tela2').style.display = 'none';
-  document.getElementById('tela3').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
+  document.getElementById('tela1').classList.add('oculto');
+  document.getElementById('tela2').classList.add('oculto');
+  document.getElementById('tela3').classList.add('oculto');
+  document.getElementById(id).classList.remove('oculto');
+  window.scrollTo(0,0);
+}
+
+function selecionarUnico(el, grupo){
+  document.querySelectorAll('.plano').forEach(item => {
+    if(item.onclick && item.onclick.toString().includes(grupo)){
+      item.classList.remove('selecionado');
+    }
+  });
+  el.classList.add('selecionado');
+  if(grupo === 'plano'){ document.getElementById('cardDias').classList.add('oculto'); frequenciaMaxima = 0; diasSelecionados = []; }
+}
+
+function selecionarPlanoFrequencia(el, freq){
+  selecionarUnico(el, 'plano');
+  frequenciaMaxima = freq;
+  diasSelecionados = [];
+  document.getElementById('cardDias').classList.remove('oculto');
+  document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione ${freq} dia(s)`;
+}
+
+function selecionarDia(el){
+  if(el.classList.contains('bloqueado')) return;
+  if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
+  } else {
+    if(diasSelecionados.length >= frequenciaMaxima){ return; }
+    el.classList.add('selecionado');
+    diasSelecionados.push(el.getAttribute('data-dia'));
+  }
+  document.querySelectorAll('#cardDias.plano').forEach(d => {
+    if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
+    else { d.classList.remove('bloqueado'); }
+  });
+}
+
+function calcularIdade(){
+  let nasc = document.getElementById('nasc').value;
+  if(!nasc) return;
+  let dataNasc = new Date(nasc);
+  let hoje = new Date();
+  let idade = hoje.getFullYear() - dataNasc.getFullYear();
+  let mes = hoje.getMonth() - dataNasc.getMonth();
+  if(mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) idade--;
+  document.getElementById('idade').value = idade + ' anos';
+  let faixa = idade >= 10 && idade <= 17? 'Adolescente' : idade >= 18 && idade <= 25? 'Jovem' : idade >= 26 && idade <= 35? 'Adulto Jovem' : idade >= 36 && idade <= 45? 'Adulto' : idade >= 46 && idade <= 59? 'Adulto Maduro' : idade >= 60? 'Idoso' : '';
+  document.getElementById('faixa').value = faixa;
+}
+
+function enviarWhatsApp(){
+  alert('Enviado!');
 }
 </script>
 
