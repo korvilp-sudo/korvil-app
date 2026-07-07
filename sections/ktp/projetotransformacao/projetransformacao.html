@@ -9,16 +9,15 @@
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
-h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;}
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;}
-.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;}
+.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;text-align:center;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;text-align:center;transition:.2s;}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.08);}
 .plano.bloqueado{opacity:0.4;pointer-events:none;}
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
@@ -44,24 +43,24 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .lista{font-size:12px;color:var(--text2);line-height:1.8;margin-left:8px;list-style:none;}
 .lista li:before{content:"✓ ";color:var(--c);font-weight:900;}
 .oculto{display:none;}
-.passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;}
+.passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;gap:8px;}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
-.passos.etapa.num{font-weight:900;font-size:12px;display:block;}
+.passos.etapa.num{font-weight:900;font-size:12px;display:block;margin-bottom:2px;}
 .passos.ativo{color:var(--c);}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- TELA 1 -->
+<!-- TELA 1: APRESENTAÇÃO -->
 <div id="tela1">
   <div class="card">
     <div style="text-align:center;font-size:14px;font-weight:800;color:var(--c);margin-bottom:12px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
     <div class="passos">
-      <div class="etapa ativo"><span class="num">1</span>APRESENTAÇÃO</div>
-      <div class="etapa"><span class="num">2</span>ANAMNESE</div>
-      <div class="etapa"><span class="num">3</span>PLANOS</div>
+      <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
+      <div class="etapa"><span class="num">2</span>PLANOS</div>
+      <div class="etapa"><span class="num">3</span>DADOS</div>
     </div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
     <div style="text-align:center;font-size:16px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
@@ -90,33 +89,12 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <!-- TELA 2: ANAMNESE -->
 <div id="tela2" class="oculto">
-  <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
-    <div class="etapa ativo"><span class="num">2</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">3</span>PLANOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
   <div class="aviso">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
-
-  <div class="card">
-    <div class="titulo-secao">| DADOS PESSOAIS</div>
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-    <div class="grid-2">
-      <div class="input-group"><label>CPF *</label><input type="text" id="cpf"></div>
-      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdadeECategoria()"></div>
-    </div>
-    <div class="grid-3">
-      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
-      <div class="input-group"><label>Gênero *</label><select id="publico"><option value="">Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Peso kg *</label><input type="number" id="peso"></div>
-      <div class="input-group"><label>Altura cm *</label><input type="number" id="altura"></div>
-    </div>
-    <div class="input-group"><label>Email *</label><input type="email" id="email"></div>
-    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats"></div>
-  </div>
 
   <div class="card">
     <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1 *</div>
@@ -150,11 +128,10 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <!-- TELA 3: PLANOS -->
 <div id="tela3" class="oculto">
-  <h1>K-T.P KORVIL</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>APRESENTAÇÃO</div>
-    <div class="etapa"><span class="num">2</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">3</span>PLANOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANOS</div>
+    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -193,6 +170,25 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="font-size:11px;color:var(--ok);margin-bottom:8px;">MANHÃ</div><div class="grid-4" id="horariosManha"></div>
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE</div><div class="grid-4" id="horariosTarde"></div>
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">MADRUGADA</div><div class="grid-4" id="horariosMadrugada"></div>
+  </div>
+
+  <div class="card">
+    <div class="titulo-secao">| 4. DADOS PESSOAIS FINAIS</div>
+    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
+    <div class="grid-3">
+      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdadeECategoria()"></div>
+      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
+      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Gênero *</label><select id="publico"><option value="">Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
+      <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats"></div>
+    </div>
+    <div class="grid-2">
+      <div class="input-group"><label>Peso kg *</label><input type="number" id="peso"></div>
+      <div class="input-group"><label>Altura cm *</label><input type="number" id="altura"></div>
+    </div>
+    <div class="input-group"><label>Email *</label><input type="email" id="email"></div>
   </div>
 
   <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
@@ -311,25 +307,19 @@ function selecionarDia(el){
 
 function calcularIdadeECategoria(){
   let nasc = document.getElementById('nasc').value; if(!nasc) return;
-  let idade = new Date().getFullYear() - new Date(nasc).getFullYear();
+  let dataNasc = new Date(nasc + 'T00:00:00');
+  let hoje = new Date();
+  let idade = hoje.getFullYear() - dataNasc.getFullYear();
+  let mes = hoje.getMonth() - dataNasc.getMonth();
+  if(mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) idade--;
   document.getElementById('idade').value = idade + ' anos';
   let categoria = idade >= 10 && idade <= 12? 'Criança' : idade >= 13 && idade <= 17? 'Jovem' : idade >= 18 && idade <= 59? 'Adulto' : idade >= 60? 'Idoso' : 'Fora da faixa';
   document.getElementById('categoria').value = categoria;
 }
 
 function validarAnamnese(){
-  let erros = [];
-  if(!document.getElementById('nome').value.trim()) erros.push('Nome');
-  if(!document.getElementById('cpf').value.trim()) erros.push('CPF');
-  if(!document.getElementById('nasc').value) erros.push('Data Nasc');
-  if(!document.getElementById('publico').value) erros.push('Gênero');
-  if(!document.getElementById('peso').value) erros.push('Peso');
-  if(!document.getElementById('altura').value) erros.push('Altura');
-  if(!document.getElementById('email').value.trim()) erros.push('Email');
-  if(!document.getElementById('whats').value.trim()) erros.push('WhatsApp');
-  if(objetivosSelecionados.length === 0) erros.push('Objetivos');
-  if(!document.getElementById('q11').value.trim()) erros.push('Descrição e observações');
-  if(erros.length > 0){ alert('Preencha os campos obrigatórios: \n' + erros.join(', ')); return; }
+  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
+  if(!document.getElementById('q11').value.trim()){ alert('Preencha a Descrição e observações'); return; }
   mostrarTela('tela3');
 }
 
@@ -338,9 +328,13 @@ async function enviarWhatsApp(){
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(diasSelecionados.length!== frequenciaMaxima && frequenciaMaxima > 0){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s).`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
+  if(!document.getElementById('nome').value.trim()){ alert('Preencha Nome Completo'); return; }
+  if(!document.getElementById('nasc').value){ alert('Preencha Data de Nascimento'); return; }
+  if(!document.getElementById('publico').value){ alert('Selecione Gênero'); return; }
+  if(!document.getElementById('whats').value.trim()){ alert('Preencha WhatsApp'); return; }
 
   const { error } = await supabase.from('inscricoes').insert([{
-    nome: document.getElementById('nome').value, cpf: document.getElementById('cpf').value, whatsapp: document.getElementById('whats').value,
+    nome: document.getElementById('nome').value, data_nasc: document.getElementById('nasc').value, genero: document.getElementById('publico').value, whatsapp: document.getElementById('whats').value,
     plano: planoSelecionado, horario: horarioSelecionado, dias: diasSelecionados, nivel: document.getElementById('nivel').value, objetivos: objetivosSelecionados
   }]);
   if(error){ alert('Erro ao salvar: ' + error.message); return; }
