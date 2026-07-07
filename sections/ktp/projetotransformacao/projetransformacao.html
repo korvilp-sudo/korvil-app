@@ -170,10 +170,10 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="titulo-secao">| 1. ESCOLHA O PLANO</div>
     <div class="input-group"><label>Qual seu NÍVEL de experiência? *</label><select id="nivel"><option value="">Selecione</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></div>
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Online - R$20,00"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div></div>
+      <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Aula Avulsa Presencial - R$20,00"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div></div>
     </div>
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
+    <div class="plano" onclick="selecionarUnico(this, 'plano')" data-valor="Online Mensal - R$60,00/mês"><div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div></div>
     <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
     <div class="grid-2">
       <div class="plano" onclick="selecionarPlanoFrequencia(this, 1)" data-valor="Presencial 1x semana - R$60,00" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
@@ -246,9 +246,9 @@ function montarBotoesHorario(){
   const manha = todosHorarios.slice(0,5);
   const tarde = todosHorarios.slice(5,13);
   const madrugada = todosHorarios.slice(13,19);
-  document.getElementById('horariosManha').innerHTML = manha.map(h => `<div class="plano" onclick="selecionarHorario(this)" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
-  document.getElementById('horariosTarde').innerHTML = tarde.map(h => `<div class="plano" onclick="selecionarHorario(this)" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
-  document.getElementById('horariosMadrugada').innerHTML = madrugada.map(h => `<div class="plano" onclick="selecionarHorario(this)" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
+  document.getElementById('horariosManha').innerHTML = manha.map(h => `<div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
+  document.getElementById('horariosTarde').innerHTML = tarde.map(h => `<div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
+  document.getElementById('horariosMadrugada').innerHTML = madrugada.map(h => `<div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="${h}"><div>${h.split(' ')[0]}</div><div class="vagas">7 vagas</div></div>`).join('');
 }
 
 async function carregarVagas(){
@@ -258,30 +258,54 @@ async function carregarVagas(){
       const usados = inscricoes? inscricoes.filter(i => i.horario === h).length : 0;
       vagasPorHorario[h] = 7 - usados;
     });
+    atualizarTelaVagas();
   }catch(e){ console.log("Erro Supabase:", e) }
 }
 
-function selecionarPlano(el){
-  document.querySelectorAll('#tela3.plano').forEach(item => item.classList.remove('selecionado'));
+function atualizarTelaVagas(){
+  document.querySelectorAll('.plano[data-valor]').forEach(btn => {
+    const horario = btn.getAttribute('data-valor');
+    const vagas = vagasPorHorario[horario];
+    const vagasEl = btn.querySelector('.vagas');
+    if(vagasEl && vagas <= 0){
+      vagasEl.innerText = 'LOTADO';
+      vagasEl.style.color = 'var(--erro)';
+      btn.classList.add('bloqueado');
+    } else if(vagasEl){
+      vagasEl.innerText = `${vagas} vagas`;
+    }
+  })
+}
+
+function selecionarUnico(el, grupo){
+  if(el.classList.contains('bloqueado')) return;
+  document.querySelectorAll('.plano').forEach(item => {
+    if(item.onclick && item.onclick.toString().includes(grupo)){ item.classList.remove('selecionado'); }
+  });
   el.classList.add('selecionado');
-  planoSelecionado = el.getAttribute('data-valor');
+  if(grupo === 'plano'){
+    planoSelecionado = el.getAttribute('data-valor');
+    const freq = el.getAttribute('data-freq');
+    if(freq){
+      frequenciaMaxima = parseInt(freq);
+      diasSelecionados = [];
+      document.getElementById('cardDias').classList.remove('oculto');
+      document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione exatamente ${freq} dia(s)`;
+    } else {
+      document.getElementById('cardDias').classList.add('oculto');
+      frequenciaMaxima = 0;
+      diasSelecionados = [];
+    }
+  }
+  if(grupo === 'horario'){ horarioSelecionado = el.getAttribute('data-valor'); }
 }
 
 function selecionarPlanoFrequencia(el, freq){
-  selecionarPlano(el);
-  frequenciaMaxima = freq;
-  diasSelecionados = [];
-  document.getElementById('cardDias').classList.remove('oculto');
-  document.getElementById('subDias').innerText = `Você escolheu ${freq}x. Selecione exatamente ${freq} dia(s)`;
-}
-
-function selecionarHorario(el){
-  document.querySelectorAll('#tela3.plano').forEach(item => { if(item.onclick && item.onclick.toString().includes('selecionarHorario')) item.classList.remove('selecionado'); });
-  el.classList.add('selecionado');
-  horarioSelecionado = el.getAttribute('data-valor');
+  selecionarUnico(el, 'plano');
 }
 
 function selecionarDia(el){
+  if(el.classList.contains('bloqueado')) return;
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
@@ -328,7 +352,7 @@ function validarAnamnese(){
 }
 
 async function enviarWhatsApp(){
-  if(!document.getElementById('nivel').value){ alert('Selecione seu Nível de experiência'); return; }
+  if(document.getElementById('nivel').value === ''){ alert('Selecione seu Nível de experiência'); return; }
   if(!planoSelecionado){ alert('Escolha um plano'); return; }
   if(diasSelecionados.length!== frequenciaMaxima && frequenciaMaxima > 0){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s).`); return; }
   if(!horarioSelecionado){ alert('Escolha um horário'); return; }
