@@ -50,7 +50,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
-<!-- APRESENTAÇÃO ORIGINAL -->
+<!-- TELA INICIAL: APRESENTAÇÃO - NÃO CONTA NAS 3 -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
@@ -95,7 +95,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
     <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
 
-    <div class="titulo-secao">| OBJETIVOS - MÍNIMO 1</div>
+    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
     <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
@@ -135,7 +135,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-<!-- TELA 2: PLANOS VOLTOU -->
+<!-- TELA 2: PLANOS -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
@@ -146,7 +146,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="card">
     <div class="titulo-secao">| PLANOS DISPONÍVEIS</div>
     <div class="sub-titulo">Escolha 1 plano para continuar</div>
-    
+
     <div class="plano" onclick="selecionarPlano(this, 'Plano Starter')">
       <div style="font-weight:900;">PLANO STARTER</div>
       <div class="preco">R$ 149,90/mês</div>
@@ -215,6 +215,9 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     </div>
     <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+
+    <button class="btn" onclick="finalizarInscricao()">FINALIZAR INSCRIÇÃO</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">VOLTAR</button>
   </div>
 </div>
 
@@ -300,6 +303,11 @@ function calcularIdade(){
 
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
+
+function finalizarInscricao(){
+  alert('Inscrição enviada! Entraremos em contato.');
+  console.log({objetivos: objetivosSelecionados, plano: planoSelecionado});
+}
 </script>
 </body>
 </html>
