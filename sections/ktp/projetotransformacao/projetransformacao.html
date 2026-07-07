@@ -13,6 +13,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
+.aviso{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
@@ -22,6 +23,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
+.plano.objetivo{border:1.5px solid #222;background:#111;}
+.plano.objetivo.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
 .plano.nome{font-weight:800;color:var(--c);font-size:13px;}
 .plano.valor{font-weight:900;color:var(--ok);font-size:16px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
@@ -29,9 +32,12 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
+.input-group textarea{min-height:70px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
+.logo{display:block;margin:0 auto 10px;max-width:220px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo-projeto{display:block;margin:0 auto 16px;max-width:160px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
@@ -44,7 +50,47 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </head>
 <body>
 
-<div id="tela3">
+<!-- TELA 1: ANAMNESE -->
+<div id="tela1">
+  <h1>K-T.P KORVIL</h1>
+  <div class="passos">
+    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
+  </div>
+  <div class="aviso">Preencha a anamnese completa antes de escolher o plano.</div>
+
+  <div class="card">
+    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
+    <div class="grid-2">
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Ganho de Peso"><div class="nome">Ganho de Peso</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Emagrecimento"><div class="nome">Emagrecimento</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Definição Muscular"><div class="nome">Definição Muscular</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Saúde"><div class="nome">Saúde</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Condicionamento Físico"><div class="nome">Condicionamento Físico</div></div>
+      <div class="plano objetivo" onclick="selecionarObjetivo(this)" data-valor="Hipertrofia"><div class="nome">Hipertrofia</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
+    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1"></textarea></div>
+    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2"></textarea></div>
+    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3"></textarea></div>
+    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4"></textarea></div>
+    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5"></textarea></div>
+    <div class="input-group"><label>6. Possui alguma DEFICIÊNCIA ou LIMITAÇÃO física? *</label><textarea id="q6"></textarea></div>
+    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7"></textarea></div>
+    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO físico ou psicológico? *</label><textarea id="q8"></textarea></div>
+    <div class="input-group"><label>9. Está fazendo USO de MEDICAMENTOS? Quais? *</label><textarea id="q9"></textarea></div>
+    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10"></textarea></div>
+    <div class="input-group"><label>11. Descrição e observações: aluno põe tudo que quiser descrever *</label><textarea id="q11"></textarea></div>
+    <button class="btn" onclick="validarAnamnese()">CONTINUAR PARA PLANOS</button>
+  </div>
+</div>
+
+<!-- TELA 2: PLANOS + DIAS + HORÁRIO -->
+<div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
     <div class="etapa"><span class="num">1</span>ANAMNESE</div>
@@ -73,10 +119,9 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
   </div>
 
-  <!-- CAIXA DE DIAS APARECE DINÂMICO -->
   <div id="cardDias" class="card oculto">
     <div class="aviso-dias" id="avisoDias"></div>
-    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
+    <div class="titulo-secao">| 2. ESCOLHA OS DIAS DE TREINO</div>
     <div class="sub-titulo">Pode ser qualquer ordem entre Segunda a Sexta-feira</div>
     <div class="grid-5">
       <div class="plano" onclick="selecionarDia(this)" data-dia="Segunda"><div>SEG</div></div>
@@ -89,15 +134,27 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
+    <div class="titulo-secao">| 3. ESCOLHA HORÁRIO FIXO</div>
     <div style="font-size:11px;color:var(--ok);margin-bottom:8px;">MANHÃ</div>
     <div class="grid-4" id="horariosManha"></div>
     <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
     <div class="grid-4" id="horariosTarde"></div>
+    <button class="btn" onclick="irParaDados()">CONTINUAR PARA DADOS</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
+  </div>
+</div>
+
+<!-- TELA 3: DADOS PESSOAIS -->
+<div id="tela3" class="oculto">
+  <h1>K-T.P KORVIL</h1>
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANOS</div>
+    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
+    <div class="titulo-secao">| DADOS PESSOAIS</div>
     <div class="info-login">Facilite seu preenchimento</div>
     <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
 
@@ -135,15 +192,15 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="input-group"><label>Peso kg</label><input type="number" id="peso"></div>
       <div class="input-group"><label>Altura cm</label><input type="number" id="altura"></div>
     </div>
+    <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
-
-  <button class="btn" onclick="enviarWhatsApp()">CONFIRMAR INSCRIÇÃO</button>
-  <button class="btn voltar" onclick="history.back()">Voltar</button>
 </div>
 
 <script>
 let frequenciaMaxima = 0;
 let diasSelecionados = [];
+let objetivosSelecionados = [];
 let planoSelecionado = '';
 let horarioSelecionado = '';
 
@@ -158,25 +215,28 @@ const dadosLoginKorvil = {
 
 window.onload = montarHorarios;
 
-function usarDadosLogin(){
-  if(!dadosLoginKorvil.nome){ alert('Nenhum dado de login encontrado.'); return; }
-  document.getElementById('nome').value = dadosLoginKorvil.nome;
-  document.getElementById('cpf').value = dadosLoginKorvil.cpf;
-  document.getElementById('email').value = dadosLoginKorvil.email;
-  document.getElementById('whats').value = dadosLoginKorvil.whats;
-  document.getElementById('cep').value = dadosLoginKorvil.cep;
-  document.getElementById('nasc').value = dadosLoginKorvil.nasc;
-  document.getElementById('publico').value = dadosLoginKorvil.publico;
-  document.getElementById('rua').value = dadosLoginKorvil.rua;
-  document.getElementById('bairro').value = dadosLoginKorvil.bairro;
-  document.getElementById('cidade').value = dadosLoginKorvil.cidade;
-  document.getElementById('uf').value = dadosLoginKorvil.uf;
-  calcularIdade();
-  document.getElementById('cepStatus').innerText = 'Dados do login carregados! Pode editar.';
+function mostrarTela(id){
+  document.getElementById('tela1').classList.add('oculto');
+  document.getElementById('tela2').classList.add('oculto');
+  document.getElementById('tela3').classList.add('oculto');
+  document.getElementById(id).classList.remove('oculto');
+  window.scrollTo(0,0);
+}
+
+function selecionarObjetivo(el){
+  el.classList.toggle('selecionado');
+  const valor = el.getAttribute('data-valor');
+  if(el.classList.contains('selecionado')){ if(!objetivosSelecionados.includes(valor)) objetivosSelecionados.push(valor); }
+  else { objetivosSelecionados = objetivosSelecionados.filter(o => o!== valor); }
+}
+
+function validarAnamnese(){
+  if(objetivosSelecionados.length === 0){ alert('Selecione pelo menos 1 Objetivo'); return; }
+  if(!document.getElementById('q11').value.trim()){ alert('Preencha a Descrição e observações'); return; }
+  mostrarTela('tela2');
 }
 
 function selecionarPlano(el){
-  // TOGGLE PLANO
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     planoSelecionado = '';
@@ -186,17 +246,14 @@ function selecionarPlano(el){
     document.querySelectorAll('#cardDias.plano').forEach(d => d.classList.remove('selecionado'));
     return;
   }
-
-  document.querySelectorAll('.plano').forEach(p => {
+  document.querySelectorAll('#tela2.plano').forEach(p => {
     if(p.onclick && p.onclick.toString().includes('selecionarPlano')) p.classList.remove('selecionado');
   });
   el.classList.add('selecionado');
-
   planoSelecionado = el.getAttribute('data-valor');
   frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
   diasSelecionados = [];
 
-  // MOSTRA CAIXA DE DIAS AUTOMATICO SE FOR PRESENCIAL
   if(frequenciaMaxima > 0){
     document.getElementById('cardDias').classList.remove('oculto');
     document.getElementById('avisoDias').innerText = `Você escolheu ${frequenciaMaxima}x por semana. Selecione exatamente ${frequenciaMaxima} dia(s)`;
@@ -208,8 +265,6 @@ function selecionarPlano(el){
 
 function selecionarDia(el){
   if(el.classList.contains('bloqueado')) return;
-
-  // TOGGLE DIA
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
@@ -222,8 +277,6 @@ function selecionarDia(el){
     diasSelecionados.push(el.getAttribute('data-dia'));
     document.getElementById('alertaDias').innerText = '';
   }
-
-  // BLOQUEIA SE ATINGIU O LIMITE
   document.querySelectorAll('#cardDias.plano').forEach(d => {
     if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){ d.classList.add('bloqueado'); }
     else { d.classList.remove('bloqueado'); }
@@ -242,15 +295,39 @@ function montarHorarios(){
 }
 
 function selecionarHorario(el){
-  // TOGGLE HORARIO
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
     horarioSelecionado = '';
     return;
   }
-  document.querySelectorAll('.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
+  document.querySelectorAll('#tela2.plano[data-horario]').forEach(h => h.classList.remove('selecionado'));
   el.classList.add('selecionado');
   horarioSelecionado = el.getAttribute('data-horario');
+}
+
+function irParaDados(){
+  if(document.getElementById('nivel').value === 'Selecione'){ alert('Selecione Nível'); return; }
+  if(!planoSelecionado){ alert('Escolha um plano'); return; }
+  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
+  if(!horarioSelecionado){ alert('Escolha um horário'); return; }
+  mostrarTela('tela3');
+}
+
+function usarDadosLogin(){
+  if(!dadosLoginKorvil.nome){ alert('Nenhum dado de login encontrado.'); return; }
+  document.getElementById('nome').value = dadosLoginKorvil.nome;
+  document.getElementById('cpf').value = dadosLoginKorvil.cpf;
+  document.getElementById('email').value = dadosLoginKorvil.email;
+  document.getElementById('whats').value = dadosLoginKorvil.whats;
+  document.getElementById('cep').value = dadosLoginKorvil.cep;
+  document.getElementById('nasc').value = dadosLoginKorvil.nasc;
+  document.getElementById('publico').value = dadosLoginKorvil.publico;
+  document.getElementById('rua').value = dadosLoginKorvil.rua;
+  document.getElementById('bairro').value = dadosLoginKorvil.bairro;
+  document.getElementById('cidade').value = dadosLoginKorvil.cidade;
+  document.getElementById('uf').value = dadosLoginKorvil.uf;
+  calcularIdade();
+  document.getElementById('cepStatus').innerText = 'Dados do login carregados! Pode editar.';
 }
 
 function calcularIdade(){
@@ -303,10 +380,6 @@ function mascaraWhats(i){
 }
 
 function enviarWhatsApp(){
-  if(document.getElementById('nivel').value === 'Selecione'){ alert('Selecione Nível'); return; }
-  if(!planoSelecionado){ alert('Escolha um plano'); return; }
-  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){ alert(`Selecione exatamente ${frequenciaMaxima} dia(s)`); return; }
-  if(!horarioSelecionado){ alert('Escolha um horário'); return; }
   if(!document.getElementById('nome').value.trim()){ alert('Preencha Nome Completo'); return; }
   if(!document.getElementById('cpf').value.trim()){ alert('Preencha CPF'); return; }
   if(!document.getElementById('nasc').value){ alert('Preencha Data de Nascimento'); return; }
@@ -314,7 +387,7 @@ function enviarWhatsApp(){
   if(!document.getElementById('whats').value.trim()){ alert('Preencha WhatsApp'); return; }
   if(!document.getElementById('cep').value.trim()){ alert('Preencha CEP'); return; }
   if(!document.getElementById('numero').value.trim()){ alert('Preencha N° da Casa'); return; }
-  alert('Inscrição Enviada com Sucesso!\nPlano: '+planoSelecionado+'\nDias: '+diasSelecionados.join(', ')+'\nHorario: '+horarioSelecionado);
+  alert('Inscrição Enviada com Sucesso!');
 }
 </script>
 
