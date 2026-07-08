@@ -14,20 +14,20 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;position:relative;}
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
-.plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;}
-.plano.numero-prioridade{position:absolute;top:5px;right:5px;background:var(--c);color:#000;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;}
+.plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;background:#050505;}
+.nome{font-weight:800;color:var(--c);font-size:13px;}
+.valor{font-weight:900;color:var(--ok);font-size:14px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
-.btn.secundario{background:#1a1a1a;color:var(--c);border:1.5px solid var(--c);margin-bottom:12px;}
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .input-group textarea{min-height:60px;resize:vertical;}
 .vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
@@ -35,22 +35,18 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
-.passos.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
-.passos.etapa.num{font-weight:900;font-size:12px;display:block;}
-.passos.ativo{color:var(--c);}
-.alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
-.cep-loading{font-size:10px;color:var(--c);}
-.info-login{font-size:11px;color:var(--ok);background:rgba(0,245,255,.08);border:1px solid var(--c)40;padding:8px;border-radius:8px;margin-bottom:12px;text-align:center;}
+.etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
+.etapa.num{font-weight:900;font-size:12px;display:block;}
+.ativo{color:var(--c);}
 .check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
-.preco{font-size:18px;font-weight:900;color:var(--c);margin:6px 0;}
-.dias-horario{font-size:11px;color:var(--text2);line-height:1.5;}
+.alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
 </style>
 </head>
 <body>
 
-<!-- TELA INICIAL: APRESENTAÇÃO - NÃO CONTA NAS 3 -->
+<!-- TELA INICIAL: APRESENTAÇÃO -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
@@ -93,24 +89,19 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <div class="aviso-dias">Só pode avançar pra tela 3 se preencher todos os dados. Assim serve para ter todos os dados da condições do participante para o profissional criar todos os protocolos dele.</div>
+    <div class="aviso-dias">Preencha todos os dados. Assim o profissional consegue criar todos os protocolos do participante.</div>
 
-    <div class="titulo-secao">| OBJETIVOS - PODE ESCOLHER MAIS DE 1</div>
-    <div class="aviso-dias" style="font-size:11px;">Clique nos objetivos na ordem de PRIORIDADE. O número 1 será seu objetivo principal.</div>
+    <div class="titulo-secao">| OBJETIVOS</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Reabilitação">Reabilitação</div>
     </div>
   </div>
 
   <div class="card">
     <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-
     <div class="input-group"><label>Nível de Atividade Física *</label>
       <select id="nivelAtividade">
         <option value="">Selecione</option>
@@ -119,7 +110,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
         <option value="Avançado">Avançado</option>
       </select>
     </div>
-
     <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
     <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
     <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
@@ -129,46 +119,101 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7" rows="2"></textarea></div>
     <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico? *</label><textarea id="q8" rows="2"></textarea></div>
     <div class="input-group"><label>9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label><textarea id="q9" rows="2"></textarea></div>
-    <div class="input-group"><label>10. Alguma OBSERVAÇÃO para o treinador?</label><textarea id="q10" rows="2"></textarea></div>
-    <div class="input-group"><label>11. Descrição e observações: aluno pode tudo que quiser descrever *</label><textarea id="q11" rows="3"></textarea></div>
     <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
   </div>
 </div>
 
-<!-- TELA 2: PLANOS -->
-<div class="card">
-  <div class="titulo-secao">| 3. ESCOLHA HORÁRIO</div>
-  <div class="sub-titulo">Projeto Transformação: Segunda à Sexta | Até 7 vagas por horário</div>
-  
-  <div style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;">TURNO MANHÃ</div>
-  <div class="grid-4">
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="06:00 às 07:00"><div>06:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="07:00 às 08:00"><div>07:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="08:00 às 09:00"><div>08:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="09:00 às 10:00"><div>09:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="10:00 às 11:00"><div>10:00</div><div class="vagas">7 vagas</div></div>
+<!-- TELA 2: PLANOS COM DIAS E HORARIOS -->
+<div id="tela2" class="oculto">
+  <h1>K-T.P KORVIL</h1>
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
-  <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;font-weight:700;">TURNO TARDE/NOITE</div>
-  <div class="grid-4">
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="16:00 às 17:00"><div>16:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="17:00 às 18:00"><div>17:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="18:00 às 19:00"><div>18:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="19:00 às 20:00"><div>19:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="20:00 às 21:00"><div>20:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="21:00 às 22:00"><div>21:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="22:00 às 23:00"><div>22:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="23:00 às 00:00"><div>23:00</div><div class="vagas">7 vagas</div></div>
+  <div class="card">
+    <div class="titulo-secao">| 1. ESCOLHA O PLANO - SEG A SEXTA</div>
+
+    <div class="input-group">
+      <label>Nível *</label>
+      <select id="nivelPlano">
+        <option value="">Selecione</option>
+        <option value="Iniciante">Iniciante</option>
+        <option value="Intermediário">Intermediário</option>
+        <option value="Avançado">Avançado</option>
+      </select>
+    </div>
+
+    <div class="grid-2">
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso">
+        <div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div>
+      </div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso">
+        <div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div>
+      </div>
+    </div>
+
+    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online">
+      <div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div>
+    </div>
+
+    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
+    <div class="grid-2">
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-tipo="presencial" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-tipo="presencial" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-tipo="presencial" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-tipo="presencial" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-tipo="presencial" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
+    </div>
   </div>
 
-  <div style="font-size:11px;color:var(--ok);margin:12px 0 8px;font-weight:700;">TURNO MADRUGADA 24H</div>
-  <div class="grid-4">
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="00:00 às 01:00"><div>00:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="01:00 às 02:00"><div>01:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="02:00 às 03:00"><div>02:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="03:00 às 04:00"><div>03:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="04:00 às 05:00"><div>04:00</div><div class="vagas">7 vagas</div></div>
-    <div class="plano" onclick="selecionarUnico(this, 'horario')" data-valor="05:00 às 06:00"><div>05:00</div><div class="vagas">7 vagas</div></div>
+  <!-- CARD ESCOLHA DOS DIAS -->
+  <div id="cardDias" class="card oculto">
+    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
+    <div class="sub-titulo" id="textoDias">Selecione os dias de acordo com seu plano</div>
+    <div class="grid-5">
+      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Segunda"><div style="text-align:center;font-weight:800;">SEG</div></div>
+      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Terça"><div style="text-align:center;font-weight:800;">TER</div></div>
+      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Quarta"><div style="text-align:center;font-weight:800;">QUA</div></div>
+      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Quinta"><div style="text-align:center;font-weight:800;">QUI</div></div>
+      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Sexta"><div style="text-align:center;font-weight:800;">SEX</div></div>
+    </div>
+    <div id="alertaDias" class="alerta"></div>
+  </div>
+
+  <div class="card">
+    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
+
+    <div style="font-size:11px;color:var(--c);font-weight:700;margin-bottom:8px;">MANHÃ</div>
+    <div class="grid-4">
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="06:00"><div>06:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="07:00"><div>07:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="08:00"><div>08:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="09:00"><div>09:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="10:00"><div>10:00</div><div class="vagas">7 vagas</div></div>
+    </div>
+
+    <div style="font-size:11px;color:var(--c);font-weight:700;margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
+    <div class="grid-4">
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="16:00"><div>16:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="17:00"><div>17:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="18:00"><div>18:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="19:00"><div>19:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="20:00"><div>20:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="21:00"><div>21:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="22:00"><div>22:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="23:00"><div>23:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="00:00"><div>00:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="01:00"><div>01:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="02:00"><div>02:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="03:00"><div>03:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="04:00"><div>04:00</div><div class="vagas">7 vagas</div></div>
+      <div class="plano" onclick="selecionarHorario(this)" data-valor="05:00"><div>05:00</div><div class="vagas">7 vagas</div></div>
+    </div>
+
+    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
 </div>
 
@@ -183,9 +228,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
-    <div class="info-login">Facilite seu preenchimento</div>
-    <button class="btn secundario" onclick="usarDadosLogin()">USAR DADOS DO LOGIN KORVIL</button>
-
     <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
     <div class="grid-2">
       <div class="input-group"><label>CPF *</label><input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCPF(this)"></div>
@@ -193,26 +235,21 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <div class="grid-2">
       <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-      <div class="input-group"><label>Categoria</label><input type="text" id="categoria" readonly></div>
-    </div>
-    <div class="grid-2">
       <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-      <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     </div>
+    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     <div class="input-group"><label>Email</label><input type="email" id="email"></div>
 
     <button class="btn" onclick="finalizarInscricao()">FINALIZAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">VOLTAR</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
 </div>
 
 <script>
-let objetivosSelecionados = [];
+let frequenciaMaxima = 0;
+let diasSelecionados = [];
 let planoSelecionado = '';
-const dadosLoginKorvil = {
-  nome: "João da Silva", cpf: "123.456.789-00", email: "joao@email.com", whats: "(11) 98765-4321",
-  nasc: "1995-05-10", publico: "Masculino"
-};
+let horarioSelecionado = '';
 
 function mostrarTela(id){
   document.getElementById('apresentacao').classList.add('oculto');
@@ -222,23 +259,86 @@ function mostrarTela(id){
 }
 
 function toggleObjetivo(el){
-  let obj = el.getAttribute('data-obj');
+  el.classList.toggle('selecionado');
+}
+
+function limparTodosOsPlanos(){
+  document.querySelectorAll('#tela2.plano').forEach(item => {
+    if(item.onclick && item.onclick.toString().includes('selecionarPlano')){
+      item.classList.remove('selecionado');
+    }
+  });
+}
+
+function atualizarDias(){
+  document.querySelectorAll('#cardDias.dia').forEach(d => {
+    if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){
+      d.classList.add('bloqueado');
+    } else {
+      d.classList.remove('bloqueado');
+    }
+  });
+
+  let faltam = frequenciaMaxima - diasSelecionados.length;
+  if(faltam > 0){
+    document.getElementById('alertaDias').innerText = `Faltam ${faltam} dia(s): ${diasSelecionados.join(', ')}`;
+    document.getElementById('alertaDias').style.color = 'var(--erro)';
+  } else {
+    document.getElementById('alertaDias').innerText = `Dias selecionados: ${diasSelecionados.join(', ')}`;
+    document.getElementById('alertaDias').style.color = 'var(--ok)';
+  }
+}
+
+function selecionarPlano(el){
+  limparTodosOsPlanos(); // BRIGA COM TODOS OS PLANOS
+
+  el.classList.add('selecionado');
+  planoSelecionado = el.getAttribute('data-valor');
+  let tipo = el.getAttribute('data-tipo');
+  let freq = el.getAttribute('data-freq');
+
+  diasSelecionados = [];
+
+  if(tipo === 'presencial'){
+    frequenciaMaxima = parseInt(freq);
+    document.getElementById('cardDias').classList.remove('oculto');
+    document.getElementById('textoDias').innerText = `Selecione ${freq} dia(s) na semana. Ex: Seg, Qua, Sex`;
+    document.getElementById('alertaDias').innerText = `Faltam ${freq} dia(s) para escolher`;
+    document.getElementById('alertaDias').style.color = 'var(--erro)';
+    document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
+  } else {
+    // online e avulso não precisa de dias
+    frequenciaMaxima = 0;
+    document.getElementById('cardDias').classList.add('oculto');
+  }
+}
+
+function selecionarHorario(el){
+  document.querySelectorAll('#tela2.plano').forEach(item => {
+    if(item.onclick && item.onclick.toString().includes('selecionarHorario')){
+      item.classList.remove('selecionado');
+    }
+  });
+  el.classList.add('selecionado');
+  horarioSelecionado = el.getAttribute('data-valor');
+}
+
+function selecionarDia(el){
+  if(el.classList.contains('bloqueado')) return;
+
   if(el.classList.contains('selecionado')){
     el.classList.remove('selecionado');
-    el.querySelector('.numero-prioridade')?.remove();
+    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
+    if(diasSelecionados.length >= frequenciaMaxima){
+      document.getElementById('alertaDias').innerText = `Você só pode escolher ${frequenciaMaxima} dia(s) para este plano!`;
+      return;
+    }
     el.classList.add('selecionado');
-    let span = document.createElement('span');
-    span.className = 'numero-prioridade';
-    el.appendChild(span);
+    diasSelecionados.push(el.getAttribute('data-dia'));
   }
-  objetivosSelecionados = [];
-  document.querySelectorAll('#tela1.plano.selecionado').forEach((item, index) => {
-    let numEl = item.querySelector('.numero-prioridade');
-    if(numEl) numEl.innerText = index + 1;
-    let objNome = item.getAttribute('data-obj');
-    objetivosSelecionados.push({obj: objNome, ordem: index + 1});
-  });
+
+  atualizarDias(); // BLOQUEIA OS RESTANTES AUTOMATICO
 }
 
 function irParaPlanos(){
@@ -252,46 +352,37 @@ function irParaPlanos(){
       return;
     }
   }
-  // BLOQUEIO DE OBJETIVO REMOVIDO
   mostrarTela('tela2');
-}
-
-function selecionarPlano(el, nome){
-  document.querySelectorAll('#tela2.plano').forEach(p => p.classList.remove('selecionado'));
-  el.classList.add('selecionado');
-  planoSelecionado = nome;
 }
 
 function irParaDados(){
   if(planoSelecionado === ''){
-    alert('Selecione um plano para continuar');
+    alert('Selecione um plano');
+    return;
+  }
+  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){
+    alert(`Selecione ${frequenciaMaxima} dia(s) de treino`);
+    return;
+  }
+  if(horarioSelecionado === ''){
+    alert('Selecione um horário');
     return;
   }
   mostrarTela('tela3');
-}
-
-function usarDadosLogin(){
-  Object.keys(dadosLoginKorvil).forEach(k => {
-    if(document.getElementById(k)) document.getElementById(k).value = dadosLoginKorvil[k];
-  });
-  calcularIdade();
-  alert('Dados do login carregados! Você pode editar qualquer campo.');
 }
 
 function calcularIdade(){
   let nasc = document.getElementById('nasc').value; if(!nasc) return;
   let idade = new Date().getFullYear() - new Date(nasc).getFullYear();
   document.getElementById('idade').value = idade + ' anos';
-  let categoria = idade < 13? 'Criança' : idade < 18? 'Jovem' : idade < 60? 'Adulto' : 'Idoso';
-  document.getElementById('categoria').value = categoria;
 }
 
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
 function finalizarInscricao(){
-  alert('Inscrição enviada! Entraremos em contato.');
-  console.log({objetivos: objetivosSelecionados, plano: planoSelecionado});
+  let resumo = `*NOVA INSCRIÇÃO K-TP*\n\n*Plano:* ${planoSelecionado}\n*Dias:* ${diasSelecionados.length > 0? diasSelecionados.join(', ') : 'N/A'}\n*Horário:* ${horarioSelecionado}\n*Nome:* ${document.getElementById('nome').value}`;
+  alert(resumo);
 }
 </script>
 </body>
