@@ -109,6 +109,9 @@ input[readonly]{opacity:0.6; cursor:not-allowed;}
 </div>
 <script>
 let db;
+const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html";
+const TABELA = 'Cadastro de usuários do KORVIL';
+
 window.onload = function() {
   iniciarAnimacoes();
   iniciarParticulas();
@@ -146,9 +149,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
   }catch(e){ console.log("Supabase erro:", e) }
 
-  // REDIRECIONAMENTO CORRETO PRA APP
-  const REDIRECT = "https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html";
-  const TABELA = 'Cadastro de usuários do KORVIL';
+  // ===== VERIFICAR SE JÁ ESTÁ LOGADO AO ABRIR =====
+  db.auth.getSession().then(({ data: { session } }) => {
+    if (session) {
+      document.getElementById('msgLogin').innerHTML = `<p class="ok">Sessão ativa! Redirecionando...</p>`;
+      setTimeout(()=>window.location.replace(REDIRECT), 800);
+    }
+  });
 
   document.querySelectorAll('.toggle-pass').forEach(eye => {
     eye.addEventListener('click', function(){
