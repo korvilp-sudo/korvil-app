@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE</title>
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE V-2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <style>
 :root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#0d1a20;--chat:#0b141a;--balao:#132e36}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,7 +37,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .noti{background:linear-gradient(90deg,#132e36,#0a1419);padding:15px;border-radius:10px;margin:10px 0;font-size:15px;border-left:4px solid var(--c);box-shadow:0 0 12px var(--c)25;font-weight:600}
 .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:99;backdrop-filter:blur(5px)}
 .overlay.show{display:block}
-#sideMenu{position:fixed;top:0;left:-360px;width:330px;height:100%;background:linear-gradient(180deg,#0a0f14 0%,#000 100%);z-index:101;transition:left.35s cubic-bezier(.4,0,.2,1);border-right:2px solid var(--c);overflow-y:auto;box-shadow:5px 0 30px var(--c)50}
+#sideMenu{position:fixed;top:0;left:-360px;width:340px;height:100%;background:linear-gradient(180deg,#0a0f14 0%,#000 100%);z-index:101;transition:left.35s cubic-bezier(.4,0,.2,1);border-right:2px solid var(--c);overflow-y:auto;box-shadow:5px 0 30px var(--c)50}
 #sideMenu.open{left:0}
 .sideHeader{height:95px;background:linear-gradient(135deg,var(--c),var(--c2));padding:20px;display:flex;align-items:center;justify-content:space-between;color:#000;font-weight:900;font-size:19px}
 .sideHeader.modo{background:#000;color:var(--c);padding:7px 14px;border-radius:20px;font-size:13px;border:2px solid var(--c);box-shadow:0 0 15px var(--c)}
@@ -70,10 +69,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 .table-box.close{position:absolute;top:10px;right:14px;color:var(--c);font-size:28px;cursor:pointer;font-weight:900;text-shadow:0 0 10px var(--c)}
 #tableRight{top:50%;right:12px;transform:translateY(-50%);width:88%;max-width:420px}
 #tableBottom{bottom:110px;left:50%;transform:translateX(-50%);width:96%;max-width:650px}
-#armaduraOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:transparent;pointer-events:auto}
+#armaduraOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:#000;pointer-events:auto}
 #armaduraCanvas{width:100%;height:100%}
 .btn-fechar-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer;box-shadow:0 0 15px var(--c)}
 .hud-armor{position:absolute;top:90px;left:50%;transform:translateX(-50%);color:#00FFFF;font-weight:900;font-size:15px;letter-spacing:2px;text-shadow:0 0 10px #00FFFF;z-index:201}
+.transicao{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center, #0d1a20 0%, #000 100%);z-index:202;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.transicao h1{color:var(--c);font-size:28px;letter-spacing:4px;text-shadow:0 0 20px var(--c);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 </style>
 </head>
 <body>
@@ -122,13 +124,37 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
   <div id="sideMenu">
     <div class="sideHeader">
-      <div>K-AI</div>
+      <div>K-AI V-2026</div>
       <div class="modo">MODO CHEFE</div>
     </div>
+
     <div class="sideSection">
-      <div class="sideTitle">CONFIGURAÇÃO DE VOZ</div>
-      <div class="sideItem" onclick="executar('voz corvo cibernetico')">1. Corvo Cibernético M</div>
+      <div class="sideTitle">ACTIONS - K-AI CORE</div>
+      <div class="sideItem" onclick="executar('analise')"><span>📊</span> Analise<small>analise.js</small></div>
+      <div class="sideItem" onclick="executar('automacao')"><span>⚙️</span> Automação<small>automacao.js</small></div>
+      <div class="sideItem" onclick="executar('busca')"><span>🔍</span> Busca<small>busca.js</small></div>
+      <div class="sideItem" onclick="executar('calculo')"><span>🧮</span> Cálculo<small>calculo.js</small></div>
+      <div class="sideItem" onclick="executar('copia')"><span>📋</span> Cópia<small>copia.js</small></div>
+      <div class="sideItem" onclick="executar('cria')"><span>✨</span> Criar<small>cria.js</small></div>
+      <div class="sideItem" onclick="executar('educacao')"><span>📚</span> Educação<small>educacao.js</small></div>
+      <div class="sideItem" onclick="executar('emergencia')"><span>🚨</span> Emergência<small>emergencia.js</small></div>
+      <div class="sideItem" onclick="executar('interface')"><span>🖥️</span> Interface<small>interface.js</small></div>
+      <div class="sideItem" onclick="executar('manipula')"><span>🎯</span> Manipular<small>manipula.js</small></div>
+      <div class="sideItem" onclick="executar('navega')"><span>🧭</span> Navegar<small>navega.js</small></div>
+      <div class="sideItem" onclick="executar('sistema')"><span>💻</span> Sistema<small>sistema.js</small></div>
+      <div class="sideItem" onclick="executar('social')"><span>🌐</span> Social<small>social.js</small></div>
+      <div class="sideItem" onclick="executar('vendas')"><span>💰</span> Vendas<small>vendas.js</small></div>
     </div>
+
+    <div class="sideSection">
+      <div class="sideTitle">TRANSFORMAÇÃO - ARMADURAS V-2026</div>
+      <div class="sideItem" onclick="iniciarTransformacao()"><span>🛡️</span> K-AI TRANSFORMAR</div>
+      <div class="sideItem" onclick="executar('armadura v2026')"><span>⚡</span> Armadura V-2026 Atual</div>
+      <div class="sideItem" onclick="executar('modo combate')"><span>🔥</span> Modo Combate</div>
+      <div class="sideItem" onclick="executar('modo furtivo')"><span>👁️</span> Modo Furtivo</div>
+      <div class="sideItem" onclick="executar('modo voo')"><span>🚀</span> Modo Voo</div>
+    </div>
+
     <div class="sideSection">
       <div class="sideTitle">1. NAVEGAR - 5 SETORES KORVIL</div>
       <div class="sideItem" onclick="goPage('sistema k')">1. Sistema K</div>
@@ -137,10 +163,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
       <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA</div>
       <div class="sideItem" onclick="goPage('central')">5. Central KORVIL</div>
     </div>
-    <div class="sideSection">
-      <div class="sideTitle">K-AI TRANSFORMAR</div>
-      <div class="sideItem" onclick="iniciarTransformacao()">K-AI TRANSFORMAR</div>
-    </div>
+
     <div class="sideSection">
       <div class="sideTitle">5. SISTEMA</div>
       <div class="sideItem" onclick="executar('que horas são')">Horas</div>
@@ -152,14 +175,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9e
 
   <div class="header">
     <div class="menuBtn" onclick="toggleMenu()">☰</div>
-    <div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div>
+    <div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE V-2026</div>
   </div>
 
   <div id="chat"><canvas id="canvas3d"></canvas></div>
 
   <div id="armaduraOverlay">
+    <div class="transicao" id="transicaoTela">
+      <h1>PROTOCOLO SAY KORVIL</h1>
+      <p style="color:#00FFFF;margin-top:20px">MONTANDO ARMADURA V-2026...</p>
+    </div>
     <canvas id="armaduraCanvas"></canvas>
-    <div class="hud-armor">K-AI ARMOR | PROTOCOLO: SAY KORVIL</div>
+    <div class="hud-armor">K-AI ARMOR V-2026 | PROTOCOLO: SAY KORVIL</div>
     <button class="btn-fechar-armor" onclick="fecharArmadura()">FECHAR</button>
   </div>
 
@@ -174,6 +201,9 @@ let memoria = JSON.parse(localStorage.getItem('kai')) || {hist:[], mems:[]};
 let touchStartX = 0, touchStartY = 0;
 let armaduraScene, armaduraCamera, armaduraRenderer, armaduraGroup;
 let nucleo, tempo = 0;
+let escutando = false;
+let timeoutWake = null;
+let recognition = null;
 
 const PAGINAS = {
   'sistema k': 'https://korvilp-sudo.github.io/korvil-app/sections/sistemak/index.html',
@@ -181,6 +211,54 @@ const PAGINAS = {
   'kafortunado': 'https://korvilp-sudo.github.io/korvil-app/sections/kafortunado/index.html',
   'kalma': 'https://korvilp-sudo.github.io/korvil-app/sections/kalma/index.html',
   'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
+}
+
+// ===== WAKE WORD "K-AI" =====
+function iniciarEscutaWake(){
+    if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+
+    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true;
+    recognition.lang = 'pt-BR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (e) => {
+        const texto = e.results[e.results.length - 1][0].transcript.toLowerCase();
+
+        if(!escutando && texto.includes('k-ai')){
+            ativarWake();
+        }
+        else if(escutando){
+            clearTimeout(timeoutWake);
+            document.getElementById('input').value = texto;
+            send();
+            desativarWake();
+        }
+    }
+
+    recognition.onerror = () => { desativarWake(); }
+    recognition.onend = () => { if(escutando) recognition.start(); } // fica escutando sempre
+
+    recognition.start();
+}
+
+function ativarWake(){
+    escutando = true;
+    falar("Sim Chefe. Aguardando comando");
+    document.getElementById('mic').classList.add('rec');
+    addNoti("🎤 K-AI ATIVO - Fale seu comando");
+
+    timeoutWake = setTimeout(() => {
+        desativarWake();
+        falar("Tempo esgotado. Diga K-AI novamente");
+    }, 5000); // 5 segundos
+}
+
+function desativarWake(){
+    escutando = false;
+    clearTimeout(timeoutWake);
+    document.getElementById('mic').classList.remove('rec');
 }
 
 // NUCLEO 3D FUNDO
@@ -231,46 +309,55 @@ function addNoti(txt){ document.getElementById('notis').innerHTML = `<div class=
 function addMsg(who, txt){ const div = document.createElement('div'); div.className = 'bubble ' + who; div.innerHTML = txt + `<div class="time">${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>`; chatEl.prepend(div); memoria.hist.push({who,txt}); localStorage.setItem('kai',JSON.stringify(memoria)); }
 function falar(txt){ addMsg('kai',txt); const voz = new SpeechSynthesisUtterance(txt); voz.lang='pt-BR'; speechSynthesis.speak(voz); }
 function goPage(pagina){ if(PAGINAS[pagina]){ window.location.href = PAGINAS[pagina]; addNoti(`🚀 Navegando para ${pagina.toUpperCase()}`); falar(`Abrindo ${pagina} agora Chefe`); } else{ falar(`Página ${pagina} não encontrada`); } toggleMenu(); closePanel(); }
-function iniciarTransformacao(){ falar('Iniciando Protocolo SAY KORVIL. Montando armadura atual'); addNoti('🌀 K-AI TRANSFORMAR ATIVADO'); toggleMenu(); closePanel(); hideArrows(); setTimeout(() => { mostrarArmadura(); }, 1200); }
-function mostrarArmadura(){ document.getElementById('armaduraOverlay').style.display = 'block'; toggleMenu(); closePanel(); hideArrows(); falar(`Protocolo SAY KORVIL ativado. Equipando armadura atual`); addNoti(`🛡️ ARMADURA ATUAL ATIVADA`); if(!armaduraScene) initArmadura(); }
+function iniciarTransformacao(){ falar('Iniciando Protocolo SAY KORVIL. Montando armadura V-2026'); addNoti('🌀 K-AI TRANSFORMAR ATIVADO'); toggleMenu(); closePanel(); hideArrows(); document.getElementById('armaduraOverlay').style.display = 'block'; document.getElementById('transicaoTela').style.display = 'flex'; setTimeout(() => { document.getElementById('transicaoTela').style.display = 'none'; mostrarArmadura(); }, 3000); }
+function mostrarArmadura(){ falar(`Protocolo SAY KORVIL ativado. Equipando Armadura V-2026`); addNoti(`🛡️ ARMADURA V-2026 ATIVADA`); if(!armaduraScene) initArmadura(); }
 function fecharArmadura(){ document.getElementById('armaduraOverlay').style.display = 'none'; showArrows(); falar('Armadura desativada. Voltando ao modo normal'); }
 
-// ===== MOTOR DE COMANDOS K-AI CORVO =====
+// ===== MOTOR DE COMANDOS K-AI CORVO + ACTIONS =====
 function executar(comando){
     if(!comando) return;
     comando = comando.toLowerCase().trim();
     addMsg('me', comando);
     let respondido = false;
     const comandos = {
-        "ativar": () => { falar("K-AI Ativado. Todos os sistemas online"); },
-        "online": () => { falar("Sistema Online Chefe"); },
+        "analise": () => { falar("Executando módulo de Análise"); addNoti("📊 ANÁLISE"); },
+        "automacao": () => { falar("Módulo de Automação ativado"); },
+        "busca": () => { falar("Iniciando busca"); },
+        "calculo": () => { falar("Módulo de Cálculo ativo"); },
+        "copia": () => { falar("Função de Cópia executada"); },
+        "cria": () => { falar("Módulo Criar ativo"); },
+        "educacao": () => { falar("Acessando base de Educação"); },
+        "emergencia": () => { falar("PROTOCOLO DE EMERGÊNCIA ATIVADO"); document.body.style.background='red'; setTimeout(()=>document.body.style.background='var(--bg)',3000) },
+        "interface": () => { falar("Reconfigurando interface"); },
+        "manipula": () => { falar("Módulo de Manipulação ativo"); },
+        "navega": () => { falar("Sistema de Navegação ativo"); },
+        "sistema": () => { falar("Diagnóstico de Sistema completo"); openTable('right'); },
+        "social": () => { falar("Conectando redes sociais"); },
+        "vendas": () => { falar("Módulo de Vendas ativado"); },
         "transformar": () => iniciarTransformacao(),
+        "armadura v2026": () => iniciarTransformacao(),
         "modo combate": () => { falar("Modo combate ativado"); modoArmadura('combate'); },
-        "visão térmica": () => { falar("Visão térmica"); filtroVisao('termica'); },
+        "modo furtivo": () => { falar("Modo furtivo ativado"); modoArmadura('furtivo'); },
+        "modo voo": () => { falar("Propulsores ligados"); modoArmadura('voo'); },
         "limpar memória": () => limparMem(),
         "estatísticas": () => openTable('right'),
         "que horas são": () => falar(`Agora são ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`)
     };
     for(let key in comandos){ if(comando.includes(key)){ comandos[key](); respondido = true; break; } }
-    if(!respondido) falar("Comando não reconhecido Chefe. Deseja que eu aprenda?");
+    if(!respondido) falar("Comando não reconhecido Chefe");
     updateStats();
 }
 
 function modoArmadura(modo){
     const canvas = document.getElementById('armaduraCanvas');
-    if(modo === 'combate') canvas.style.filter = 'hue-rotate(0deg) brightness(1.2)';
-    if(modo === 'furtivo') canvas.style.filter = 'brightness(0.3)';
-    if(modo === 'voo') falar("Simulando propulsores");
-}
-function filtroVisao(tipo){
-    const canvas = document.getElementById('armaduraCanvas');
-    if(tipo === 'termica') canvas.style.filter = 'hue-rotate(180deg) saturate(3)';
-    if(tipo === 'noturna') canvas.style.filter = 'invert(1) brightness(1.5)';
+    if(modo === 'combate') canvas.style.filter = 'hue-rotate(0deg) brightness(1.4)';
+    if(modo === 'furtivo') canvas.style.filter = 'brightness(0.2)';
+    if(modo === 'voo') falar("Simulando propulsores V-2026");
 }
 function salvarMem(){ memoria.mems.push(new Date().toLocaleString()); localStorage.setItem('kai',JSON.stringify(memoria)); }
 function limparMem(){ memoria={hist:[],mems:[]}; localStorage.setItem('kai',JSON.stringify(memoria)); falar("Memória limpa"); }
 
-// ===== ARMADURA 3D =====
+// ===== ARMADURA 3D V-2026 =====
 function initArmadura(){
   armaduraScene = new THREE.Scene();
   armaduraCamera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -278,22 +365,22 @@ function initArmadura(){
   armaduraRenderer = new THREE.WebGLRenderer({canvas:document.getElementById('armaduraCanvas'), alpha:true, antialias:true});
   armaduraRenderer.setSize(window.innerWidth, window.innerHeight);
   armaduraRenderer.setClearColor(0x000, 0);
-  const luz1 = new THREE.PointLight(0x00FFFF, 2); luz1.position.set(5,5,5); armaduraScene.add(luz1);
-  const luz2 = new THREE.AmbientLight(0x00FFFF, 0.5); armaduraScene.add(luz2);
+  const luz1 = new THREE.PointLight(0x00FFFF, 2.5); luz1.position.set(5,5,5); armaduraScene.add(luz1);
+  const luz2 = new THREE.AmbientLight(0x00FFFF, 0.6); armaduraScene.add(luz2);
   armaduraGroup = new THREE.Group();
-  const corpoGeo = new THREE.BoxGeometry(2,3,1);
-  const corpoMat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5});
+  const corpoGeo = new THREE.BoxGeometry(2.2,3.2,1.1);
+  const corpoMat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.7});
   const corpo = new THREE.Mesh(corpoGeo, corpoMat);
   armaduraGroup.add(corpo);
-  const olhos = new THREE.Mesh(new THREE.SphereGeometry(0.3,16,16), corpoMat);
-  olhos.position.set(0,1.8,0.6); armaduraGroup.add(olhos);
+  const olhos = new THREE.Mesh(new THREE.SphereGeometry(0.35,16,16), corpoMat);
+  olhos.position.set(0,1.9,0.7); armaduraGroup.add(olhos);
   armaduraScene.add(armaduraGroup);
   function animarArmadura(){
     if(document.getElementById('armaduraOverlay').style.display === 'block'){
       requestAnimationFrame(animarArmadura);
-      tempo += 0.02; armaduraGroup.rotation.y += 0.005;
-      corpo.material.emissiveIntensity = 0.5 + Math.sin(tempo)*0.3;
-      olhos.material.emissiveIntensity = 1 + Math.sin(tempo*3);
+      tempo += 0.02; armaduraGroup.rotation.y += 0.006;
+      corpo.material.emissiveIntensity = 0.7 + Math.sin(tempo)*0.4;
+      olhos.material.emissiveIntensity = 1.2 + Math.sin(tempo*3);
       armaduraRenderer.render(armaduraScene, armaduraCamera);
     }
   }
@@ -310,17 +397,10 @@ document.getElementById('input').addEventListener('keypress', e => {
     if(e.key === 'Enter') send();
 });
 
-// MICROFONE
+// MICROFONE MANUAL - Continua funcionando
 document.getElementById('mic').onclick = () => {
-    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    rec.lang = 'pt-BR';
-    rec.onresult = e => {
-        document.getElementById('input').value = e.results[0][0].transcript;
-        send();
-    }
-    rec.start();
-    document.getElementById('mic').classList.add('rec');
-    setTimeout(()=>document.getElementById('mic').classList.remove('rec'), 3000);
+    if(escutando) { desativarWake(); }
+    else { ativarWake(); }
 }
 
 // RELÓGIO
@@ -330,7 +410,8 @@ setInterval(()=>{
 
 // INICIAR
 window.onload = () => {
-    falar("K-AI Online. Aguardando comandos, Chefe.");
+    falar("K-AI Online. Diga K-AI para me chamar");
+    iniciarEscutaWake(); // já liga a escuta do wake word
 }
 </script>
 </body>
