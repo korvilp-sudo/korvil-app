@@ -149,13 +149,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
     db = createClient('https://vtvewhgvuzpxcpzqddpk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0dmV3aGd2dXpweGNwenFkZHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTI2NzMsImV4cCI6MjA5ODY4ODY3M30.hHsBZ_0R0fLZGd2mHesiYF3qKmtTCLFX51KuNOeCDg0');
   }catch(e){ console.log("Supabase erro:", e) }
 
-  // ===== VERIFICAR SE JÁ ESTÁ LOGADO AO ABRIR =====
+  // ===== FIX 1: SÓ REDIRECIONA SE NÃO ESTIVER NA CENTRAL =====
+  const currentPath = window.location.href;
   db.auth.getSession().then(({ data: { session } }) => {
-    if (session) {
+    if (session && !currentPath.includes('centralkorvil')) {
       document.getElementById('msgLogin').innerHTML = `<p class="ok">Sessão ativa! Redirecionando...</p>`;
       setTimeout(()=>window.location.replace(REDIRECT), 800);
     }
   });
+
+  // ===== FIX 2: BOTAO K-AI CORRIGIDO =====
+  document.querySelector('.btn-kai').onclick = () => {
+    window.location.href = 'https://korvilp-sudo.github.io/korvil-app/kai-core/index.html';
+  }
 
   document.querySelectorAll('.toggle-pass').forEach(eye => {
     eye.addEventListener('click', function(){
