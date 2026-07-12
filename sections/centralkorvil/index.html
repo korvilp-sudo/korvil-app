@@ -67,17 +67,17 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 .modal-box input:focus{border-color:var(--c);box-shadow:0 0 10px var(--c);}
 
 .kai-footer{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 16px;z-index:98;pointer-events:none;}
-.scene{width:66px;height:66px;perspective:700px;flex-shrink:0;position:relative;pointer-events:auto;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;touch-action:manipulation;}
-.cube{width:66px;height:66px;position:relative;transform-style:preserve-3d;animation:spin3d 7s linear infinite;cursor:pointer;transition:transform.4s;-webkit-touch-callout:none;}
+.scene{width:132px;height:132px;perspective:1400px;flex-shrink:0;position:relative;pointer-events:auto;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;touch-action:manipulation;}
+.cube{width:132px;height:132px;position:relative;transform-style:preserve-3d;animation:spin3d 7s linear infinite;cursor:pointer;transition:transform.4s;-webkit-touch-callout:none;}
 .cube.segurando{animation:none; transform:scale(1.1); box-shadow:0 0 30px var(--c);}
-.cube-face{position:absolute;width:66px;height:66px;background:linear-gradient(145deg,var(--c),var(--c2));border:2px solid var(--c);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;border-radius:8px;box-shadow:0 8px 25px var(--c)90;user-select:none;}
-.front{transform:rotateY(0deg) translateZ(33px);}.back{transform:rotateY(180deg) translateZ(33px);}
-.right{transform:rotateY(90deg) translateZ(33px);}.left{transform:rotateY(-90deg) translateZ(33px);}
-.top{transform:rotateX(90deg) translateZ(33px);}.bottom{transform:rotateX(-90deg) translateZ(33px);}
-.message-box{max-width:240px;padding:14px;background:rgba(0,245,255,.15);border:2px solid var(--c);border-radius:12px;color:#fff;font-size:13px;font-weight:600;backdrop-filter:blur(8px);animation:fadeIn.4s;min-height:52px;display:flex;align-items:center;position:relative;pointer-events:auto;box-shadow:0 0 15px var(--c)20;}
+.cube-face{position:absolute;width:132px;height:132px;background:linear-gradient(145deg,var(--c),var(--c2));border:3px solid var(--c);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:26px;border-radius:16px;box-shadow:0 12px 40px var(--c)90;user-select:none;}
+.front{transform:rotateY(0deg) translateZ(66px);}.back{transform:rotateY(180deg) translateZ(66px);}
+.right{transform:rotateY(90deg) translateZ(66px);}.left{transform:rotateY(-90deg) translateZ(66px);}
+.top{transform:rotateX(90deg) translateZ(66px);}.bottom{transform:rotateX(-90deg) translateZ(66px);}
+.message-box{max-width:280px;padding:16px;background:rgba(0,245,255,.15);border:2px solid var(--c);border-radius:12px;color:#fff;font-size:14px;font-weight:600;backdrop-filter:blur(8px);animation:fadeIn.4s;min-height:58px;display:flex;align-items:center;position:relative;pointer-events:auto;box-shadow:0 0 15px var(--c)20;}
 .message-box::after{content:'';position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:12px solid var(--c);filter:drop-shadow(0 0 5px var(--c));}
 
-.kai-menu-box{position:absolute;bottom:75px;right:0;width:270px;height:180px;background:rgba(5,5,5,.98);border:2px solid var(--c);border-radius:12px;padding:0;display:none;z-index:99;backdrop-filter:blur(12px);pointer-events:auto;box-shadow:0 0 20px var(--c)40;flex-direction:column;overflow:hidden;}
+.kai-menu-box{position:absolute;bottom:140px;right:0;width:270px;height:180px;background:rgba(5,5,5,.98);border:2px solid var(--c);border-radius:12px;padding:0;display:none;z-index:99;backdrop-filter:blur(12px);pointer-events:auto;box-shadow:0 0 20px var(--c)40;flex-direction:column;overflow:hidden;}
 .kai-menu-box.ativo{display:flex;animation:fadeIn.25s;}
 .kai-head{padding:12px;background:var(--c);color:#000;font-weight:800;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
 .kai-head svg{width:18px;height:18px;stroke:#000;cursor:pointer;}
@@ -123,7 +123,6 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
   </section>
 
-  <!-- TELA DESENVOLVIMENTO HUMANO COM OS CURSOS LINKADOS -->
   <section id="humano" class="tela">
     <h1>DESENVOLVIMENTO HUMANO</h1>
     <h4>CURSOS E ÁREAS</h4>
@@ -139,7 +138,6 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
 
-  <!-- TELA NEGOCIOS -->
   <section id="negocios" class="tela">
     <h1>NEGOCIOS</h1>
     <h4>PARCERIAS COM PROFISSIONAIS</h4>
@@ -154,7 +152,6 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
 
-  <!-- TELA SERVICOS -->
   <section id="servicos" class="tela">
     <h1>SERVICOS</h1>
     <h4>PROFISSIONAIS ESPECIALIZADOS</h4>
