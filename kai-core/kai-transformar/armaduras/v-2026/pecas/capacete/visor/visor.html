@@ -159,6 +159,16 @@ function animateHUD(){
   if(pecaAtual){ pecaAtual.rotation.y += 0.012; pecaAtual.rotation.x += 0.006; }
   hudRenderer.render(hudScene, hudCamera);
 }
+  function executarFuncao(id){
+  document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('ativo'));
+  document.getElementById(`btn-${id}`).classList.add('ativo');
+
+  // CHAMA A FUNÇÃO QUE ESTÁ DENTRO DO ARQUIVO DA PEÇA
+  dadosPecaAtual.executar(id, video); 
+  
+  atualizarTexto(`${dadosPecaAtual.nome} > ${id}`);
+  document.querySelector('.mini-status').innerText = dadosPecaAtual.status;
+  }
 
 function atualizarTexto(txt){ document.getElementById('hudTexto').innerText = txt; }
 function atualizarAlvos(qtd){ if(window.parent.atualizarAlvos) window.parent.atualizarAlvos(qtd); }
