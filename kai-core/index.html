@@ -146,6 +146,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
     window.location.replace(REDIRECT);
   }
 });
+  async function carregarMenus() {
+  const base = '/korvil-app/kai-core/menus/';
+  const [sup, esq, dir, inf] = await Promise.all([
+    fetch(base + 'menu-superior.html').then(r => r.text()),
+    fetch(base + 'menu-esquerdo.html').then(r => r.text()),
+    fetch(base + 'menu-direito.html').then(r => r.text()),
+    fetch(base + 'menu-inferior.html').then(r => r.text())
+  ]);
+  document.getElementById('notiPanel').innerHTML = sup;
+  document.getElementById('sideMenu').innerHTML = esq;
+  document.getElementById('tableRight').innerHTML = dir;
+  document.getElementById('tableBottom').innerHTML = inf;
+}
+window.addEventListener('load', carregarMenus);
 </script>
 </body>
 </html>
