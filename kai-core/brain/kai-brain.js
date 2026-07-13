@@ -1,4 +1,51 @@
+// kai-core/brain/kai-brain.js
+import { KAIParser } from './kai-parser.js';
+import { createFile } from '../commands/create.js';
 
+class KAIBrain {
+  constructor() {
+    this.parser = new KAIParser();
+    this.iniciarVoz();
+    this.falar("K-AI V-2026.1 online. Protocolo Say Korvil ativo");
+  }
+  
+  iniciarVoz(){
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'pt-BR';
+    
+    recognition.onresult = (e) => {
+      const comando = e.results[0][0].transcript;
+      console.log("Comando recebido:", comando);
+      this.executar(comando);
+    }
+    
+    // Botão pra segurar e falar
+    window.ouvirKAI = () => recognition.start();
+  }
+  
+  async executar(comando){
+    const { action, target } = this.parser.parse(comando);
+    
+    if(action === "create"){
+      this.falar(`Criando peça ${target}`);
+      await createFile(target, target);
+    }
+    if(action === "edit"){
+      this.falar(`Editando ${target}. Me mande o código atual`);
+    }
+    if(action === "list"){
+      this.falar("Listando peças do K-AI");
+    }
+  }
+  
+  falar(texto){
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.lang = 'pt-BR'; utter.rate = 1.1;
+    speechSynthesis.speak(utter);
+  }
+}
+
+window.KAI = new KAIBrain();
 
 // ===== CÉREBRO SEPARADO - 9 GAVETAS + MEMÓRIA =====
 const KAI_BRAIN = {
