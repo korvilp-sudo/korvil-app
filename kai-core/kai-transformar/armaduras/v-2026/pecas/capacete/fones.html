@@ -1,1 +1,51 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><style>body{margin:0;background:#000;color:#00FFFF;font-family:Segoe UI;display:flex;align-items:center;justify-content:center}</style></head>
+<body>
+<div>
+  <h2 style="text-shadow:0 0 10px #00FFFF">SISTEMA DE ÁUDIO ATIVO</h2>
+  <p>Amplificação: 3x | Redução de Ruído: ON</p>
+</div>
+<script>
+let audioContext;
+let micStream;
+let ativo = false;
+
+function iniciarFones(){
+  if(ativo) return;
+  ativo = true;
+  if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  
+  navigator.mediaDevices.getUserMedia({audio:true}).then(s => {
+    micStream = s;
+    const source = audioContext.createMediaStreamSource(s);
+    const noiseSupressor = audioContext.createBiquadFilter();
+    noiseSupressor.type = "highpass";
+    noiseSupressor.frequency.value = 300;
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 3.0;
+    
+    source.connect(noiseSupressor).connect(gainNode).connect(audioContext.destination);
+    
+    const analyser = audioContext.createAnalyser();
+    gainNode.connect(analyser);
+    medirDB(analyser);
+    
+  }).catch(e=>console.log("Mic negado"));
+}
+
+function medirDB(analyser){
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  function loop(){
+    analyser.getByteFrequencyData(data);
+    let avg = data.reduce((a,b)=>a+b)/data.length;
+    let db = Math.round(avg/2.5);
+    window.parent.atualizarDB(db);
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+</script>
+</body>
+</html>
