@@ -311,6 +311,42 @@ cube.addEventListener('mouseleave', cancelarSegurar);
 cube.addEventListener('touchstart', iniciarSegurar, {passive: false});
 cube.addEventListener('touchend', cancelarSegurar);
 cube.addEventListener('touchmove', cancelarSegurar);
+// ===== K-AI COMUNICAÇÃO GLOBAL =====
+const KAI_ORIGEM = "https://korvilp-sudo.github.io/kc/kai-core";
+
+// Função pra mandar comando pro K-AI de qualquer página
+function mandarProKAI(comando){
+  const frame = document.getElementById('kaiFrame');
+  if(frame.contentWindow){
+    frame.contentWindow.postMessage({tipo: "comando", texto: comando}, KAI_ORIGEM);
+  }
+}
+
+// Recebe resposta do K-AI
+window.addEventListener("message", (e) => {
+  if(e.origin !== KAI_ORIGEM) return;
+  if(e.data.tipo === "resposta"){
+    document.getElementById('cubeMessage').innerText = e.data.texto;
+    falar(e.data.texto); // usa a voz do site
+  }
+});
+
+function falar(txt){
+  const voz = new SpeechSynthesisUtterance(txt);
+  voz.lang='pt-BR'; speechSynthesis.speak(voz);
+}
+
+// ===== FUNÇÕES ABRIR/FECHAR K-AI =====
+function abrirKAI(){
+  document.getElementById('kaiFrame').style.display = 'block';
+  document.getElementById('btnFecharKAI').classList.add('ativo');
+  document.getElementById('kaiFooter').style.display = 'none';
+}
+function fecharKAI(){
+  document.getElementById('kaiFrame').style.display = 'none';
+  document.getElementById('btnFecharKAI').classList.remove('ativo');
+  document.getElementById('kaiFooter').style.display = 'flex';
+}
 </script>
 </body>
 </html>
