@@ -131,3 +131,49 @@ function mostrarArmadura(){
 window.mostrarArmadura = mostrarArmadura;
 
 window.KAI = new KAIBrain();
+// ===== CONECTOR DAS 13 GAVETAS =====
+import * as Analise from './actions/analise.js';
+import * as Automacao from './actions/automacao.js';
+import * as Busca from './actions/busca.js';
+import * as Calculo from './actions/calculo.js';
+import * as Copia from './actions/copia.js';
+import * as Cria from './actions/cria.js';
+import * as Educacao from './actions/educacao.js';
+import * as Emergencia from './actions/emergencia.js';
+import * as Interface from './actions/interface.js';
+import * as Manipula from './actions/manipula.js';
+import * as Navega from './actions/navega.js';
+import * as Sistema from './actions/sistema.js';
+import * as Social from './actions/social.js';
+import * as Vendas from './actions/vendas.js';
+
+// ROTEADOR JARVIS
+window.executarComando = async function(comando){
+    const cmd = comando.toLowerCase();
+
+    if(cmd.includes("cria") || cmd.includes("crie")) return await Cria.executar(cmd);
+    if(cmd.includes("edita") || cmd.includes("manipula")) return await Manipula.executar(cmd);
+    if(cmd.includes("ir para") || cmd.includes("abrir")) return await Navega.executar(cmd);
+    if(cmd.includes("copia") || cmd.includes("resuma")) return await Copia.executar(cmd);
+    if(cmd.includes("analisa")) return await Analise.executar(cmd);
+    if(cmd.includes("automatiza")) return await Automacao.executar(cmd);
+    if(cmd.includes("buscar") || cmd.includes("pesquisar")) return await Busca.executar(cmd);
+    if(cmd.includes("calcular")) return await Calculo.executar(cmd);
+    if(cmd.includes("hora") || cmd.includes("status")) return await Sistema.executar(cmd);
+    if(cmd.includes("postar") || cmd.includes("social")) return await Social.executar(cmd);
+    if(cmd.includes("venda") || cmd.includes("lead")) return await Vendas.executar(cmd);
+    if(cmd.includes("aula") || cmd.includes("curso")) return await Educacao.executar(cmd);
+    if(cmd.includes("emergencia")) return await Emergencia.executar(cmd);
+    if(cmd.includes("interface")) return await Interface.executar(cmd);
+    if(cmd.includes("transformar") || cmd.includes("armadura")){ mostrarArmadura(); return falar("Protocolo ativado"); }
+
+    return falar("Comando não entendido. Tente: cria, edita, ir para");
+}
+
+function falar(txt){
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'pt-BR'; u.rate = 1.1;
+    speechSynthesis.speak(u);
+    window.parent.postMessage({tipo: "resposta", texto: txt}, "*");
+}
+window.falar = falar;
