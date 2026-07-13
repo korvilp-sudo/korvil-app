@@ -413,6 +413,14 @@ window.onload = () => {
     falar("K-AI Online. Diga K-AI para me chamar");
     iniciarEscutaWake(); // já liga a escuta do wake word
 }
-</script>
+  <div class="footer">
+    <input type="text" id="input" placeholder="Mensagem para K-AI...">
+    <div class="btn" id="mic">🎤</div>
+    <div class="btn" onclick="ouvirKAI()">🗣️</div> <!-- BOTAO NOVO -->
+    <div class="btn" onclick="send()">➤</div>
+  </div>
+</div>
+
+<script type="module" src="brain/kai-brain.js"></script> <!-- IMPORTA O CÉREBRO -->
 </body>
 </html>
