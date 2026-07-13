@@ -420,7 +420,19 @@ window.onload = () => {
     <div class="btn" onclick="send()">➤</div>
   </div>
 </div>
+// Escutar comandos vindos da Central
+window.addEventListener("message", (e) => {
+  if(e.data.tipo === "comando"){
+    executar(e.data.texto); // executa no K-AI real
+  }
+});
 
+// Sobrescrever a função falar do K-AI pra mandar pra Central
+const falarOriginal = window.falar;
+window.falar = function(texto){
+  if(falarOriginal) falarOriginal(texto); // fala no K-AI
+  window.parent.postMessage({tipo: "resposta", texto: texto}, "*"); // manda pra Central
+}
 <script type="module" src="brain/kai-brain.js"></script> <!-- IMPORTA O CÉREBRO -->
 </body>
 </html>
