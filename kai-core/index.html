@@ -437,6 +437,20 @@ window.addEventListener('load', () => {
 });
 
 setTimeout(()=>{ falar(`K-AI: Sistema Online. Nova função: K-AI Transformar`); addNoti('🔵 K-AI Sistema Iniciado'); }, 1000);
-</script>
+
+// CODIGO PRA FALAR COM O CUBO DA CENTRAL
+window.addEventListener("message", (e) => {
+  if(e.data.tipo === "comando"){
+    document.getElementById('input').value = e.data.texto;
+    send(); // executa o comando
+  }
+});
+
+const falarOriginal = window.falar;
+window.falar = function(texto){
+  if(falarOriginal) falarOriginal(texto);
+  window.parent.postMessage({tipo: "resposta", texto: texto}, "*");
+}
+ </script>
 </body>
 </html>
