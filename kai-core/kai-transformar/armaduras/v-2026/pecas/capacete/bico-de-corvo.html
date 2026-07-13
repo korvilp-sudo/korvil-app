@@ -1,1 +1,28 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><style>body{margin:0;background:#000;color:#00FFFF;font-family:Segoe UI;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.barra{width:300px;height:20px;background:#0d1a20;border:2px solid #00FFFF;border-radius:10px;margin-top:20px}
+.barra-fill{height:100%;background:#00FFFF;box-shadow:0 0 15px #00FFFF;border-radius:8px;transition:width 0.3s}
+</style></head>
+<body>
+<h2 style="text-shadow:0 0 10px #00FFFF">SISTEMA DE VIDA</h2>
+<p>BICO DE CORVO | FILTRO DE AR + OXIGÊNIO</p>
+<div class="barra"><div class="barra-fill" id="oxBar" style="width:100%"></div></div>
+<script>
+let o2 = 100;
+setInterval(()=>{
+  o2 -= 0.05;
+  if(o2 < 0) o2 = 100;
+  window.parent.atualizarO2(Math.round(o2));
+  document.getElementById('oxBar').style.width = o2 + '%';
+  if(o2 < 20){
+    document.getElementById('oxBar').style.background = '#FF3B30';
+    window.parent.atualizarTexto('ALERTA: OXIGÊNIO BAIXO');
+  } else {
+    document.getElementById('oxBar').style.background = '#00FFFF';
+  }
+}, 1000);
+</script>
+</body>
+</html>
