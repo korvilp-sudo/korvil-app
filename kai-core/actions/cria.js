@@ -77,3 +77,20 @@ const Cria = {
   //... completa até 100
   criar100(){return "Função 100 executada"}
 }
+export async function executar(cmd){
+    if(cmd.includes('peça') || cmd.includes('pagina') || cmd.includes('html')){
+        const nome = cmd.split('cria ')[1] || 'arquivo-novo.html';
+        const codigo = `<!DOCTYPE html><html><body><h1>${nome}</h1><p>Criado pelo K-AI</p></body></html>`;
+        baixar(nome, codigo);
+        return falar(`Arquivo ${nome} criado e baixado Chefe`);
+    }
+    return falar('O que devo criar?');
+}
+function baixar(nome, conteudo){
+    const blob = new Blob([conteudo], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nome;
+    a.click();
+}
+function falar(t){window.falar(t)}
