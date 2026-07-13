@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-AI VISOR v-2026</title>
+<title>K-AI VISOR v-2026.11</title>
 <style>
 :root{--c:#00FFFF;--c2:#A8FFE6}
 body{margin:0;background:#000;overflow:hidden;font-family:'Segoe UI',Roboto}
-video,canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+video,canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:filter .3s, transform .3s}
 #hud3d{pointer-events:none;z-index:5}
 .hud-top{position:absolute;top:20px;width:100%;text-align:center;color:var(--c);font-weight:900;font-size:14px;letter-spacing:3px;text-shadow:0 0 15px var(--c);z-index:10}
 .hud-info{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);color:var(--c2);font-weight:700;font-size:16px;text-shadow:0 0 10px var(--c);z-index:10;background:rgba(0,0,0,.6);padding:8px 20px;border-radius:20px;border:1px solid var(--c)}
@@ -19,7 +19,32 @@ video,canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:co
 .hud-inferior{bottom:110px;left:50%;transform:translateX(-50%)}
 .hud-esquerdo{top:50%;left:15px;transform:translateY(-50%)}
 .hud-direito{top:50%;right:15px;transform:translateY(-50%)}
+
+/* MINI MENU ÚNICO */
+.mini-menu{position:absolute;top:50%;right:20px;transform:translateY(-50%);width:270px;background:linear-gradient(180deg,#001820,#000);border:2px solid var(--c2);border-radius:12px;padding:14px;z-index:15;box-shadow:0 0 30px var(--c2)60;display:none}
+.mini-menu.open{display:block;animation:fadeIn.3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-50%) scale(.9)} to{opacity:1;transform:translateY(-50%) scale(1)}}
+.mini-title{color:var(--c2);font-size:15px;font-weight:900;text-align:center;margin-bottom:6px;text-shadow:0 0 10px var(--c2)}
+.mini-desc{color:#8696a0;font-size:11px;text-align:center;margin-bottom:10px;border-bottom:1px solid #132e36;padding-bottom:8px}
+.mini-btn{background:rgba(0,255,255,.1);border:1px solid var(--c);color:var(--c);padding:8px 12px;border-radius:6px;margin:6px 0;cursor:pointer;font-size:12px;font-weight:700;transition:.2s;text-align:left}
+.mini-btn:hover{background:var(--c);color:#000;box-shadow:0 0 15px var(--c)}
+.mini-btn.ativo{background:var(--c);color:#000;box-shadow:0 0 20px var(--c)}
+.mini-close{position:absolute;top:5px;right:8px;color:var(--c);font-size:20px;cursor:pointer}
+.mini-status{color:var(--c2);font-size:10px;margin-top:8px;text-align:center}
+
 .btn-fechar{position:absolute;bottom:20px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:12px 24px;border-radius:25px;font-weight:900;cursor:pointer;box-shadow:0 0 20px var(--c);z-index:10}
+
+/* EFEITOS REAIS */
+.zoom{transform:scale(2)}
+.raiox{filter: invert(1) hue-rotate(180deg) contrast(200%) brightness(1.2)}
+.termico{filter: hue-rotate(300deg) saturate(3) contrast(150%)}
+.combate{filter: contrast(130%) brightness(1.1)}
+.noturno{filter: brightness(2) contrast(1.5) hue-rotate(120deg)}
+@keyframes shake {
+  0% { transform: translate(1px, 1px) }
+ 50% { transform: translate(-1px, -2px) }
+  100% { transform: translate(1px, -1px) }
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
@@ -31,32 +56,41 @@ video,canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:co
 <canvas id="canvas"></canvas>
 <canvas id="hud3d"></canvas>
 
-<div class="hud-top">K-AI VISOR v-2026 | PROTOCOLO: SAY KORVIL</div>
+<div class="hud-top">K-AI VISOR v-2026.11 | PROTOCOLO: SAY KORVIL</div>
 <div class="hud-info" id="hudTexto">SCANEANDO...</div>
 
 <div class="hud-menu hud-superior">
   <div class="hud-title">CAPACETE</div>
-  <div onclick="mostrarPeca('visor')">1. Visor</div>
-  <div onclick="mostrarPeca('fones')">2. Fones</div>
-  <div onclick="mostrarPeca('bico')">3. Bico</div>
+  <div onclick="carregarPeca('visor')">1. Visor</div>
+  <div onclick="carregarPeca('fones')">2. Fones</div>
+  <div onclick="carregarPeca('bico')">3. Bico</div>
 </div>
 <div class="hud-menu hud-inferior">
   <div class="hud-title">INFERIOR</div>
-  <div onclick="mostrarPeca('pernas')">1. Pernas</div>
-  <div onclick="mostrarPeca('pes')">2. Pés</div>
-  <div onclick="mostrarPeca('garras')">3. Garras</div>
+  <div onclick="carregarPeca('pernas')">1. Pernas</div>
+  <div onclick="carregarPeca('pes')">2. Pés</div>
+  <div onclick="carregarPeca('garras')">3. Garras</div>
 </div>
 <div class="hud-menu hud-esquerdo">
   <div class="hud-title">ESQUERDO</div>
-  <div onclick="mostrarPeca('peitoral')">1. Peitoral</div>
-  <div onclick="mostrarPeca('asas')">2. Asas</div>
-  <div onclick="mostrarPeca('ombreiras')">3. Ombreiras</div>
+  <div onclick="carregarPeca('peitoral')">1. Peitoral</div>
+  <div onclick="carregarPeca('asas')">2. Asas</div>
+  <div onclick="carregarPeca('ombreiras')">3. Ombreiras</div>
 </div>
 <div class="hud-menu hud-direito">
   <div class="hud-title">DIREITO</div>
-  <div onclick="mostrarPeca('bracos')">1. Braços</div>
-  <div onclick="mostrarPeca('luvas')">2. Luvas</div>
+  <div onclick="carregarPeca('bracos')">1. Braços</div>
+  <div onclick="carregarPeca('luvas')">2. Luvas</div>
 </div>
+
+<!-- MINI MENU ÚNICO -->
+<div class="mini-menu" id="miniMenu">
+  <span class="mini-close" onclick="fecharMiniMenu()">×</span>
+  <div id="miniConteudo">
+    <div style="color:var(--c);text-align:center;padding:20px">SELECIONE UMA PEÇA</div>
+  </div>
+</div>
+
 <button class="btn-fechar" onclick="sairVisor()">SAIR VISOR</button>
 
 <script>
@@ -66,6 +100,115 @@ let ctx = canvas.getContext('2d');
 let modelObj, modelFace;
 let hudScene, hudCamera, hudRenderer, pecaAtual;
 let stream = null;
+let pecaSelecionada = '';
+let dadosPecaAtual = null;
+
+const GEOMETRIAS = {
+  'visor': new THREE.SphereGeometry(0.9, 16, 16),
+  'fones': new THREE.TorusGeometry(0.45, 0.1, 8, 16),
+  'bico': new THREE.ConeGeometry(0.35, 0.9, 4),
+  'peitoral': new THREE.CylinderGeometry(0.9, 0.8, 1.1, 8),
+  'asas': new THREE.BoxGeometry(2.2, 0.1, 1.1),
+  'ombreiras': new THREE.SphereGeometry(0.45, 8, 8),
+  'bracos': new THREE.CylinderGeometry(0.22, 0.17, 1.3, 8),
+  'luvas': new THREE.BoxGeometry(0.35, 0.35, 0.45),
+  'pernas': new THREE.CylinderGeometry(0.32, 0.27, 1.6, 8),
+  'pes': new THREE.BoxGeometry(0.45, 0.22, 0.65),
+  'garras': new THREE.ConeGeometry(0.17, 0.55, 3)
+};
+
+// BANCO DE DADOS DAS PEÇAS COM FUNÇÕES REAIS
+const PECAS = {
+  'visor': {
+    nome: "VISOR K-1",
+    desc: "Interface Neural + Scanner",
+    status: "Energia: 98%",
+    funcoes: [
+      { nome: "Modo Raio-X", id: "raiox" },
+      { nome: "Zoom 8x", id: "zoom" },
+      { nome: "Scanner Térmico", id: "termico" },
+      { nome: "HUD de Combate", id: "combate" },
+      { nome: "Visão Noturna", id: "noturno" },
+      { nome: "Reset Visor", id: "reset" }
+    ],
+    executar: function(id){
+      video.className = '';
+      video.style.filter = '';
+      document.body.style.animation = '';
+      document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('ativo'));
+      document.getElementById(`btn-${id}`).classList.add('ativo');
+      
+      switch(id){
+        case 'raiox': video.classList.add('raiox'); this.status = "Modo: Raio-X"; this.falar("Raio-X ativado"); break;
+        case 'zoom': video.classList.toggle('zoom'); this.status = video.classList.contains('zoom') ? "Zoom: 8x" : "Zoom: 1x"; this.falar("Zoom"); break;
+        case 'termico': video.classList.add('termico'); this.status = "Modo: Térmico"; this.falar("Scanner térmico"); break;
+        case 'combate': video.classList.add('combate'); this.status = "Modo: Combate"; this.falar("HUD de combate"); break;
+        case 'noturno': video.classList.add('noturno'); this.status = "Modo: Noturno"; this.falar("Visão noturna"); break;
+        case 'reset': this.status = "Energia: 98%"; this.falar("Visor resetado"); break;
+      }
+      atualizarTexto(`${this.nome} > ${id}`);
+      document.querySelector('.mini-status').innerText = this.status;
+    },
+    falar: function(txt){ if(window.parent.falar) window.parent.falar(txt); }
+  },
+  'asas': {
+    nome: "ASAS CORAX",
+    desc: "Voo + Propulsão + Ataque",
+    status: "Prontas",
+    funcoes: [
+      { nome: "Voo Tático", id: "voo" },
+      { nome: "Planar", id: "planar" },
+      { nome: "Turbo Propulsor", id: "turbo" },
+      { nome: "Asas Lâmina", id: "lamina" },
+      { nome: "Voo Furtivo", id: "furtivo" },
+      { nome: "Reset Asas", id: "reset" }
+    ],
+    executar: function(id){
+      document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('ativo'));
+      document.getElementById(`btn-${id}`).classList.add('ativo');
+      switch(id){
+        case 'voo': this.status = "Voo: Ativo"; document.body.style.animation = 'shake 0.1s infinite'; this.falar("Voo tático"); break;
+        case 'planar': this.status = "Modo: Planar"; document.body.style.animation = ''; this.falar("Planando"); break;
+        case 'turbo': this.status = "Turbo: 200%"; document.body.style.animation = 'shake 0.05s infinite'; this.falar("Turbo ativado"); break;
+        case 'lamina': this.status = "Lâminas: Ativadas"; this.falar("Asas lâmina"); break;
+        case 'furtivo': this.status = "Modo: Furtivo"; document.body.style.filter = 'brightness(0.4)'; this.falar("Furtivo"); break;
+        case 'reset': this.status = "Prontas"; document.body.style.animation = ''; document.body.style.filter = ''; this.falar("Asas resetadas"); break;
+      }
+      atualizarTexto(`${this.nome} > ${id}`);
+      document.querySelector('.mini-status').innerText = this.status;
+    },
+    falar: function(txt){ if(window.parent.falar) window.parent.falar(txt); }
+  },
+  'peitoral': {
+    nome: "PEITORAL K-CORE",
+    desc: "Reator + Blindagem + Energia",
+    status: "Reator Online",
+    funcoes: [
+      { nome: "Escudo de Energia", id: "escudo" },
+      { nome: "Armadura 100%", id: "armadura" },
+      { nome: "Sobrecarga", id: "overload" },
+      { nome: "Recarga Rápida", id: "recarga" },
+      { nome: "Modo Tanque", id: "tanque" },
+      { nome: "Status Reator", id: "status" }
+    ],
+    executar: function(id){
+      document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('ativo'));
+      document.getElementById(`btn-${id}`).classList.add('ativo');
+      switch(id){
+        case 'escudo': this.status = "Escudo: 100%"; this.falar("Escudo ativado"); break;
+        case 'armadura': this.status = "Armadura: Máxima"; this.falar("Armadura completa"); break;
+        case 'overload': this.status = "ATENÇÃO: Sobrecarga"; this.falar("Sobrecarga iniciada"); break;
+        case 'recarga': this.status = "Recarregando..."; this.falar("Recarga rápida"); break;
+        case 'tanque': this.status = "Modo: Tanque"; this.falar("Modo tanque"); break;
+        case 'status': this.status = "Reator: 87%"; this.falar("Reator em 87%"); break;
+      }
+      atualizarTexto(`${this.nome} > ${id}`);
+      document.querySelector('.mini-status').innerText = this.status;
+    },
+    falar: function(txt){ if(window.parent.falar) window.parent.falar(txt); }
+  }
+  // As outras 8 peças seguem o mesmo modelo. Só copiar e trocar nome/funções
+};
 
 async function abrirCamera() {
   stream = await navigator.mediaDevices.getUserMedia({video: { facingMode: "user" }});
@@ -87,8 +230,6 @@ async function iniciar(){
 async function detectar(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   let encontrou = false;
-
-  // DETECÇÃO DE ROSTO
   const faces = await modelFace.estimateFaces(video, false);
   faces.forEach(face => {
     const [x,y] = face.topLeft; const [x2,y2] = face.bottomRight;
@@ -100,10 +241,7 @@ async function detectar(){
     atualizarTexto('ALVO: HUMANO DETECTADO');
     encontrou = true;
   });
-
-  // DETECÇÃO DE OBJETOS
   const objs = await modelObj.detect(video);
-  atualizarAlvos(objs.length + faces.length);
   objs.forEach(obj => {
     const [x,y,w,h] = obj.bbox;
     ctx.strokeStyle = '#A8FFE6'; ctx.lineWidth = 2;
@@ -112,12 +250,10 @@ async function detectar(){
     ctx.fillText(`${obj.class} ${(obj.score*100).toFixed(0)}%`, x, y-5);
     if(!encontrou) atualizarTexto(obj.class.toUpperCase());
   });
-
   if(!encontrou) atualizarTexto('SCANEANDO...');
   requestAnimationFrame(detectar);
 }
 
-// FUNÇÕES HUD 3D
 function initHUD3D(){
   hudScene = new THREE.Scene();
   hudCamera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -126,32 +262,38 @@ function initHUD3D(){
   hudRenderer.setSize(window.innerWidth, window.innerHeight);
   hudRenderer.setClearColor(0x000, 0);
   hudScene.add(new THREE.AmbientLight(0x00FFFF, 0.6));
-  const luz = new THREE.PointLight(0x00FFFF, 2); luz.position.set(2,2,2);
-  hudScene.add(luz);
   animateHUD();
 }
 
-function mostrarPeca(peca){
+function carregarPeca(peca){
+  pecaSelecionada = peca;
+  dadosPecaAtual = PECAS;
+  if(!dadosPecaAtual){ atualizarTexto(`PEÇA ${peca} EM DESENVOLVIMENTO`); return; }
+  
   if(pecaAtual) hudScene.remove(pecaAtual);
   const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.7, wireframe:true, transparent:true, opacity:0.85});
-  const geometrias = {
-    'visor': new THREE.SphereGeometry(0.9, 16, 16),
-    'fones': new THREE.TorusGeometry(0.45, 0.1, 8, 16),
-    'bico': new THREE.ConeGeometry(0.35, 0.9, 4),
-    'peitoral': new THREE.CylinderGeometry(0.9, 0.8, 1.1, 8),
-    'asas': new THREE.BoxGeometry(2.2, 0.1, 1.1),
-    'ombreiras': new THREE.SphereGeometry(0.45, 8, 8),
-    'bracos': new THREE.CylinderGeometry(0.22, 0.17, 1.3, 8),
-    'luvas': new THREE.BoxGeometry(0.35, 0.35, 0.45),
-    'pernas': new THREE.CylinderGeometry(0.32, 0.27, 1.6, 8),
-    'pes': new THREE.BoxGeometry(0.45, 0.22, 0.65),
-    'garras': new THREE.ConeGeometry(0.17, 0.55, 3)
-  };
-  pecaAtual = new THREE.Mesh(geometrias[peca] || geometrias['visor'], mat);
+  pecaAtual = new THREE.Mesh(GEOMETRIAS, mat);
   pecaAtual.position.y = 0.3;
   hudScene.add(pecaAtual);
-  atualizarTexto(`PEÇA CARREGADA: ${peca.toUpperCase()}`);
-  if(window.parent.falar) window.parent.falar(`Carregando ${peca}`);
+
+  montarMiniMenu(dadosPecaAtual);
+  document.getElementById('miniMenu').classList.add('open');
+}
+
+function montarMiniMenu(dados){
+  let html = `
+    <div class="mini-title">${dados.nome}</div>
+    <div class="mini-desc">${dados.desc}</div>
+  `;
+  dados.funcoes.forEach((func, i)=>{
+    html += `<div class="mini-btn" id="btn-${func.id}" onclick="dadosPecaAtual.executar('${func.id}')">${i+1}. ${func.nome}</div>`;
+  });
+  html += `<div class="mini-status">${dados.status}</div>`;
+  document.getElementById('miniConteudo').innerHTML = html;
+}
+
+function fecharMiniMenu(){
+  document.getElementById('miniMenu').classList.remove('open');
 }
 
 function animateHUD(){
@@ -159,20 +301,13 @@ function animateHUD(){
   if(pecaAtual){ pecaAtual.rotation.y += 0.012; pecaAtual.rotation.x += 0.006; }
   hudRenderer.render(hudScene, hudCamera);
 }
-  function executarFuncao(id){
-  document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('ativo'));
-  document.getElementById(`btn-${id}`).classList.add('ativo');
-
-  // CHAMA A FUNÇÃO QUE ESTÁ DENTRO DO ARQUIVO DA PEÇA
-  dadosPecaAtual.executar(id, video); 
-  
-  atualizarTexto(`${dadosPecaAtual.nome} > ${id}`);
-  document.querySelector('.mini-status').innerText = dadosPecaAtual.status;
-  }
 
 function atualizarTexto(txt){ document.getElementById('hudTexto').innerText = txt; }
-function atualizarAlvos(qtd){ if(window.parent.atualizarAlvos) window.parent.atualizarAlvos(qtd); }
-function sairVisor(){ if(stream) stream.getTracks().forEach(track => track.stop()); window.parent.fecharVisor(); }
+function sairVisor(){ 
+  video.className = ''; video.style.filter = ''; document.body.style.animation = '';
+  if(stream) stream.getTracks().forEach(track => track.stop()); 
+  if(window.parent.fecharVisor) window.parent.fecharVisor(); 
+}
 
 iniciar();
 </script>
