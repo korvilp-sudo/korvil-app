@@ -1,3 +1,50 @@
+// K-AI BRAIN V-2026 - JARVIS OS
+import * as Cria from './actions/cria.js';
+import * as Navega from './actions/navega.js';
+import * as Sistema from './actions/sistema.js';
+
+export async function executar(comando){
+    comando = comando.toLowerCase();
+    falar(`Processando: ${comando}`);
+
+    // 1. CRIAR
+    if(comando.includes('cria') || comando.includes('crie')){
+        return await Cria.executar(comando);
+    }
+
+    // 2. NAVEGAR
+    if(comando.includes('ir para') || comando.includes('abrir') || comando.includes('navegar')){
+        return await Navega.executar(comando);
+    }
+
+    // 3. SISTEMA
+    if(comando.includes('hora') || comando.includes('memória') || comando.includes('salvar')){
+        return await Sistema.executar(comando);
+    }
+
+    // 4. K-AI TRANSFORMAR
+    if(comando.includes('transformar') || comando.includes('armadura')){
+        mostrarArmadura();
+        return falar('Protocolo SAY KORVIL ativado');
+    }
+
+    return falar('Comando não reconhecido. Tente: cria, ir para, hora');
+}
+
+function falar(txt){
+    // 1. Fala no K-AI
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'pt-BR'; u.rate = 1.1;
+    speechSynthesis.speak(u);
+    // 2. Manda pro cubo da Central
+    window.parent.postMessage({tipo: "resposta", texto: txt}, "*");
+}
+
+function mostrarArmadura(){
+    document.getElementById('armaduraOverlay').style.display = 'block';
+}
+window.mostrarArmadura = mostrarArmadura; // deixa global
+
 // kai-core/brain/kai-brain.js
 import { KAIParser } from './kai-parser.js';
 import { createFile } from '../commands/create.js';
