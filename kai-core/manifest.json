@@ -1,0 +1,9 @@
+{
+  "name": "K-AI KORVIL",
+  "short_name": "K-AI",
+  "start_url": "https://korvilp-sudo.github.io/kc/kai-core/index.html",
+  "display": "standalone",
+  "background_color": "#000",
+  "theme_color": "#00FFFF",
+  "icons": [{"src": "https://korvilp-sudo.github.io/kc/assets/images/icon-512.png", "sizes": "512x512", "type": "image/png"}]
+}
