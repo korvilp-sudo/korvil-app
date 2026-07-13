@@ -1,28 +1,170 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><style>body{margin:0;background:#000;color:#00FFFF;font-family:Segoe UI;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.barra{width:300px;height:20px;background:#0d1a20;border:2px solid #00FFFF;border-radius:10px;margin-top:20px}
-.barra-fill{height:100%;background:#00FFFF;box-shadow:0 0 15px #00FFFF;border-radius:8px;transition:width 0.3s}
-</style></head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOCA K-AI v-2026 - IA TÁTICA</title>
+<style>
+:root{--c:#00FFFF;--c2:#A8FFE6;--ataque:#FF00FF;--banshee:#00FF88;--seguro:#00FF00}
+body{margin:0;background:#000;color:var(--c);font-family:'Segoe UI',Roboto;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;overflow:hidden}
+@keyframes pulsar{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes onda{0%{transform:scale(0);opacity:.8}100%{transform:scale(4);opacity:0}}
+h2{margin-bottom:5px;letter-spacing:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:450px;margin:15px 0}
+.card{background:rgba(0,20,30,.7);border:2px solid var(--c);border-radius:10px;padding:10px;text-align:center;font-size:12px}
+.card-title{color:var(--c2);margin-bottom:3px}
+.card-value{font-size:16px;font-weight:900}
+.barra{width:100%;max-width:450px;height:16px;background:#0d1a20;border:2px solid var(--c);border-radius:10px;margin:8px 0}
+.barra-fill{height:100%;border-radius:8px;transition:width 0.3s}
+.modos{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;justify-content:center}
+.btn-modo{padding:8px 12px;background:#0d1a20;border:2px solid var(--c);color:var(--c);border-radius:8px;font-weight:900;cursor:pointer;font-size:11px}
+.btn-modo.ativo{background:var(--c);color:#000}
+.btn-ataque{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,var(--c),#000);border:3px solid var(--c);color:#fff;font-size:14px;font-weight:900;cursor:pointer;margin:15px 0;box-shadow:0 0 30px var(--c);animation:pulsar 2s infinite}
+.ia-box{background:rgba(0,255,136,.1);border:1px solid var(--banshee);padding:10px;border-radius:8px;margin:10px 0;width:100%;max-width:450px;font-size:12px}
+.onda{position:absolute;width:150px;height:150px;border:3px solid var(--c);border-radius:50%;pointer-events:none;animation:onda 1s forwards}
+</style>
+</head>
 <body>
-<h2 style="text-shadow:0 0 10px #00FFFF">SISTEMA DE VIDA</h2>
-<p>BICO DE CORVO | FILTRO DE AR + OXIGÊNIO</p>
-<div class="barra"><div class="barra-fill" id="oxBar" style="width:100%"></div></div>
+<h2 id="titulo">K-AI BOCA | IA TÁTICA ATIVA</h2>
+<p>MODO: <span id="modoAtual">AUTO</span> | ALVO: <span id="alvoAtual">NENHUM</span></p>
+
+<div class="ia-box" id="iaLog">
+  > IA: Aguardando comando... Fones conectados = Proteção Ativa
+</div>
+
+<div class="grid">
+  <div class="card"><div class="card-title">ENERGIA</div><div class="card-value" id="energiaText">100%</div></div>
+  <div class="card"><div class="card-title">FREQ</div><div class="card-value" id="freqText">1k Hz</div></div>
+  <div class="card"><div class="card-title">DB SEGURO</div><div class="card-value" id="dbText">65 dB</div></div>
+  <div class="card"><div class="card-title">ALCANCE</div><div class="card-value" id="alcanceText">5 m</div></div>
+  <div class="card"><div class="card-title">TIPO ONDA</div><div class="card-value" id="tipoText">SENO</div></div>
+  <div class="card"><div class="card-title">FOCO</div><div class="card-value" id="focoText">LARGO</div></div>
+</div>
+
+<div class="barra"><div class="barra-fill" id="energiaBar" style="width:100%;background:var(--c)"></div></div>
+
+<div class="modos">
+  <div class="btn-modo ativo" onclick="setModo('auto', this)">AUTO IA</div>
+  <div class="btn-modo" onclick="setModo('defesa', this)">DEFESA</div>
+  <div class="btn-modo" onclick="setModo('ataque', this)">ATAQUE</div>
+  <div class="btn-modo" onclick="setModo('propulsor', this)">PROPULSOR</div>
+  <div class="btn-modo" onclick="setModo('banshee', this)">BANSHEE</div>
+</div>
+
+<button class="btn-ataque" id="btnGrito" onmousedown="iniciarGrito()" onmouseup="pararGrito()">DISPARAR</button>
+
+<audio id="audioBase" src="https://cdn.freesound.org/previews/456/456789_9497971-lq.mp3"></audio>
+
 <script>
-let o2 = 100;
-setInterval(()=>{
-  o2 -= 0.05;
-  if(o2 < 0) o2 = 100;
-  window.parent.atualizarO2(Math.round(o2));
-  document.getElementById('oxBar').style.width = o2 + '%';
-  if(o2 < 20){
-    document.getElementById('oxBar').style.background = '#FF3B30';
-    window.parent.atualizarTexto('ALERTA: OXIGÊNIO BAIXO');
-  } else {
-    document.getElementById('oxBar').style.background = '#00FFFF';
+let energia = 100;
+let config = {freq: 1000, db: 65, alcance: 5, tipo: 'SENO', foco: 'LARGO'};
+let modo = 'auto';
+let gritando = false;
+let audioBase = document.getElementById('audioBase');
+let fonesConectados = true; // Vai vir do codigo dos fones depois
+
+// BANCO DE DADOS DA IA
+const IA = {
+  defesa: {freq: 800, db: 60, alcance: 3, tipo: 'SENO', foco: 'LARGO', uso: 'Escudo sônico. Afastar sem machucar'},
+  ataque: {freq: 5000, db: 85, alcance: 15, tipo: 'QUADRADA', foco: 'DIRECIONAL', uso: 'Destruir objetos. Quebrar vidro'},
+  propulsor: {freq: 200, db: 70, alcance: 2, tipo: 'TRIANGULAR', foco: 'TRASEIRO', uso: 'Impulso de voo. Estabilizar'},
+  banshee: {freq: 18000, db: 90, alcance: 30, tipo: 'SERRA', foco: 'CONE', uso: 'Onda de choque. Desorientar inimigos'}
+}
+
+// LIMITADOR DE SEGURANÇA - NUNCA PASSA DE 90DB PRA TI
+const DB_MAX_SEGURO = 90; 
+
+function logIA(txt){
+  document.getElementById('iaLog').innerHTML = `> IA: ${txt}`;
+}
+
+function setModo(novoModo, el){
+  modo = novoModo;
+  document.getElementById('modoAtual').innerText = novoModo.toUpperCase();
+  document.querySelectorAll('.btn-modo').forEach(b => b.classList.remove('ativo'));
+  el.classList.add('ativo');
+  
+  if(modo !== 'auto') Object.assign(config, IA[modo]);
+  atualizarHUD();
+  logIA(`Modo ${novoModo} selecionado. ${IA[modo]?.uso || 'IA vai decidir o melhor uso'}`);
+}
+
+function analisarAmbiente(){
+  // IA AUTOMÁTICA: Decide onde, como e pra que usar
+  let situacao = 'neutro';
+  if(window.parent.alvos && window.parent.alvos > 0) situacao = 'ataque';
+  if(window.parent.voando) situacao = 'propulsor';
+  
+  if(situacao === 'ataque') return IA.ataque;
+  if(situacao === 'propulsor') return IA.propulsor;
+  return IA.defesa;
+}
+
+function criarOnda(){
+  const onda = document.createElement('div');
+  onda.className = 'onda';
+  onda.style.left = '50%';
+  onda.style.top = '50%';
+  onda.style.marginLeft = '-75px';
+  onda.style.marginTop = '-75px';
+  document.body.appendChild(onda);
+  setTimeout(()=>onda.remove(), 1000);
+}
+
+function atualizarHUD(){
+  document.getElementById('freqText').innerText = config.freq.toLocaleString() + ' Hz';
+  document.getElementById('dbText').innerText = config.db + ' dB';
+  document.getElementById('alcanceText').innerText = config.alcance + ' m';
+  document.getElementById('tipoText').innerText = config.tipo;
+  document.getElementById('focoText').innerText = config.foco;
+}
+
+function iniciarGrito(){
+  if(energia < 10) return;
+  gritando = true;
+
+  // MODO AUTO: IA ESCOLHE TUDO
+  if(modo === 'auto'){
+    let decisao = analisarAmbiente();
+    Object.assign(config, decisao);
+    logIA(`AUTO: Detectado ${document.getElementById('alvoAtual').innerText}. Usando ${decisao.uso}`);
   }
-}, 1000);
+
+  // SEGURANÇA AUDITIVA: Limita e inverte fase pros fones cancelarem
+  let dbSaida = fonesConectados ? DB_MAX_SEGURO : config.db;
+  if(dbSaida > DB_MAX_SEGURO) dbSaida = DB_MAX_SEGURO;
+
+  audioBase.volume = dbSaida / 100; // Volume baixo pra ti
+  audioBase.playbackRate = config.freq / 1000; // Muda tom baseado na freq
+  audioBase.currentTime = 0;
+  audioBase.play();
+  
+  criarOnda();
+  vibrar(200);
+  energia -= 5;
+  
+  if(window.parent.atualizarTexto) window.parent.atualizarTexto(`BOCA: ${config.tipo} ${config.db}dB ${config.foco}`);
+}
+
+function pararGrito(){
+  gritando = false;
+  audioBase.pause();
+}
+
+function vibrar(t){ if(navigator.vibrate) navigator.vibrate(t); }
+
+// LOOP
+setInterval(()=>{
+  if(!gritando) energia += 0.2;
+  if(energia > 100) energia = 100;
+  document.getElementById('energiaBar').style.width = energia + '%';
+  document.getElementById('energiaText').innerText = Math.round(energia) + '%';
+  
+  // Detecta se fones foram conectados - vamos linkar depois
+  if(window.parent.fonesStatus !== undefined) fonesConectados = window.parent.fonesStatus;
+}, 100);
+
+atualizarHUD();
 </script>
 </body>
 </html>
