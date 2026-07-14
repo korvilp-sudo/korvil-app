@@ -13,12 +13,13 @@ body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
 .header{padding:16px 16px 16px 60px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .menu-btn{position:fixed;top:14px;left:16px;z-index:101;background:var(--c);color:#000;border:0;border-radius:8px;padding:8px 10px;font-weight:900;font-size:18px;cursor:pointer;}
-.btn-projeto{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.btn-projeto:hover{box-shadow:0 0 15px var(--c);}
+
+.btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.btn-aluno:hover{box-shadow:0 0 15px var(--c);}
 
 .container{display:flex;max-width:1200px;margin:auto;}
 
-/* MENU LATERAL */
+/* MENU LATERAL COM ABAS */
 #menu-lateral{position:fixed;left:-320px;top:0;width:300px;height:100%;background:#0a0a0a;border-right:2px solid var(--c);z-index:200;transition:.3s;overflow-y:auto;padding:70px 0 20px;}
 #menu-lateral.ativo{left:0;}
 #overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:199;display:none;}
@@ -37,28 +38,6 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 .conteudo{flex:1;padding:16px;padding-bottom:100px;}
 
-/* MODAL ALUNO */
-#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
-#modal-aluno.ativo{display:flex;}
-.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:400px;width:100%;box-shadow:0 0 40px var(--c)40;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
-.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
-.busca-id{display:flex;gap:6px;margin-bottom:12px;}
-.busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
-.busca-id button{padding:10px 12px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
-.dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
-.dado-aluno b{color:var(--c);}
-.status-ativo{color:var(--ok);font-weight:900;}
-.status-desativado{color:var(--erro);font-weight:900;}
-
-/* CARD DO ALUNO */
-.card-aluno{background:linear-gradient(135deg,#0a0a0a,#111);border:2px solid var(--c);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 20px var(--c)20;}
-.card-aluno.titulo{font-size:14px;font-weight:900;color:var(--c);margin-bottom:10px;text-align:center;}
-.grid-aluno{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;}
-.grid-aluno.item{background:#0a0a0a;padding:8px;border-radius:6px;border:1px solid var(--borda);}
-.grid-aluno.item b{color:var(--c);display:block;font-size:10px;margin-bottom:2px;}
-
 /* CARDS */
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
@@ -75,6 +54,30 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .grid-metodos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
 .grid-metodos img{width:100%;height:80px;object-fit:contain;border-radius:6px;border:1.5px solid var(--borda);opacity:0.3;background:#000;}
 .grid-metodos img.ativa{border:2px solid var(--c);opacity:1;box-shadow:0 0 10px var(--c)40;}
+
+/* MODAL ALUNO */
+#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+#modal-aluno.ativo{display:flex;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:1000px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
+.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
+.dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
+.dado-aluno b{color:var(--c);}
+.status-ativo{color:var(--ok);font-weight:900;}
+.status-desativado{color:var(--erro);font-weight:900;}
+
+/* TABELA CRONOGRAMA NO MODAL */
+.tabela-crono{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;}
+.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);position:sticky;top:0;}
+.tabela-crono td{padding:6px;border-bottom:1px solid #111;}
+.tabela-crono.id{font-size:9px;color:var(--text2);}
+.tabela-wrapper{overflow-x:auto;}
+
+/* BUSCA ID */
+.busca-id{display:flex;gap:6px;margin-top:10px;}
+.busca-id input{flex:1;padding:8px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
+.busca-id button{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
 
 /* K-AI */
 #k-ai-cubo{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:linear-gradient(135deg,var(--c),#0088ff);border-radius:12px;box-shadow:0 0 20px var(--c);cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#000;animation:flutuar 2s infinite;border:2px solid var(--c);}
@@ -93,19 +96,19 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 @media(min-width:768px){
   #menu-lateral{position:relative;left:0;width:320px;border-right:1px solid var(--borda);}
- .menu-btn{display:none;}
+.menu-btn{display:none;}
   #overlay{display:none!important;}
- .header{padding-left:16px;}
+.header{padding-left:16px;}
 }
 </style>
 </head>
 <body>
 
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<button class="menu-btn" onclick="toggleMenu()">☰ MENU</button>
 
 <div class="header">
   <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
-  <button class="btn-projeto" onclick="abrirBuscaAluno()">👤 SEU PROJETO: ID</button>
+  <button class="btn-aluno" onclick="abrirBuscaAluno()">👤 SEU PROJETO: COLAR ID</button>
 </div>
 
 <div id="overlay" onclick="toggleMenu()"></div>
@@ -113,8 +116,6 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 <div class="container">
   <div class="conteudo">
-    <div id="cardAluno"></div>
-
     <div class="card">
       <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
       <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
@@ -127,14 +128,14 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 <div id="modal-aluno">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-titulo">CONSULTAR ALUNO</div>
+      <div class="modal-titulo">BUSCAR ALUNO PELO ID</div>
       <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
     </div>
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="Ex: carla38, gon19, dani36">
+      <input type="text" id="input-id-aluno" placeholder="Ex: carla38, vhellem39, ktp1">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
-    <div id="resultado-aluno"></div>
+    <div id="resultado-aluno" style="margin-top:12px;"></div>
   </div>
 </div>
 
@@ -145,7 +146,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
   <div id="k-ai-header">K-AI ASSISTENTE K-TP</div>
   <div id="k-ai-msgs"></div>
   <div id="k-ai-input">
-    <input type="text" id="k-ai-text" placeholder="Digite sua dúvida..." onkeypress="if(event.key==='Enter')enviarKAI()">
+    <input type="text" id="k-ai-text" placeholder="Digite ou use o microfone..." onkeypress="if(event.key==='Enter')enviarKAI()">
     <button onclick="enviarKAI()">➤</button>
   </div>
 </div>
@@ -153,22 +154,24 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 <script>
 const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
 
-// BASE COMPLETA DE ALUNOS
+// BASE DE DADOS DOS ALUNOS
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo"},
-  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"}
+  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"},
+  "alexandra25": {nome:"Alexandra", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado"},
+  "michele26": {nome:"Michele B", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado"},
+  "aline27": {nome:"Aline", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado"}
 };
 
-// LINHA DO TEMPO COMPLETA 2026
+// LINHA DO TEMPO COMPLETA
 const CALENDARIO_KTP = {
   "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.`},
-  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física. Aqui você desenvolve resistência muscular, condicionamento e disciplina para suportar as próximas fases.`},
-  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nFoco da semana: ficar mais forte de verdade\nAqui trabalhamos cargas mais altas, menos repetições e técnica perfeita. Essa é a base para o crescimento.`},
-  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nFoco: Desenvolvimento e crescimento do físico\nSemana para colocar volume no treino e estimular o crescimento muscular. Alimentação e descanso em dia.`},
-  "2026-02-02": {fase:"FASE 2: DEFINIÇÃO", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Queima de Gordura", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: DEFINIÇÃO\nSEMANA DE RESISTÊNCIA\nFoco: Aumentar gasto calórico e resistência`},
-  "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪\nVocê chegou até aqui. Mostre sua evolução!`}
+  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.`},
+  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nFoco da semana: ficar mais forte de verdade`},
+  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nFoco: Desenvolvimento e crescimento do físico`},
+  "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
 };
 
 let semanaSelecionada = null;
@@ -188,41 +191,6 @@ function getSegundaSemana(data){
   return new Date(d.setDate(diff));
 }
 
-function abrirBuscaAluno(){
-  document.getElementById('modal-aluno').classList.add('ativo');
-  document.getElementById('input-id-aluno').focus();
-}
-function fecharBuscaAluno(){
-  document.getElementById('modal-aluno').classList.remove('ativo');
-  document.getElementById('resultado-aluno').innerHTML = '';
-  document.getElementById('input-id-aluno').value = '';
-}
-function buscarAluno(){
-  const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  const aluno = ALUNOS_DB[id];
-  const div = document.getElementById('resultado-aluno');
-  if(!aluno){
-    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">Aluno com ID "${id}" não encontrado</div>`;
-    return;
-  }
-  div.innerHTML = `
-    <div class="card-aluno">
-      <div class="titulo">👤 DADOS DO ALUNO</div>
-      <div class="grid-aluno">
-        <div class="item"><b>NOME</b>${aluno.nome}</div>
-        <div class="item"><b>PLANO</b>${aluno.plano}</div>
-        <div class="item"><b>HORÁRIO</b>${aluno.horario}</div>
-        <div class="item"><b>DIAS</b>${aluno.dias}</div>
-        <div class="item"><b>FREQUÊNCIA</b>${aluno.freq}</div>
-        <div class="item"><b>OBJETIVO</b>${aluno.objetivo}</div>
-        <div class="item"><b>MENSALIDADE</b>R$ ${aluno.valor}</div>
-        <div class="item"><b>VENCIMENTO</b>${aluno.venc}</div>
-        <div class="item" style="grid-column:span 2"><b>STATUS</b><span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
-      </div>
-    </div>
-  `;
-}
-
 function toggleMenu(){
   document.getElementById('menu-lateral').classList.toggle('ativo');
   document.getElementById('overlay').classList.toggle('ativo');
@@ -239,23 +207,22 @@ function carregarMenu(){
   const hoje = new Date();
   const chaveHoje = getSegundaSemana(hoje).toISOString().split('T')[0];
   const fases = {};
-
-  // Agrupa por fase
   Object.keys(CALENDARIO_KTP).sort().forEach(data => {
     const s = CALENDARIO_KTP[data];
     if(!fases[s.fase]) fases[s.fase] = [];
     fases[s.fase].push({data,...s});
   });
-
   let html = '<div class="abas-fases">';
+  let faseAtualIndex = 0;
 
   Object.keys(fases).forEach((fase, index)=>{
+    // Descobre qual fase tem a semana atual
+    if(fases.some(s => s.data === chaveHoje)) faseAtualIndex = index;
+
     const faseId = `fase-${index}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-
-    // CORREÇÃO AQUI: era fases.forEach, agora é fases[fase].forEach
-    fases[fase].forEach(s => {
+    fases.forEach(s => {
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
       else if(s.data < chaveHoje) classe = 'passada';
@@ -265,7 +232,7 @@ function carregarMenu(){
   });
   html += '</div>';
   document.getElementById('menu-lateral').innerHTML = html;
-  toggleAba('fase-0'); // Abre primeira fase automaticamente
+  toggleAba(`fase-${faseAtualIndex}`); // Abre a fase atual automaticamente
 }
 
 function mostrarSemana(chaveData){
@@ -277,7 +244,6 @@ function mostrarSemana(chaveData){
   let grid = '<div class="grid-metodos">';
   metodos.forEach(m=>{ grid += `<img src="${PASTA_IMG}${m}/${m}.png" class="${m===semana.tipo?'ativa':''}">`; });
   grid += '</div>';
-
   document.getElementById('semanaAtualContainer').innerHTML = `
   <div class="semana-atual">
     <div class="titulo-secao">| SEMANA <span class="badge">${chaveData === getSegundaSemana(new Date()).toISOString().split('T')[0]? 'ATUAL' : 'SELECIONADA'}</span></div>
@@ -297,14 +263,79 @@ function carregarSemanaAtual(){
   const segunda = getSegundaSemana(hoje);
   const chaveSegunda = segunda.toISOString().split('T')[0];
 
+  // Se não tiver a data exata, pega a próxima
   let chave = chaveSegunda;
   if(!CALENDARIO_KTP[chave]){
-    chave = Object.keys(CALENDARIO_KTP).sort().find(d => d >= chaveSegunda) || Object.keys(CALENDARIO_KTP).sort().pop();
+    chave = Object.keys(CALENDARIO_KTP).sort().find(d => d >= chaveSegunda) || Object.keys(CALENDARIO_KTP).sort()[0];
   }
 
   mostrarSemana(chave);
   const dataFormatada = formatarData(chave);
   document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${CALENDARIO_KTP[chave].nome}</b><br>${dataFormatada}`;
+}
+
+// FUNÇÕES DO BOTÃO ALUNO
+function abrirBuscaAluno(){
+  document.getElementById('modal-aluno').classList.add('ativo');
+  document.getElementById('input-id-aluno').focus();
+}
+function fecharBuscaAluno(){
+  document.getElementById('modal-aluno').classList.remove('ativo');
+  document.getElementById('resultado-aluno').innerHTML = '';
+  document.getElementById('input-id-aluno').value = '';
+}
+
+function mostrarCronogramaCompleto(){
+  let tabela = `<div class="titulo-secao">📋 CRONOGRAMA COMPLETO - ${Object.keys(ALUNOS_DB).length} ALUNOS</div>`;
+  tabela += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>#</th><th>Aluno / ID</th><th>Plano</th><th>Horário</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th></tr></thead><tbody>`;
+
+  let contador = 1;
+  Object.keys(ALUNOS_DB).forEach(id=>{
+    const a = ALUNOS_DB[id];
+    tabela += `<tr>
+      <td>${contador++}</td>
+      <td><b>${a.nome}</b><br><span class="id">${id}</span></td>
+      <td>${a.plano}</td>
+      <td>${a.horario}</td>
+      <td>${a.dias}</td>
+      <td>${a.freq}</td>
+      <td>${a.objetivo}</td>
+      <td>${a.valor}</td>
+      <td>${a.venc}</td>
+      <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
+    </tr>`;
+  });
+  tabela += `</tbody></table></div>`;
+  return tabela;
+}
+
+function buscarAluno(){
+  const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
+  const div = document.getElementById('resultado-aluno');
+
+  if(id === 'ktp1'){
+    div.innerHTML = mostrarCronogramaCompleto();
+    return;
+  }
+
+  const aluno = ALUNOS_DB[id];
+  if(!aluno){
+    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">Aluno com ID "${id}" não encontrado</div>`;
+    return;
+  }
+
+  div.innerHTML = `
+    <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
+    <div class="dado-aluno"><b>ID:</b> ${id}</div>
+    <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
+    <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
+    <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
+    <div class="dado-aluno"><b>Frequência:</b> ${aluno.freq}</div>
+    <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
+    <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
+    <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
+    <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+  `;
 }
 
 // K-AI
