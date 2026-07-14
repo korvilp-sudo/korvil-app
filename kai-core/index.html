@@ -21,8 +21,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .arrow{position:absolute;z-index:1000;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center}
 .arrow svg{width:60px;height:60px;stroke:var(--c);stroke-width:3.5;filter:drop-shadow(0 0 20px var(--c))}
 .arrow-down{top:100px;left:50%;transform:translateX(-50%)}
-.arrow-right{top:50%;right:10px;transform:translateY(-50%)} /* DIREITA ABRE DIREITA */
-.arrow-left{top:50%;left:10px;transform:translateY(-50%)} /* ESQUERDA ABRE ESQUERDA */
+.arrow-right{top:50%;right:10px;transform:translateY(-50%)}
+.arrow-left{top:50%;left:10px;transform:translateY(-50%)}
 .arrow-up{bottom:120px;left:50%;transform:translateX(-50%)}
 
 /* HOLOGRAMA */
@@ -57,9 +57,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .sideTitle{padding:12px 20px;font-size:12px;color:#A8FFE6;font-weight:800;text-transform:uppercase}
 .sideItem{padding:14px 20px;font-size:14px;color:#00FFFF;cursor:pointer;border-left:4px solid transparent;display:flex;justify-content:space-between}
 .sideItem:hover{background:#132e36;border-left:4px solid #00FFFF}
+.sideItem.ativa{background:var(--c);color:#000;border-left:4px solid #fff}
 .peca-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px}
 .peca-btn{background:rgba(0,255,255,.1);border:1px solid #00FFFF;color:#00FFFF;padding:10px;font-size:10px;cursor:pointer;text-align:center;border-radius:4px;font-weight:700}
 .peca-btn:hover{background:#00FFFF;color:#000}
+.peca-btn.ativa{background:#00FFFF;color:#000}
 
 /* ABAS */
 .tab-bar{display:flex;border-bottom:2px solid #00FFFF}
@@ -75,10 +77,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="status"><div id="hora">21:40</div><span>KORVIL 5G 🔋 100%</span></div>
 <div class="header"><div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div></div>
 
-<!-- SETAS CORRIGIDAS FINAL -->
+<!-- SETAS -->
 <div class="arrow arrow-down" onclick="openMenu('top')"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
-<div class="arrow arrow-right" onclick="openMenu('right')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div> <!-- DIREITA -->
-<div class="arrow arrow-left" onclick="openMenu('left')"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div> <!-- ESQUERDA -->
+<div class="arrow arrow-right" onclick="openMenu('right')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
+<div class="arrow arrow-left" onclick="openMenu('left')"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
 <div class="arrow arrow-up" onclick="openMenu('bottom')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
 
 <div class="overlay" id="overlay" onclick="closeAllMenus()"></div>
@@ -92,20 +94,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
   </div>
 </div>
 
-<!-- MENU ESQUERDO = K-AI TRANSFORMAR COM AS ATUALIZAÇÕES -->
+<!-- MENU ESQUERDO = K-AI TRANSFORMAR -->
 <div class="menu" id="menuLeft">
   <div class="sideHeader"><div>K-AI</div><div class="modo">MODO CHEFE</div></div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="openTab('estat')">ESTATÍSTICAS</button>
-    <button class="tab-btn" onclick="openTab('transformar')">K-AI TRANSFORMAR</button>
+    <button class="tab-btn active" onclick="openTab('estat', this)">ESTATÍSTICAS</button>
+    <button class="tab-btn" onclick="openTab('transformar', this)">K-AI TRANSFORMAR</button>
   </div>
 
   <!-- ABA ESTATÍSTICAS -->
   <div id="tab-estat" class="tab-content active">
     <div class="sideSection">
       <div class="sideTitle">DIAGNÓSTICO TÁTICO</div>
-      <div class="sideItem">ALVOS <b>0</b></div>
+      <div class="sideItem">ALVOS <b id="alvos">0</b></div>
       <div class="sideItem">RADAR <b>ATIVO</b></div>
       <div class="sideItem">ENERGIA <b>100%</b></div>
     </div>
@@ -115,19 +117,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
   <div id="tab-transformar" class="tab-content">
     <div class="sideSection">
       <div class="sideTitle">K-AI TRANSFORMAR</div>
-      <div class="sideItem" onclick="showOutput('TRANSFORMAÇÃO ATIVADA')">🔮 TRANSFORMAÇÃO</div>
-      <div class="sideItem" onclick="showOutput('ARMADURA v-2026 MASTER')">🛡️ ARMADURAS</div>
+      <div class="sideItem" onclick="ativarTransformacao()">🔮 TRANSFORMAÇÃO</div>
+      <div class="sideItem" onclick="carregarArmaduraCompleta()">🛡️ ARMADURAS</div>
     </div>
     <div class="sideSection">
       <div class="sideTitle">SELECIONAR PEÇA</div>
-      <div class="peca-grid">
-        <div class="peca-btn" onclick="showOutput('PEÇA: ANTE-BRACOS')">ANTE-BRACOS</div>
-        <div class="peca-btn" onclick="showOutput('PEÇA: BRACOS')">BRACOS</div>
-        <div class="peca-btn" onclick="showOutput('PEÇA: PEITORAL')">PEITORAL</div>
-        <div class="peca-btn" onclick="showOutput('PEÇA: COSTAS')">COSTAS</div>
-        <div class="peca-btn" onclick="showOutput('PEÇA: CAPACETE')">CAPACETE</div>
-        <div class="peca-btn" onclick="showOutput('PEÇA: BOTAS')">BOTAS</div>
-      </div>
+      <div class="peca-grid" id="gridPecas"></div>
     </div>
   </div>
 </div>
@@ -192,12 +187,19 @@ const PAGINAS = {
   'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
 }
 
-// ABRIR MENUS CORRIGIDO
+const PECAS = [
+  'ante-bracos','bracos','peitoral','costas','pelvis',
+  'femur','patela','tibia','botas','luvas',
+  'capacete','corvonas','ombros','abdomen','maos',
+  'pescoco','cintura'
+];
+
+// ABRIR MENUS
 function openMenu(side){
   closeAllMenus();
   document.getElementById('overlay').classList.add('show');
-  if(side==='left') document.getElementById('menuLeft').classList.add('open'); // ESQUERDA
-  if(side==='right') document.getElementById('menuRight').classList.add('open'); // DIREITA
+  if(side==='left') document.getElementById('menuLeft').classList.add('open');
+  if(side==='right') document.getElementById('menuRight').classList.add('open');
   if(side==='top') document.getElementById('menuTop').classList.add('open');
   if(side==='bottom') document.getElementById('menuBottom').classList.add('open');
 }
@@ -207,19 +209,75 @@ function closeAllMenus(){
 }
 
 // ABAS
-function openTab(tab){
+function openTab(tab, btn){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
 // MOSTRAR NA TELA
 function showOutput(text){
   document.getElementById('outputScreen').innerText = text;
   closeAllMenus();
-  setTimeout(()=>{document.getElementById('outputScreen').innerText = 'K-AI ONLINE'}, 2000);
+  setTimeout(()=>{document.getElementById('outputScreen').innerText = 'K-AI ONLINE'}, 2500);
 }
+
+// 1. FUNÇÃO TRANSFORMAR = VISOR CAPACETE + ARMADURA CENTRO
+function ativarTransformacao(){
+  showOutput('TRANSFORMAÇÃO ATIVADA');
+  document.getElementById('hologramaContainer').innerHTML = `
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle,rgba(0,255,255,.1) 0%,#000 70%);display:flex;align-items:center;justify-content:center;flex-direction:column">
+      <div style="font-size:40px;color:#00FFFF;text-shadow:0 0 30px #00FFFF;margin-bottom:20px">VISOR K-AI ATIVO</div>
+      <div style="width:80%;height:60%;border:3px solid #00FFFF;border-radius:20px;display:flex;align-items:center;justify-content:center">
+        <div style="color:#00FFFF;font-size:24px">ARMADURA v-2026 NO CENTRO</div>
+      </div>
+      <div style="margin-top:20px;color:#A8FFE6">SCAN: 360° | ALVOS: 0 | ENERGIA: 100%</div>
+    </div>`;
+}
+
+// 2. FUNÇÃO ARMADURA COMPLETA
+function carregarArmaduraCompleta(){
+  showOutput('CARREGANDO ARMADURA v-2026');
+  document.querySelectorAll('.peca-btn').forEach(b=>b.classList.remove('ativa'));
+  fetch(`kai-transformar/armaduras/v-2026/armadura-v-2026.html`)
+ .then(r=>r.text())
+ .then(html=>{
+    document.getElementById('hologramaContainer').innerHTML = html;
+  })
+ .catch(()=>{
+    document.getElementById('hologramaContainer').innerHTML = `<div style="color:#00FFFF;text-align:center;padding-top:40%">ARMADURA v-2026 MASTER<br><small>Arquivo não encontrado</small></div>`;
+  });
+}
+
+// 3. FUNÇÃO CARREGAR PEÇA
+function carregarPeca(nome){
+  document.querySelectorAll('.peca-btn').forEach(b=>b.classList.remove('ativa'));
+  document.querySelector(`[data-peca="${nome}"]`).classList.add('ativa');
+
+  fetch(`kai-transformar/armaduras/v-2026/pecas/${nome}/${nome}.html`)
+ .then(r=>r.text())
+ .then(html=>{
+    document.getElementById('hologramaContainer').innerHTML = html;
+    showOutput(`PEÇA: ${nome.toUpperCase()}`);
+  })
+ .catch(()=>{
+    document.getElementById('hologramaContainer').innerHTML = `<div style="color:#00FFFF;text-align:center;padding-top:40%">PEÇA: ${nome.toUpperCase()}<br><small>Arquivo não encontrado</small></div>`;
+  });
+}
+
+// GERAR 17 BOTÕES AUTOMÁTICO
+window.addEventListener('load', ()=>{
+  const grid = document.getElementById('gridPecas');
+  PECAS.forEach(p=>{
+    const btn = document.createElement('div');
+    btn.className = 'peca-btn';
+    btn.dataset.peca = p;
+    btn.innerText = p.toUpperCase();
+    btn.onclick = ()=>carregarPeca(p);
+    grid.appendChild(btn);
+  });
+});
 
 // CHAT
 document.getElementById('btnSend').onclick = send;
