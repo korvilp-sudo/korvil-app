@@ -1,76 +1,49 @@
 <div id="menuDireitoReal" class="menu-direito">
-  <div class="md-tabs">
-    <button class="tab-btn active" onclick="openTab('estatisticas')">ESTATÍSTICAS</button>
-    <button class="tab-btn" onclick="openTab('transformar')">K-AI TRANSFORMAR</button>
+  <div class="sideHeader">
+    <div>K-AI</div>
+    <div class="modo">MENU</div>
   </div>
 
-  <!-- ABA ESTATÍSTICAS -->
-  <div id="tab-estatisticas" class="tab-content">
-    <h3>DIAGNÓSTICO TÁTICO</h3>
-    <p>ALVOS: <b id="alvos">0</b></p>
-    <p>RADAR: <b>ATIVO</b></p>
-    <p>SCAN: <b>360°</b></p>
-    <p>CONEXÃO: <b>SEGURA</b></p>
-    <p>ENERGIA: <b>100%</b></p>
+  <div class="sideSection">
+    <div class="sideTitle">CONFIGURAÇÃO DE VOZ</div>
+    <div class="sideItem" onclick="executar('voz corvo cibernetico')">1. Corvo Cibernético M</div>
+    <div class="sideItem" onclick="executar('voz jarvis classico')">2. Jarvis Clássico M</div>
   </div>
 
-  <!-- ABA TRANSFORMAR - PUXA AS 17 PEÇAS REAIS -->
-  <div id="tab-transformar" class="tab-content" style="display:none">
-    <h3>TRANSFORMAÇÃO EM CIMA DE ARMADURAS</h3>
-    <div class="peca-lista" id="listaPecas"></div>
-    <button class="btn-master" onclick="mostrarArmadura('v-2026')">ATIVAR KORVIL V-2026 MASTER</button>
+  <div class="sideSection">
+    <div class="sideTitle">1. NAVEGAR - 5 SETORES KORVIL</div>
+    <div class="sideItem" onclick="goPage('sistema k')">1. Sistema K</div>
+    <div class="sideItem" onclick="goPage('ktp')">2. K-TP</div>
+    <div class="sideItem" onclick="goPage('kafortunado')">3. K-AFORTUNADO</div>
+    <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA</div>
+    <div class="sideItem" onclick="goPage('central')">5. Central KORVIL</div>
+  </div>
+
+  <div class="sideSection">
+    <div class="sideTitle">2. CRIAR</div>
+    <div class="sideItem" onclick="executar('criar post')">Criar Post</div>
+    <div class="sideItem" onclick="executar('criar imagem ia')">Criar Imagem IA</div>
+  </div>
+
+  <div class="sideSection">
+    <div class="sideTitle">5. SISTEMA</div>
+    <div class="sideItem" onclick="executar('que horas são')">Horas</div>
+    <div class="sideItem" onclick="executar('salvar memória')">Salvar Memória</div>
+    <div class="sideItem" onclick="executar('estatísticas')">Estatísticas</div>
+    <div class="sideItem" onclick="executar('limpar memória')">Limpar Memória</div>
   </div>
 </div>
 
-<script>
-// LISTA AUTOMÁTICA DAS 17 PEÇAS QUE JÁ EXISTEM
-const PECAS = [
-  'ante-bracos','bracos','peitoral','costas','pelvis',
-  'femur','patela','tibia','botas','luvas',
-  'capacete','corvonas','ombros','abdomen','maos',
-  'pescoco','cintura'
-];
-
-function openTab(tab){
-  document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+tab).style.display='block';
-  event.target.classList.add('active');
-}
-
-function carregarPeca(nome){
-  fetch(`kai-transformar/armaduras/v-2026/pecas/${nome}/${nome}.html`)
-  .then(r=>r.text())
-  .then(html=>{document.getElementById('hologramaContainer').innerHTML = html;})
-  .catch(()=>falar(`Peça ${nome} carregada`));
-}
-
-// GERA OS BOTÕES AUTOMÁTICO
-window.addEventListener('load', ()=>{
-  const lista = document.getElementById('listaPecas');
-  if(lista){
-    PECAS.forEach(p=>{
-      const btn = document.createElement('button');
-      btn.innerText = p.toUpperCase();
-      btn.onclick = ()=>carregarPeca(p);
-      lista.appendChild(btn);
-    })
-  }
-})
-</script>
-
 <style>
 .menu-direito{position:absolute;right:0;top:50%;transform:translateY(-50%);
-  width:300px;height:85%;background:rgba(0,20,40,.95);border-left:2px solid #00FFFF;
-  padding:15px;color:#00FFFF;backdrop-filter:blur(10px);z-index:101;overflow-y:auto}
-.md-tabs{display:flex;margin-bottom:15px}
-.tab-btn{flex:1;background:transparent;border:1px solid #00FFFF;color:#00FFFF;padding:8px;cursor:pointer;font-weight:700}
-.tab-btn.active{background:#00FFFF;color:#000}
-.tab-content h3{font-size:14px;margin-bottom:12px;border-bottom:1px solid #00FFFF50;padding-bottom:8px}
-.tab-content p{margin:8px 0;font-size:12px;display:flex;justify-content:space-between}
-.peca-lista{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.peca-lista button{background:rgba(0,255,255,.1);border:1px solid #00FFFF;color:#00FFFF;
-  padding:8px;font-size:10px;cursor:pointer;border-radius:4px;text-transform:uppercase}
-.peca-lista button:hover{background:#00FFFF;color:#000}
-.btn-master{width:100%;margin-top:15px;background:#00FFFF;color:#000;font-weight:900;padding:12px;cursor:pointer;border:none;border-radius:6px}
+  width:330px;height:90%;background:linear-gradient(180deg,#0a0f14 0%,#000 100%);
+  border-left:2px solid #00FFFF;padding:0;color:#00FFFF;overflow-y:auto;z-index:101}
+.sideHeader{height:95px;background:linear-gradient(135deg,#00FFFF,#A8FFE6);padding:20px;
+  display:flex;align-items:center;justify-content:space-between;color:#000;font-weight:900;font-size:19px}
+.sideHeader .modo{background:#000;color:#00FFFF;padding:7px 14px;border-radius:20px;font-size:13px;border:2px solid #00FFFF}
+.sideSection{padding:14px 0;border-bottom:1px solid #132e36}
+.sideTitle{padding:12px 20px;font-size:13px;color:#A8FFE6;font-weight:800;text-transform:uppercase}
+.sideItem{padding:16px 20px;display:flex;align-items:center;gap:14px;font-size:15px;color:#00FFFF;
+  cursor:pointer;border-left:4px solid transparent;font-weight:600}
+.sideItem:hover{background:#132e36;border-left:4px solid #00FFFF}
 </style>
