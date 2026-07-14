@@ -10,9 +10,11 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
 
-.header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;}
+.header{padding:16px 16px 16px 60px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .menu-btn{position:fixed;top:14px;left:16px;z-index:101;background:var(--c);color:#000;border:0;border-radius:8px;padding:8px 10px;font-weight:900;font-size:18px;cursor:pointer;}
+.btn-projeto{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.btn-projeto:hover{box-shadow:0 0 15px var(--c);}
 
 .container{display:flex;max-width:1200px;margin:auto;}
 
@@ -34,14 +36,27 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 .conteudo{flex:1;padding:16px;padding-bottom:100px;}
 
-/* CARD DO ALUNO */
-.card-aluno{background:linear-gradient(135deg,#0a0a0a,#111);border:2px solid var(--c);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 20px var(--c)20;}
-.card-aluno.titulo{font-size:14px;font-weight:900;color:var(--c);margin-bottom:10px;text-align:center;}
-.grid-aluno{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;}
-.grid-aluno.item{background:#0a0a0a;padding:8px;border-radius:6px;border:1px solid var(--borda);}
-.grid-aluno.item b{color:var(--c);display:block;font-size:10px;margin-bottom:2px;}
+/* MODAL ALUNO */
+#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+#modal-aluno.ativo{display:flex;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:400px;width:100%;box-shadow:0 0 40px var(--c)40;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
+.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
+.busca-id{display:flex;gap:6px;margin-bottom:12px;}
+.busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
+.busca-id button{padding:10px 12px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
+.dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
+.dado-aluno b{color:var(--c);}
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
+
+/* CARD DO ALUNO */
+.card-aluno{background:linear-gradient(135deg,#0a0a0a,#111);border:2px solid var(--c);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 20px var(--c)20;}
+.card-aluno .titulo{font-size:14px;font-weight:900;color:var(--c);margin-bottom:10px;text-align:center;}
+.grid-aluno{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;}
+.grid-aluno .item{background:#0a0a0a;padding:8px;border-radius:6px;border:1px solid var(--borda);}
+.grid-aluno .item b{color:var(--c);display:block;font-size:10px;margin-bottom:2px;}
 
 /* CARDS */
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
@@ -79,6 +94,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
   #menu-lateral{position:relative;left:0;width:320px;border-right:1px solid var(--borda);}
 .menu-btn{display:none;}
   #overlay{display:none!important;}
+  .header{padding-left:16px;}
 }
 </style>
 </head>
@@ -88,6 +104,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 <div class="header">
   <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
+  <button class="btn-projeto" onclick="abrirBuscaAluno()">👤 SEU PROJETO: ID</button>
 </div>
 
 <div id="overlay" onclick="toggleMenu()"></div>
@@ -102,6 +119,21 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
       <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
     </div>
     <div id="semanaAtualContainer"></div>
+  </div>
+</div>
+
+<!-- MODAL BUSCA ALUNO -->
+<div id="modal-aluno">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-titulo">CONSULTAR ALUNO</div>
+      <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
+    </div>
+    <div class="busca-id">
+      <input type="text" id="input-id-aluno" placeholder="Ex: carla38, gon19, dani36">
+      <button onclick="buscarAluno()">BUSCAR</button>
+    </div>
+    <div id="resultado-aluno"></div>
   </div>
 </div>
 
@@ -120,7 +152,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 <script>
 const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
 
-// BASE COMPLETA DE ALUNOS - COPIE TODOS AQUI
+// BASE COMPLETA DE ALUNOS
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
@@ -164,18 +196,10 @@ const ALUNOS_DB = {
 const CALENDARIO_KTP = {
   "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.`},
   "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.`},
-  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nFoco da semana: ficar mais forte de verdade`},
-  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nFoco: Desenvolvimento e crescimento do físico`},
   "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
 };
 
-let ALUNO_LOGADO = null;
 let semanaSelecionada = null;
-
-function getParametroURL(nome) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(nome);
-}
 
 function formatarData(dataString) {
   const data = new Date(dataString);
@@ -192,32 +216,39 @@ function getSegundaSemana(data){
   return new Date(d.setDate(diff));
 }
 
-function mostrarCardAluno(){
-  const id = getParametroURL('id');
-  if(!id) {
-    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Acesse com:?id=seu_id</div>`;
+function abrirBuscaAluno(){
+  document.getElementById('modal-aluno').classList.add('ativo');
+  document.getElementById('input-id-aluno').focus();
+}
+function fecharBuscaAluno(){
+  document.getElementById('modal-aluno').classList.remove('ativo');
+  document.getElementById('resultado-aluno').innerHTML = '';
+  document.getElementById('input-id-aluno').value = '';
+}
+function buscarAluno(){
+  const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
+  const aluno = ALUNOS_DB[id];
+  const div = document.getElementById('resultado-aluno');
+  if(!aluno){
+    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">Aluno com ID "${id}" não encontrado</div>`;
     return;
   }
-  ALUNO_LOGADO = ALUNOS_DB[id.toLowerCase()];
-  if(!ALUNO_LOGADO){
-    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Aluno não encontrado</div>`;
-    return;
-  }
-  document.getElementById('cardAluno').innerHTML = `
-  <div class="card-aluno">
-    <div class="titulo">👤 MEUS DADOS - K-TP</div>
-    <div class="grid-aluno">
-      <div class="item"><b>NOME</b>${ALUNO_LOGADO.nome}</div>
-      <div class="item"><b>PLANO</b>${ALUNO_LOGADO.plano}</div>
-      <div class="item"><b>HORÁRIO</b>${ALUNO_LOGADO.horario}</div>
-      <div class="item"><b>DIAS</b>${ALUNO_LOGADO.dias}</div>
-      <div class="item"><b>FREQUÊNCIA</b>${ALUNO_LOGADO.freq}</div>
-      <div class="item"><b>OBJETIVO</b>${ALUNO_LOGADO.objetivo}</div>
-      <div class="item"><b>MENSALIDADE</b>R$ ${ALUNO_LOGADO.valor}</div>
-      <div class="item"><b>VENCIMENTO</b>${ALUNO_LOGADO.venc}</div>
-      <div class="item" style="grid-column:span 2"><b>STATUS</b><span class="${ALUNO_LOGADO.status==='Ativo'?'status-ativo':'status-desativado'}">${ALUNO_LOGADO.status}</span></div>
+  div.innerHTML = `
+    <div class="card-aluno">
+      <div class="titulo">👤 DADOS DO ALUNO</div>
+      <div class="grid-aluno">
+        <div class="item"><b>NOME</b>${aluno.nome}</div>
+        <div class="item"><b>PLANO</b>${aluno.plano}</div>
+        <div class="item"><b>HORÁRIO</b>${aluno.horario}</div>
+        <div class="item"><b>DIAS</b>${aluno.dias}</div>
+        <div class="item"><b>FREQUÊNCIA</b>${aluno.freq}</div>
+        <div class="item"><b>OBJETIVO</b>${aluno.objetivo}</div>
+        <div class="item"><b>MENSALIDADE</b>R$ ${aluno.valor}</div>
+        <div class="item"><b>VENCIMENTO</b>${aluno.venc}</div>
+        <div class="item" style="grid-column:span 2"><b>STATUS</b><span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+      </div>
     </div>
-  </div>`;
+  `;
 }
 
 function toggleMenu(){
@@ -297,8 +328,7 @@ function toggleChat(){
   chatAberto =!chatAberto;
   document.getElementById('k-ai-chat').style.display = chatAberto? 'flex' : 'none';
   if(chatAberto && document.getElementById('k-ai-msgs').innerHTML === ''){
-    const nome = ALUNO_LOGADO? ALUNO_LOGADO.nome : 'Participante';
-    document.getElementById('k-ai-msgs').innerHTML = `<div class="msg ai">Olá ${nome}! 👋\n\nSou o K-AI. Posso te ajudar com dúvidas da sua semana atual.</div>`;
+    document.getElementById('k-ai-msgs').innerHTML = `<div class="msg ai">Olá Participantes e Alunos! 👋\n\nSou o K-AI. Pergunte sobre FASE, SEMANA ou PROTOCOLO.</div>`;
   }
 }
 function addMsgAI(texto){document.getElementById('k-ai-msgs').innerHTML += `<div class="msg ai">${texto.replace(/\n/g,'<br>')}</div>`;}
@@ -313,7 +343,6 @@ function enviarKAI(){
 }
 
 window.onload = function(){
-  mostrarCardAluno();
   carregarMenu();
   carregarSemanaAtual();
 };
