@@ -58,7 +58,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 /* MODAL ALUNO */
 #modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
 #modal-aluno.ativo{display:flex;}
-.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:900px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:1000px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
 .btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
@@ -68,10 +68,11 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .status-desativado{color:var(--erro);font-weight:900;}
 
 /* TABELA CRONOGRAMA NO MODAL */
-.tabela-crono{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px;}
-.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);}
+.tabela-crono{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;}
+.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);position:sticky;top:0;}
 .tabela-crono td{padding:6px;border-bottom:1px solid #111;}
 .tabela-crono.id{font-size:9px;color:var(--text2);}
+.tabela-wrapper{overflow-x:auto;}
 
 /* BUSCA ID */
 .busca-id{display:flex;gap:6px;margin-top:10px;}
@@ -213,7 +214,7 @@ function carregarMenu(){
     const faseId = `fase-${index}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-    fases.forEach(s => {
+    fases.forEach(s => { // CORRIGIDO AQUI
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
       else if(s.data < chaveHoje) classe = 'passada';
@@ -270,26 +271,26 @@ function fecharBuscaAluno(){
 }
 
 function mostrarCronogramaCompleto(){
-  let tabela = `<div class="titulo-secao">📋 CRONOGRAMA COMPLETO DE ALUNOS</div>`;
-  tabela += `<table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno / ID</th><th>Plano</th><th>Horário</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Venc</th><th>Status</th></tr></thead><tbody>`;
+  let tabela = `<div class="titulo-secao">📋 CRONOGRAMA COMPLETO - ${Object.keys(ALUNOS_DB).length} ALUNOS</div>`;
+  tabela += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>#</th><th>Aluno / ID</th><th>Plano</th><th>Horário</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th></tr></thead><tbody>`;
 
   let contador = 1;
   Object.keys(ALUNOS_DB).forEach(id=>{
     const a = ALUNOS_DB[id];
     tabela += `<tr>
       <td>${contador++}</td>
-      <td><b>${a.nome}</b><br><span class="id">ID: ${id}</span></td>
+      <td><b>${a.nome}</b><br><span class="id">${id}</span></td>
       <td>${a.plano}</td>
       <td>${a.horario}</td>
       <td>${a.dias}</td>
       <td>${a.freq}</td>
       <td>${a.objetivo}</td>
-      <td>R$ ${a.valor}</td>
+      <td>${a.valor}</td>
       <td>${a.venc}</td>
       <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
     </tr>`;
   });
-  tabela += `</tbody></table>`;
+  tabela += `</tbody></table></div>`;
   return tabela;
 }
 
