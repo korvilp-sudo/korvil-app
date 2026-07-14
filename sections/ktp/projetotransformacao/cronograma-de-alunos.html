@@ -1,273 +1,321 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
-<title>CRONOGRAMA K-TP - ALUNOS</title>
+<title>K-TP PROJETO TRANSFORMAÇÃO 2026</title>
 <style>
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --aviso:#ffaa00; --erro:#ff0044;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);padding:16px;max-width:1200px;margin:auto;padding-bottom:80px;}
+body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
 
-.header{text-align:center;margin-bottom:16px;}
-h1{font-size:18px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
-.aviso-pix{background:linear-gradient(90deg,var(--aviso),#ff7700);color:#000;padding:12px;border-radius:10px;font-size:12px;font-weight:800;text-align:center;margin:12px 0 20px;}
-.aviso-pix b{font-size:13px;}
+.header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;}
+h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
+.menu-btn{position:fixed;top:14px;left:16px;z-index:101;background:var(--c);color:#000;border:0;border-radius:8px;padding:8px 10px;font-weight:900;font-size:18px;cursor:pointer;}
 
-/* ABAS PRINCIPAIS */
-.abas{ display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid var(--borda);}
-.aba{padding:12px 16px;background:#111;border:0;color:var(--text2);font-weight:900;font-size:12px;cursor:pointer;border-radius:8px 8px 0 0;flex:1;text-align:center;}
-.aba.ativa{background:var(--c);color:#000;}
-.conteudo-aba{display:none;}
-.conteudo-aba.ativa{display:block;}
+.container{display:flex;max-width:1200px;margin:auto;}
 
-/* FILTROS */
-.filtros{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.filtros button{flex:1;padding:8px;border:1.5px solid var(--borda);background:#111;color:var(--text);border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;}
-.filtros button.ativo{background:var(--c);color:#000;border-color:var(--c);}
+/* MENU LATERAL */
+#menu-lateral{position:fixed;left:-320px;top:0;width:300px;height:100%;background:#0a0a0a;border-right:2px solid var(--c);z-index:200;transition:.3s;overflow-y:auto;padding:70px 0 20px;}
+#menu-lateral.ativo{left:0;}
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:199;display:none;}
+#overlay.ativo{display:block;}
+.abas-fases{display:flex;flex-direction:column;}
+.aba-fase{padding:12px 16px;background:#111;border-bottom:1px solid var(--borda);cursor:pointer;font-weight:900;font-size:12px;color:var(--c);display:flex;justify-content:space-between;align-items:center;}
+.aba-fase.ativa{background:rgba(0,245,255,.1);border-left:3px solid var(--c);}
+.seta{transition:.3s;}
+.semanas-da-fase{display:none;padding:8px;background:#050505;}
+.semanas-da-fase.ativa{display:block;}
+.semana-item{padding:8px 10px;margin:4px 0;background:#1a1a1a;border-radius:6px;font-size:11px;cursor:pointer;transition:.2s;border-left:2px solid transparent;}
+.semana-item:hover{background:#222;border-left:2px solid var(--c);}
+.semana-item.ativa{background:rgba(0,255,136,.2);border-left:2px solid var(--ok);color:var(--ok);font-weight:800;}
+.semana-item.passada{opacity:0.5;}
 
-/* BLOCO HORARIO */
-.horario-bloco{margin-bottom:16px;border:1.5px solid var(--borda);border-radius:12px;background:var(--card);overflow:hidden;}
-.horario-header{padding:14px;background:linear-gradient(90deg,#0a0a0a,#111);border-bottom:1.5px solid var(--borda);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-.horario-titulo{font-size:16px;font-weight:900;color:var(--c);}
-.badges{display:flex;gap:6px;}
-.badge{padding:5px 10px;border-radius:20px;font-size:10px;font-weight:900;}
-.badge.ativos{background:var(--ok);color:#000;}
-.badge.desativos{background:#555;color:#fff;}
+.conteudo{flex:1;padding:16px;padding-bottom:100px;}
 
-/* TABELA */
-.tabela-wrapper{overflow-x:auto;}
-.tabela{width:100%;border-collapse:collapse;font-size:11px;min-width:700px;}
-.tabela th{padding:10px 8px;background:#0a0a0a;color:var(--c);font-size:10px;text-align:left;border-bottom:2px solid var(--borda);text-transform:uppercase;}
-.tabela td{padding:10px 8px;border-bottom:1px solid #111;vertical-align:top;}
-.tabela tr:hover{background:#0a0a0a;}
+/* CARD DO ALUNO */
+.card-aluno{background:linear-gradient(135deg,#0a0a0a,#111);border:2px solid var(--c);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 20px var(--c)20;}
+.card-aluno.titulo{font-size:14px;font-weight:900;color:var(--c);margin-bottom:10px;text-align:center;}
+.grid-aluno{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;}
+.grid-aluno.item{background:#0a0a0a;padding:8px;border-radius:6px;border:1px solid var(--borda);}
+.grid-aluno.item b{color:var(--c);display:block;font-size:10px;margin-bottom:2px;}
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
-.vencer{color:var(--aviso);font-weight:900;}
-.id-peq{font-size:9px;color:var(--text2);}
 
-.sem-aluno{text-align:center;padding:30px;color:var(--text2);font-size:12px;}
+/* CARDS */
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
+.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
+.logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 
-@media(max-width:768px){
-.tabela{font-size:10px;min-width:600px;}
-.tabela th:nth-child(5),.tabela td:nth-child(5){display:none;} /* Valor */
+.semana-atual{padding:20px;background:linear-gradient(180deg,#000,#0a0a0a);border:2px solid var(--c);border-radius:14px;margin-bottom:16px;box-shadow:0 0 30px var(--c)30;}
+.semana-titulo{font-weight:900;color:var(--c);font-size:18px;margin-bottom:4px;text-align:center;}
+.semana-tipo{font-size:12px;color:var(--aviso);font-weight:800;margin-bottom:12px;text-align:center;}
+.img-metodo{width:100%;border-radius:10px;border:2px solid var(--c);margin-bottom:12px;object-fit:contain;height:auto;max-height:500px;background:#000;}
+.protocolo{padding:16px;background:#0a0a0a;border:1px solid var(--c);border-radius:8px;font-size:13px;white-space:pre-wrap;line-height:1.7;}
+.badge{padding:5px 12px;background:var(--ok);color:#000;border-radius:20px;font-size:10px;font-weight:900;}
+.data-grande{font-size:15px;color:var(--c);font-weight:800;text-align:center;margin-bottom:8px;}
+.grid-metodos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+.grid-metodos img{width:100%;height:80px;object-fit:contain;border-radius:6px;border:1.5px solid var(--borda);opacity:0.3;background:#000;}
+.grid-metodos img.ativa{border:2px solid var(--c);opacity:1;box-shadow:0 0 10px var(--c)40;}
+
+/* K-AI */
+#k-ai-cubo{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:linear-gradient(135deg,var(--c),#0088ff);border-radius:12px;box-shadow:0 0 20px var(--c);cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#000;animation:flutuar 2s infinite;border:2px solid var(--c);}
+@keyframes flutuar{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#k-ai-balao{position:fixed;bottom:30px;right:90px;background:#0a0a0a;border:2px solid var(--c);padding:10px 14px;border-radius:12px;font-size:11px;color:var(--c);max-width:200px;z-index:998;box-shadow:0 0 15px var(--c)30;display:block;}
+#k-ai-balao:after{content:'';position:absolute;right:-8px;top:50%;transform:translateY(-50%);border-left:8px solid var(--c);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+#k-ai-chat{position:fixed;bottom:90px;right:20px;width:320px;height:450px;background:#0a0a0a;border:2px solid var(--c);border-radius:14px;display:none;flex-direction:column;z-index:999;box-shadow:0 0 30px var(--c)40;}
+#k-ai-header{padding:10px;background:var(--c);color:#000;font-weight:900;border-radius:12px 12px 0 0;text-align:center;font-size:13px;}
+#k-ai-msgs{flex:1;overflow-y:auto;padding:10px;font-size:12px;}
+.msg{margin-bottom:8px;padding:8px;border-radius:8px;line-height:1.4;}
+.msg.ai{background:#111;color:var(--c);border-left:2px solid var(--c);}
+.msg.user{background:var(--c);color:#000;text-align:right;}
+#k-ai-input{display:flex;border-top:1px solid var(--borda);}
+#k-ai-input input{flex:1;padding:10px;background:#000;border:0;color:#fff;outline:0;font-size:12px;}
+#k-ai-input button{padding:10px 12px;background:var(--c);border:0;color:#000;font-weight:900;cursor:pointer;}
+
+@media(min-width:768px){
+  #menu-lateral{position:relative;left:0;width:320px;border-right:1px solid var(--borda);}
+.menu-btn{display:none;}
+  #overlay{display:none!important;}
 }
 </style>
 </head>
 <body>
 
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
 <div class="header">
-  <h1>📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</h1>
+  <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
 </div>
 
-<div class="aviso-pix">
-Olá, sua mensalidade está prestes a vencer.<br>
-Esteja com o pagamento corretamente em dia para continuar participando.<br>
-<b>Pix: korvilloja@gmail.com</b>
-</div>
+<div id="overlay" onclick="toggleMenu()"></div>
+<div id="menu-lateral"></div>
 
-<!-- ABAS PRINCIPAIS -->
-<div class="abas">
-  <button class="aba ativa" onclick="trocarAba('presencial', this)">🌐 PRESENCIAL</button>
-  <button class="aba" onclick="trocarAba('online', this)">💻 ONLINE</button>
-  <button class="aba" onclick="trocarAba('estrela', this)">⭐ 19H ESTRELA</button>
-</div>
+<div class="container">
+  <div class="conteudo">
+    <div id="cardAluno"></div>
 
-<!-- ABA PRESENCIAL -->
-<div id="presencial" class="conteudo-aba ativa">
-  <div class="filtros">
-    <button class="ativo" onclick="filtrar('presencial','todos', this)">TODOS</button>
-    <button onclick="filtrar('presencial','ativos', this)">SÓ ATIVOS</button>
-    <button onclick="filtrar('presencial','desativados', this)">DESATIVADOS</button>
+    <div class="card">
+      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
+      <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
+    </div>
+    <div id="semanaAtualContainer"></div>
   </div>
-  <div id="conteudo-presencial"></div>
 </div>
 
-<!-- ABA ONLINE -->
-<div id="online" class="conteudo-aba">
-  <div class="filtros">
-    <button class="ativo" onclick="filtrar('online','todos', this)">TODOS</button>
-    <button onclick="filtrar('online','ativos', this)">SÓ ATIVOS</button>
-    <button onclick="filtrar('online','desativados', this)">DESATIVADOS</button>
+<!-- K-AI -->
+<div id="k-ai-balao"></div>
+<div id="k-ai-cubo" onclick="toggleChat()">K-AI</div>
+<div id="k-ai-chat">
+  <div id="k-ai-header">K-AI ASSISTENTE K-TP</div>
+  <div id="k-ai-msgs"></div>
+  <div id="k-ai-input">
+    <input type="text" id="k-ai-text" placeholder="Digite sua dúvida..." onkeypress="if(event.key==='Enter')enviarKAI()">
+    <button onclick="enviarKAI()">➤</button>
   </div>
-  <div id="conteudo-online"></div>
-</div>
-
-<!-- ABA 19H ESTRELA -->
-<div id="estrela" class="conteudo-aba">
-  <div class="filtros">
-    <button class="ativo" onclick="filtrar('estrela','todos', this)">TODOS</button>
-    <button onclick="filtrar('estrela','ativos', this)">SÓ ATIVOS</button>
-    <button onclick="filtrar('estrela','desativados', this)">DESATIVADOS</button>
-  </div>
-  <div id="conteudo-estrela"></div>
 </div>
 
 <script>
-const ALUNOS = {
-  "PRESENCIAL": {
-    "06h00 🐦": {
-      ativos: [],
-      desativados: [
-        {nome:"Adriana", dias:"Ter Qua", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado", id:"adriana20"},
-        {nome:"Jossiane Alves", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado", id:"joss21"},
-        {nome:"amigaadrum", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrum"},
-        {nome:"amigaadrdois", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrdois"}
-      ]
-    },
-    "07h00 🌙": {ativos:[], desativados:[
-      {nome:"Angélica", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado", id:"angel02"},
-      {nome:"Ana Paula", dias:"Seg Qua Sex", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado", id:"anapaula22"},
-      {nome:"Gustavo Geraldino", dias:"Seg Qua Sex", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado", id:"gusta23"},
-      {nome:"Sueli", dias:"Ter Qui Sex", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado", id:"sueli24"},
-      {nome:"Fabiana", dias:"Ter Qui", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado", id:"fabi03"}
-    ]},
-    "08h00 🐢": {
-      ativos: [
-        {n:1, nome:"Maria Carla", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo", id:"carla38"},
-        {n:2, nome:"Hellem Vitoria", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo", id:"vhellem39"}
-      ],
-      desativados: [
-        {nome:"Alexandra", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado", id:"alexandra25"},
-        {nome:"Michele B", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado", id:"michele26"},
-        {nome:"Aline", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado", id:"aline27"}
-      ]
-    },
-    "10h00 🐙": {ativos:[], desativados:[
-      {nome:"Paula Cristine", dias:"Ter a Sex", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado", id:"paula06"},
-      {nome:"Natan Osvath Paoli", dias:"Seg Qua Sex", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado", id:"nop07"},
-      {nome:"Bianca", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado", id:"bianca28"}
-    ]},
-    "16h00 🕊️": {ativos:[], desativados:[
-      {nome:"Laura Jesus Aragão", dias:"Seg Qui", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado", id:"lau08"},
-      {nome:"Cassandra Jesus", dias:"Seg Ter Qui", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado", id:"cass09"}
-    ]},
-    "17h00 🐼": {ativos:[], desativados:[
-      {nome:"Kátia Paoli", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado", id:"katiap11"},
-      {nome:"Lucimara", dias:"Ter Qui Sex", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado", id:"mara13"},
-      {nome:"Edna", dias:"Ter Qui Sex", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado", id:"edn14"},
-      {nome:"Luciane Paoli", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado", id:"banip12"},
-      {nome:"Marly", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado", id:"marly18"},
-      {nome:"Maria Cristina", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado", id:"mcris10"}
-    ]},
-    "18h00 🐸": {ativos:[], desativados:[
-      {nome:"Jucilene", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado", id:"juci29"},
-      {nome:"Jocélia", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado", id:"joce30"},
-      {nome:"Marcos França", dias:"Sex", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado", id:"marcosf31"},
-      {nome:"Lucas", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado", id:"lucas32"},
-      {nome:"Celidalva", dias:"Qua", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado", id:"celi33"},
-      {nome:"Jaqueline", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"jaque15"},
-      {nome:"Elisangela", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"elisa16"}
-    ]},
-    "19h00 🌑": {
-      ativos: [
-        {n:3, nome:"José Gonzaga", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo", id:"gon19"}
-      ],
-      desativados: [
-        {nome:"Gicelia", dias:"Seg Qua", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado", id:"gice01"},
-        {nome:"Patrícia", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"–", status:"Desativado", id:"pati34"},
-        {nome:"Melissa", dias:"Seg Qua Sex", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado", id:"mel35"},
-        {nome:"Natália Melo", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado", id:"naty17"}
-      ]
-    }
-  },
-  "ONLINE": {
-    "14h00": {
-      ativos: [],
-      desativados: [
-        {nome:"Daniele Vieira Leite", dias:"Seg a Sex", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado", id:"dani36"},
-        {nome:"Tchuco", dias:"Online", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado", id:"tchu37"}
-      ]
-    }
-  },
-  "ESTRELA": {
-    "19h00 ⭐": {
-      ativos: [
-        {n:1, nome:"José Gonzaga", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"13/05/26", status:"Ativo", id:"gon19"}
-      ],
-      desativados: []
-    }
-  }
+const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
+
+// BASE COMPLETA DE ALUNOS - COPIE TODOS AQUI
+const ALUNOS_DB = {
+  "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
+  "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
+  "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo"},
+  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"},
+  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado"},
+  "joss21": {nome:"Jossiane Alves", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado"},
+  "angel02": {nome:"Angélica", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado"},
+  "anapaula22": {nome:"Ana Paula", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado"},
+  "gusta23": {nome:"Gustavo Geraldino", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado"},
+  "sueli24": {nome:"Sueli", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui Sex", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado"},
+  "fabi03": {nome:"Fabiana", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado"},
+  "alexandra25": {nome:"Alexandra", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado"},
+  "michele26": {nome:"Michele B", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado"},
+  "aline27": {nome:"Aline", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado"},
+  "paula06": {nome:"Paula Cristine", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Ter a Sex", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado"},
+  "nop07": {nome:"Natan Osvath Paoli", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado"},
+  "bianca28": {nome:"Bianca", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado"},
+  "lau08": {nome:"Laura Jesus Aragão", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Qui", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado"},
+  "cass09": {nome:"Cassandra Jesus", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Ter Qui", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado"},
+  "katiap11": {nome:"Kátia Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado"},
+  "mara13": {nome:"Lucimara", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado"},
+  "edn14": {nome:"Edna", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado"},
+  "banip12": {nome:"Luciane Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado"},
+  "marly18": {nome:"Marly", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado"},
+  "mcris10": {nome:"Maria Cristina", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado"},
+  "juci29": {nome:"Jucilene", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado"},
+  "joce30": {nome:"Jocélia", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado"},
+  "marcosf31": {nome:"Marcos França", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Sex", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado"},
+  "lucas32": {nome:"Lucas", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado"},
+  "celi33": {nome:"Celidalva", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado"},
+  "jaque15": {nome:"Jaqueline", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
+  "elisa16": {nome:"Elisangela", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
+  "gice01": {nome:"Gicelia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado"},
+  "pati34": {nome:"Patrícia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"–", status:"Desativado"},
+  "mel35": {nome:"Melissa", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado"},
+  "naty17": {nome:"Natália Melo", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado"},
+  "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"}
 };
 
-function formatarVenc(data){
-  if(data === "–") return "–";
-  const [dia,mes,ano] = data.split('/');
-  const venc = new Date(`20${ano}-${mes}-${dia}`);
+const CALENDARIO_KTP = {
+  "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.`},
+  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.`},
+  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nFoco da semana: ficar mais forte de verdade`},
+  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nFoco: Desenvolvimento e crescimento do físico`},
+  "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
+};
+
+let ALUNO_LOGADO = null;
+let semanaSelecionada = null;
+
+function getParametroURL(nome) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(nome);
+}
+
+function formatarData(dataString) {
+  const data = new Date(dataString);
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
+function getSegundaSemana(data){
+  const d = new Date(data);
+  const dia = d.getDay();
+  const diff = d.getDate() - dia + (dia === 0? -6 : 1);
+  return new Date(d.setDate(diff));
+}
+
+function mostrarCardAluno(){
+  const id = getParametroURL('id');
+  if(!id) {
+    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Acesse com:?id=seu_id</div>`;
+    return;
+  }
+  ALUNO_LOGADO = ALUNOS_DB[id.toLowerCase()];
+  if(!ALUNO_LOGADO){
+    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Aluno não encontrado</div>`;
+    return;
+  }
+  document.getElementById('cardAluno').innerHTML = `
+  <div class="card-aluno">
+    <div class="titulo">👤 MEUS DADOS - K-TP</div>
+    <div class="grid-aluno">
+      <div class="item"><b>NOME</b>${ALUNO_LOGADO.nome}</div>
+      <div class="item"><b>PLANO</b>${ALUNO_LOGADO.plano}</div>
+      <div class="item"><b>HORÁRIO</b>${ALUNO_LOGADO.horario}</div>
+      <div class="item"><b>DIAS</b>${ALUNO_LOGADO.dias}</div>
+      <div class="item"><b>FREQUÊNCIA</b>${ALUNO_LOGADO.freq}</div>
+      <div class="item"><b>OBJETIVO</b>${ALUNO_LOGADO.objetivo}</div>
+      <div class="item"><b>MENSALIDADE</b>R$ ${ALUNO_LOGADO.valor}</div>
+      <div class="item"><b>VENCIMENTO</b>${ALUNO_LOGADO.venc}</div>
+      <div class="item" style="grid-column:span 2"><b>STATUS</b><span class="${ALUNO_LOGADO.status==='Ativo'?'status-ativo':'status-desativado'}">${ALUNO_LOGADO.status}</span></div>
+    </div>
+  </div>`;
+}
+
+function toggleMenu(){
+  document.getElementById('menu-lateral').classList.toggle('ativo');
+  document.getElementById('overlay').classList.toggle('ativo');
+}
+
+function toggleAba(faseId){
+  document.querySelectorAll('.semanas-da-fase').forEach(el=>el.classList.remove('ativa'));
+  document.querySelectorAll('.aba-fase').forEach(el=>el.classList.remove('ativa'));
+  document.getElementById(faseId).classList.add('ativa');
+  document.querySelector(`[onclick="toggleAba('${faseId}')"]`).classList.add('ativa');
+}
+
+function carregarMenu(){
   const hoje = new Date();
-  const diff = (venc - hoje) / (1000*60*60*24);
-  if(diff <= 15 && diff >= 0) return `<span class="vencer">${data}</span>`;
-  return data;
-}
-
-function montarTabela(lista, comNumero=true){
-  if(lista.length === 0) return `<tr><td colspan="8" class="sem-aluno">Nenhum aluno neste status</td></tr>`;
-
-  return lista.map(a=>`
-    <tr>
-      ${comNumero? `<td>${a.n || '-'}</td>` : ''}
-      <td><b>${a.nome}</b><br><span class="id-peq">ID: ${a.id}</span></td>
-      <td>${a.dias}</td>
-      ${a.freq? `<td>${a.freq}</td>` : `<td>-</td>`}
-      <td>${a.objetivo}</td>
-      <td>R$ ${a.valor}</td>
-      <td>${formatarVenc(a.venc)}</td>
-      <td class="${a.status === 'Ativo'? 'status-ativo' : 'status-desativado'}">${a.status}</td>
-    </tr>
-  `).join('');
-}
-
-function renderizarAba(tipo){
-  let dados = tipo === 'presencial'? ALUNOS.PRESENCIAL : tipo === 'online'? ALUNOS.ONLINE : ALUNOS.ESTRELA;
-  let html = '';
-
-  Object.keys(dados).forEach(horario=>{
-    const bloco = dados[horario];
-    const totalAtivos = bloco.ativos.length;
-    const totalDes = bloco.desativados.length;
-
-    html += `<div class="horario-bloco">`;
-    html += `<div class="horario-header">
-      <div class="horario-titulo">🕒 ${horario}</div>
-      <div class="badges"><span class="badge ativos">${totalAtivos} Ativos</span> <span class="badge desativos">${totalDes} Desativados</span></div>
-    </div>`;
-
-    html += `<div class="tabela-wrapper">`;
-    html += `<table class="tabela dados-ativos-${tipo}"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Mensalidade</th><th>Vencimento</th><th>Status</th></tr></thead><tbody>`;
-    html += montarTabela(bloco.ativos);
-    html += `</tbody></table>`;
-
-    html += `<table class="tabela dados-desativados-${tipo}"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Mensalidade</th><th>Vencimento</th><th>Status</th></tr></thead><tbody>`;
-    html += montarTabela(bloco.desativados);
-    html += `</tbody></table>`;
-    html += `</div></div>`;
+  const chaveHoje = getSegundaSemana(hoje).toISOString().split('T')[0];
+  const fases = {};
+  Object.keys(CALENDARIO_KTP).sort().forEach(data => {
+    const s = CALENDARIO_KTP[data];
+    if(!fases[s.fase]) fases[s.fase] = [];
+    fases[s.fase].push({data,...s});
   });
-
-  document.getElementById(`conteudo-${tipo}`).innerHTML = html;
-  filtrar(tipo, 'todos', document.querySelector(`#${tipo}.filtros button`));
+  let html = '<div class="abas-fases">';
+  Object.keys(fases).forEach((fase, index)=>{
+    const faseId = `fase-${index}`;
+    html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
+    html += `<div class="semanas-da-fase" id="${faseId}">`;
+    fases.forEach(s => {
+      let classe = '';
+      if(s.data === chaveHoje) classe = 'ativa';
+      else if(s.data < chaveHoje) classe = 'passada';
+      html += `<div class="semana-item ${classe}" onclick="mostrarSemana('${s.data}')">${formatarData(s.data)} - ${s.nome}</div>`;
+    });
+    html += `</div>`;
+  });
+  html += '</div>';
+  document.getElementById('menu-lateral').innerHTML = html;
+  toggleAba('fase-0');
 }
 
-function trocarAba(aba, btn){
-  document.querySelectorAll('.aba').forEach(b=>b.classList.remove('ativa'));
-  document.querySelectorAll('.conteudo-aba').forEach(c=>c.classList.remove('ativa'));
-  btn.classList.add('ativa');
-  document.getElementById(aba).classList.add('ativa');
+function mostrarSemana(chaveData){
+  semanaSelecionada = chaveData;
+  const semana = CALENDARIO_KTP[chaveData];
+  const dataFormatada = formatarData(chaveData);
+  const caminhoImg = `${PASTA_IMG}${semana.tipo}/${semana.tipo}.png`;
+  const metodos = ['semana-de-manutencao','semana-de-resistencia','semana-de-forca','semana-de-hipertrofia'];
+  let grid = '<div class="grid-metodos">';
+  metodos.forEach(m=>{ grid += `<img src="${PASTA_IMG}${m}/${m}.png" class="${m===semana.tipo?'ativa':''}">`; });
+  grid += '</div>';
+  document.getElementById('semanaAtualContainer').innerHTML = `
+  <div class="semana-atual">
+    <div class="titulo-secao">| SEMANA <span class="badge">${chaveData === getSegundaSemana(new Date()).toISOString().split('T')[0]? 'ATUAL' : 'SELECIONADA'}</span></div>
+    <div class="data-grande">Data: ${dataFormatada}</div>
+    <img src="${caminhoImg}" class="img-metodo" alt="${semana.nome}">
+    ${grid}
+    <div class="semana-titulo">${semana.fase} - ${semana.nome}</div>
+    <div class="semana-tipo">OBJETIVO: ${semana.objetivo}</div>
+    <div class="protocolo">${semana.texto}</div>
+  </div>`;
+  if(window.innerWidth < 768) toggleMenu();
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function filtrar(tipo, status, btn){
-  document.querySelectorAll(`#${tipo}.filtros button`).forEach(b=>b.classList.remove('ativo'));
-  btn.classList.add('ativo');
+function carregarSemanaAtual(){
+  const hoje = new Date();
+  const segunda = getSegundaSemana(hoje);
+  const chaveSegunda = segunda.toISOString().split('T')[0];
+  mostrarSemana(chaveSegunda);
+  const dataSegundaFormatada = formatarData(segunda);
+  document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${CALENDARIO_KTP[chaveSegunda].nome}</b><br>${dataSegundaFormatada}`;
+}
 
-  document.querySelectorAll(`.dados-ativos-${tipo}`).forEach(t=>t.style.display = status==='desativados'? 'none' : 'table');
-  document.querySelectorAll(`.dados-desativados-${tipo}`).forEach(t=>t.style.display = status==='ativos'? 'none' : 'table');
+// K-AI
+let chatAberto = false;
+function toggleChat(){
+  chatAberto =!chatAberto;
+  document.getElementById('k-ai-chat').style.display = chatAberto? 'flex' : 'none';
+  if(chatAberto && document.getElementById('k-ai-msgs').innerHTML === ''){
+    const nome = ALUNO_LOGADO? ALUNO_LOGADO.nome : 'Participante';
+    document.getElementById('k-ai-msgs').innerHTML = `<div class="msg ai">Olá ${nome}! 👋\n\nSou o K-AI. Posso te ajudar com dúvidas da sua semana atual.</div>`;
+  }
+}
+function addMsgAI(texto){document.getElementById('k-ai-msgs').innerHTML += `<div class="msg ai">${texto.replace(/\n/g,'<br>')}</div>`;}
+function addMsgUser(texto){document.getElementById('k-ai-msgs').innerHTML += `<div class="msg user">${texto}</div>`;}
+function enviarKAI(){
+  const input = document.getElementById('k-ai-text');
+  if(!input.value.trim()) return;
+  addMsgUser(input.value); input.value = '';
+  const chave = semanaSelecionada || getSegundaSemana(new Date()).toISOString().split('T')[0];
+  const semana = CALENDARIO_KTP[chave];
+  setTimeout(()=>addMsgAI(`Semana: **${semana.nome}**\nData: ${formatarData(chave)}\n\n${semana.texto.substring(0,200)}...`), 500);
 }
 
 window.onload = function(){
-  renderizarAba('presencial');
-  renderizarAba('online');
-  renderizarAba('estrela');
+  mostrarCardAluno();
+  carregarMenu();
+  carregarSemanaAtual();
 };
 </script>
 </body>
