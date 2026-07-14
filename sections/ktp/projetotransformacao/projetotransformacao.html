@@ -124,7 +124,7 @@ const CALENDARIO_KTP = {
   "2026-10-05": {fase:"FASE 4: CUTTING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nRecuperar para aguentar o déficit. Semana leve.`},
   "2026-10-12": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nGasto calórico lá em cima. Secar mais.`},
   "2026-10-19": {fase:"FASE 4: CUTTING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nProteger a força mesmo com pouca caloria.`},
-"2026-10-26": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nDetalhes do físico. Contração máxima.`},
+  "2026-10-26": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nDetalhes do físico. Contração máxima.`},
   "2026-11-02": {fase:"FASE 4: CUTTING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nRecuperar para aguentar o déficit.`},
   "2026-11-09": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nÚltimo gás para secar.`},
   "2026-11-16": {fase:"FASE 4: CUTTING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nÚltimo estímulo pesado do ano.`},
@@ -136,6 +136,14 @@ const CALENDARIO_KTP = {
   "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Mostrar os resultados\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
 };
 
+function formatarData(dataString) {
+  const data = new Date(dataString);
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
 function getSegundaSemana(data){
   const d = new Date(data);
   const dia = d.getDay();
@@ -146,8 +154,10 @@ function getSegundaSemana(data){
 function carregarSemanaAtual(){
   const hoje = new Date();
   const segunda = getSegundaSemana(hoje);
-  const chave = segunda.toISOString().split('T')[0];
-  const semana = CALENDARIO_KTP[chave];
+  const chaveSegunda = segunda.toISOString().split('T')[0];
+  const semana = CALENDARIO_KTP[chaveSegunda];
+  const dataHojeFormatada = formatarData(hoje);
+  const dataSegundaFormatada = formatarData(segunda);
 
   if(semana){
     const caminhoImg = `${PASTA_IMG}${semana.tipo}/${semana.tipo}.png`;
@@ -161,7 +171,8 @@ function carregarSemanaAtual(){
     document.getElementById('semanaAtualContainer').innerHTML = `
     <div class="semana-atual">
       <div class="titulo-secao">| SEMANA ATUAL <span class="badge">HOJE</span></div>
-      <div class="data-grande">${chave}</div>
+      <div class="data-grande">Hoje: ${dataHojeFormatada}</div>
+      <div style="font-size:11px;color:var(--text2);text-align:center;margin-bottom:8px;">Protocolo Válido: ${dataSegundaFormatada}</div>
       <img src="${caminhoImg}" class="img-metodo" alt="${semana.nome}">
       ${grid}
       <div class="semana-titulo">${semana.fase} - ${semana.nome}</div>
@@ -169,9 +180,10 @@ function carregarSemanaAtual(){
       <div class="protocolo">${semana.texto}</div>
     </div>`;
 
-    // BALAO AUTOMATICO DO K-AI
-    document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${semana.nome}</b><br>${semana.fase}`;
+    document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${semana.nome}</b><br>${dataSegundaFormatada}`;
     document.getElementById('k-ai-balao').style.display = 'block';
+  } else {
+    document.getElementById('semanaAtualContainer').innerHTML = `<div class="titulo-secao">| SEMANA NÃO CADASTRADA</div><div class="sub-titulo">Hoje é ${dataHojeFormatada}. Aguarde a atualização do calendário</div></div>`;
   }
 }
 
@@ -187,10 +199,11 @@ function carregarLinhaTempo(){
     else if(data < chaveHoje) classe = 'passada';
 
     const caminhoImg = `${PASTA_IMG}${s.tipo}/${s.tipo}.png`;
+    const dataFormatada = formatarData(data);
 
     html += `
     <div class="fase-box ${classe}">
-      <div class="data-grande">${data}</div>
+      <div class="data-grande">${dataFormatada}</div>
       <img src="${caminhoImg}" class="img-metodo" alt="${s.nome}" style="height:120px;">
       <b style="color:var(--c)">${s.fase}</b> - ${s.nome}<br>
       <span style="font-size:10px;">${s.objetivo}</span>
@@ -200,7 +213,6 @@ function carregarLinhaTempo(){
   document.getElementById('linhaTempoCompleta').innerHTML = html;
 }
 
-// K-AI LÓGICA
 let chatAberto = false;
 let reconhecimento = null;
 
@@ -232,22 +244,23 @@ function enviarKAI(){
   const hoje = new Date();
   const chave = getSegundaSemana(hoje).toISOString().split('T')[0];
   const semana = CALENDARIO_KTP[chave];
+  const dataSegundaFormatada = formatarData(chave);
 
   setTimeout(()=>{
     if(pergunta.includes('fase') || pergunta.includes('qual fase')){
-      addMsgAI(`Participantes e Alunos, hoje estamos na:\n\n**${semana.fase}**\nObjetivo: ${semana.objetivo}\n\nEssa fase vai até a próxima mudança no calendário.`);
+      addMsgAI(`Participantes e Alunos, hoje estamos na:\n\n**${semana.fase}**\nObjetivo: ${semana.objetivo}\n\nProtocolo válido desde: ${dataSegundaFormatada}`);
     }
     else if(pergunta.includes('semana') || pergunta.includes('o que fazer')){
-      addMsgAI(`Participantes e Alunos, essa semana é:\n\n**${semana.nome}**\n\n${semana.texto.substring(0,300)}...`);
+      addMsgAI(`Participantes e Alunos, essa semana é:\n\n**${semana.nome}**\nVálida em: ${dataSegundaFormatada}\n\n${semana.texto.substring(0,300)}...`);
     }
     else if(pergunta.includes('metodo') || pergunta.includes('manutencao') || pergunta.includes('resistencia') || pergunta.includes('forca') || pergunta.includes('hipertrofia')){
-      addMsgAI(`Participantes e Alunos, os 4 métodos do K-TP são:\n\n**MANUTENÇÃO**: Regeneração e qualidade\n**RESISTÊNCIA**: Mais reps, menos peso. Base\n**FORÇA**: 3 a 6 reps. Carga alta\n**HIPERTROFIA**: 10 a 12 reps. Crescimento\n\nEssa semana estamos em: **${semana.nome}**`);
+      addMsgAI(`Participantes e Alunos, os 4 métodos do K-TP são:\n\n**MANUTENÇÃO**: Regeneração e qualidade\n**RESISTÊNCIA**: Mais reps, menos peso. Base\n**FORÇA**: 3 a 6 reps. Carga alta\n**HIPERTROFIA**: 10 a 12 reps. Crescimento\nEssa semana estamos em: **${semana.nome}**`);
     }
     else if(pergunta.includes('calendario') || pergunta.includes('datas')){
       addMsgAI(`Participantes e Alunos, o calendário 2026 tem 4 fases:\n\nFASE 1: OFF SEASON - Jan/Fev\nFASE 2: BULKING - Mar/Mai\nFASE 3: MAINTENANCE - Jun/Ago\nFASE 4: CUTTING - Set/Nov\nDEZEMBRO: FÉRIAS\nRole a página para ver todas as 52 semanas com datas.`);
     }
     else if(pergunta.includes('treino') || pergunta.includes('protocolo')){
-      addMsgAI(`Participantes e Alunos, protocolo dessa semana:\n\n${semana.texto}`);
+      addMsgAI(`Participantes e Alunos, protocolo dessa semana ${dataSegundaFormatada}:\n\n${semana.texto}`);
     }
     else {
       addMsgAI(`Participantes e Alunos, eu sou focado 100% no K-TP Projeto Transformação 2026. \n\nPara outros assuntos como suplementos, loja, outras turmas ou suporte geral, acessem as outras páginas e setores do KORVIL.\n\nPosso ajudar com algo sobre FASE, SEMANA ou PROTOCOLO?`);
@@ -255,7 +268,6 @@ function enviarKAI(){
   }, 600);
 }
 
-// COMANDO DE VOZ
 function falarKAI(){
   if(!('webkitSpeechRecognition' in window)){
     addMsgAI('Participantes e Alunos, seu navegador não suporta comando de voz. Use o texto.');
@@ -284,18 +296,18 @@ function falarKAI(){
   reconhecimento.start();
 }
 
-// INICIALIZAR AO ABRIR A PAGINA
 window.onload = function(){
   carregarSemanaAtual();
   carregarLinhaTempo();
 
-  // K-AI JÁ FALA SOZINHO AO ABRIR
   setTimeout(()=>{
     const hoje = new Date();
     const chave = getSegundaSemana(hoje).toISOString().split('T')[0];
     const semana = CALENDARIO_KTP[chave];
+    const dataHojeFormatada = formatarData(hoje);
+    const dataSegundaFormatada = formatarData(chave);
     if(semana){
-      addMsgAI(`Bem-vindos Participantes e Alunos! \n\nHoje é ${chave} e estamos em:\n**${semana.fase}** - **${semana.nome}**\n\nPosso te explicar o protocolo dessa semana. Só perguntar.`);
+      addMsgAI(`Bem-vindos Participantes e Alunos! \n\nHoje é ${dataHojeFormatada} e estamos em:\n**${semana.fase}** - **${semana.nome}**\n\nProtocolo válido desde: ${dataSegundaFormatada}\n\nPosso te explicar o protocolo dessa semana. Só perguntar.`);
     }
   }, 1000);
 };
