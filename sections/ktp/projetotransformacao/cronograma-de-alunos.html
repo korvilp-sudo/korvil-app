@@ -58,7 +58,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 /* MODAL ALUNO */
 #modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
 #modal-aluno.ativo{display:flex;}
-.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:1000px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:900px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
 .btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
@@ -68,11 +68,10 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .status-desativado{color:var(--erro);font-weight:900;}
 
 /* TABELA CRONOGRAMA NO MODAL */
-.tabela-crono{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;}
-.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);position:sticky;top:0;}
+.tabela-crono{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px;}
+.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);}
 .tabela-crono td{padding:6px;border-bottom:1px solid #111;}
-.tabela-crono.id{font-size:9px;color:var(--text2);}
-.tabela-wrapper{overflow-x:auto;}
+.grupo-horario{margin-top:15px;margin-bottom:5px;color:var(--c);font-weight:900;font-size:12px;border-bottom:1px solid var(--borda);padding-bottom:4px;}
 
 /* BUSCA ID */
 .busca-id{display:flex;gap:6px;margin-top:10px;}
@@ -132,7 +131,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
       <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
     </div>
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="Ex: carla38, vhellem39, ktp1">
+      <input type="text" id="input-id-aluno" placeholder="Digite seu ID secreto">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
     <div id="resultado-aluno" style="margin-top:12px;"></div>
@@ -154,7 +153,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 <script>
 const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
 
-// BASE DE DADOS DOS ALUNOS - COMPLETA
+// BASE DE DADOS DOS ALUNOS - ID SECRETO
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
@@ -214,7 +213,7 @@ function carregarMenu(){
     const faseId = `fase-${index}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-    fases.forEach(s => { // CORRIGIDO AQUI
+    fases.forEach(s => {
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
       else if(s.data < chaveHoje) classe = 'passada';
@@ -254,9 +253,13 @@ function carregarSemanaAtual(){
   const hoje = new Date();
   const segunda = getSegundaSemana(hoje);
   const chaveSegunda = segunda.toISOString().split('T')[0];
-  mostrarSemana(chaveSegunda);
-  const dataSegundaFormatada = formatarData(segunda);
-  document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${CALENDARIO_KTP[chaveSegunda].nome}</b><br>${dataSegundaFormatada}`;
+  let chave = chaveSegunda;
+  if(!CALENDARIO_KTP[chave]){
+    chave = Object.keys(CALENDARIO_KTP).sort().find(d => d >= chaveSegunda) || Object.keys(CALENDARIO_KTP).sort()[0];
+  }
+  mostrarSemana(chave);
+  const dataSegundaFormatada = formatarData(chave);
+  document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${CALENDARIO_KTP[chave].nome}</b><br>${dataSegundaFormatada}`;
 }
 
 // FUNÇÕES DO BOTÃO ALUNO
@@ -271,26 +274,26 @@ function fecharBuscaAluno(){
 }
 
 function mostrarCronogramaCompleto(){
-  let tabela = `<div class="titulo-secao">📋 CRONOGRAMA COMPLETO - ${Object.keys(ALUNOS_DB).length} ALUNOS</div>`;
-  tabela += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>#</th><th>Aluno / ID</th><th>Plano</th><th>Horário</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th></tr></thead><tbody>`;
-
-  let contador = 1;
-  Object.keys(ALUNOS_DB).forEach(id=>{
-    const a = ALUNOS_DB[id];
-    tabela += `<tr>
-      <td>${contador++}</td>
-      <td><b>${a.nome}</b><br><span class="id">${id}</span></td>
-      <td>${a.plano}</td>
-      <td>${a.horario}</td>
-      <td>${a.dias}</td>
-      <td>${a.freq}</td>
-      <td>${a.objetivo}</td>
-      <td>${a.valor}</td>
-      <td>${a.venc}</td>
-      <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
-    </tr>`;
+  // Organizar por Horário > Plano
+  const alunosOrdenados = Object.values(ALUNOS_DB).sort((a,b)=>{
+    if(a.horario === b.horario) return a.plano.localeCompare(b.plano);
+    return a.horario.localeCompare(b.horario);
   });
-  tabela += `</tbody></table></div>`;
+
+  let tabela = `<div class="titulo-secao">📋 CRONOGRAMA COMPLETO</div>`;
+  let horarioAtual = '';
+
+  alunosOrdenados.forEach(a=>{
+    if(a.horario!== horarioAtual){
+      horarioAtual = a.horario;
+      tabela += `<div class="grupo-horario">${horarioAtual}</div>`;
+      tabela += `<table class="tabela-crono"><thead><tr><th>Aluno</th><th>Plano</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th></tr></thead><tbody>`;
+    }
+    tabela += `<tr><td><b>${a.nome}</b></td><td>${a.plano}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td></tr>`;
+
+    // Fecha tabela se for último ou próximo horário for diferente
+    tabela += `</tbody></table>`;
+  });
   return tabela;
 }
 
@@ -298,7 +301,7 @@ function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
   const div = document.getElementById('resultado-aluno');
 
-  // ID SECRETO DO ADMIN
+  // ID SECRETO ADMIN
   if(id === 'ktp1'){
     div.innerHTML = mostrarCronogramaCompleto();
     return;
@@ -306,13 +309,13 @@ function buscarAluno(){
 
   const aluno = ALUNOS_DB[id];
   if(!aluno){
-    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">Aluno com ID "${id}" não encontrado</div>`;
+    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">ID não encontrado</div>`;
     return;
   }
 
+  // NÃO MOSTRA ID AQUI
   div.innerHTML = `
     <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
-    <div class="dado-aluno"><b>ID:</b> ${id}</div>
     <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
     <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
     <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
