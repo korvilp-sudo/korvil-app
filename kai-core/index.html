@@ -3,142 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.38</title>
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.39</title>
 
-<!-- CSS REAL QUE JÁ EXISTE -->
 <link rel="stylesheet" href="templates/hud-template.css">
-
-<!-- JS REAIS QUE JÁ EXISTEM -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="kai-transformar/armaduras/v-2026/conectorkai.js"></script>
 <script src="brain/kai-brain.js"></script>
 <script src="brain/kai-parser.js"></script>
 <script src="brain/kai-executor.js"></script>
 
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000;--top:#0d1a20;--chat:#0b141a;--balao:#132e36}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e9edef;font-family:'Segoe UI',Roboto,sans-serif}
-.phone{width:100%;height:100dvh;background:var(--chat);position:relative;display:flex;flex-direction:column}
+:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Roboto,sans-serif}
 
-/* SEU CSS ORIGINAL DO V-2026.6 */
+.phone{width:100%;height:100dvh;position:relative;display:flex;flex-direction:column}
+
+/* SETAS CORRIGIDAS */
 .arrow{position:absolute;z-index:1000;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:opacity.3s}
-.arrow.hidden{opacity:0;pointer-events:none}
-.arrow svg{width:80px;height:80px;stroke:var(--c);stroke-width:3.5;filter:drop-shadow(0 0 25px var(--c))}
-.arrow-down{top:40px;left:50%;transform:translateX(-50%);width:100%;height:90px}
+.arrow svg{width:60px;height:60px;stroke:var(--c);stroke-width:3.5;filter:drop-shadow(0 0 20px var(--c))}
+.arrow-down{top:80px;left:50%;transform:translateX(-50%);width:100%;height:60px}
 .arrow-down svg{animation:arrowDown 1.4s infinite}
-@keyframes arrowDown{0%,100%{transform:translateY(-10px);opacity:.6}50%{transform:translateY(10px);opacity:1}}
-.arrow-right{top:50%;right:0;transform:translateY(-50%);width:90px;height:100%}
+@keyframes arrowDown{0%,100%{transform:translateY(-5px)}50%{transform:translateY(5px)}}
+.arrow-right{top:50%;right:10px;transform:translateY(-50%)}
 .arrow-right svg{animation:arrowRight 1.4s infinite}
-@keyframes arrowRight{0%,100%{transform:translateX(10px);opacity:.6}50%{transform:translateX(-10px);opacity:1}}
-.arrow-left{top:50%;left:0;transform:translateY(-50%);width:90px;height:100%}
+@keyframes arrowRight{0%,100%{transform:translateX(5px)}50%{transform:translateX(-5px)}}
+.arrow-left{top:50%;left:10px;transform:translateY(-50%)}
 .arrow-left svg{animation:arrowLeft 1.4s infinite}
-@keyframes arrowLeft{0%,100%{transform:translateX(-10px);opacity:.6}50%{transform:translateX(10px);opacity:1}}
-.arrow-up{bottom:100px;left:50%;transform:translateX(-50%);width:100%;height:90px}
+@keyframes arrowLeft{0%,100%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
+.arrow-up{bottom:120px;left:50%;transform:translateX(-50%);width:100%;height:60px}
 .arrow-up svg{animation:arrowUp 1.4s infinite}
-@keyframes arrowUp{0%,100%{transform:translateY(10px);opacity:.6}50%{transform:translateY(-10px);opacity:1}}
+@keyframes arrowUp{0%,100%{transform:translateY(5px)}50%{transform:translateY(-5px)}}
 
-.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:15px;font-weight:700;color:var(--c);flex-shrink:0;border-bottom:2px solid var(--c);box-shadow:0 0 15px var(--c)40;z-index:5}
-.header{height:75px;background:linear-gradient(180deg,var(--top),#000);display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:2px solid var(--c);z-index:5}
-.header.menuBtn{font-size:52px;color:var(--c);cursor:pointer;font-weight:900}
-.header.titulo{flex:1;text-align:center;color:var(--c);font-weight:900;letter-spacing:3px;font-size:16px}
-#chat{flex:1;display:flex;flex-direction:column-reverse;overflow-y:auto;padding:14px;background:var(--chat);position:relative}
-#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.12;pointer-events:none;z-index:0}
-.bubble{max-width:82%;padding:14px 18px;border-radius:12px;margin-bottom:12px;font-size:16px;z-index:2;font-weight:500}
-.bubble.me{background:linear-gradient(135deg,#005c4b,#004a3d);margin-left:auto;border:2px solid var(--c2)}
-.bubble.kai{background:linear-gradient(135deg,var(--balao),#0f1f25);border:2px solid var(--c)}
-.bubble.time{font-size:12px;color:var(--c2);text-align:right;margin-top:6px;font-weight:700}
-.footer{height:95px;background:linear-gradient(0deg,var(--top),#000);display:flex;align-items:center;padding:0 16px;gap:14px;border-top:2px solid var(--c);z-index:5}
-.footer input{flex:1;height:65px;background:linear-gradient(145deg,#132e36,#0a1419);border:2.5px solid var(--c);border-radius:32px;padding:0 24px;color:#fff;font-size:17px;font-weight:700;outline:none}
-.footer.btn{width:65px;height:65px;border-radius:50%;background:linear-gradient(145deg,var(--c),var(--c2));color:#000;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;cursor:pointer;border:2.5px solid var(--c)}
-.footer.btn.rec{background:linear-gradient(145deg,#ff3b30,#ff1a0a);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 25px #ff3b30}50%{box-shadow:0 0 40px #ff3b30}}
+.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:14px;font-weight:700;color:var(--c);border-bottom:2px solid var(--c);z-index:5}
+.header{height:60px;background:rgba(0,0,0,.9);display:flex;align-items:center;padding:0 18px;border-bottom:2px solid var(--c);z-index:5}
+.header.titulo{flex:1;text-align:center;color:var(--c);font-weight:900;letter-spacing:2px;font-size:14px}
 
-#armaduraOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200}
-#armaduraCanvas{width:100%;height:100%}
-.btn-fechar-armor{position:absolute;top:90px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer}
-.hud-armor{position:absolute;top:90px;left:50%;transform:translateX(-50%);color:#00FFFF;font-weight:900;font-size:15px;z-index:201}
+#hologramaContainer{flex:1;position:relative;background:#000}
+#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.15;pointer-events:none;z-index:0}
 
-#transformarOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:#000}
-#cameraReal{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:200}
-#visorCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:201}
-.btn-fechar-trans{position:absolute;top:90px;left:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:202;cursor:pointer}
-.hud-visor{position:absolute;top:90px;left:50%;transform:translateX(-50%);color:#00FFFF;font-weight:900;font-size:14px;z-index:202}
+#chatContainer{position:absolute;bottom:70px;left:10px;right:10px;z-index:5}
+#chatBox{background:rgba(0,0,0,.8);border:2px solid var(--c);border-radius:12px;padding:10px;color:var(--c2);font-size:13px;max-height:80px;overflow-y:auto}
 
-/* MENUS CARREGADOS VIA FETCH */
-.menu-slot{position:absolute;z-index:100}
+.footer{height:70px;background:rgba(0,0,0,.95);display:flex;align-items:center;padding:0 12px;gap:10px;border-top:2px solid var(--c);position:absolute;bottom:0;left:0;right:0;z-index:5}
+.footer input{flex:1;height:50px;background:#0a1419;border:2px solid var(--c);border-radius:25px;padding:0 18px;color:#fff;font-size:15px;font-weight:700;outline:none}
+.footer.btn{width:50px;height:50px;border-radius:50%;background:var(--c);color:#000;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;border:2px solid var(--c)}
+
+/* OVERLAYS */
+#armaduraOverlay,#transformarOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:#000}
+.btn-fechar{position:absolute;top:80px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer}
+
+/* MENUS */
+.menu-slot{position:absolute;z-index:150;display:none}
+.menu-slot.open{display:block}
 </style>
 </head>
 <body>
 <div class="phone">
 
-<!-- ÂNCORAS PARA PUXAR MENUS REAIS -->
+<!-- STATUS + HEADER -->
+<div class="status"><div id="hora">21:40</div><span>KORVIL 5G 🔋 100%</span></div>
+<div class="header"><div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div></div>
+
+<!-- SETAS QUE ABREM OS MENUS -->
+<div class="arrow arrow-down" onclick="toggleMenu('menuSuperior')"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="arrow arrow-right" onclick="toggleMenu('menuEsquerdo')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
+<div class="arrow arrow-left" onclick="toggleMenu('menuDireito')"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
+<div class="arrow arrow-up" onclick="toggleMenu('menuInferior')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
+
+<!-- ÂNCORAS DOS MENUS -->
 <div id="menuSuperior" class="menu-slot"></div>
 <div id="menuEsquerdo" class="menu-slot"></div>
 <div id="menuDireito" class="menu-slot"></div>
 <div id="menuInferior" class="menu-slot"></div>
-<div id="miniMenu" class="menu-slot"></div>
 
-<!-- SEUS 4 BOTÕES ORIGINAIS -->
- <div class="arrow arrow-down" onclick="openPanel()"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
- <div class="arrow arrow-right" onclick="openMenuDireito()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
- <div class="arrow arrow-left" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
- <div class="arrow arrow-up" onclick="openComandos()"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
+<!-- HOLOGRAMA -->
+<div id="hologramaContainer">
+  <canvas id="canvas3d"></canvas>
+</div>
 
- <div class="status"><div id="hora">00:00</div><span>KORVIL 5G 🔋 100%</span></div>
+<!-- CHAT -->
+<div id="chatContainer">
+  <div id="chatBox">K-AI online Chefe<br>21:40</div>
+</div>
 
- <!-- HEADER ORIGINAL -->
- <div class="header"><div class="menuBtn" onclick="toggleMenu()">☰</div><div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div></div>
+<!-- OVERLAYS -->
+<div id="armaduraOverlay"><div class="hud-armor">K-AI ARMOR v-2026</div><button class="btn-fechar" onclick="fecharArmadura()">FECHAR</button></div>
+<div id="transformarOverlay"><video id="cameraReal" autoplay playsinline></video><button class="btn-fechar" onclick="fecharTransformacao()">FECHAR</button></div>
 
- <!-- CHAT + HOLOGRAMA FUNDO -->
- <div id="chat"><canvas id="canvas3d"></canvas></div>
-
- <!-- OVERLAY ARMADURA -->
- <div id="armaduraOverlay"><canvas id="armaduraCanvas"></canvas><div class="hud-armor">K-AI ARMOR v-2026 | PROTOCOLO: SAY KORVIL</div><button class="btn-fechar-armor" onclick="fecharArmadura()">FECHAR</button></div>
-
- <!-- OVERLAY TRANSFORMAÇÃO -->
- <div id="transformarOverlay">
-    <video id="cameraReal" autoplay playsinline></video>
-    <canvas id="visorCanvas"></canvas>
-    <div class="hud-visor">VISOR K-AI | CÂMERA ATIVA</div>
-    <button class="btn-fechar-trans" onclick="fecharTransformacao()">FECHAR</button>
- </div>
-
- <!-- FOOTER CHAT REAL -->
- <div class="footer">
-    <input type="text" id="input" placeholder="Mensagem para K-AI...">
-    <div class="btn" id="mic">🎤</div>
-    <div class="btn" id="btnSend">➤</div>
- </div>
+<!-- FOOTER -->
+<div class="footer">
+  <input type="text" id="input" placeholder="Mensagem para K-AI...">
+  <div class="btn" id="mic">🎤</div>
+  <div class="btn" id="btnSend">➤</div>
+</div>
 </div>
 
 <script>
-let memoria = JSON.parse(localStorage.getItem('kai')) || {hist:[], mems:[]};
-let recognition, isListening = false, streamCamera = null;
+let streamCamera = null;
 
-const PAGINAS = {
-  'sistema k': 'https://korvilp-sudo.github.io/korvil-app/sections/sistemak/index.html',
-  'ktp': 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/index.html',
-  'kafortunado': 'https://korvilp-sudo.github.io/korvil-app/sections/kafortunado/index.html',
-  'kalma': 'https://korvilp-sudo.github.io/korvil-app/sections/kalma/index.html',
-  'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
+// FUNÇÃO CORRIGIDA PARA ABRIR/FECHAR MENUS
+function toggleMenu(id){
+  const menu = document.getElementById(id);
+  const isOpen = menu.classList.contains('open');
+
+  // Fecha todos primeiro
+  document.querySelectorAll('.menu-slot').forEach(m=>m.classList.remove('open'));
+
+  // Se não estava aberto, abre
+  if(!isOpen){
+    menu.classList.add('open');
+    // Carrega o conteúdo real só na primeira vez
+    if(menu.innerHTML.trim() === ''){
+      const path = `menus/${id.replace('menu','menu-').toLowerCase()}.html`;
+      fetch(path).then(r=>r.text()).then(html=>{menu.innerHTML = html;});
+    }
+  }
 }
 
-// FUNÇÃO PARA PUXAR ARQUIVOS REAIS
-async function load(id, path){
-  try{
-    const res = await fetch(path);
-    document.getElementById(id).innerHTML = await res.text();
-  }catch(e){console.log('Arquivo não encontrado:', path)}
+// CARREGA OS MENUS UMA VEZ NO INICIO
+['menuSuperior','menuEsquerdo','menuDireito','menuInferior'].forEach(id=>{
+  const path = `menus/${id.replace('menu','menu-').toLowerCase()}.html`;
+  fetch(path).then(r=>r.text()).then(html=>{document.getElementById(id).innerHTML = html;});
+});
+
+// CHAT + VOZ
+document.getElementById('mic').onclick = startVoice;
+document.getElementById('btnSend').onclick = send;
+document.getElementById('input').onkeydown = e=>{if(e.key==='Enter'){e.preventDefault();send()}};
+
+function startVoice(e){
+  e.stopPropagation();
+  const btn = document.getElementById('mic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){alert('Microfone não suportado'); return;}
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'pt-BR';
+  recognition.onresult = ev => {
+    document.getElementById('input').value = ev.results[0][0].transcript;
+    send();
+  }
+  recognition.start();
+  btn.style.background='#ff3b30';
+  recognition.onend = ()=>btn.style.background='var(--c)';
 }
 
-// CARREGA OS MENUS REAIS DO REPO AO INICIAR
-load('menuSuperior', 'menus/menu-superior.html');
-load('menuEsquerdo', 'menus/menu-esquerdo.html');
-load('menuDireito', 'menus/menu-direito.html');
-load('menuInferior', 'menus/menu-inferior.html');
-load('miniMenu', 'menus/mini-menu/mini-menu.html');
+function send(){
+  const input = document.getElementById('input');
+  if(input.value.trim()){
+    document.getElementById('chatBox').innerHTML += `<br>Você: ${input.value}`;
+    executar(input.value.toLowerCase());
+    input.value = '';
+  }
+}
+
+function executar(cmd){
+  document.getElementById('chatBox').innerHTML += `<br>K-AI: Executando ${cmd}`;
+  if(cmd.includes('armadura')) mostrarArmadura('v-2026');
+  if(cmd.includes('transformar')) abrirTransformacao();
+}
+
+function mostrarArmadura(v){document.getElementById('armaduraOverlay').style.display='block';}
+function fecharArmadura(){document.getElementById('armaduraOverlay').style.display='none';}
+
+async function abrirTransformacao(){
+  document.getElementById('transformarOverlay').style.display='block';
+  try{ streamCamera = await navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}});
+       document.getElementById('cameraReal').srcObject = streamCamera; }catch(e){}
+}
+function fecharTransformacao(){document.getElementById('transformarOverlay').style.display='none';if(streamCamera){streamCamera.getTracks().forEach(t=>t.stop())}}
+
+// HORA
+setInterval(()=>{document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})},1000)
+
+// HOLOGRAMA 3D
+try{
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true});
+  renderer.setSize(window.innerWidth, window.innerHeight-130);
+  const geo = new THREE.IcosahedronGeometry(2.5, 2);
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, wireframe:true});
+  const nucleo = new THREE.Mesh(geo, mat);
+  scene.add(nucleo, new THREE.PointLight(0x00FFFF,2));
+  camera.position.z = 7;
+  function loop(){ requestAnimationFrame(loop); nucleo.rotation.y += 0.008; renderer.render(scene,camera); }
+  loop();
+}catch(e){}
+</script>
+</body>
+</html>load('miniMenu', 'menus/mini-menu/mini-menu.html');
 
 // MICROFONE E ENTER
 document.getElementById('mic').onclick = startVoice;
