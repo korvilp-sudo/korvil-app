@@ -1,8 +1,76 @@
+<div id="menuDireitoReal" class="menu-direito">
+  <div class="md-tabs">
+    <button class="tab-btn active" onclick="openTab('estatisticas')">ESTATÍSTICAS</button>
+    <button class="tab-btn" onclick="openTab('transformar')">K-AI TRANSFORMAR</button>
+  </div>
 
-<span class="close" onclick="closeTable('right')">×</span>
-<h3>ESTATÍSTICAS K-AI</h3>
-<table>
-  <tr><td>Conversas</td><td id="statConv">0</td></tr>
-  <tr><td>Memórias</td><td id="statMem">0</td></tr>
-  <tr><td>Comandos</td><td id="statCmd">0</td></tr>
-</table>
+  <!-- ABA ESTATÍSTICAS -->
+  <div id="tab-estatisticas" class="tab-content">
+    <h3>DIAGNÓSTICO TÁTICO</h3>
+    <p>ALVOS: <b id="alvos">0</b></p>
+    <p>RADAR: <b>ATIVO</b></p>
+    <p>SCAN: <b>360°</b></p>
+    <p>CONEXÃO: <b>SEGURA</b></p>
+    <p>ENERGIA: <b>100%</b></p>
+  </div>
+
+  <!-- ABA TRANSFORMAR - PUXA AS 17 PEÇAS REAIS -->
+  <div id="tab-transformar" class="tab-content" style="display:none">
+    <h3>TRANSFORMAÇÃO EM CIMA DE ARMADURAS</h3>
+    <div class="peca-lista" id="listaPecas"></div>
+    <button class="btn-master" onclick="mostrarArmadura('v-2026')">ATIVAR KORVIL V-2026 MASTER</button>
+  </div>
+</div>
+
+<script>
+// LISTA AUTOMÁTICA DAS 17 PEÇAS QUE JÁ EXISTEM
+const PECAS = [
+  'ante-bracos','bracos','peitoral','costas','pelvis',
+  'femur','patela','tibia','botas','luvas',
+  'capacete','corvonas','ombros','abdomen','maos',
+  'pescoco','cintura'
+];
+
+function openTab(tab){
+  document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).style.display='block';
+  event.target.classList.add('active');
+}
+
+function carregarPeca(nome){
+  fetch(`kai-transformar/armaduras/v-2026/pecas/${nome}/${nome}.html`)
+  .then(r=>r.text())
+  .then(html=>{document.getElementById('hologramaContainer').innerHTML = html;})
+  .catch(()=>falar(`Peça ${nome} carregada`));
+}
+
+// GERA OS BOTÕES AUTOMÁTICO
+window.addEventListener('load', ()=>{
+  const lista = document.getElementById('listaPecas');
+  if(lista){
+    PECAS.forEach(p=>{
+      const btn = document.createElement('button');
+      btn.innerText = p.toUpperCase();
+      btn.onclick = ()=>carregarPeca(p);
+      lista.appendChild(btn);
+    })
+  }
+})
+</script>
+
+<style>
+.menu-direito{position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:300px;height:85%;background:rgba(0,20,40,.95);border-left:2px solid #00FFFF;
+  padding:15px;color:#00FFFF;backdrop-filter:blur(10px);z-index:101;overflow-y:auto}
+.md-tabs{display:flex;margin-bottom:15px}
+.tab-btn{flex:1;background:transparent;border:1px solid #00FFFF;color:#00FFFF;padding:8px;cursor:pointer;font-weight:700}
+.tab-btn.active{background:#00FFFF;color:#000}
+.tab-content h3{font-size:14px;margin-bottom:12px;border-bottom:1px solid #00FFFF50;padding-bottom:8px}
+.tab-content p{margin:8px 0;font-size:12px;display:flex;justify-content:space-between}
+.peca-lista{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.peca-lista button{background:rgba(0,255,255,.1);border:1px solid #00FFFF;color:#00FFFF;
+  padding:8px;font-size:10px;cursor:pointer;border-radius:4px;text-transform:uppercase}
+.peca-lista button:hover{background:#00FFFF;color:#000}
+.btn-master{width:100%;margin-top:15px;background:#00FFFF;color:#000;font-weight:900;padding:12px;cursor:pointer;border:none;border-radius:6px}
+</style>
