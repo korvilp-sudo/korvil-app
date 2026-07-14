@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
-<title>K-TP PROJETO TRANSFORMAÇÃO</title>
+<title>K-TP PROJETO TRANSFORMAÇÃO 11° ANO 2026</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
+:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444; --aviso:#ffaa00;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
@@ -14,25 +14,15 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;position:relative;}
+.plano{padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.2s;text-align:center;}
 .plano:hover{border-color:var(--c);}
 .plano.selecionado{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
-.plano.bloqueado{opacity:0.3;cursor:not-allowed;pointer-events:none;background:#050505;}
 .nome{font-weight:800;color:var(--c);font-size:13px;}
-.valor{font-weight:900;color:var(--ok);font-size:14px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
-.input-group input,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
-.input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
-.input-group textarea{min-height:60px;resize:vertical;}
-.vagas{font-size:10px;color:var(--ok);font-weight:700;margin-top:3px;}
-.logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.input-group select,input{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .oculto{display:none;}
 .passos{display:flex;justify-content:space-between;margin-bottom:16px;padding:10px;background:#111;border-radius:8px;border:1px solid var(--borda);}
 .etapa{font-size:10px;color:var(--text2);text-align:center;flex:1;}
@@ -40,39 +30,32 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .ativo{color:var(--c);}
 .check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
+.fase-box.ativa{background:rgba(0,255,136,.1);border-left:3px solid var(--ok);}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
-.alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
+.semana{padding:12px;background:#0a0a0a;border:1.5px solid var(--borda);border-radius:8px;margin-bottom:8px;}
+.semana.bloq{opacity:0.4;}
+.semana-titulo{font-weight:900;color:var(--c);font-size:13px;margin-bottom:4px;}
+.semana-tipo{font-size:11px;color:var(--aviso);font-weight:700;margin-bottom:8px;}
+.img-metodo{width:100%;border-radius:8px;border:2px solid var(--c);margin-bottom:10px;}
+.protocolo{padding:10px;margin-top:8px;background:#000;border:1px dashed var(--c);border-radius:6px;font-size:11px;white-space:pre-wrap;line-height:1.5;}
+.logo{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 </style>
 </head>
 <body>
 
-<!-- TELA INICIAL: APRESENTAÇÃO -->
+<!-- TELA 0: APRESENTAÇÃO -->
 <div id="apresentacao">
   <div class="card">
     <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
+    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO 11° ANO</div>
 
     <div class="titulo-secao">| SOBRE O PROGRAMA</div>
-    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil. Treinador, Terapeuta Holístico e Especialista em Resultados.</div>
 
-    <div class="card" style="background:#111;border:1.5px solid var(--c);">
-      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
-    </div>
-
-    <div class="titulo-secao">| PARTICIPANTES</div>
-    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
-
-    <div class="titulo-secao">| METODOLOGIA</div>
-    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
-
-    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
-    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
+    <div class="titulo-secao">| LINHA DO TEMPO 2026</div>
+    <div id="linhaTempo"></div>
 
     <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
   </div>
@@ -84,306 +67,196 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="passos">
     <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
     <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">3</span>PLATAFORMA</div>
   </div>
 
   <div class="card">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <div class="aviso-dias">Preencha todos os dados. Assim o profissional consegue criar todos os protocolos do participante.</div>
+    <div class="aviso-dias">Preencha todos os dados. Assim o profissional cria os protocolos corretos para você.</div>
 
-    <div class="titulo-secao">| OBJETIVOS</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div class="titulo-secao">| OBJETIVOS PRINCIPAIS</div>
+    <div class="grid-2">
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
+      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Performance">Performance</div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="titulo-secao">| ANAMNESE - HISTÓRICO</div>
-    <div class="input-group"><label>Nível de Atividade Física *</label>
-      <select id="nivelAtividade">
-        <option value="">Selecione</option>
-        <option value="Iniciante">Iniciante</option>
-        <option value="Intermediário">Intermediário</option>
-        <option value="Avançado">Avançado</option>
+    <div class="input-group"><label>IDADE</label><input type="number" id="idade"></div>
+    <div class="input-group"><label>PESO ATUAL KG</label><input type="number" id="peso"></div>
+    <div class="input-group"><label>NÍVEL DE TREINO</label>
+      <select id="nivel">
+        <option>Iniciante</option>
+        <option>Intermediário</option>
+        <option>Avançado</option>
+        <option>Atleta</option>
       </select>
     </div>
-    <div class="input-group"><label>1. Já praticou atividade física antes? *</label><textarea id="q1" rows="2"></textarea></div>
-    <div class="input-group"><label>2. Como você descreve sua ALIMENTAÇÃO atual? *</label><textarea id="q2" rows="2"></textarea></div>
-    <div class="input-group"><label>3. Quantas horas você DORME por noite? *</label><textarea id="q3" rows="2"></textarea></div>
-    <div class="input-group"><label>4. Possui alguma RESTRIÇÃO alimentar? *</label><textarea id="q4" rows="2"></textarea></div>
-    <div class="input-group"><label>5. Qual parte do corpo quer MELHORAR mais? *</label><textarea id="q5" rows="2"></textarea></div>
-    <div class="input-group"><label>6. Possui alguma DEFICIENCIA ou LIMITAÇÃO fisica? *</label><textarea id="q6" rows="2"></textarea></div>
-    <div class="input-group"><label>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO? *</label><textarea id="q7" rows="2"></textarea></div>
-    <div class="input-group"><label>8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico? *</label><textarea id="q8" rows="2"></textarea></div>
-    <div class="input-group"><label>9. Está fazendo USO DE MEDICAMENTOS? Quais? *</label><textarea id="q9" rows="2"></textarea></div>
-    <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
+
+    <button class="btn" onclick="mostrarTela('tela2')">PRÓXIMO: ESCOLHER PLANO</button>
   </div>
 </div>
 
-<!-- TELA 2: PLANOS COM DIAS E HORARIOS -->
+<!-- TELA 2: PLANOS -->
 <div id="tela2" class="oculto">
   <h1>K-T.P KORVIL</h1>
   <div class="passos">
     <div class="etapa"><span class="num">1</span>ANAMNESE</div>
     <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa"><span class="num">3</span>PLATAFORMA</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 1. ESCOLHA O PLANO - SEG A SEXTA</div>
-
-    <div class="input-group">
-      <label>Nível *</label>
-      <select id="nivelPlano">
-        <option value="">Selecione</option>
-        <option value="Iniciante">Iniciante</option>
-        <option value="Intermediário">Intermediário</option>
-        <option value="Avançado">Avançado</option>
-      </select>
+    <div class="titulo-secao">| ESCOLHA SEU PLANO</div>
+    <div class="plano" onclick="selecionarPlano(this, 'Básico')">
+      <div class="nome">PLANO BÁSICO</div>
+      <div class="sub-titulo">Protocolo Semanal + Suporte via WhatsApp</div>
+    </div>
+    <div class="plano" onclick="selecionarPlano(this, 'Pro')">
+      <div class="nome">PLANO PRO</div>
+      <div class="sub-titulo">Protocolo + Dieta + Acompanhamento Semanal</div>
+    </div>
+    <div class="plano" onclick="selecionarPlano(this, 'Master')">
+      <div class="nome">PLANO MASTER</div>
+      <div class="sub-titulo">Tudo do PRO + 1:1 com Say Korvil + Ajustes Diários</div>
     </div>
 
-    <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso">
-        <div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div>
-      </div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso">
-        <div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div>
-      </div>
-    </div>
-
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online">
-      <div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div>
-    </div>
-
-    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
-    <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-tipo="presencial" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-tipo="presencial" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-tipo="presencial" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-tipo="presencial" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-tipo="presencial" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
-    </div>
-  </div>
-
-  <!-- CARD ESCOLHA DOS DIAS -->
-  <div id="cardDias" class="card oculto">
-    <div class="titulo-secao">| ESCOLHA OS DIAS DE TREINO</div>
-    <div class="sub-titulo" id="textoDias">Selecione os dias de acordo com seu plano</div>
-    <div class="grid-5">
-      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Segunda"><div style="text-align:center;font-weight:800;">SEG</div></div>
-      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Terça"><div style="text-align:center;font-weight:800;">TER</div></div>
-      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Quarta"><div style="text-align:center;font-weight:800;">QUA</div></div>
-      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Quinta"><div style="text-align:center;font-weight:800;">QUI</div></div>
-      <div class="plano dia" onclick="selecionarDia(this)" data-dia="Sexta"><div style="text-align:center;font-weight:800;">SEX</div></div>
-    </div>
-    <div id="alertaDias" class="alerta"></div>
-  </div>
-
-  <div class="card">
-    <div class="titulo-secao">| 2. ESCOLHA HORÁRIO FIXO</div>
-
-    <div style="font-size:11px;color:var(--c);font-weight:700;margin-bottom:8px;">MANHÃ</div>
-    <div class="grid-4">
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="06:00"><div>06:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="07:00"><div>07:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="08:00"><div>08:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="09:00"><div>09:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="10:00"><div>10:00</div><div class="vagas">7 vagas</div></div>
-    </div>
-
-    <div style="font-size:11px;color:var(--c);font-weight:700;margin:12px 0 8px;">TARDE/NOITE/MADRUGADA</div>
-    <div class="grid-4">
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="16:00"><div>16:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="17:00"><div>17:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="18:00"><div>18:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="19:00"><div>19:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="20:00"><div>20:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="21:00"><div>21:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="22:00"><div>22:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="23:00"><div>23:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="00:00"><div>00:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="01:00"><div>01:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="02:00"><div>02:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="03:00"><div>03:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="04:00"><div>04:00</div><div class="vagas">7 vagas</div></div>
-      <div class="plano" onclick="selecionarHorario(this)" data-valor="05:00"><div>05:00</div><div class="vagas">7 vagas</div></div>
-    </div>
-
-    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
+    <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
+    <button class="btn" onclick="mostrarTela('tela3')">ENTRAR NA PLATAFORMA</button>
   </div>
 </div>
 
-<!-- TELA 3: DADOS PESSOAIS -->
+<!-- TELA 3: PLATAFORMA DO ALUNO -->
 <div id="tela3" class="oculto">
-  <h1>K-T.P KORVIL</h1>
+  <h1>K-T.P PLATAFORMA</h1>
   <div class="passos">
     <div class="etapa"><span class="num">1</span>ANAMNESE</div>
     <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
+    <div class="etapa ativo"><span class="num">3</span>PLATAFORMA</div>
   </div>
 
   <div class="card">
-    <div class="titulo-secao">| 3. DADOS PESSOAIS</div>
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-    <div class="grid-2">
-      <div class="input-group"><label>CPF *</label><input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCPF(this)"></div>
-      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-      <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-    </div>
-    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
-    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-
-    <button class="btn" onclick="finalizarInscricao()">FINALIZAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
+    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--ok);margin-bottom:12px;">BEM VINDO, ALUNO K-TP</div>
+    <div id="infoAluno" class="sub-titulo"></div>
   </div>
+
+  <div id="faseAtualBox"></div>
+  <div id="semanasContainer"></div>
+
 </div>
 
 <script>
-let frequenciaMaxima = 0;
-let diasSelecionados = [];
-let planoSelecionado = '';
-let horarioSelecionado = '';
+// BANCO DE DADOS COMPLETO 2026
+const CALENDARIO_KTP = {
+  // FASE 1: OFF SEASON
+  "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Pausa estratégica para ajustar, aprender e evoluir com mais consciência.\n\nFOCO: Regeneração muscular, mobilidade e qualidade.`},
+  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Construa a base que sustenta toda evolução física.\n\nFOCO: Capacidade do músculo trabalhar por mais tempo.\nMAIS REPETIÇÕES, MENOS PESO.`},
+  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Foco: ficar mais forte de verdade.\nSer musculoso ≠ ser forte\nTREINO: 3 a 6 repetições | Carga ~70% | Execução controlada`},
+  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Desenvolvimento e crescimento do físico.\n\nTREINO: 10 a 12 repetições até a falha\nMISTURA DE FORÇA + RESISTÊNCIA`},
+
+  // EXEMPLO FEV
+  "2026-02-02": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Pausa estratégica. Ajustar e evoluir com consciência.`},
+  "2026-02-09": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Construa a base. Foco em fôlego e disciplina.`},
+  "2026-02-16": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Ficar mais forte de verdade. 3 a 6 reps.`},
+  "2026-02-23": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`Desenvolvimento do físico. 10 a 12 reps.`},
+
+  // EXEMPLO MAR BULKING
+  "2026-03-16": {fase:"FASE 2: BULKING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", texto:`TREINO: 3 a 6 reps | Carga alta\nALIMENTAÇÃO: Proteína média | Carbo ALTO`},
+  "2026-03-23": {fase:"FASE 2: BULKING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", texto:`Foco: CRESCER\nTREINO: 10 a 12 reps até a falha\nALIMENTAÇÃO: Proteína ALTA | Carbo ALTO`},
+
+  // EXEMPLO SET CUTTING
+  "2026-09-07": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar gordura | Manter massa magra", texto:`Acelerar metabolismo. Mais movimento.\nALIMENTAÇÃO: Proteína ALTA | Carbo BAIXO`},
+};
+
+// PASTA BASE DAS IMAGENS
+const PASTA_IMG = 'sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos/';
+
+let dadosAluno = {objetivos:[], plano:''};
 
 function mostrarTela(id){
-  document.getElementById('apresentacao').classList.add('oculto');
-  document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
+  document.querySelectorAll('body > div').forEach(d=>d.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0,0);
+  if(id==='tela3'){carregarPlataforma()}
 }
 
 function toggleObjetivo(el){
   el.classList.toggle('selecionado');
+  const obj = el.dataset.obj;
+  dadosAluno.objetivos.includes(obj)? dadosAluno.objetivos = dadosAluno.objetivos.filter(o=>o!==obj) : dadosAluno.objetivos.push(obj);
 }
 
-function limparTodosOsPlanos(){
-  document.querySelectorAll('#tela2.plano').forEach(item => {
-    if(item.onclick && item.onclick.toString().includes('selecionarPlano')){
-      item.classList.remove('selecionado');
-    }
-  });
-}
-
-function atualizarDias(){
-  document.querySelectorAll('#cardDias.dia').forEach(d => {
-    if(!d.classList.contains('selecionado') && diasSelecionados.length >= frequenciaMaxima){
-      d.classList.add('bloqueado');
-    } else {
-      d.classList.remove('bloqueado');
-    }
-  });
-
-  let faltam = frequenciaMaxima - diasSelecionados.length;
-  if(faltam > 0){
-    document.getElementById('alertaDias').innerText = `Faltam ${faltam} dia(s): ${diasSelecionados.join(', ')}`;
-    document.getElementById('alertaDias').style.color = 'var(--erro)';
-  } else {
-    document.getElementById('alertaDias').innerText = `Dias selecionados: ${diasSelecionados.join(', ')}`;
-    document.getElementById('alertaDias').style.color = 'var(--ok)';
-  }
-}
-
-function selecionarPlano(el){
-  limparTodosOsPlanos(); // BRIGA COM TODOS OS PLANOS
-
+function selecionarPlano(el, plano){
+  document.querySelectorAll('#tela2.plano').forEach(p=>p.classList.remove('selecionado'));
   el.classList.add('selecionado');
-  planoSelecionado = el.getAttribute('data-valor');
-  let tipo = el.getAttribute('data-tipo');
-  let freq = el.getAttribute('data-freq');
-
-  diasSelecionados = [];
-
-  if(tipo === 'presencial'){
-    frequenciaMaxima = parseInt(freq);
-    document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('textoDias').innerText = `Selecione ${freq} dia(s) na semana. Ex: Seg, Qua, Sex`;
-    document.getElementById('alertaDias').innerText = `Faltam ${freq} dia(s) para escolher`;
-    document.getElementById('alertaDias').style.color = 'var(--erro)';
-    document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
-  } else {
-    // online e avulso não precisa de dias
-    frequenciaMaxima = 0;
-    document.getElementById('cardDias').classList.add('oculto');
-  }
+  dadosAluno.plano = plano;
 }
 
-function selecionarHorario(el){
-  document.querySelectorAll('#tela2.plano').forEach(item => {
-    if(item.onclick && item.onclick.toString().includes('selecionarHorario')){
-      item.classList.remove('selecionado');
-    }
+function gerarLinhaTempo(){
+  const mes = new Date().getMonth();
+  const fases = [
+    {nome:'FASE 1. OFF SEASON', meses:[0,1], desc:'Regeneração, Adaptações, Aprendizados'},
+    {nome:'FASE 2. BULKING', meses:[2,3,4], desc:'Ganhar massa muscular, Cumprir metas'},
+    {nome:'FASE 3. MAINTENANCE', meses:[5,6,7], desc:'Manter ganhos, Preservar massa magra'},
+    {nome:'FASE 4. CUTTING', meses:[8,9,10], desc:'Eliminar gordura, Modelagem'},
+    {nome:'DEZEMBRO: FÉRIAS', meses:[11], desc:'Mostrar resultados'}
+  ];
+  let html = '';
+  fases.forEach(f=>{
+    const ativa = f.meses.includes(mes)? 'ativa' : '';
+    html += `<div class="fase-box ${ativa}"><b style="color:var(--c)">${f.nome}</b><br>${f.desc}</div>`;
   });
-  el.classList.add('selecionado');
-  horarioSelecionado = el.getAttribute('data-valor');
+  document.getElementById('linhaTempo').innerHTML = html;
 }
 
-function selecionarDia(el){
-  if(el.classList.contains('bloqueado')) return;
+function getSegundaSemana(data){
+  const d = new Date(data);
+  const dia = d.getDay();
+  const diff = d.getDate() - dia + (dia === 0? -6 : 1);
+  return new Date(d.setDate(diff));
+}
 
-  if(el.classList.contains('selecionado')){
-    el.classList.remove('selecionado');
-    diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
-  } else {
-    if(diasSelecionados.length >= frequenciaMaxima){
-      document.getElementById('alertaDias').innerText = `Você só pode escolher ${frequenciaMaxima} dia(s) para este plano!`;
-      return;
+function carregarPlataforma(){
+  document.getElementById('infoAluno').innerText = `Objetivo: ${dadosAluno.objetivos.join(', ')} | Plano: ${dadosAluno.plano}`;
+
+  const hoje = new Date();
+  const segunda = getSegundaSemana(hoje);
+  const chave = segunda.toISOString().split('T')[0];
+  const semana = CALENDARIO_KTP[chave];
+
+  if(semana){
+    const caminhoImg = `${PASTA_IMG}${semana.tipo}/${semana.tipo}.png`;
+
+    document.getElementById('faseAtualBox').innerHTML = `
+    <div class="card">
+      <div class="titulo-secao">| ${semana.fase}</div>
+      <img src="${caminhoImg}" class="img-metodo" alt="${semana.nome}">
+      <div class="semana-titulo">${semana.nome}</div>
+      <div class="semana-tipo">OBJETIVO: ${semana.objetivo}</div>
+      <div class="protocolo">${semana.texto}</div>
+    </div>`;
+  }
+
+  // Próximas 4 semanas
+  let htmlSemanas = `<div class="card"><div class="titulo-secao">| PRÓXIMAS SEMANAS</div>`;
+  for(let i=1; i<=4; i++){
+    const proxData = new Date(segunda);
+    proxData.setDate(segunda.getDate() + i*7);
+    const chaveProx = proxData.toISOString().split('T')[0];
+    const s = CALENDARIO_KTP[chaveProx];
+    if(s){
+      const caminhoImgProx = `${PASTA_IMG}${s.tipo}/${s.tipo}.png`;
+      htmlSemanas += `
+      <div class="semana bloq">
+        <img src="${caminhoImgProx}" class="img-metodo" alt="${s.nome}" style="opacity:0.6;height:80px;object-fit:cover">
+        <div class="semana-titulo">${s.nome}</div>
+        <div style="font-size:10px;color:var(--text2)">${chaveProx}</div>
+      </div>`;
     }
-    el.classList.add('selecionado');
-    diasSelecionados.push(el.getAttribute('data-dia'));
   }
-
-  atualizarDias(); // BLOQUEIA OS RESTANTES AUTOMATICO
+  htmlSemanas += `</div>`;
+  document.getElementById('semanasContainer').innerHTML = htmlSemanas;
 }
 
-function irParaPlanos(){
-  if(document.getElementById('nivelAtividade').value === ''){
-    alert('Selecione seu Nível de Atividade Física');
-    return;
-  }
-  for(let i=1;i<=9;i++){
-    if(document.getElementById('q'+i).value.trim() === ''){
-      alert('Preencha todas as perguntas obrigatórias da Anamnese');
-      return;
-    }
-  }
-  mostrarTela('tela2');
-}
-
-function irParaDados(){
-  if(planoSelecionado === ''){
-    alert('Selecione um plano');
-    return;
-  }
-  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){
-    alert(`Selecione ${frequenciaMaxima} dia(s) de treino`);
-    return;
-  }
-  if(horarioSelecionado === ''){
-    alert('Selecione um horário');
-    return;
-  }
-  mostrarTela('tela3');
-}
-
-function calcularIdade(){
-  let nasc = document.getElementById('nasc').value; if(!nasc) return;
-  let idade = new Date().getFullYear() - new Date(nasc).getFullYear();
-  document.getElementById('idade').value = idade + ' anos';
-}
-
-function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
-function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
-
-function finalizarInscricao(){
-  let resumo = `*NOVA INSCRIÇÃO K-TP*\n\n*Plano:* ${planoSelecionado}\n*Dias:* ${diasSelecionados.length > 0? diasSelecionados.join(', ') : 'N/A'}\n*Horário:* ${horarioSelecionado}\n*Nome:* ${document.getElementById('nome').value}`;
-  alert(resumo);
-}
+gerarLinhaTempo();
 </script>
 </body>
 </html>
