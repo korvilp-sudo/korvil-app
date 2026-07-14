@@ -3,93 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.39</title>
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.40</title>
 
-<link rel="stylesheet" href="templates/hud-template.css">
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="kai-transformar/armaduras/v-2026/conectorkai.js"></script>
-<script src="brain/kai-brain.js"></script>
-<script src="brain/kai-parser.js"></script>
-<script src="brain/kai-executor.js"></script>
-
 <style>
-:root{--c:#00FFFF;--c2:#A8FFE6;--bg:#000}
+:root{--c:#00FFFF;--bg:#000}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Roboto,sans-serif}
 
-.phone{width:100%;height:100dvh;position:relative;display:flex;flex-direction:column}
+.phone{width:100%;height:100dvh;position:relative;background:#000}
 
-/* SETAS CORRIGIDAS */
-.arrow{position:absolute;z-index:1000;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:opacity.3s}
+/* STATUS E HEADER */
+.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:14px;font-weight:700;color:var(--c);border-bottom:2px solid var(--c);z-index:5;position:relative}
+.header{height:60px;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;border-bottom:2px solid var(--c);z-index:5;position:relative}
+.header.titulo{color:var(--c);font-weight:900;letter-spacing:2px;font-size:14px}
+
+/* SETAS - AGORA VÃO FUNCIONAR */
+.arrow{position:absolute;z-index:1000;pointer-events:auto;cursor:pointer;display:flex;justify-content:center;align-items:center}
 .arrow svg{width:60px;height:60px;stroke:var(--c);stroke-width:3.5;filter:drop-shadow(0 0 20px var(--c))}
-.arrow-down{top:80px;left:50%;transform:translateX(-50%);width:100%;height:60px}
-.arrow-down svg{animation:arrowDown 1.4s infinite}
-@keyframes arrowDown{0%,100%{transform:translateY(-5px)}50%{transform:translateY(5px)}}
+.arrow-down{top:100px;left:50%;transform:translateX(-50%)}
 .arrow-right{top:50%;right:10px;transform:translateY(-50%)}
-.arrow-right svg{animation:arrowRight 1.4s infinite}
-@keyframes arrowRight{0%,100%{transform:translateX(5px)}50%{transform:translateX(-5px)}}
 .arrow-left{top:50%;left:10px;transform:translateY(-50%)}
-.arrow-left svg{animation:arrowLeft 1.4s infinite}
-@keyframes arrowLeft{0%,100%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
-.arrow-up{bottom:120px;left:50%;transform:translateX(-50%);width:100%;height:60px}
-.arrow-up svg{animation:arrowUp 1.4s infinite}
-@keyframes arrowUp{0%,100%{transform:translateY(5px)}50%{transform:translateY(-5px)}}
+.arrow-up{bottom:120px;left:50%;transform:translateX(-50%)}
 
-.status{height:36px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:14px;font-weight:700;color:var(--c);border-bottom:2px solid var(--c);z-index:5}
-.header{height:60px;background:rgba(0,0,0,.9);display:flex;align-items:center;padding:0 18px;border-bottom:2px solid var(--c);z-index:5}
-.header.titulo{flex:1;text-align:center;color:var(--c);font-weight:900;letter-spacing:2px;font-size:14px}
+/* HOLOGRAMA */
+#hologramaContainer{position:absolute;top:96px;bottom:70px;left:0;right:0}
+#canvas3d{width:100%;height:100%;opacity:0.15}
 
-#hologramaContainer{flex:1;position:relative;background:#000}
-#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.15;pointer-events:none;z-index:0}
-
-#chatContainer{position:absolute;bottom:70px;left:10px;right:10px;z-index:5}
-#chatBox{background:rgba(0,0,0,.8);border:2px solid var(--c);border-radius:12px;padding:10px;color:var(--c2);font-size:13px;max-height:80px;overflow-y:auto}
-
-.footer{height:70px;background:rgba(0,0,0,.95);display:flex;align-items:center;padding:0 12px;gap:10px;border-top:2px solid var(--c);position:absolute;bottom:0;left:0;right:0;z-index:5}
+/* FOOTER CHAT */
+.footer{height:70px;background:rgba(0,0,0,.95);display:flex;align-items:center;padding:0 12px;gap:10px;border-top:2px solid var(--c);position:absolute;bottom:0;left:0;right:0;z-index:999}
 .footer input{flex:1;height:50px;background:#0a1419;border:2px solid var(--c);border-radius:25px;padding:0 18px;color:#fff;font-size:15px;font-weight:700;outline:none}
 .footer.btn{width:50px;height:50px;border-radius:50%;background:var(--c);color:#000;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;border:2px solid var(--c)}
 
-/* OVERLAYS */
-#armaduraOverlay,#transformarOverlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:200;background:#000}
-.btn-fechar{position:absolute;top:80px;right:20px;background:#000;border:2px solid var(--c);color:var(--c);padding:10px 20px;border-radius:20px;font-weight:900;z-index:201;cursor:pointer}
+/* MENUS - AGORA COM POSITION FIXO */
+.menu{position:fixed;top:0;left:-100%;width:85%;max-width:340px;height:100%;background:linear-gradient(180deg,#0a0f14 0%,#000 100%);border-right:2px solid var(--c);z-index:1001;transition:left.3s;overflow-y:auto;padding-bottom:80px}
+.menu.right{left:auto;right:-100%;border-right:none;border-left:2px solid var(--c)}
+.menu.open{left:0}
+.menu.right.open{right:0}
+.menu-top{position:fixed;top:-200px;left:0;width:100%;height:200px;background:rgba(0,0,0,.95);border-bottom:2px solid var(--c);z-index:1001;transition:top.3s}
+.menu-top.open{top:36px}
+.menu-bottom{position:fixed;bottom:-120px;left:0;width:100%;height:120px;background:rgba(0,0,0,.95);border-top:2px solid var(--c);z-index:1001;transition:bottom.3s}
+.menu-bottom.open{bottom:0}
 
-/* MENUS */
-.menu-slot{position:absolute;z-index:150;display:none}
-.menu-slot.open{display:block}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:1000;display:none}
+.overlay.show{display:block}
+
+/* CONTEÚDO DOS MENUS */
+.sideHeader{height:80px;background:linear-gradient(135deg,#00FFFF,#A8FFE6);padding:20px;display:flex;align-items:center;justify-content:space-between;color:#000;font-weight:900;font-size:18px}
+.sideHeader.modo{background:#000;color:#00FFFF;padding:6px 12px;border-radius:20px;font-size:12px;border:2px solid #00FFFF}
+.sideSection{padding:14px 0;border-bottom:1px solid #132e36}
+.sideTitle{padding:12px 20px;font-size:12px;color:#A8FFE6;font-weight:800;text-transform:uppercase}
+.sideItem{padding:14px 20px;font-size:14px;color:#00FFFF;cursor:pointer;border-left:4px solid transparent}
+.sideItem:hover{background:#132e36;border-left:4px solid #00FFFF}
+.peca-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px}
+.peca-btn{background:rgba(0,255,255,.1);border:1px solid #00FFFF;color:#00FFFF;padding:8px;font-size:10px;cursor:pointer;text-align:center}
 </style>
 </head>
 <body>
 <div class="phone">
 
-<!-- STATUS + HEADER -->
 <div class="status"><div id="hora">21:40</div><span>KORVIL 5G 🔋 100%</span></div>
 <div class="header"><div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div></div>
 
-<!-- SETAS QUE ABREM OS MENUS -->
-<div class="arrow arrow-down" onclick="toggleMenu('menuSuperior')"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
-<div class="arrow arrow-right" onclick="toggleMenu('menuEsquerdo')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
-<div class="arrow arrow-left" onclick="toggleMenu('menuDireito')"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
-<div class="arrow arrow-up" onclick="toggleMenu('menuInferior')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
+<!-- SETAS -->
+<div class="arrow arrow-down" onclick="openMenu('top')"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="arrow arrow-right" onclick="openMenu('left')"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6"/></svg></div>
+<div class="arrow arrow-left" onclick="openMenu('right')"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6"/></svg></div>
+<div class="arrow arrow-up" onclick="openMenu('bottom')"><svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6"/></svg></div>
 
-<!-- ÂNCORAS DOS MENUS -->
-<div id="menuSuperior" class="menu-slot"></div>
-<div id="menuEsquerdo" class="menu-slot"></div>
-<div id="menuDireito" class="menu-slot"></div>
-<div id="menuInferior" class="menu-slot"></div>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeAllMenus()"></div>
+
+<!-- MENU TOP -->
+<div class="menu-top" id="menuTop">
+  <div style="padding:20px;color:#00FFFF">
+    <button onclick="executar('scan')">SCAN</button>
+    <button onclick="executar('radar')">RADAR</button>
+    <button onclick="executar('alertas')">ALERTAS</button>
+  </div>
+</div>
+
+<!-- MENU ESQUERDO = K-AI TRANSFORMAR -->
+<div class="menu" id="menuLeft">
+  <div class="sideHeader"><div>K-AI</div><div class="modo">MODO CHEFE</div></div>
+  <div class="sideSection">
+    <div class="sideTitle">DIAGNÓSTICO</div>
+    <div class="sideItem">ENERGIA: 100%</div>
+    <div class="sideItem">RADAR: ATIVO</div>
+  </div>
+  <div class="sideSection">
+    <div class="sideTitle">K-AI TRANSFORMAR</div>
+    <div class="sideItem" onclick="mostrarArmadura('v-2026')">🛡️ ARMADURA: v-2026 MASTER</div>
+    <div class="sideItem" onclick="abrirTransformacao()">🔮 TRANSFORMAÇÃO ATIVA</div>
+  </div>
+  <div class="sideSection">
+    <div class="sideTitle">PEÇAS</div>
+    <div class="peca-grid">
+      <div class="peca-btn" onclick="executar('transformar peitoral')">PEITORAL</div>
+      <div class="peca-btn" onclick="executar('transformar capacete')">CAPACETE</div>
+      <div class="peca-btn" onclick="executar('transformar bracos')">BRACOS</div>
+      <div class="peca-btn" onclick="executar('transformar pernas')">PERNAS</div>
+      <div class="peca-btn" onclick="executar('transformar botas')">BOTAS</div>
+      <div class="peca-btn" onclick="executar('transformar luvas')">LUVAS</div>
+    </div>
+  </div>
+</div>
+
+<!-- MENU DIREITO = NAVEGAÇÃO -->
+<div class="menu right" id="menuRight">
+  <div class="sideHeader"><div>K-AI</div><div class="modo">MENU</div></div>
+  <div class="sideSection">
+    <div class="sideTitle">CONFIGURAÇÃO DE VOZ</div>
+    <div class="sideItem" onclick="executar('voz corvo cibernetico')">1. Corvo Cibernético M</div>
+    <div class="sideItem" onclick="executar('voz jarvis classico')">2. Jarvis Clássico M</div>
+  </div>
+  <div class="sideSection">
+    <div class="sideTitle">1. NAVEGAR - 5 SETORES KORVIL</div>
+    <div class="sideItem" onclick="goPage('sistema k')">1. Sistema K</div>
+    <div class="sideItem" onclick="goPage('ktp')">2. K-TP</div>
+    <div class="sideItem" onclick="goPage('kafortunado')">3. K-AFORTUNADO</div>
+    <div class="sideItem" onclick="goPage('kalma')">4. K-ALMA</div>
+    <div class="sideItem" onclick="goPage('central')">5. Central KORVIL</div>
+  </div>
+  <div class="sideSection">
+    <div class="sideTitle">2. CRIAR</div>
+    <div class="sideItem" onclick="executar('criar post')">Criar Post</div>
+    <div class="sideItem" onclick="executar('criar imagem ia')">Criar Imagem IA</div>
+  </div>
+  <div class="sideSection">
+    <div class="sideTitle">5. SISTEMA</div>
+    <div class="sideItem" onclick="executar('que horas são')">Horas</div>
+    <div class="sideItem" onclick="executar('salvar memória')">Salvar Memória</div>
+    <div class="sideItem" onclick="executar('estatísticas')">Estatísticas</div>
+    <div class="sideItem" onclick="executar('limpar memória')">Limpar Memória</div>
+  </div>
+</div>
+
+<!-- MENU BOTTOM = CHAT -->
+<div class="menu-bottom" id="menuBottom">
+  <div style="padding:15px;color:#00FFFF">
+    <input type="text" id="inputBottom" placeholder="Comando rápido..." style="width:100%;height:40px;background:#0a1419;border:2px solid #00FFFF;color:#fff;padding:0 10px">
+  </div>
+</div>
 
 <!-- HOLOGRAMA -->
-<div id="hologramaContainer">
-  <canvas id="canvas3d"></canvas>
-</div>
-
-<!-- CHAT -->
-<div id="chatContainer">
-  <div id="chatBox">K-AI online Chefe<br>21:40</div>
-</div>
-
-<!-- OVERLAYS -->
-<div id="armaduraOverlay"><div class="hud-armor">K-AI ARMOR v-2026</div><button class="btn-fechar" onclick="fecharArmadura()">FECHAR</button></div>
-<div id="transformarOverlay"><video id="cameraReal" autoplay playsinline></video><button class="btn-fechar" onclick="fecharTransformacao()">FECHAR</button></div>
+<div id="hologramaContainer"><canvas id="canvas3d"></canvas></div>
 
 <!-- FOOTER -->
 <div class="footer">
@@ -100,15 +158,63 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 </div>
 
 <script>
-let streamCamera = null;
+const PAGINAS = {
+  'sistema k': 'https://korvilp-sudo.github.io/korvil-app/sections/sistemak/index.html',
+  'ktp': 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/index.html',
+  'kafortunado': 'https://korvilp-sudo.github.io/korvil-app/sections/kafortunado/index.html',
+  'kalma': 'https://korvilp-sudo.github.io/korvil-app/sections/kalma/index.html',
+  'central': 'https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/index.html'
+}
 
-// FUNÇÃO CORRIGIDA PARA ABRIR/FECHAR MENUS
-function toggleMenu(id){
-  const menu = document.getElementById(id);
-  const isOpen = menu.classList.contains('open');
+// FUNÇÕES DAS SETAS - AGORA FUNCIONAM
+function openMenu(side){
+  closeAllMenus();
+  document.getElementById('overlay').classList.add('show');
+  if(side==='left') document.getElementById('menuLeft').classList.add('open');
+  if(side==='right') document.getElementById('menuRight').classList.add('open');
+  if(side==='top') document.getElementById('menuTop').classList.add('open');
+  if(side==='bottom') document.getElementById('menuBottom').classList.add('open');
+}
+function closeAllMenus(){
+  document.querySelectorAll('.menu,.menu-top,.menu-bottom').forEach(m=>m.classList.remove('open'));
+  document.getElementById('overlay').classList.remove('show');
+}
 
-  // Fecha todos primeiro
-  document.querySelectorAll('.menu-slot').forEach(m=>m.classList.remove('open'));
+// CHAT
+document.getElementById('btnSend').onclick = send;
+document.getElementById('input').onkeydown = e=>{if(e.key==='Enter'){e.preventDefault();send()}};
+function send(){
+  const input = document.getElementById('input');
+  if(input.value.trim()){executar(input.value.toLowerCase());input.value = '';}
+}
+function executar(cmd){
+  alert('Executando: ' + cmd); // troca por sua função real
+  closeAllMenus();
+}
+function goPage(p){if(PAGINAS[p])window.location.href=PAGINAS[p];}
+function mostrarArmadura(v){alert('Armadura '+v+' ativada');}
+function abrirTransformacao(){alert('Transformação ativa');}
+
+// HORA
+setInterval(()=>{document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})},1000)
+
+// HOLOGRAMA
+try{
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true});
+  renderer.setSize(window.innerWidth, window.innerHeight-166);
+  const geo = new THREE.IcosahedronGeometry(2.5, 2);
+  const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, wireframe:true});
+  const nucleo = new THREE.Mesh(geo, mat);
+  scene.add(nucleo, new THREE.PointLight(0x00FFFF,2));
+  camera.position.z = 7;
+  function loop(){ requestAnimationFrame(loop); nucleo.rotation.y += 0.008; renderer.render(scene,camera); }
+  loop();
+}catch(e){}
+</script>
+</body>
+</html>  document.querySelectorAll('.menu-slot').forEach(m=>m.classList.remove('open'));
 
   // Se não estava aberto, abre
   if(!isOpen){
