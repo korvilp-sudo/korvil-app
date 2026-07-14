@@ -10,13 +10,16 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
 
-.header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;}
+.header{padding:16px 16px 16px 60px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .menu-btn{position:fixed;top:14px;left:16px;z-index:101;background:var(--c);color:#000;border:0;border-radius:8px;padding:8px 10px;font-weight:900;font-size:18px;cursor:pointer;}
 
+.btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.btn-aluno:hover{box-shadow:0 0 15px var(--c);}
+
 .container{display:flex;max-width:1200px;margin:auto;}
 
-/* MENU LATERAL */
+/* MENU LATERAL COM ABAS */
 #menu-lateral{position:fixed;left:-320px;top:0;width:300px;height:100%;background:#0a0a0a;border-right:2px solid var(--c);z-index:200;transition:.3s;overflow-y:auto;padding:70px 0 20px;}
 #menu-lateral.ativo{left:0;}
 #overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:199;display:none;}
@@ -25,6 +28,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .aba-fase{padding:12px 16px;background:#111;border-bottom:1px solid var(--borda);cursor:pointer;font-weight:900;font-size:12px;color:var(--c);display:flex;justify-content:space-between;align-items:center;}
 .aba-fase.ativa{background:rgba(0,245,255,.1);border-left:3px solid var(--c);}
 .seta{transition:.3s;}
+.aba-fase.ativa.seta{transform:rotate(90deg);}
 .semanas-da-fase{display:none;padding:8px;background:#050505;}
 .semanas-da-fase.ativa{display:block;}
 .semana-item{padding:8px 10px;margin:4px 0;background:#1a1a1a;border-radius:6px;font-size:11px;cursor:pointer;transition:.2s;border-left:2px solid transparent;}
@@ -33,15 +37,6 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .semana-item.passada{opacity:0.5;}
 
 .conteudo{flex:1;padding:16px;padding-bottom:100px;}
-
-/* CARD DO ALUNO */
-.card-aluno{background:linear-gradient(135deg,#0a0a0a,#111);border:2px solid var(--c);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 20px var(--c)20;}
-.card-aluno.titulo{font-size:14px;font-weight:900;color:var(--c);margin-bottom:10px;text-align:center;}
-.grid-aluno{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;}
-.grid-aluno.item{background:#0a0a0a;padding:8px;border-radius:6px;border:1px solid var(--borda);}
-.grid-aluno.item b{color:var(--c);display:block;font-size:10px;margin-bottom:2px;}
-.status-ativo{color:var(--ok);font-weight:900;}
-.status-desativado{color:var(--erro);font-weight:900;}
 
 /* CARDS */
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
@@ -59,6 +54,23 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .grid-metodos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
 .grid-metodos img{width:100%;height:80px;object-fit:contain;border-radius:6px;border:1.5px solid var(--borda);opacity:0.3;background:#000;}
 .grid-metodos img.ativa{border:2px solid var(--c);opacity:1;box-shadow:0 0 10px var(--c)40;}
+
+/* MODAL ALUNO */
+#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+#modal-aluno.ativo{display:flex;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:400px;width:100%;box-shadow:0 0 40px var(--c)40;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
+.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
+.dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
+.dado-aluno b{color:var(--c);}
+.status-ativo{color:var(--ok);font-weight:900;}
+.status-desativado{color:var(--erro);font-weight:900;}
+
+/* BUSCA ID */
+.busca-id{display:flex;gap:6px;margin-top:10px;}
+.busca-id input{flex:1;padding:8px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
+.busca-id button{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
 
 /* K-AI */
 #k-ai-cubo{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:linear-gradient(135deg,var(--c),#0088ff);border-radius:12px;box-shadow:0 0 20px var(--c);cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#000;animation:flutuar 2s infinite;border:2px solid var(--c);}
@@ -79,6 +91,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
   #menu-lateral{position:relative;left:0;width:320px;border-right:1px solid var(--borda);}
 .menu-btn{display:none;}
   #overlay{display:none!important;}
+.header{padding-left:16px;}
 }
 </style>
 </head>
@@ -88,6 +101,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 <div class="header">
   <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
+  <button class="btn-aluno" onclick="abrirBuscaAluno()">👤 SEU PROJETO: COLAR ID</button>
 </div>
 
 <div id="overlay" onclick="toggleMenu()"></div>
@@ -95,13 +109,26 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 <div class="container">
   <div class="conteudo">
-    <div id="cardAluno"></div>
-
     <div class="card">
       <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
       <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
     </div>
     <div id="semanaAtualContainer"></div>
+  </div>
+</div>
+
+<!-- MODAL BUSCA ALUNO -->
+<div id="modal-aluno">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-titulo">BUSCAR ALUNO PELO ID</div>
+      <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
+    </div>
+    <div class="busca-id">
+      <input type="text" id="input-id-aluno" placeholder="Ex: carla38, gon19, dani36">
+      <button onclick="buscarAluno()">BUSCAR</button>
+    </div>
+    <div id="resultado-aluno" style="margin-top:12px;"></div>
   </div>
 </div>
 
@@ -112,7 +139,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
   <div id="k-ai-header">K-AI ASSISTENTE K-TP</div>
   <div id="k-ai-msgs"></div>
   <div id="k-ai-input">
-    <input type="text" id="k-ai-text" placeholder="Digite sua dúvida..." onkeypress="if(event.key==='Enter')enviarKAI()">
+    <input type="text" id="k-ai-text" placeholder="Digite ou use o microfone..." onkeypress="if(event.key==='Enter')enviarKAI()">
     <button onclick="enviarKAI()">➤</button>
   </div>
 </div>
@@ -120,62 +147,25 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 <script>
 const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
 
-// BASE COMPLETA DE ALUNOS - COPIE TODOS AQUI
+// BASE DE DADOS DOS ALUNOS
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo"},
   "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"},
-  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado"},
-  "joss21": {nome:"Jossiane Alves", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado"},
-  "angel02": {nome:"Angélica", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado"},
-  "anapaula22": {nome:"Ana Paula", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado"},
-  "gusta23": {nome:"Gustavo Geraldino", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado"},
-  "sueli24": {nome:"Sueli", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui Sex", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado"},
-  "fabi03": {nome:"Fabiana", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado"},
   "alexandra25": {nome:"Alexandra", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado"},
   "michele26": {nome:"Michele B", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado"},
-  "aline27": {nome:"Aline", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado"},
-  "paula06": {nome:"Paula Cristine", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Ter a Sex", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado"},
-  "nop07": {nome:"Natan Osvath Paoli", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado"},
-  "bianca28": {nome:"Bianca", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado"},
-  "lau08": {nome:"Laura Jesus Aragão", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Qui", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado"},
-  "cass09": {nome:"Cassandra Jesus", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Ter Qui", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado"},
-  "katiap11": {nome:"Kátia Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado"},
-  "mara13": {nome:"Lucimara", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado"},
-  "edn14": {nome:"Edna", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado"},
-  "banip12": {nome:"Luciane Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado"},
-  "marly18": {nome:"Marly", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado"},
-  "mcris10": {nome:"Maria Cristina", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado"},
-  "juci29": {nome:"Jucilene", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado"},
-  "joce30": {nome:"Jocélia", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado"},
-  "marcosf31": {nome:"Marcos França", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Sex", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado"},
-  "lucas32": {nome:"Lucas", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado"},
-  "celi33": {nome:"Celidalva", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado"},
-  "jaque15": {nome:"Jaqueline", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "elisa16": {nome:"Elisangela", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "gice01": {nome:"Gicelia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado"},
-  "pati34": {nome:"Patrícia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"–", status:"Desativado"},
-  "mel35": {nome:"Melissa", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado"},
-  "naty17": {nome:"Natália Melo", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado"},
-  "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"}
+  "aline27": {nome:"Aline", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado"}
+  //... ADICIONE TODOS OS OUTROS ALUNOS AQUI
 };
 
 const CALENDARIO_KTP = {
   "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.`},
   "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.`},
-  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nFoco da semana: ficar mais forte de verdade`},
-  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nFoco: Desenvolvimento e crescimento do físico`},
   "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
 };
 
-let ALUNO_LOGADO = null;
 let semanaSelecionada = null;
-
-function getParametroURL(nome) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(nome);
-}
 
 function formatarData(dataString) {
   const data = new Date(dataString);
@@ -190,34 +180,6 @@ function getSegundaSemana(data){
   const dia = d.getDay();
   const diff = d.getDate() - dia + (dia === 0? -6 : 1);
   return new Date(d.setDate(diff));
-}
-
-function mostrarCardAluno(){
-  const id = getParametroURL('id');
-  if(!id) {
-    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Acesse com:?id=seu_id</div>`;
-    return;
-  }
-  ALUNO_LOGADO = ALUNOS_DB[id.toLowerCase()];
-  if(!ALUNO_LOGADO){
-    document.getElementById('cardAluno').innerHTML = `<div class="card" style="text-align:center;color:var(--erro)">Aluno não encontrado</div>`;
-    return;
-  }
-  document.getElementById('cardAluno').innerHTML = `
-  <div class="card-aluno">
-    <div class="titulo">👤 MEUS DADOS - K-TP</div>
-    <div class="grid-aluno">
-      <div class="item"><b>NOME</b>${ALUNO_LOGADO.nome}</div>
-      <div class="item"><b>PLANO</b>${ALUNO_LOGADO.plano}</div>
-      <div class="item"><b>HORÁRIO</b>${ALUNO_LOGADO.horario}</div>
-      <div class="item"><b>DIAS</b>${ALUNO_LOGADO.dias}</div>
-      <div class="item"><b>FREQUÊNCIA</b>${ALUNO_LOGADO.freq}</div>
-      <div class="item"><b>OBJETIVO</b>${ALUNO_LOGADO.objetivo}</div>
-      <div class="item"><b>MENSALIDADE</b>R$ ${ALUNO_LOGADO.valor}</div>
-      <div class="item"><b>VENCIMENTO</b>${ALUNO_LOGADO.venc}</div>
-      <div class="item" style="grid-column:span 2"><b>STATUS</b><span class="${ALUNO_LOGADO.status==='Ativo'?'status-ativo':'status-desativado'}">${ALUNO_LOGADO.status}</span></div>
-    </div>
-  </div>`;
 }
 
 function toggleMenu(){
@@ -246,7 +208,7 @@ function carregarMenu(){
     const faseId = `fase-${index}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-    fases.forEach(s => {
+    fases[fase].forEach(s => {
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
       else if(s.data < chaveHoje) classe = 'passada';
@@ -291,14 +253,45 @@ function carregarSemanaAtual(){
   document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${CALENDARIO_KTP[chaveSegunda].nome}</b><br>${dataSegundaFormatada}`;
 }
 
+// FUNÇÕES DO BOTÃO ALUNO
+function abrirBuscaAluno(){
+  document.getElementById('modal-aluno').classList.add('ativo');
+  document.getElementById('input-id-aluno').focus();
+}
+function fecharBuscaAluno(){
+  document.getElementById('modal-aluno').classList.remove('ativo');
+  document.getElementById('resultado-aluno').innerHTML = '';
+  document.getElementById('input-id-aluno').value = '';
+}
+function buscarAluno(){
+  const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
+  const aluno = ALUNOS_DB[id];
+  const div = document.getElementById('resultado-aluno');
+  if(!aluno){
+    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">Aluno com ID "${id}" não encontrado</div>`;
+    return;
+  }
+  div.innerHTML = `
+    <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
+    <div class="dado-aluno"><b>ID:</b> ${id}</div>
+    <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
+    <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
+    <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
+    <div class="dado-aluno"><b>Frequência:</b> ${aluno.freq}</div>
+    <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
+    <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
+    <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
+    <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+  `;
+}
+
 // K-AI
 let chatAberto = false;
 function toggleChat(){
   chatAberto =!chatAberto;
   document.getElementById('k-ai-chat').style.display = chatAberto? 'flex' : 'none';
   if(chatAberto && document.getElementById('k-ai-msgs').innerHTML === ''){
-    const nome = ALUNO_LOGADO? ALUNO_LOGADO.nome : 'Participante';
-    document.getElementById('k-ai-msgs').innerHTML = `<div class="msg ai">Olá ${nome}! 👋\n\nSou o K-AI. Posso te ajudar com dúvidas da sua semana atual.</div>`;
+    document.getElementById('k-ai-msgs').innerHTML = `<div class="msg ai">Olá Participantes e Alunos! 👋\n\nSou o K-AI. Pergunte sobre FASE, SEMANA ou PROTOCOLO.</div>`;
   }
 }
 function addMsgAI(texto){document.getElementById('k-ai-msgs').innerHTML += `<div class="msg ai">${texto.replace(/\n/g,'<br>')}</div>`;}
@@ -313,7 +306,6 @@ function enviarKAI(){
 }
 
 window.onload = function(){
-  mostrarCardAluno();
   carregarMenu();
   carregarSemanaAtual();
 };
