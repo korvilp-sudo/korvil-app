@@ -6,24 +6,47 @@
 <meta name="theme-color" content="#000">
 <title>K-TP PROJETO TRANSFORMAÇÃO 2026</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --aviso:#ffaa00;}
+:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --aviso:#ffaa00; --erro:#ff0044;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
+body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;padding-bottom:100px;}
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
-.fase-box{padding:10px;background:#111;border-left:3px solid var(--borda);border-radius:6px;margin-bottom:8px;font-size:12px;}
-.fase-box.ativa{background:rgba(0,255,136,.15);border-left:3px solid var(--ok);}
-.fase-box.passada{opacity:0.35;}
-.semana-atual{padding:16px;background:#000;border:2px solid var(--c);border-radius:12px;margin-bottom:16px;box-shadow:0 0 25px var(--c)30;}
-.semana-titulo{font-weight:900;color:var(--c);font-size:16px;margin-bottom:4px;text-align:center;}
+.fase-box{padding:12px;background:#111;border-left:3px solid var(--borda);border-radius:8px;margin-bottom:10px;font-size:12px;transition:.3s;}
+.fase-box.ativa{background:rgba(0,255,136,.15);border-left:3px solid var(--ok);box-shadow:0 0 20px var(--ok)20;}
+.fase-box.passada{opacity:0.4;}
+.semana-atual{padding:18px;background:linear-gradient(180deg,#000,#0a0a0a);border:2px solid var(--c);border-radius:14px;margin-bottom:16px;box-shadow:0 0 30px var(--c)30;}
+.semana-titulo{font-weight:900;color:var(--c);font-size:17px;margin-bottom:4px;text-align:center;}
 .semana-tipo{font-size:12px;color:var(--aviso);font-weight:800;margin-bottom:10px;text-align:center;}
-.img-metodo{width:100%;border-radius:10px;border:2px solid var(--c);margin-bottom:12px;}
+.img-metodo{width:100%;border-radius:10px;border:2px solid var(--c);margin-bottom:12px;object-fit:cover;height:180px;}
 .protocolo{padding:14px;background:#0a0a0a;border:1px solid var(--c);border-radius:8px;font-size:13px;white-space:pre-wrap;line-height:1.7;}
 .logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .badge{padding:5px 12px;background:var(--ok);color:#000;border-radius:20px;font-size:10px;font-weight:900;}
 .data-grande{font-size:14px;color:var(--c);font-weight:800;text-align:center;margin-bottom:8px;}
+.grid-metodos{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+.grid-metodos img{width:100%;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid var(--borda);opacity:0.4;}
+.grid-metodos img.ativa{border:2px solid var(--c);opacity:1;box-shadow:0 0 10px var(--c)40;}
+
+/* K-AI CUBO + BALAO */
+#k-ai-cubo{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:linear-gradient(135deg,var(--c),#0088ff);border-radius:12px;box-shadow:0 0 20px var(--c);cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#000;animation:flutuar 2s infinite;border:2px solid var(--c);}
+@keyframes flutuar{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#k-ai-balao{position:fixed;bottom:30px;right:90px;background:#0a0a0a;border:2px solid var(--c);padding:10px 14px;border-radius:12px;font-size:11px;color:var(--c);max-width:200px;z-index:998;box-shadow:0 0 15px var(--c)30;display:block;animation:fadeIn .5s;}
+#k-ai-balao:after{content:'';position:absolute;right:-8px;top:50%;transform:translateY(-50%);border-left:8px solid var(--c);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+
+#k-ai-chat{position:fixed;bottom:90px;right:20px;width:320px;height:450px;background:#0a0a0a;border:2px solid var(--c);border-radius:14px;display:none;flex-direction:column;z-index:999;box-shadow:0 0 30px var(--c)40;}
+#k-ai-header{padding:10px;background:var(--c);color:#000;font-weight:900;border-radius:12px 12px 0 0;text-align:center;font-size:13px;}
+#k-ai-msgs{flex:1;overflow-y:auto;padding:10px;font-size:12px;}
+.msg{margin-bottom:8px;padding:8px;border-radius:8px;line-height:1.4;}
+.msg.ai{background:#111;color:var(--c);border-left:2px solid var(--c);}
+.msg.user{background:var(--c);color:#000;text-align:right;}
+#k-ai-input{display:flex;border-top:1px solid var(--borda);}
+#k-ai-input input{flex:1;padding:10px;background:#000;border:0;color:#fff;outline:0;font-size:12px;}
+#k-ai-input button{padding:10px 12px;background:var(--c);border:0;color:#000;font-weight:900;cursor:pointer;}
+#k-ai-voz{background:#111 !important;}
+#k-ai-voz.gravando{background:var(--erro) !important;color:#fff;animation:piscar 1s infinite;}
+@keyframes piscar{0%,100%{opacity:1}50%{opacity:0.5}}
 </style>
 </head>
 <body>
@@ -32,109 +55,85 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <div class="card">
   <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
-  <div class="sub-titulo">Link oficial da semana. Abra toda segunda para ver o protocolo atual.</div>
+  <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
 </div>
 
 <div id="semanaAtualContainer"></div>
 
 <div class="card">
-  <div class="titulo-secao">| CALENDÁRIO COMPLETO 2026</div>
+  <div class="titulo-secao">| CALENDÁRIO COMPLETO 2026 - 52 SEMANAS</div>
   <div id="linhaTempoCompleta"></div>
 </div>
 
+<!-- K-AI CUBO + BALAO -->
+<div id="k-ai-balao"></div>
+<div id="k-ai-cubo" onclick="toggleChat()">K-AI</div>
+<div id="k-ai-chat">
+  <div id="k-ai-header">K-AI ASSISTENTE K-TP</div>
+  <div id="k-ai-msgs"></div>
+  <div id="k-ai-input">
+    <input type="text" id="k-ai-text" placeholder="Digite ou use o microfone..." onkeypress="if(event.key==='Enter')enviarKAI()">
+    <button id="k-ai-voz" onclick="falarKAI()">🎤</button>
+    <button onclick="enviarKAI()">➤</button>
+  </div>
+</div>
+
 <script>
-// PASTA BASE DAS IMAGENS - RELATIVA A ESTA PASTA
 const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
 
-// BANCO DE DADOS COMPLETO COM TODAS AS MENSAGENS QUE VOCÊ PASSOU
 const CALENDARIO_KTP = {
-  "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-
-SEMANA DE MANUTENÇÃO
-
-Essa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.
-
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-
-Aqui, a intensidade diminui, mas a atenção aumenta. É o momento de aprender mais sobre os exercícios, melhorar a execução dos movimentos e corrigir detalhes que fazem toda a diferença lá na frente.
-
-O foco está na regeneração muscular, na mobilidade e na qualidade de cada exercício. Um corpo bem recuperado responde melhor, ganha mais eficiência e reduz o risco de lesões.
-
-Menos carga, mais controle. Menos pressa, mais precisão.
-
-Semana mais leve. É ela que sustenta sua evolução e prepara você para voltar ainda mais forte.`},
-  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-
-SEMANA DE RESISTÊNCIA
-
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-
-Essa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.
-
-Aqui, o foco não está no peso, mas na capacidade do músculo trabalhar por mais tempo, suportar esforço e melhorar a recuperação entre exercícios.
-
-A intensidade vem do volume e da continuidade, não da carga. É o momento de fortalecer o fôlego, a mente e a disciplina física.
-
-Mais repetições, menos peso.
-Mais constância, menos pausa.
-Mais resistência, mais preparação.
-
-Semana de construção da base. É ela que aumenta sua capacidade e prepara seu corpo para níveis mais altos de força, hipertrofia e performance.`},
-  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-
-SEMANA DE FORÇA
-
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-
-Foco da semana: ficar mais forte de verdade
-Não é estética — é força, resistência e controle
-
-Ser musculoso ≠ ser forte
-Definição é aparência
-Força é desempenho real
-
-TREINO: Poucas repetições 3 a 6 | Carga mais alta ~70% | Execução controlada | Mais descanso
-
-Aprenda o movimento. Ative o sistema nervoso. Preparação para o Bulking que vem em Março.`},
-  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-
-SEMANA DE HIPERTROFIA
-
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-
-Foco: Desenvolvimento e crescimento do físico através de treino estruturado, controlado e eficiente.
-
-ESTRUTURA DO TREINO:
-HIPERTROFIA 10 a 12 repetições até a falha
-Mistura de força + resistência
-Estímulo máximo para crescimento muscular
-Objetivo: levar o músculo ao limite com controle
-
-Sem pressa. Sem excesso. Execução correta vale mais que velocidade.
-O corpo cresce na recuperação, não no exagero.`},
-
-  //... CONTINUA COM TODAS AS 52 SEMANAS QUE VOCÊ ME PASSOU...
-  // FEVEREIRO
-  "2026-02-02": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-SEMANA DE MANUTENÇÃO
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-Essa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.
-Menos carga, mais controle. Foco em regeneração muscular e qualidade.`},
-  "2026-02-09": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-SEMANA DE RESISTÊNCIA
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-Construa a base. Mais repetições, menos peso. Foco em fôlego, mente e disciplina.`},
-  "2026-02-16": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-SEMANA DE FORÇA
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-Foco: ficar mais forte de verdade. 3 a 6 reps. Preparação para o Bulking.`},
-  "2026-02-23": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON
-SEMANA DE HIPERTROFIA
-OBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados
-Foco: Desenvolvimento do físico. 10 a 12 reps. Controle total.`},
-
-  // MARÇO - DEZEMBRO: COLE AQUI TODO O RESTO DO SEU OBJETO COM AS 48 SEMANAS RESTANTES
-  // EU JÁ COLOQUEI TODAS NO CÓDIGO ANTERIOR. É SÓ COPIAR E COLAR AQUI DENTRO
+  "2026-01-05": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.\n\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nAqui, a intensidade diminui, mas a atenção aumenta. É o momento de aprender mais sobre os exercícios, melhorar a execução dos movimentos e corrigir detalhes que fazem toda a diferença lá na frente.\n\nO foco está na regeneração muscular, na mobilidade e na qualidade de cada exercício. Um corpo bem recuperado responde melhor, ganha mais eficiência e reduz o risco de lesões.\n\nMenos carga, mais controle. Menos pressa, mais precisão.\n\nSemana mais leve. É ela que sustenta sua evolução e prepara você para voltar ainda mais forte.`},
+  "2026-01-12": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.\n\nAqui, o foco não está no peso, mas na capacidade do músculo trabalhar por mais tempo, suportar esforço e melhorar a recuperação entre exercícios.\n\nA intensidade vem do volume e da continuidade, não da carga. É o momento de fortalecer o fôlego, a mente e a disciplina física.\n\nMais repetições, menos peso.\nMais constância, menos pausa.\nMais resistência, mais preparação.`},
+  "2026-01-19": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nFoco da semana: ficar mais forte de verdade\nNão é estética — é força, resistência e controle\nSer musculoso ≠ ser forte\nDefinição é aparência\nForça é desempenho real\nTREINO: Poucas repetições 3 a 6 | Carga mais alta ~70% | Execução controlada | Mais descanso`},
+  "2026-01-26": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nFoco: Desenvolvimento e crescimento do físico através de treino estruturado, controlado e eficiente.\nESTRUTURA DO TREINO:\nHIPERTROFIA 10 a 12 repetições até a falha\nMistura de força + resistência\nEstímulo máximo para crescimento muscular`},
+  "2026-02-02": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.`},
+  "2026-02-09": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nConstrua a base. Mais repetições, menos peso. Foco em fôlego, mente e disciplina.`},
+  "2026-02-16": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nFoco: ficar mais forte de verdade. 3 a 6 reps. Preparação para o Bulking.`},
+  "2026-02-23": {fase:"FASE 1: OFF SEASON", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nFoco: Desenvolvimento do físico. 10 a 12 reps. Controle total.`},
+  "2026-03-02": {fase:"FASE 2: BULKING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nRecuperação estratégica para suportar as cargas altas que virão.`},
+  "2026-03-09": {fase:"FASE 2: BULKING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nAumentar a capacidade de treino. Mais volume, mais trabalho.`},
+  "2026-03-16": {fase:"FASE 2: BULKING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nFoco da semana: ficar mais forte de verdade\nTREINO: 3 a 6 repetições | Carga alta ~70% | 5s contraindo + 5s alongando\nALIMENTAÇÃO: Proteína média | Carboidrato ALTO | Gordura normal`},
+  "2026-03-23": {fase:"FASE 2: BULKING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nFoco principal: CRESCER\nESTRUTURA: 10 a 12 repetições até a falha\nALIMENTAÇÃO: Proteína ALTA | Carboidrato ALTO | Gordura moderada`},
+  "2026-03-30": {fase:"FASE 2: BULKING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nFoco principal: CRESCER. 10 a 12 reps até a falha. Proteína Alta + Carbo Alto.`},
+  "2026-04-06": {fase:"FASE 2: BULKING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nRecuperação estratégica para suportar as cargas altas.`},
+  "2026-04-13": {fase:"FASE 2: BULKING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nAumentar a capacidade de treino. Mais volume, mais trabalho.`},
+  "2026-04-20": {fase:"FASE 2: BULKING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\n3 a 6 reps pesado. Carga alta. Foco: Força real para sustentar o ganho de massa.`},
+  "2026-04-27": {fase:"FASE 2: BULKING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nFoco principal: CRESCER. 10 a 12 reps até a falha.`},
+  "2026-05-04": {fase:"FASE 2: BULKING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nRecuperação estratégica para suportar as cargas altas.`},
+  "2026-05-11": {fase:"FASE 2: BULKING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nAumentar a capacidade de treino. Mais volume.`},
+  "2026-05-18": {fase:"FASE 2: BULKING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\n3 a 6 reps pesado. Subir a carga para forçar novo ganho de massa.`},
+  "2026-05-25": {fase:"FASE 2: BULKING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Ganhar massa muscular | Cumprir metas | Melhorar performance | Evolução\nFoco principal: CRESCER. 10 a 12 reps até a falha.`},
+  "2026-06-01": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nMissão: Manter.\nO objetivo aqui é preservar todos os ganhos obtidos nas fases anteriores.`},
+  "2026-06-08": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nManter o condicionamento e o gasto calórico.`},
+  "2026-06-15": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nSegurar a força conquistada. Carga alta, volume baixo.`},
+  "2026-06-22": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-06-29": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-07-06": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nMissão: Manter. Treino técnico, carga estável.`},
+  "2026-07-13": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nSegurar a força conquistada. Carga alta, volume baixo.`},
+  "2026-07-20": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-07-27": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-08-03": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nMissão: Manter. Preservar massa magra.`},
+  "2026-08-10": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nManter o condicionamento e gasto calórico.`},
+  "2026-08-17": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nSegurar a força conquistada.`},
+  "2026-08-24": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-08-31": {fase:"FASE 3: MAINTENANCE", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Manter todos os ganhos do Bulking | Preservar massa muscular magra | Preparo pro Cutting\nÚltimo estímulo para manter o músculo.`},
+  "2026-09-07": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nAcelerar o metabolismo. Treino com mais movimento, menos descanso.\nALIMENTAÇÃO: Proteína ALTA | Carboidrato BAIXO | Gordura moderada`},
+  "2026-09-14": {fase:"FASE 4: CUTTING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nProteger a força e o músculo durante o déficit calórico. Carga pesada.`},
+  "2026-09-21": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nModelar o físico. 10 a 12 repetições com foco total na contração muscular.`},
+  "2026-09-28": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nModelar o físico. Detalhes e definição.`},
+  "2026-10-05": {fase:"FASE 4: CUTTING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nRecuperar para aguentar o déficit. Semana leve.`},
+  "2026-10-12": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nGasto calórico lá em cima. Secar mais.`},
+  "2026-10-19": {fase:"FASE 4: CUTTING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nProteger a força mesmo com pouca caloria.`},
+"2026-10-26": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nDetalhes do físico. Contração máxima.`},
+  "2026-11-02": {fase:"FASE 4: CUTTING", tipo:"semana-de-manutencao", nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE MANUTENÇÃO\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nRecuperar para aguentar o déficit.`},
+  "2026-11-09": {fase:"FASE 4: CUTTING", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nÚltimo gás para secar.`},
+  "2026-11-16": {fase:"FASE 4: CUTTING", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nÚltimo estímulo pesado do ano.`},
+  "2026-11-23": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nModelagem final antes de dezembro.`},
+  "2026-11-30": {fase:"FASE 4: CUTTING", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Eliminar máximo de gordura | Manter máximo de massa muscular magra | Modelagem do físico\nModelagem final antes de dezembro.`},
+  "2026-12-07": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-resistencia", nome:"SEMANA DE RESISTÊNCIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Mostrar os resultados\nMovimentar o corpo nas festas. Manter o ritmo.\nMês de avaliação final, fotos e descanso merecido.`},
+  "2026-12-14": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-forca", nome:"SEMANA DE FORÇA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE FORÇA\nOBJETIVO DA FASE: Mostrar os resultados\nManter o estímulo para não perder força. Fechar forte o 11° ano.`},
+  "2026-12-21": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Mostrar os resultados\nAvaliação final e fotos. Mostrar resultado de 2026.`},
+  "2026-12-28": {fase:"DEZEMBRO: FÉRIAS", tipo:"semana-de-hipertrofia", nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", texto:`K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nOBJETIVO DA FASE: Mostrar os resultados\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`}
 };
 
 function getSegundaSemana(data){
@@ -152,17 +151,27 @@ function carregarSemanaAtual(){
 
   if(semana){
     const caminhoImg = `${PASTA_IMG}${semana.tipo}/${semana.tipo}.png`;
+    const metodos = ['semana-de-manutencao','semana-de-resistencia','semana-de-forca','semana-de-hipertrofia'];
+    let grid = '<div class="grid-metodos">';
+    metodos.forEach(m=>{
+      grid += `<img src="${PASTA_IMG}${m}/${m}.png" class="${m===semana.tipo?'ativa':''}">`;
+    });
+    grid += '</div>';
+
     document.getElementById('semanaAtualContainer').innerHTML = `
     <div class="semana-atual">
       <div class="titulo-secao">| SEMANA ATUAL <span class="badge">HOJE</span></div>
       <div class="data-grande">${chave}</div>
       <img src="${caminhoImg}" class="img-metodo" alt="${semana.nome}">
+      ${grid}
       <div class="semana-titulo">${semana.fase} - ${semana.nome}</div>
       <div class="semana-tipo">OBJETIVO: ${semana.objetivo}</div>
       <div class="protocolo">${semana.texto}</div>
     </div>`;
-  } else {
-    document.getElementById('semanaAtualContainer').innerHTML = `<div class="card"><div class="titulo-secao">| SEMANA NÃO CADASTRADA</div></div>`;
+
+    // BALAO AUTOMATICO DO K-AI
+    document.getElementById('k-ai-balao').innerHTML = `Participantes e Alunos! <br><b>${semana.nome}</b><br>${semana.fase}`;
+    document.getElementById('k-ai-balao').style.display = 'block';
   }
 }
 
@@ -182,7 +191,7 @@ function carregarLinhaTempo(){
     html += `
     <div class="fase-box ${classe}">
       <div class="data-grande">${data}</div>
-      <img src="${caminhoImg}" class="img-metodo" alt="${s.nome}" style="height:100px;object-fit:cover;margin-bottom:6px;">
+      <img src="${caminhoImg}" class="img-metodo" alt="${s.nome}" style="height:120px;">
       <b style="color:var(--c)">${s.fase}</b> - ${s.nome}<br>
       <span style="font-size:10px;">${s.objetivo}</span>
     </div>`;
@@ -191,8 +200,105 @@ function carregarLinhaTempo(){
   document.getElementById('linhaTempoCompleta').innerHTML = html;
 }
 
-carregarSemanaAtual();
-carregarLinhaTempo();
+// K-AI LÓGICA
+let chatAberto = false;
+let reconhecimento = null;
+
+function toggleChat(){
+  chatAberto =!chatAberto;
+  document.getElementById('k-ai-chat').style.display = chatAberto? 'flex' : 'none';
+  if(chatAberto && document.getElementById('k-ai-msgs').innerHTML === ''){
+    addMsgAI(`Olá Participantes e Alunos! 👋\n\nSou o K-AI, assistente oficial do K-TP Projeto Transformação 2026.\n\nPosso te ajudar com:\n• Qual fase estamos\n• O que fazer nessa semana\n• Dúvidas sobre protocolos\n• Explicação dos 4 métodos\nEm que posso ajudar você hoje?`);
+  }
+}
+
+function addMsgAI(texto){
+  document.getElementById('k-ai-msgs').innerHTML += `<div class="msg ai">${texto.replace(/\n/g,'<br>')}</div>`;
+  document.getElementById('k-ai-msgs').scrollTop = document.getElementById('k-ai-msgs').scrollHeight;
+}
+
+function addMsgUser(texto){
+  document.getElementById('k-ai-msgs').innerHTML += `<div class="msg user">${texto}</div>`;
+  document.getElementById('k-ai-msgs').scrollTop = document.getElementById('k-ai-msgs').scrollHeight;
+}
+
+function enviarKAI(){
+  const input = document.getElementById('k-ai-text');
+  const pergunta = input.value.toLowerCase().trim();
+  if(!pergunta) return;
+  addMsgUser(input.value);
+  input.value = '';
+
+  const hoje = new Date();
+  const chave = getSegundaSemana(hoje).toISOString().split('T')[0];
+  const semana = CALENDARIO_KTP[chave];
+
+  setTimeout(()=>{
+    if(pergunta.includes('fase') || pergunta.includes('qual fase')){
+      addMsgAI(`Participantes e Alunos, hoje estamos na:\n\n**${semana.fase}**\nObjetivo: ${semana.objetivo}\n\nEssa fase vai até a próxima mudança no calendário.`);
+    }
+    else if(pergunta.includes('semana') || pergunta.includes('o que fazer')){
+      addMsgAI(`Participantes e Alunos, essa semana é:\n\n**${semana.nome}**\n\n${semana.texto.substring(0,300)}...`);
+    }
+    else if(pergunta.includes('metodo') || pergunta.includes('manutencao') || pergunta.includes('resistencia') || pergunta.includes('forca') || pergunta.includes('hipertrofia')){
+      addMsgAI(`Participantes e Alunos, os 4 métodos do K-TP são:\n\n**MANUTENÇÃO**: Regeneração e qualidade\n**RESISTÊNCIA**: Mais reps, menos peso. Base\n**FORÇA**: 3 a 6 reps. Carga alta\n**HIPERTROFIA**: 10 a 12 reps. Crescimento\n\nEssa semana estamos em: **${semana.nome}**`);
+    }
+    else if(pergunta.includes('calendario') || pergunta.includes('datas')){
+      addMsgAI(`Participantes e Alunos, o calendário 2026 tem 4 fases:\n\nFASE 1: OFF SEASON - Jan/Fev\nFASE 2: BULKING - Mar/Mai\nFASE 3: MAINTENANCE - Jun/Ago\nFASE 4: CUTTING - Set/Nov\nDEZEMBRO: FÉRIAS\nRole a página para ver todas as 52 semanas com datas.`);
+    }
+    else if(pergunta.includes('treino') || pergunta.includes('protocolo')){
+      addMsgAI(`Participantes e Alunos, protocolo dessa semana:\n\n${semana.texto}`);
+    }
+    else {
+      addMsgAI(`Participantes e Alunos, eu sou focado 100% no K-TP Projeto Transformação 2026. \n\nPara outros assuntos como suplementos, loja, outras turmas ou suporte geral, acessem as outras páginas e setores do KORVIL.\n\nPosso ajudar com algo sobre FASE, SEMANA ou PROTOCOLO?`);
+    }
+  }, 600);
+}
+
+// COMANDO DE VOZ
+function falarKAI(){
+  if(!('webkitSpeechRecognition' in window)){
+    addMsgAI('Participantes e Alunos, seu navegador não suporta comando de voz. Use o texto.');
+    return;
+  }
+
+  const btn = document.getElementById('k-ai-voz');
+  if(reconhecimento){
+    reconhecimento.stop();
+    reconhecimento = null;
+    btn.classList.remove('gravando');
+    return;
+  }
+
+  reconhecimento = new webkitSpeechRecognition();
+  reconhecimento.lang = 'pt-BR';
+  reconhecimento.continuous = false;
+  btn.classList.add('gravando');
+
+  reconhecimento.onresult = function(event){
+    const texto = event.results[0][0].transcript;
+    document.getElementById('k-ai-text').value = texto;
+    enviarKAI();
+  };
+  reconhecimento.onend = function(){btn.classList.remove('gravando'); reconhecimento=null;};
+  reconhecimento.start();
+}
+
+// INICIALIZAR AO ABRIR A PAGINA
+window.onload = function(){
+  carregarSemanaAtual();
+  carregarLinhaTempo();
+
+  // K-AI JÁ FALA SOZINHO AO ABRIR
+  setTimeout(()=>{
+    const hoje = new Date();
+    const chave = getSegundaSemana(hoje).toISOString().split('T')[0];
+    const semana = CALENDARIO_KTP[chave];
+    if(semana){
+      addMsgAI(`Bem-vindos Participantes e Alunos! \n\nHoje é ${chave} e estamos em:\n**${semana.fase}** - **${semana.nome}**\n\nPosso te explicar o protocolo dessa semana. Só perguntar.`);
+    }
+  }, 1000);
+};
 </script>
 </body>
 </html>
