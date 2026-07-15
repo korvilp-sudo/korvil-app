@@ -8,218 +8,63 @@
 <style>
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
-body.com-menu{display:flex;}
-
-#menu-container{width:270px;min-width:270px;height:100vh;position:fixed;left:0;top:0;background:#080808;border-right:1px solid #222;z-index:100;overflow-y:auto;display:none;}
-body.com-menu #menu-container{display:block;}
-.conteudo-principal{width:100%;padding:16px;max-width:700px;margin:auto;}
-body.com-menu.conteudo-principal{margin-left:270px;width:calc(100% - 270px);}
-
-.header{padding:12px 16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:50;}
+body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
-.btn-acessar{position:absolute;right:16px;top:10px;padding:8px 12px;background:transparent;border:1.5px solid var(--c);color:var(--c);border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;}
-.menu-btn-mobile{display:none;position:fixed;top:10px;left:12px;z-index:101;background:transparent;border:1.5px solid var(--c);color:var(--c);border-radius:8px;padding:8px 14px;font-weight:800;font-size:12px;cursor:pointer;}
-
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:10px;}
-.btn.voltar{background:#222;color:var(--text);}
 .btn.acessar{background:transparent;border:1.5px solid var(--c);color:var(--c);}
 .btn.acessar:active{background:var(--c);color:#000;}
 .logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.oculto{display:none;}
+.check{color:var(--ok);margin-right:6px;}
 .fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
-
-input,select{width:100%;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:13px;margin-bottom:10px;}
-label{font-size:11px;color:var(--text2);margin-bottom:4px;display:block;}
-
-.card-semana{background:#0a0a0a;border:2px solid var(--c);border-radius:12px;padding:16px;margin-bottom:16px;white-space:pre-line;}
-.titulo-fase{font-size:15px;font-weight:900;color:var(--c);text-align:center;margin-bottom:4px;}
-.data-semana{font-size:11px;color:var(--text2);text-align:center;margin-bottom:12px;}
-.box-texto{font-size:12px;line-height:1.6;margin-bottom:12px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
-.item-metodo{background:#111;border-radius:8px;padding:6px;text-align:center;border:2px solid transparent;}
-.item-metodo.ativa{border:2px solid var(--c);box-shadow:0 0 10px var(--c)40;}
-.item-metodo img{width:100%;border-radius:6px;margin-bottom:4px;aspect-ratio:1/1;object-fit:cover;}
-.item-metodo.nome{font-size:9px;font-weight:900;margin-bottom:2px;}
-.item-metodo.foco{font-size:8px;color:var(--text2);line-height:1.2;}
-
-@media(max-width: 768px){
-  body.com-menu #menu-container{width:100%;transform:translateX(-100%);transition:.3s;}
-  body.com-menu #menu-container.ativo{transform:translateX(0);}
-  body.com-menu.conteudo-principal{margin-left:0;width:100%;}
- .menu-btn-mobile{display:block;}
-}
 </style>
 </head>
 <body>
 
-<!-- MENU LATERAL É CARREGADO AQUI DEPOIS DO LOGIN -->
-<div id="menu-container"></div>
-<button class="menu-btn-mobile oculto" onclick="document.getElementById('menu-container').classList.toggle('ativo')">MENU</button>
+<!-- TELA INICIAL: APRESENTAÇÃO -->
+<div id="apresentacao">
+  <div class="card">
+    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
+    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
 
-<div class="conteudo-principal">
-  <div class="header">
-    <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
-    <button class="btn-acessar" onclick="acessarProjeto()">ACESSAR</button>
-  </div>
+    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
 
-  <!-- TELA 0: APRESENTAÇÃO - IGUAL ESTAVA ANTES -->
-  <div id="apresentacao">
-    <div class="card">
-      <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
-      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
-
-      <div class="titulo-secao">| SOBRE O PROGRAMA</div>
-      <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
-
-      <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-      <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
-      <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
-      <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
-      <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
-      <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
-
-      <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
-      <button class="btn acessar" onclick="acessarProjeto()">ACESSAR</button>
+    <div class="card" style="background:#111;border:1.5px solid var(--c);">
+      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
     </div>
+
+    <div class="titulo-secao">| PARTICIPANTES</div>
+    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
+
+    <div class="titulo-secao">| METODOLOGIA</div>
+    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
+
+    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
+    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
+    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
+
+    <button class="btn" onclick="window.location.href='inscricao-do-projeto.html'">COMEÇAR INSCRIÇÃO</button>
+    <button class="btn acessar" onclick="acessarProjeto()">ACESSAR</button>
   </div>
-
-  <!-- TELA 1: ANAMNESE -->
-  <div id="tela1" class="oculto">
-    <h1>K-T.P KORVIL</h1>
-    <div class="card">
-      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">ANAMNESE</div>
-      <label>Nome Completo</label><input type="text" id="nome">
-      <label>Idade</label><input type="number" id="idade">
-      <label>Objetivo</label>
-      <select id="objetivo">
-        <option>Hipertrofia</option>
-        <option>Emagrecimento</option>
-        <option>Definição</option>
-      </select>
-      <button class="btn" onclick="mostrarTela('tela2')">CONTINUAR</button>
-      <button class="btn voltar" onclick="mostrarTela('apresentacao')">Voltar</button>
-    </div>
-  </div>
-
-  <!-- TELA 2: PLANO -->
-  <div id="tela2" class="oculto">
-    <h1>K-T.P KORVIL</h1>
-    <div class="card">
-      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">ESCOLHA SEU PLANO</div>
-      <div class="grid-2">
-        <button class="btn" onclick="escolherPlano('Basico')">BÁSICO</button>
-        <button class="btn" onclick="escolherPlano('Premium')">PREMIUM</button>
-      </div>
-      <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
-    </div>
-  </div>
-
-  <!-- TELA 3: DADOS PESSOAIS -->
-  <div id="tela3" class="oculto">
-    <h1>K-T.P KORVIL</h1>
-    <div class="card">
-      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">DADOS PESSOAIS</div>
-      <label>Email</label><input type="email" id="email">
-      <label>Telefone</label><input type="text" id="telefone">
-      <button class="btn" onclick="finalizarInscricao()">FINALIZAR INSCRIÇÃO</button>
-      <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
-    </div>
-  </div>
-
-  <!-- TELA 4: CRONOGRAMA - SÓ APARECE DEPOIS DO LOGIN -->
-  <div id="conteudo-semana" class="oculto"></div>
-
 </div>
 
 <script>
-const PASTA_IMG = 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/imagens/2026/imagens-dos-metodos/';
-let PLANO_ESCOLHIDO = '';
-
-// BANCO DE MENSAGENS 2026 COMPLETO
-const MENSAGENS_2026 = {
-  "2026-01-05": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.\n\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados`,
-  "2026-12-28": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nOBJETIVO: Mostrar os resultados\nÚltimo treino do ano. Celebração. Resultado e descanso merecido 💪`
-  //... COLE AQUI TODAS AS 48 SEMANAS
-};
-
-function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
-function getSegunda(data){const dt=new Date(data);dt.setDate(dt.getDate()-dt.getDay()+1);return dt.toISOString().split('T')[0];}
-
-// CARREGAR MENU EXTERNO SÓ DEPOIS DO LOGIN
-async function carregarMenu(){
-  try{
-    const res = await fetch('menu/menu-esquerdo.html');
-    const html = await res.text();
-    document.getElementById('menu-container').innerHTML = html;
-    document.body.classList.add('com-menu');
-    document.querySelector('.menu-btn-mobile').classList.remove('oculto');
-  }catch(e){console.error("Erro ao carregar menu:", e)}
-}
-
-function detectarTipoSemana(texto){
-  if(texto.includes('MANUTENÇÃO')) return 'manutencao';
-  if(texto.includes('RESISTÊNCIA')) return 'resistencia';
-  if(texto.includes('FORÇA')) return 'forca';
-  if(texto.includes('HIPERTROFIA')) return 'hipertrofia';
-  return 'manutencao';
-}
-
-function mostrarSemana(data){
-  document.querySelectorAll('.conteudo-principal > div').forEach(t => t.classList.add('oculto'));
-  document.getElementById('conteudo-semana').classList.remove('oculto');
-  const texto = MENSAGENS_2026[data];
-  const linhas = texto.split('\n');
-  const tituloFase = linhas[0];
-  const tipoSemana = detectarTipoSemana(texto);
-  const tipos=['manutencao','resistencia','forca','hipertrofia'];
-  let grid='';
-  tipos.forEach(t=>{
-    grid+=`<div class="item-metodo ${t===tipoSemana?'ativa':''}">
-      <img src="${PASTA_IMG}${t}/${t}.png" onerror="this.src='https://via.placeholder.com/100'">
-      <div class="nome">${t.toUpperCase()}</div>
-      <div class="foco">${t==='manutencao'?'Recuperação':t==='resistencia'?'Definição':t==='forca'?'Força':'Hipertrofia'}</div>
-    </div>`;
-  });
-  document.getElementById('conteudo-semana').innerHTML=`
-  <div class="card-semana">
-    <div class="titulo-fase">${tituloFase}</div>
-    <div class="data-semana">${formatarData(data)}</div>
-    <div class="grid-4">${grid}</div>
-    <div class="box-texto">${texto}</div>
-  </div>`;
-  if(window.innerWidth<768) document.getElementById('menu-container').classList.remove('ativo');
-  window.scrollTo(0,0);
-}
-
-function mostrarTela(id){
-  document.querySelectorAll('.conteudo-principal > div').forEach(t => t.classList.add('oculto'));
-  document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0,0);
-}
-
-function escolherPlano(plano){PLANO_ESCOLHIDO = plano; mostrarTela('tela3');}
-function finalizarInscricao(){alert('Inscrição finalizada! Plano: '+PLANO_ESCOLHIDO); mostrarTela('apresentacao');}
-
-const idsPermitidos = ["ktp1"];
+const idsPermitidos = ["ktp1"]; // COLOQUE AQUI TODOS OS IDS DO cronograma.html
 function acessarProjeto(){
   const senha = prompt("Digite sua senha/ID de aluno do Projeto Transformação:");
   if(!senha){return;}
   const senhaNormalizada = senha.trim().toLowerCase();
   if(idsPermitidos.includes(senhaNormalizada)){
-    carregarMenu(); // só carrega o menu aqui
-    const hoje = new Date().toISOString().split('T')[0];
-    const segundaAtual = getSegunda(hoje);
-    let chave = Object.keys(MENSAGENS_2026).sort().find(d => d >= segundaAtual);
-    if(!chave) chave = Object.keys(MENSAGENS_2026).sort().pop();
-    mostrarSemana(chave);
+    window.location.href = "projetotransformacao.html";
   } else {
     alert("Acesso negado. ID não encontrado no cronograma do projeto.");
   }
