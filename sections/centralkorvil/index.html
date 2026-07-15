@@ -57,7 +57,7 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:none;z-index:100;backdrop-filter:blur(4px);}
 .overlay.ativo{display:block;}
 
-.logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;}
+.logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;cursor:pointer;}
 iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;display:block;}
 
 .modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
@@ -109,7 +109,7 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
 
 <main class="wrap">
   <section id="central" class="tela ativa">
-    <img src="https://korvilp-sudo.github.io/korvil-app/assets/images/korvil-logo.png" class="logo-central">
+    <img src="https://korvilp-sudo.github.io/korvil-app/assets/images/korvil-logo.png" class="logo-central" onclick="irParaKTP()">
     <h3 class="sectitle">SETORES:</h3>
     <div class="grid-4">
       <div class="btn-app" onclick="abrirTela('sistema')"><img src="https://korvilp-sudo.github.io/korvil-app/sections/sistemak/images/logosistemak.png"><span>Sistema K</span></div>
@@ -217,7 +217,7 @@ let isHolding = false;
 
 function irParaKTP(){ 
   abrirTela('ktp-iframe'); 
-  document.getElementById('iframeKTP').src = "https://korvilp-sudo.github.io/kc/sections/ktp/projetotransformacao/projetransformacao.html";
+  document.getElementById('iframeKTP').src = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetotransformacao.index";
 }
 
 function abrirTela(id){ 
