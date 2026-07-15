@@ -276,8 +276,7 @@ function mostrarCronograma(){
         if(a.n) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}
-<td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
     });
