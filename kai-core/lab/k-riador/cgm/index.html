@@ -2,103 +2,85 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>K-CUBO CENTRO</title>
+<title>K-CUBO RAPIDO</title>
 <style>
 body{margin:0;background:#000;overflow:hidden}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1}
-#canvas{position:absolute;z-index:2}
-#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:20px;text-shadow:0 0 10px #00f5ff;z-index:10;font-family:Arial}
-#cursor{position:absolute;width:50px;height:50px;border:3px solid #00f5ff;border-radius:50%;box-shadow:0 0 30px #00f5ff;z-index:3;transform:translate(-50%,-50%);pointer-events:none}
-#cursor.click{background:#00f5ff;transform:translate(-50%,-50%) scale(0.7)}
-/* CUBO 2D NO CENTRO */
-#cubo{position:absolute;top:50%;left:50%;width:200px;height:200px;border:4px solid #00f5ff;box-shadow:0 0 50px #00f5ff;z-index:4;transform:translate(-50%,-50%);transition:0.1s}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:22px;text-shadow:0 0 10px #00f5ff;font-family:Arial;z-index:10}
+#cubo{position:absolute;top:50%;left:50%;width:250px;height:250px;border:5px solid #00f5ff;box-shadow:0 0 60px #00f5ff;transform:translate(-50%,-50%);z-index:5;transition:0.05s}
+#ponto{position:absolute;width:30px;height:30px;background:#ff00ff;border-radius:50%;box-shadow:0 0 30px #ff00ff;z-index:6}
 </style>
 </head>
 <body>
-<div id="info">MEXA A MÃO = CUBO GIRA | PINÇA = CLIQUE | ABRE MÃO = AUMENTA</div>
+<div id="info">PONHA A MÃO NA FRENTE DA CÂMERA | MOVA = GIRA | APROXIMA = AUMENTA</div>
 <video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
 <div id="cubo"></div>
-<div id="cursor"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<div id="ponto"></div>
 
 <script>
+// MÉTODO RÁPIDO: SEGUE A COR DA PELE
 const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
 const cubo = document.getElementById('cubo');
-const cursor = document.getElementById('cursor');
+const ponto = document.getElementById('ponto');
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{video.srcObject=stream});
 
-let anguloX = 0, anguloY = 0, escala = 1;
+let ultimoX = window.innerWidth/2;
+let ultimoY = window.innerHeight/2;
 
-// 1. LIGA A CÂMERA
-navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
-  video.srcObject = stream;
-});
+video.onplay = () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  detectar();
+}
 
-// 2. CONFIGURA A MÃO
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({maxNumHands: 1, minDetectionConfidence: 0.5});
+function detectar(){
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const dados = ctx.getImageData(0,0,canvas.width,canvas.height).data;
 
-hands.onResults((results)=>{
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+  let totalX=0, totalY=0, total=0;
 
-  if(results.multiHandLandmarks && results.multiHandLandmarks.length > 0){
-    const l = results.multiHandLandmarks[0];
-
-    // PEGA POSIÇÃO DO DEDO INDICADOR
-    let x = (1 - l[8].x) * window.innerWidth; // Inverte pq espelha
-    let y = l[8].y * window.innerHeight;
-    cursor.style.left = x+'px';
-    cursor.style.top = y+'px';
-
-    // GESTO 1: GIRAR O CUBO PRA QUALQUER LADO
-    // Quanto mais longe do centro, mais gira
-    anguloY = (x - window.innerWidth/2) * 0.2;
-    anguloX = (y - window.innerHeight/2) * 0.2;
-    cubo.style.transform = `translate(-50%,-50%) rotateX(${anguloX}deg) rotateY(${anguloY}deg) scale(${escala})`;
-
-    // GESTO 2: CLICAR = PINÇA POLEGAR + INDICADOR
-    const distPinca = Math.hypot(l[4].x - l[8].x, l[4].y - l[8].y);
-    if(distPinca < 0.05){
-      cursor.classList.add('click');
-      cubo.style.borderColor = '#ff00ff';
-      cubo.style.boxShadow = '0 0 100px #ff00ff';
-    }else{
-      cursor.classList.remove('click');
-      cubo.style.borderColor = '#00f5ff';
-      cubo.style.boxShadow = '0 0 50px #00f5ff';
+  // PROCURA PIXEL CLARO = SUA MÃO
+  for(let y=0; y<canvas.height; y+=10){
+    for(let x=0; x<canvas.width; x+=10){
+      let i = (y*canvas.width + x)*4;
+      let r=dados[i], g=dados[i+1], b=dados[i+2];
+      // Detecta tom de pele
+      if(r>90 && g>40 && b>20 && r>g && r>b){
+        totalX += x;
+        totalY += y;
+        total++;
+      }
     }
-
-    // GESTO 3: ZOOM = ABRIR E FECHAR A MÃO
-    const distMao = Math.hypot(l[5].x - l[17].x, l[5].y - l[17].y); // Base da mão
-    escala = 0.5 + distMao * 3; // Mapeia abertura pra escala
-    if(escala > 2) escala = 2;
-    if(escala < 0.5) escala = 0.5;
-
-    drawConnectors(ctx, l, HAND_CONNECTIONS, {color: '#00f5ff', lineWidth: 3});
-    drawLandmarks(ctx, l, {color: '#00f5ff', lineWidth: 2});
   }
-});
 
-// 3. INICIA CÂMERA PRO MEDIAPIPE
-const camera = new Camera(video, {
-  onFrame: async () => { await hands.send({image: video}); },
-  width: 1280, height: 720
-});
-camera.start();
+  if(total > 50){ // Se achou a mão
+    let x = (canvas.width - totalX/total); // Inverte
+    let y = totalY/total;
 
-window.addEventListener('resize', ()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-})
+    x = x * window.innerWidth / canvas.width;
+    y = y * window.innerHeight / canvas.height;
+
+    ponto.style.left = x+'px';
+    ponto.style.top = y+'px';
+
+    // GESTO 1: GIRAR - Quanto mais longe do centro mais gira
+    let rotY = (x - window.innerWidth/2) * 0.3;
+    let rotX = (y - window.innerHeight/2) * 0.3;
+
+    // GESTO 2: ZOOM - Quanto mais perto da câmera maior fica
+    let dist = Math.hypot(x - ultimoX, y - ultimoY);
+    let escala = 1 + dist * 0.01;
+    if(escala > 2) escala = 2;
+
+    cubo.style.transform = `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${escala})`;
+
+    ultimoX = x; ultimoY = y;
+  }
+  requestAnimationFrame(detectar);
+}
 </script>
 </body>
 </html>
