@@ -2,84 +2,136 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>K-CUBO RAPIDO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KORVIL OS v2.0</title>
 <style>
-body{margin:0;background:#000;overflow:hidden}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
-#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:22px;text-shadow:0 0 10px #00f5ff;font-family:Arial;z-index:10}
-#cubo{position:absolute;top:50%;left:50%;width:250px;height:250px;border:5px solid #00f5ff;box-shadow:0 0 60px #00f5ff;transform:translate(-50%,-50%);z-index:5;transition:0.05s}
-#ponto{position:absolute;width:30px;height:30px;background:#ff00ff;border-radius:50%;box-shadow:0 0 30px #ff00ff;z-index:6}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:'Orbitron';color:#00f5ff}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1;opacity:0.3}
+#canvas{position:absolute;z-index:2;pointer-events:none}
+
+#hud{position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.canto{position:absolute;width:200px;height:200px;border:3px solid #00f5ff;box-shadow:0 0 30px #00f5ff}
+#tl{top:20px;left:20px;border-right:0;border-bottom:0}
+#tr{top:20px;right:20px;border-left:0;border-bottom:0}
+#bl{bottom:20px;left:20px;border-right:0;border-top:0}
+#br{bottom:20px;right:20px;border-left:0;border-top:0}
+
+#info{position:absolute;top:30px;width:100%;text-align:center;font-size:20px;text-shadow:0 0 20px #00f5ff;animation:pulso 2s infinite}
+#status{position:absolute;bottom:30px;width:100%;text-align:center;font-size:16px;color:#ff00ff}
+
+#cubo{position:absolute;top:50%;left:50%;width:300px;height:300px;transform:translate(-50%,-50%);z-index:4;transition:0.08s cubic-bezier(0.4,0,0.2,1)}
+.face{position:absolute;width:100%;height:100%;border:4px solid #00f5ff;background:rgba(0,245,255,0.05);box-shadow:0 0 40px #00f5ff inset}
+.f1{transform:translateZ(150px)}.f2{transform:rotateY(180deg) translateZ(150px)}
+.f3{transform:rotateY(90deg) translateZ(150px)}.f4{transform:rotateY(-90deg) translateZ(150px)}
+.f5{transform:rotateX(90deg) translateZ(150px)}.f6{transform:rotateX(-90deg) translateZ(150px)}
+
+.mao{position:absolute;width:25px;height:25px;border-radius:50%;box-shadow:0 0 25px;z-index:5;transition:0.05s}
+#m1{background:#00f5ff;box-shadow:0 0 25px #00f5ff}
+#m2{background:#ff00ff;box-shadow:0 0 25px #ff00ff}
+
+@keyframes pulso{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes explodir{0%{transform:scale(1)}50%{transform:scale(3) rotate(720deg)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
-<div id="info">PONHA A MÃO NA FRENTE DA CÂMERA | MOVA = GIRA | APROXIMA = AUMENTA</div>
+<div id="hud">
+  <div id="tl" class="canto"></div><div id="tr" class="canto"></div>
+  <div id="bl" class="canto"></div><div id="br" class="canto"></div>
+</div>
+
+<div id="info">KORVIL OS v2.0 - SISTEMA ONLINE</div>
+<div id="status">AGUARDANDO MÃOS...</div>
+
 <video id="video" autoplay playsinline></video>
-<div id="cubo"></div>
-<div id="ponto"></div>
+<canvas id="canvas"></canvas>
+
+<div id="cubo">
+  <div class="face f1"></div><div class="face f2"></div><div class="face f3"></div>
+  <div class="face f4"></div><div class="face f5"></div><div class="face f6"></div>
+</div>
+
+<div id="m1" class="mao"></div>
+<div id="m2" class="mao"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="gestos.js"></script>
 
 <script>
-// MÉTODO RÁPIDO: SEGUE A COR DA PELE
 const video = document.getElementById('video');
-const cubo = document.getElementById('cubo');
-const ponto = document.getElementById('ponto');
-const canvas = document.createElement('canvas');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const cubo = document.getElementById('cubo');
+const m1 = document.getElementById('m1');
+const m2 = document.getElementById('m2');
+const status = document.getElementById('status');
 
-navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{video.srcObject=stream});
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let ultimoX = window.innerWidth/2;
-let ultimoY = window.innerHeight/2;
+let rotX=0, rotY=0, escala=1, targetEscala=1;
+const detector = new DetectorGestos();
 
-video.onplay = () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  detectar();
-}
+// LIGA CÂMERA
+navigator.mediaDevices.getUserMedia({video:{width:1280,height:720}}).then(s=>{video.srcObject=s});
 
-function detectar(){
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const dados = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+// MEDIAPIPE
+const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+hands.setOptions({maxNumHands:2, minDetectionConfidence:0.7, minTrackingConfidence:0.7});
 
-  let totalX=0, totalY=0, total=0;
+hands.onResults(r=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(r.image,0,0,canvas.width,canvas.height);
 
-  // PROCURA PIXEL CLARO = SUA MÃO
-  for(let y=0; y<canvas.height; y+=10){
-    for(let x=0; x<canvas.width; x+=10){
-      let i = (y*canvas.width + x)*4;
-      let r=dados[i], g=dados[i+1], b=dados[i+2];
-      // Detecta tom de pele
-      if(r>90 && g>40 && b>20 && r>g && r>b){
-        totalX += x;
-        totalY += y;
-        total++;
-      }
+  const maos = r.multiHandLandmarks;
+  if(maos.length > 0){
+    status.innerText = `MÃOS DETECTADAS: ${maos.length}`;
+
+    // MÃO 1
+    const p1 = maos[0][8];
+    const x1 = (1-p1.x)*window.innerWidth;
+    const y1 = p1.y*window.innerHeight;
+    m1.style.left = x1+'px'; m1.style.top = y1+'px';
+
+    rotY = (x1 - window.innerWidth/2) * 0.4;
+    rotX = (y1 - window.innerHeight/2) * 0.4;
+
+    // MÃO 2
+    if(maos.length > 1){
+      const p2 = maos[1][8];
+      const x2 = (1-p2.x)*window.innerWidth;
+      const y2 = p2.y*window.innerHeight;
+      m2.style.opacity = 1; m2.style.left = x2+'px'; m2.style.top = y2+'px';
+
+      const gesto = detector.detectarDuasMaos(maos[0], maos[1], {x:x1,y:y1}, {x:x2,y:y2});
+      detector.executar(gesto, cubo);
+    }else{
+      m2.style.opacity = 0;
+      const gesto = detector.detectarMao(maos[0]);
+      detector.executar(gesto, cubo);
     }
+
+    drawConnectors(ctx, maos[0], HAND_CONNECTIONS, {color:'#00f5ff', lineWidth:2});
+    if(maos[1]) drawConnectors(ctx, maos[1], HAND_CONNECTIONS, {color:'#ff00ff', lineWidth:2});
+  }else{
+    status.innerText = "AGUARDANDO MÃOS...";
   }
 
-  if(total > 50){ // Se achou a mão
-    let x = (canvas.width - totalX/total); // Inverte
-    let y = totalY/total;
+  // ANIMAÇÃO SUAVE
+  escala += (targetEscala - escala) * 0.2;
+  cubo.style.transform = `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${escala})`;
+});
 
-    x = x * window.innerWidth / canvas.width;
-    y = y * window.innerHeight / canvas.height;
+const camera = new Camera(video, {onFrame: async()=>await hands.send({image:video}), width:1280, height:720});
+camera.start();
 
-    ponto.style.left = x+'px';
-    ponto.style.top = y+'px';
-
-    // GESTO 1: GIRAR - Quanto mais longe do centro mais gira
-    let rotY = (x - window.innerWidth/2) * 0.3;
-    let rotX = (y - window.innerHeight/2) * 0.3;
-
-    // GESTO 2: ZOOM - Quanto mais perto da câmera maior fica
-    let dist = Math.hypot(x - ultimoX, y - ultimoY);
-    let escala = 1 + dist * 0.01;
-    if(escala > 2) escala = 2;
-
-    cubo.style.transform = `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${escala})`;
-
-    ultimoX = x; ultimoY = y;
-  }
-  requestAnimationFrame(detectar);
+window.setTargetEscala = (v)=>{targetEscala = v};
+window.explodirCubo = ()=>{
+  cubo.style.animation = 'explodir 0.5s';
+  setTimeout(()=>cubo.style.animation='', 500);
 }
 </script>
 </body>
