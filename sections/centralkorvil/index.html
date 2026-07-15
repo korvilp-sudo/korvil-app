@@ -59,35 +59,6 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 
 .logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;cursor:pointer;}
 iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;display:block;}
-
-.modal{position:fixed;inset:0;background:#000f;display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
-.modal.ativo{display:flex;}
-.modal-box{background:#0a0a0a;border:2px solid var(--c);border-radius:14px;padding:22px;width:92%;max-width:400px;animation:fadeIn.3s;box-shadow:0 0 25px var(--c)30;}
-.modal-box input{width:100%;padding:14px;margin:8px 0;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#fff;font-size:15px;outline:none;}
-.modal-box input:focus{border-color:var(--c);box-shadow:0 0 10px var(--c);}
-
-.kai-footer{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 16px;z-index:98;pointer-events:none;}
-.scene{width:132px;height:132px;perspective:1400px;flex-shrink:0;position:relative;pointer-events:auto;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;touch-action:manipulation;}
-.cube{width:132px;height:132px;position:relative;transform-style:preserve-3d;animation:spin3d 7s linear infinite;cursor:pointer;transition:transform.4s;-webkit-touch-callout:none;}
-.cube.segurando{animation:none; transform:scale(1.1); box-shadow:0 0 30px var(--c);}
-.cube-face{position:absolute;width:132px;height:132px;background:linear-gradient(145deg,var(--c),var(--c2));border:3px solid var(--c);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:26px;border-radius:16px;box-shadow:0 12px 40px var(--c)90;user-select:none;}
-.front{transform:rotateY(0deg) translateZ(66px);}.back{transform:rotateY(180deg) translateZ(66px);}
-.right{transform:rotateY(90deg) translateZ(66px);}.left{transform:rotateY(-90deg) translateZ(66px);}
-.top{transform:rotateX(90deg) translateZ(66px);}.bottom{transform:rotateX(-90deg) translateZ(66px);}
-.message-box{max-width:280px;padding:16px;background:rgba(0,245,255,.15);border:2px solid var(--c);border-radius:12px;color:#fff;font-size:14px;font-weight:600;backdrop-filter:blur(8px);animation:fadeIn.4s;min-height:58px;display:flex;align-items:center;position:relative;pointer-events:auto;box-shadow:0 0 15px var(--c)20;}
-.message-box::after{content:'';position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:12px solid var(--c);filter:drop-shadow(0 0 5px var(--c));}
-
-.kai-menu-box{position:absolute;bottom:140px;right:0;width:270px;height:180px;background:rgba(5,5,5,.98);border:2px solid var(--c);border-radius:12px;padding:0;display:none;z-index:99;backdrop-filter:blur(12px);pointer-events:auto;box-shadow:0 0 20px var(--c)40;flex-direction:column;overflow:hidden;}
-.kai-menu-box.ativo{display:flex;animation:fadeIn.25s;}
-.kai-head{padding:12px;background:var(--c);color:#000;font-weight:800;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
-.kai-head svg{width:18px;height:18px;stroke:#000;cursor:pointer;}
-.kai-menu-btn{display:block;width:100%;padding:14px;background:transparent;border:0;border-bottom:1px solid #222;color:var(--text);text-align:left;font-size:14px;font-weight:600;cursor:pointer;}
-.kai-menu-btn:active{background:#111;color:var(--c);}
-.kai-menu-btn:last-child{border:0;}
-
-/* BOTAO FECHAR K-AI */
-.kai-fechar{position:fixed;top:20px;right:20px;width:50px;height:50px;background:var(--c);color:#000;border:none;border-radius:50%;font-size:24px;font-weight:900;cursor:pointer;z-index:10000;display:none;box-shadow:0 0 20px var(--c)}
-.kai-fechar.ativo{display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -128,7 +99,9 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <h4>CURSOS E ÁREAS</h4>
     <div class="sub-aba">
       <ul>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/desenvolvimento-humano/index.html'">DESENVOLVIMENTO HUMANO</li>
+        <li onclick="window.location.href='desenvolvimento-humano/index.html'">DESENVOLVIMENTO HUMANO</li>
+        <li onclick="window.location.href='desenvolvimento-humano/cursos/index.html'">CURSOS</li>
+      </ul>
     </div>
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
@@ -138,10 +111,10 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <h4>PARCERIAS COM PROFISSIONAIS</h4>
     <div class="sub-aba">
       <ul>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/negocios/franquias/index.html'">🏢 Franquias KORVIL</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/negocios/afiliados/index.html'">🤝 Programa de Afiliados</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/negocios/fornecedores/index.html'">📦 Fornecedores e Distribuidores</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/negocios/consultoria/index.html'">📊 Consultoria de Negócios</li>
+        <li onclick="window.location.href='negocios/franquias/index.html'">🏢 Franquias KORVIL</li>
+        <li onclick="window.location.href='negocios/afiliados/index.html'">🤝 Programa de Afiliados</li>
+        <li onclick="window.location.href='negocios/fornecedores/index.html'">📦 Fornecedores e Distribuidores</li>
+        <li onclick="window.location.href='negocios/consultoria/index.html'">📊 Consultoria de Negócios</li>
       </ul>
     </div>
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
@@ -152,10 +125,10 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
     <h4>PROFISSIONAIS ESPECIALIZADOS</h4>
     <div class="sub-aba">
       <ul>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/servicos/marketing-digital/index.html'">📣 Marketing Digital e Tráfego Pago</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/servicos/criacao-sites/index.html'">💻 Criação de Sites e Lojas</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/servicos/design/index.html'">🎨 Design e Identidade Visual</li>
-        <li onclick="window.location.href='https://korvilp-sudo.github.io/kc/sections/centralkorvil/servicos/suporte-tecnico/index.html'">🛠️ Suporte Técnico 24h</li>
+        <li onclick="window.location.href='servicos/marketing-digital/index.html'">📣 Marketing Digital e Tráfego Pago</li>
+        <li onclick="window.location.href='servicos/criacao-sites/index.html'">💻 Criação de Sites e Lojas</li>
+        <li onclick="window.location.href='servicos/design/index.html'">🎨 Design e Identidade Visual</li>
+        <li onclick="window.location.href='servicos/suporte-tecnico/index.html'">🛠️ Suporte Técnico 24h</li>
       </ul>
     </div>
     <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
@@ -172,43 +145,8 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   </section>
 </main>
 
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h2 class="logo">KORVIL</h2>
-    <input id="nome" placeholder="Seu Nome Completo" required>
-    <input id="whats" placeholder="Seu WhatsApp com DDD" required>
-    <button class="btn" onclick="enviarWhats()">Enviar para WhatsApp</button>
-    <button class="btn voltar" onclick="fecharForm()">Cancelar</button>
-  </div>
-</div>
-
-<footer class="kai-footer" id="kaiFooter">
-  <div class="message-box" id="cubeMessage">Segure 5s para abrir K-AI</div>
-  <div class="scene" id="cubeScene">
-    <div class="cube" id="cubeKAI">
-      <div class="cube-face front">K-AI</div><div class="cube-face back">K-AI</div>
-      <div class="cube-face right">K-AI</div><div class="cube-face left">K-AI</div>
-      <div class="cube-face top">K-AI</div><div class="cube-face bottom">K-AI</div>
-    </div>
-    <div class="kai-menu-box" id="kaiMenu">
-      <div class="kai-head">MINI MENU <svg onclick="toggleKaiMenu()" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
-      <button class="kai-menu-btn" onclick="abrirTela('kai-sobre');toggleKaiMenu()">Sobre o KORVIL</button>
-      <button class="kai-menu-btn" onclick="abrirTela('kai-politica');toggleKaiMenu()">Política e Privacidade</button>
-      <button class="kai-menu-btn" onclick="abrirWhats('K-AI - Atendimento')">Falar no Whats</button>
-    </div>
-  </div>
-</footer>
-
-<!-- IFRAME DO K-AI - ORIGEM UNICA -->
-<iframe id="kaiFrame" src="https://korvilp-sudo.github.io/kc/kai-core/index.html?v=2026" style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:9999; background:#000"></iframe>
-<button class="kai-fechar" id="btnFecharKAI" onclick="fecharKAI()">X</button>
-
 <script>
 const WHATS_NUMBER = '5513997690898';
-let textoWhats = '';
-let holdTimer = null;
-let contagemAtiva = false;
-let isHolding = false;
 
 function irParaKTP(){ 
   abrirTela('ktp-iframe'); 
@@ -220,116 +158,9 @@ function abrirTela(id){
   const tela = document.getElementById(id);
   if(tela){ tela.classList.add('ativa'); }
   window.scrollTo({top:0, behavior:'smooth'}); 
-  kaiMenu.classList.remove('ativo'); 
 }
 
 function toggleMenu(){ document.getElementById('menu').classList.toggle('ativo'); document.getElementById('overlay').classList.toggle('ativo'); }
-function toggleKaiMenu(){ kaiMenu.classList.toggle('ativo'); }
-function abrirWhats(mensagem){ textoWhats = mensagem; document.getElementById('modal').classList.add('ativo'); kaiMenu.classList.remove('ativo'); }
-function fecharForm(){ document.getElementById('modal').classList.remove('ativo'); }
-function enviarWhats(){ const nome=document.getElementById('nome').value; const whats=document.getElementById('whats').value; if(!nome||!whats){alert('Preencha Nome e WhatsApp');return;} const msg=`*KORVIL - ${textoWhats}*\n\n*DADOS DO CLIENTE:*\nNome: ${nome}\nWhats: ${whats}\n\nOla, vim do site KORVIL`; window.open(`https://wa.me/55${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank'); fecharForm(); }
-
-// ===== FUNÇÕES K-AI IFRAME =====
-function abrirKAI(){
-  document.getElementById('kaiFrame').style.display = 'block';
-  document.getElementById('btnFecharKAI').classList.add('ativo');
-  document.getElementById('kaiFooter').style.display = 'none';
-}
-function fecharKAI(){
-  document.getElementById('kaiFrame').style.display = 'none';
-  document.getElementById('btnFecharKAI').classList.remove('ativo');
-  document.getElementById('kaiFooter').style.display = 'flex';
-}
-
-// ===== K-AI COMUNICAÇÃO GLOBAL =====
-const KAI_ORIGEM = "https://korvilp-sudo.github.io/korvil-app/kai-core/index.html";
-
-function mandarProKAI(comando){
-  const frame = document.getElementById('kaiFrame');
-  if(frame.contentWindow){
-    frame.contentWindow.postMessage({tipo: "comando", texto: comando}, KAI_ORIGEM);
-  }
-}
-
-window.addEventListener("message", (e) => {
-  if(e.origin !== KAI_ORIGEM) return;
-  if(e.data.tipo === "resposta"){
-    document.getElementById('cubeMessage').innerText = e.data.texto;
-    falar(e.data.texto);
-  }
-});
-
-function falar(txt){
-  const voz = new SpeechSynthesisUtterance(txt);
-  voz.lang='pt-BR'; speechSynthesis.speak(voz);
-}
-
-// ===== LOGICA DO CUBO SEGREDO =====
-const cube = document.getElementById("cubeKAI");
-const kaiMenu = document.getElementById("kaiMenu");
-const cubeMsg = document.getElementById("cubeMessage");
-
-function iniciarSegurar(e){
-  e.preventDefault();
-  if(contagemAtiva || isHolding) return;
-  isHolding = true;
-  cube.classList.add('segurando');
-  let segundos = 5;
-  cubeMsg.innerText = `Segurando... ${segundos}s`;
-  
-  holdTimer = setInterval(()=>{
-    segundos--;
-    if(segundos > 0){
-      cubeMsg.innerText = `Segurando... ${segundos}s`;
-    } else {
-      clearInterval(holdTimer);
-      isHolding = false;
-      iniciarContagem();
-    }
-  }, 1000);
-}
-
-function cancelarSegurar(){
-  clearInterval(holdTimer);
-  isHolding = false;
-  cube.classList.remove('segurando');
-  if(!contagemAtiva) cubeMsg.innerText = 'Segure 5s para abrir K-AI';
-}
-
-function iniciarContagem(){
-  contagemAtiva = true;
-  cube.classList.remove('segurando');
-  let cont = 3;
-  cubeMsg.innerText = `Abrindo K-AI em ${cont}...`;
-  
-  let contTimer = setInterval(()=>{
-    cont--;
-    if(cont > 0){
-      cubeMsg.innerText = `Abrindo K-AI em ${cont}...`;
-    } else {
-      clearInterval(contTimer);
-      cubeMsg.innerText = 'Abrindo K-AI...';
-      setTimeout(()=>{ 
-        abrirKAI(); 
-        contagemAtiva = false;
-      }, 800);
-    }
-  }, 1000);
-}
-
-// Clique normal = Mini Menu
-cube.addEventListener('click', (e) => {
-  if(!contagemAtiva && !isHolding) toggleKaiMenu();
-});
-
-// BLOQUEAR MENU DO NAVEGADOR
-cube.addEventListener('contextmenu', e => e.preventDefault());
-cube.addEventListener('mousedown', iniciarSegurar);
-cube.addEventListener('mouseup', cancelarSegurar);
-cube.addEventListener('mouseleave', cancelarSegurar);
-cube.addEventListener('touchstart', iniciarSegurar, {passive: false});
-cube.addEventListener('touchend', cancelarSegurar);
-cube.addEventListener('touchmove', cancelarSegurar);
 </script>
 </body>
 </html>
