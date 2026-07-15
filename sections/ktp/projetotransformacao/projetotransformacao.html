@@ -61,7 +61,7 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
 #modal-aluno.ativo{display:flex;}
 .modal-card{background:var(--card);border:2px solid var(--c);border-radius:10px;padding:16px;width:100%;max-width:400px;}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:4px;padding:4px 8px;font-weight:900;cursor:pointer;}
+.btn-fechar{background:#ff4444;color:#fff;border:0;border-radius:4px;padding:4px 8px;font-weight:900;cursor:pointer;}
 .busca-id{display:flex;gap:6px;}
 .busca-id input{flex:1;padding:8px;background:#000;border:1px solid var(--borda);border-radius:4px;color:#fff;font-size:12px;}
 .busca-id button{padding:8px 10px;background:var(--c);color:#000;border:0;border-radius:4px;font-weight:900;cursor:pointer;}
@@ -95,15 +95,24 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
       <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
     </div>
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="COLAR ID">
+      <input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
-    <div id="resultado-aluno" style="margin-top:10px;"></div>
+    <div id="resultado-aluno" style="margin-top:10px;font-size:11px;"></div>
   </div>
 </div>
 
 <script>
 const PASTA_IMG = 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/imagens/2026/imagens-dos-metodos/';
+
+// LISTA DE IDS PERMITIDOS
+const ALUNOS_DB = {
+  "carla38": {nome:"Maria Carla"},
+  "vhellem39": {nome:"Hellem Vitoria"},
+  "gon19": {nome:"José Gonzaga"},
+  "dani36": {nome:"Daniele Vieira Leite"},
+  "ktp1": {nome:"SAY KORVIL"}
+};
 
 // LINHA DO TEMPO COMPLETA 2026
 const CALENDARIO_KTP = {
@@ -122,7 +131,7 @@ function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDate
 function getSegunda(d){const dt=new Date(d);dt.setDate(dt.getDate()-dt.getDay()+1);return dt.toISOString().split('T')[0];}
 
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
-function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
+function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');document.getElementById('input-id-aluno').focus();}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 
 function carregarMenu(){
@@ -135,7 +144,7 @@ function carregarMenu(){
     const faseId=`fase${i}`;
     html+=`<div class="aba-fase" onclick="document.getElementById('${faseId}').classList.toggle('ativa');this.classList.toggle('ativa')">${fase} <span class="seta">›</span></div>`;
     html+=`<div class="semanas-da-fase" id="${faseId}">`;
-    fases.forEach(s=>{
+    fases[fase].forEach(s=>{
       let classe=s.data===hoje?'ativa':'';
       html+=`<div class="semana-item ${classe}" onclick="mostrarSemana('${s.data}')">${formatarData(s.data)} - ${s.nome}</div>`;
     });
@@ -181,7 +190,24 @@ function carregarSemanaAtual(){
 
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  document.getElementById('resultado-aluno').innerHTML=id==='ktp1'?'<div style="color:var(--ok)">Senha mestra. Use o cronograma separado.</div>':'<div style="color:var(--erro)">ID não encontrado</div>';
+
+  if(!id){
+    document.getElementById('resultado-aluno').innerHTML='<div style="color:#ffaa00">Digite um ID</div>';
+    return;
+  }
+
+  if(ALUNOS_DB[id]){
+    localStorage.setItem('idLogado', id); // SALVA O ID
+    fecharBuscaAluno(); // FECHA O MODAL
+    carregarSemanaAtual(); // ABRE O CRONOGRAMA
+    document.getElementById('resultado-aluno').innerHTML='';
+    document.getElementById('input-id-aluno').value='';
+    if(id==='ktp1'){
+      alert('Acesso ADMIN: Cronograma completo liberado');
+    }
+  } else {
+    document.getElementById('resultado-aluno').innerHTML='<div style="color:#ff4444">ID não encontrado</div>';
+  }
 }
 
 window.onload=function(){carregarMenu();carregarSemanaAtual();};
