@@ -234,7 +234,7 @@ function toggleAba(faseId){
   document.querySelector(`[onclick="toggleAba('${faseId}')"]`).classList.add('ativa');
 }
 
-// ÚNICA COISA QUE MUDEI: MENU COM TODA LINHA DO TEMPO
+// FUNÇÃO DO MENU - AGORA CHAMADA NO ONLOAD
 function carregarMenu(){
   const hoje = new Date();
   const chaveHoje = getSegundaSemana(hoje).toISOString().split('T')[0];
@@ -247,12 +247,13 @@ function carregarMenu(){
   });
 
   let html = '<div class="abas-fases">';
+  let indiceAbaAtual = 0;
 
   Object.keys(fases).forEach((fase, index)=>{
+    if(fases.some(s => s.data === chaveHoje)) indiceAbaAtual = index;
     const faseId = `fase-${index}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-
     fases.forEach(s => {
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
@@ -263,7 +264,7 @@ function carregarMenu(){
   });
   html += '</div>';
   document.getElementById('menu-lateral').innerHTML = html;
-  toggleAba('fase-0');
+  toggleAba(`fase-${indiceAbaAtual}`);
 }
 
 function mostrarSemana(chaveData){
@@ -326,6 +327,7 @@ function enviarKAI(){
   setTimeout(()=>addMsgAI(`${semana.texto}`), 500);
 }
 
+// CORRIGIDO: AGORA CHAMA AS FUNÇÕES
 window.onload = function(){
   carregarMenu();
   carregarSemanaAtual();
