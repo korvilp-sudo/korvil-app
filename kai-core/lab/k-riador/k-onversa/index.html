@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-ONVERSA</title>
+<style>
+:root{
+  --bg:#0a0a0f; --card:#12121a; --borda:#222233; --c:#00f5ff; 
+  --text:#e0e0ff; --text2:#8892b0; --meu:#003f5c;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden}
+
+/* LOGIN */
+#tela-login{width:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a0f,#1a1a2e)}
+.login-card{background:var(--card);padding:40px;border-radius:20px;border:1px solid var(--borda);text-align:center;width:90%;max-width:350px;box-shadow:0 0 30px #00f5ff22}
+.login-card img{width:80px;margin-bottom:15px}
+.login-card h2{color:var(--c);margin-bottom:5px}
+.login-card p{color:var(--text2);font-size:12px;margin-bottom:20px}
+.login-card input{width:100%;padding:12px;background:#1a1a2e;border:1px solid var(--borda);border-radius:10px;color:var(--text);margin-bottom:15px}
+.login-card button{width:100%;padding:12px;background:var(--c);color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:.2s}
+.login-card button:hover{transform:scale(1.02);box-shadow:0 0 15px var(--c)}
+
+/* APP */
+#app{display:none;width:100%;height:100vh}
+.container{display:flex;height:100vh;width:100%}
+
+/* SIDEBAR CONTATOS */
+.sidebar{width:320px;background:var(--card);border-right:1px solid var(--borda);display:flex;flex-direction:column}
+.header-app{padding:15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--borda)}
+.header-app img{width:35px}
+.header-app h1{font-size:18px;color:var(--c)}
+.contatos{flex:1;overflow-y:auto}
+.contato{padding:15px;display:flex;gap:12px;cursor:pointer;border-bottom:1px solid #1a1a2e;transition:.2s}
+.contato:hover{background:#1a1a2e}
+.contato.ativo{background:var(--meu)}
+.avatar{width:45px;height:45px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;color:#000;font-weight:700}
+.info-contato h3{font-size:14px}
+.info-contato p{font-size:12px;color:var(--text2)}
+
+/* CHAT */
+.chat-area{flex:1;display:flex;flex-direction:column;background:#0f0f17}
+.chat-header{padding:15px;border-bottom:1px solid var(--borda);display:flex;align-items:center;gap:10px}
+.chat-header h2{font-size:16px}
+.chat-header span{font-size:11px;color:var(--text2)}
+
+.mensagens{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:60%;padding:10px 14px;border-radius:15px;font-size:14px;line-height:1.4}
+.msg.eu{background:var(--meu);align-self:flex-end;border-bottom-right-radius:5px}
+.msg.outro{background:var(--card);align-self:flex-start;border-bottom-left-radius:5px;border:1px solid var(--borda)}
+.msg .hora{font-size:10px;color:var(--text2);text-align:right;margin-top:4px}
+
+.input-area{padding:15px;display:flex;gap:10px;border-top:1px solid var(--borda)}
+.input-area input{flex:1;padding:12px;background:#1a1a2e;border:1px solid var(--borda);border-radius:20px;color:var(--text)}
+.input-area button{padding:12px 20px;background:var(--c);color:#000;border:none;border-radius:20px;font-weight:700;cursor:pointer}
+
+/* K-AI LATERAL */
+.kai-lateral{width:350px;background:var(--card);border-left:1px solid var(--borda);display:flex;flex-direction:column}
+.kai-header{padding:15px;border-bottom:1px solid var(--borda);text-align:center}
+.kai-header h2{color:var(--c);font-size:16px}
+.kai-chat{flex:1;padding:15px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.kai-msg{background:#1a1a2e;padding:10px;border-radius:10px;font-size:13px}
+.kai-msg.kai{background:var(--meu)}
+.kai-input{display:flex;padding:10px;border-top:1px solid var(--borda)}
+.kai-input input{flex:1;padding:10px;background:#0a0a0f;border:1px solid var(--borda);border-radius:10px;color:var(--text)}
+.kai-input button{background:var(--c);border:none;padding:10px;border-radius:10px;margin-left:5px;cursor:pointer;font-weight:700;color:#000}
+
+@media(max-width:900px){.kai-lateral{display:none}}
+@media(max-width:700px){.sidebar{width:100%}.chat-area{display:none}}
+</style>
+</head>
+<body>
+
+<!-- TELA LOGIN -->
+<div id="tela-login">
+  <div class="login-card">
+    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png">
+    <h2>K-ONVERSA</h2>
+    <p>Conecte. Converse. KORVIL.</p>
+    <input type="text" id="meu-nome" placeholder="Digite seu ID K-TP">
+    <button onclick="entrar()">ENTRAR</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="header-app">
+        <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png">
+        <h1>K-ONVERSA</h1>
+      </div>
+      <div class="contatos" id="lista-contatos">
+        <div class="contato" onclick="abrirChat('K-AI')">
+          <div class="avatar">AI</div>
+          <div class="info-contato"><h3>K-AI</h3><p>Assistente KORVIL</p></div>
+        </div>
+        <div class="contato" onclick="abrirChat('Suporte KTP')">
+          <div class="avatar">S</div>
+          <div class="info-contato"><h3>Suporte KTP</h3><p>Online</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-area">
+      <div class="chat-header"><h2 id="chat-nome">Selecione um chat</h2></div>
+      <div class="mensagens" id="mensagens"></div>
+      <div class="input-area">
+        <input type="text" id="input-msg" placeholder="Digite uma mensagem" onkeydown="if(event.key==='Enter')enviarMsg()">
+        <button onclick="enviarMsg()">ENVIAR</button>
+      </div>
+    </div>
+
+    <!-- K-AI -->
+    <div class="kai-lateral">
+      <div class="kai-header"><h2>K-AI Assistente</h2></div>
+      <div class="kai-chat" id="kai-chat">
+        <div class="kai-msg kai">Olá! Sou o K-AI. Como posso te ajudar hoje?</div>
+      </div>
+      <div class="kai-input">
+        <input type="text" id="kai-input" placeholder="Pergunte ao K-AI..." onkeydown="if(event.key==='Enter')perguntarKai()">
+        <button onclick="perguntarKai()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let meuNome = "";
+let chatAtual = "";
+const canal = new BroadcastChannel('k-onversa');
+
+// ENTRAR
+function entrar(){
+  meuNome = document.getElementById('meu-nome').value.trim();
+  if(!meuNome) return alert("Digite seu ID");
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('app').style.display='flex';
+  carregarMensagens();
+}
+
+// ABRIR CHAT
+function abrirChat(nome){
+  chatAtual = nome;
+  document.getElementById('chat-nome').innerText = nome;
+  document.querySelectorAll('.contato').forEach(c=>c.classList.remove('ativo'));
+  event.target.closest('.contato').classList.add('ativo');
+  carregarMensagens();
+}
+
+// ENVIAR MSG
+function enviarMsg(){
+  const input = document.getElementById('input-msg');
+  const texto = input.value.trim();
+  if(!texto || !chatAtual) return;
+  const msg = {de:meuNome, para:chatAtual, texto, hora:new Date().toLocaleTimeString().slice(0,5)};
+  salvarMsg(msg);
+  canal.postMessage(msg);
+  input.value="";
+}
+
+// SALVAR E CARREGAR
+function salvarMsg(msg){
+  const chave = `chat_${chatAtual}`;
+  let msgs = JSON.parse(localStorage.getItem(chave) || "[]");
+  msgs.push(msg);
+  localStorage.setItem(chave, JSON.stringify(msgs));
+  mostrarMsg(msg);
+}
+function carregarMensagens(){
+  document.getElementById('mensagens').innerHTML="";
+  const chave = `chat_${chatAtual}`;
+  let msgs = JSON.parse(localStorage.getItem(chave) || "[]");
+  msgs.forEach(mostrarMsg);
+}
+function mostrarMsg(msg){
+  const div = document.createElement('div');
+  div.className = 'msg ' + (msg.de===meuNome ? 'eu' : 'outro');
+  div.innerHTML = `${msg.texto}<div class="hora">${msg.hora}</div>`;
+  document.getElementById('mensagens').appendChild(div);
+  document.getElementById('mensagens').scrollTop = 99999;
+}
+
+// RECEBER EM TEMPO REAL
+canal.onmessage = e => {
+  if(e.data.para===meuNome || e.data.de===chatAtual){
+    if(chatAtual===e.data.de) mostrarMsg(e.data);
+    salvarMsg(e.data);
+  }
+}
+
+// K-AI
+function perguntarKai(){
+  const input = document.getElementById('kai-input');
+  const pergunta = input.value.trim();
+  if(!pergunta) return;
+  addKaiMsg(pergunta, 'eu');
+  input.value="";
+  
+  setTimeout(()=>{
+    let resposta = "Entendi. Como K-AI do KORVIL, posso te ajudar com treinos, dieta e sistemas. ";
+    if(pergunta.toLowerCase().includes("treino")) resposta = "Quer que eu monte um treino ABC pra você? Me diga seu objetivo.";
+    if(pergunta.toLowerCase().includes("site")) resposta = "Posso gerar o código pra você no K-RIADOR. Qual app você quer criar?";
+    addKaiMsg(resposta, 'kai');
+  }, 800);
+}
+function addKaiMsg(texto, quem){
+  const div = document.createElement('div');
+  div.className = 'kai-msg ' + quem;
+  div.innerText = texto;
+  document.getElementById('kai-chat').appendChild(div);
+  document.getElementById('kai-chat').scrollTop = 99999;
+}
+</script>
+</body>
+</html>
