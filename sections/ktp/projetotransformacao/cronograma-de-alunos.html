@@ -16,7 +16,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 .container{max-width:1200px;margin:auto;padding:16px;padding-bottom:100px;}
 
-.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
 .logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
@@ -33,6 +33,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .dado-aluno b{color:var(--c);}
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
+.btn-fechar{position:absolute;top:10px;right:10px;background:var(--erro);color:#fff;border:0;border-radius:50%;width:24px;height:24px;font-weight:900;font-size:14px;cursor:pointer;line-height:24px;text-align:center;}
 
 /* TOTAIS */
 .card-totais{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px;}
@@ -64,7 +65,6 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .busca-id{display:flex;gap:6px;margin-bottom:16px;}
 .busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
 .busca-id button{padding:10px 14px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
-.btn-voltar{padding:10px 14px;background:#222;color:#fff;border:0;border-radius:6px;font-weight:900;cursor:pointer;margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -88,22 +88,18 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
     </div>
   </div>
 
-  <!-- TELA 1: DADOS DO ALUNO -->
-  <div id="tela-aluno"></div>
-
-  <!-- TELA 2: CRONOGRAMA COMPLETO -->
+  <!-- TELA 1: CRONOGRAMA COMPLETO -->
   <div id="tela-cronograma"></div>
+
+  <!-- TELA 2: DADOS DO ALUNO - AGORA EMBAIXO -->
+  <div id="tela-aluno"></div>
 </div>
 
 <script>
-// LISTA COMPLETA ATUALIZADA
 const ALUNOS_DB = {
-  // ATIVOS
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo"},
-
-  // DESATIVADOS PRESENCIAL
   "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado"},
   "joss21": {nome:"Jossiane Alves", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado"},
   "amigaadrum": {nome:"amigaadrum", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"–", freq:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado"},
@@ -135,12 +131,8 @@ const ALUNOS_DB = {
   "pati34": {nome:"Patrícia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"–", status:"Desativado"},
   "mel35": {nome:"Melissa", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado"},
   "naty17": {nome:"Natália Melo", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado"},
-
-  // DESATIVADOS ONLINE
   "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"},
   "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", freq:"–", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"},
-
-  // ADMIN
   "ktp1": {nome:"SAY KORVIL", plano:"ADMIN", horario:"--", dias:"--", freq:"--", objetivo:"ADMIN", valor:"--", venc:"--", status:"Ativo"}
 };
 
@@ -152,6 +144,8 @@ const HORARIOS_ORDEM = ["06h00 🐦","07h00 🌙","08h00 🐢","09h00","10h00 �
 function mostrarBusca(){
   document.getElementById('tela-aluno').classList.remove('ativo');
   document.getElementById('tela-cronograma').classList.remove('ativo');
+  document.getElementById('tela-aluno').innerHTML = '';
+  document.getElementById('tela-cronograma').innerHTML = '';
   document.getElementById('barra-busca').style.display = 'block';
   document.getElementById('input-id-aluno').focus();
 }
@@ -177,7 +171,7 @@ function mostrarTelaCronograma(){
   const totais = calcularTotais();
   const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
 
-  let html = `<button class="btn-voltar" onclick="mostrarBusca()">← VOLTAR BUSCA</button>`;
+  let html = `<button class="btn-fechar" onclick="mostrarBusca()">X</button>`;
 
   html += `<div class="card-totais">
     <div class="total-item"><div class="num">${totais.totalAtivos}</div><div class="label">ATIVOS</div></div>
@@ -270,9 +264,13 @@ function buscarAluno(){
     return;
   }
 
+  planoAtivo = aluno.plano;
+  mostrarTelaCronograma();
+
+  // DADOS DO ALUNO AGORA APARECEM EMBAIXO
   document.getElementById('tela-aluno').innerHTML = `
-    <button class="btn-voltar" onclick="mostrarBusca()">← VOLTAR BUSCA</button>
     <div class="card">
+      <button class="btn-fechar" onclick="mostrarBusca()">X</button>
       <div class="titulo-secao">MEUS DADOS</div>
       <div class="dado-aluno"><b>ID:</b> ${id}</div>
       <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
@@ -285,11 +283,8 @@ function buscarAluno(){
       <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
       <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
     </div>
-    <button class="btn-aluno" style="width:100%;margin-top:10px;" onclick="mostrarTelaCronograma()">VER CRONOGRAMA COMPLETO</button>
   `;
   document.getElementById('tela-aluno').classList.add('ativo');
-  document.getElementById('tela-cronograma').classList.remove('ativo');
-  document.getElementById('barra-busca').style.display = 'none';
 }
 
 window.onload = function(){
