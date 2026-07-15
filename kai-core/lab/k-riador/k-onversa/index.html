@@ -3,217 +3,237 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-ONVERSA</title>
+<title>K-SOCIAL</title>
 <style>
-:root{
-  --bg:#0a0a0f; --card:#12121a; --borda:#222233; --c:#00f5ff; 
-  --text:#e0e0ff; --text2:#8892b0; --meu:#003f5c;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden}
+:root{--bg:#000;--bg2:#121212;--bg3:#262626;--c:#00f5ff;--text:#fff;--text2:#a8a8a8;--verde:#00a884;--roxo:#a855f7}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:var(--bg);color:var(--text)}
+.tela{display:none;height:100vh;flex-direction:column}
+.tela.ativa{display:flex}
 
-/* LOGIN */
-#tela-login{width:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a0f,#1a1a2e)}
-.login-card{background:var(--card);padding:40px;border-radius:20px;border:1px solid var(--borda);text-align:center;width:90%;max-width:350px;box-shadow:0 0 30px #00f5ff22}
-.login-card img{width:80px;margin-bottom:15px}
-.login-card h2{color:var(--c);margin-bottom:5px}
-.login-card p{color:var(--text2);font-size:12px;margin-bottom:20px}
-.login-card input{width:100%;padding:12px;background:#1a1a2e;border:1px solid var(--borda);border-radius:10px;color:var(--text);margin-bottom:15px}
-.login-card button{width:100%;padding:12px;background:var(--c);color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:.2s}
-.login-card button:hover{transform:scale(1.02);box-shadow:0 0 15px var(--c)}
+/* TOPO */
+.topbar{padding:10px 16px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.topbar h1{color:var(--c);font-size:24px}
 
-/* APP */
-#app{display:none;width:100%;height:100vh}
-.container{display:flex;height:100vh;width:100%}
+/* STORIES */
+.stories{display:flex;gap:12px;padding:10px;overflow-x:auto;background:var(--bg2)}
+.story{width:66px;text-align:center;cursor:pointer}
+.story.ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.story img{width:62px;height:62px;border-radius:50%;border:2px solid var(--bg2)}
+.story p{font-size:11px;color:var(--text2);margin-top:4px}
 
-/* SIDEBAR CONTATOS */
-.sidebar{width:320px;background:var(--card);border-right:1px solid var(--borda);display:flex;flex-direction:column}
-.header-app{padding:15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--borda)}
-.header-app img{width:35px}
-.header-app h1{font-size:18px;color:var(--c)}
-.contatos{flex:1;overflow-y:auto}
-.contato{padding:15px;display:flex;gap:12px;cursor:pointer;border-bottom:1px solid #1a1a2e;transition:.2s}
-.contato:hover{background:#1a1a2e}
-.contato.ativo{background:var(--meu)}
-.avatar{width:45px;height:45px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;color:#000;font-weight:700}
-.info-contato h3{font-size:14px}
-.info-contato p{font-size:12px;color:var(--text2)}
+/* FEED + REELS */
+.feed{flex:1;overflow-y:auto}
+.post{background:var(--bg2);margin-bottom:15px}
+.post-header{display:flex;align-items:center;gap:10px;padding:10px}
+.post-header img{width:32px;height:32px;border-radius:50%}
+.post-header.btn-seguir{margin-left:auto;background:var(--c);color:#000;border:none;padding:5px 10px;border-radius:5px;font-weight:700;cursor:pointer}
+.post-media{width:100%;max-height:600px;background:#000}
+.post-media img,.post-media video{width:100%;object-fit:cover}
+.post-actions{display:flex;gap:15px;padding:10px;font-size:24px}
+.post-actions span{cursor:pointer}
+.post-info{padding:0 10px 10px;font-size:14px}
+
+/* REELS TIKTOK */
+.reels{flex:1;overflow-y:scroll;scroll-snap-type:y mandatory}
+.reel{height:100vh;scroll-snap-align:start;position:relative;display:flex;align-items:center;justify-content:center;background:#000}
+.reel video{height:100%;width:100%;object-fit:cover}
+.reel-info{position:absolute;bottom:80px;left:10px}
 
 /* CHAT */
-.chat-area{flex:1;display:flex;flex-direction:column;background:#0f0f17}
-.chat-header{padding:15px;border-bottom:1px solid var(--borda);display:flex;align-items:center;gap:10px}
-.chat-header h2{font-size:16px}
-.chat-header span{font-size:11px;color:var(--text2)}
+.chat-lista{flex:1;overflow-y:auto}
+.chat-item{display:flex;padding:12px;gap:12px;cursor:pointer}
+.chat-item:hover{background:var(--bg2)}
+.avatar{width:50px;height:50px;border-radius:50%}
 
-.mensagens{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:60%;padding:10px 14px;border-radius:15px;font-size:14px;line-height:1.4}
-.msg.eu{background:var(--meu);align-self:flex-end;border-bottom-right-radius:5px}
-.msg.outro{background:var(--card);align-self:flex-start;border-bottom-left-radius:5px;border:1px solid var(--borda)}
-.msg .hora{font-size:10px;color:var(--text2);text-align:right;margin-top:4px}
+/* PERFIL */
+.perfil-topo{padding:20px}
+.perfil-stats{display:flex;justify-content:space-around;text-align:center;margin:15px 0}
+.perfil-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.perfil-grid img{width:100%;aspect-ratio:1;object-fit:cover}
 
-.input-area{padding:15px;display:flex;gap:10px;border-top:1px solid var(--borda)}
-.input-area input{flex:1;padding:12px;background:#1a1a2e;border:1px solid var(--borda);border-radius:20px;color:var(--text)}
-.input-area button{padding:12px 20px;background:var(--c);color:#000;border:none;border-radius:20px;font-weight:700;cursor:pointer}
+/* BOTTOM NAV */
+.bottom-nav{display:flex;background:var(--bg2);border-top:1px solid #333;position:sticky;bottom:0}
+.nav-item{flex:1;text-align:center;padding:10px;font-size:24px;cursor:pointer}
+.nav-item.ativo{color:var(--c)}
 
-/* K-AI LATERAL */
-.kai-lateral{width:350px;background:var(--card);border-left:1px solid var(--borda);display:flex;flex-direction:column}
-.kai-header{padding:15px;border-bottom:1px solid var(--borda);text-align:center}
-.kai-header h2{color:var(--c);font-size:16px}
-.kai-chat{flex:1;padding:15px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.kai-msg{background:#1a1a2e;padding:10px;border-radius:10px;font-size:13px}
-.kai-msg.kai{background:var(--meu)}
-.kai-input{display:flex;padding:10px;border-top:1px solid var(--borda)}
-.kai-input input{flex:1;padding:10px;background:#0a0a0f;border:1px solid var(--borda);border-radius:10px;color:var(--text)}
-.kai-input button{background:var(--c);border:none;padding:10px;border-radius:10px;margin-left:5px;cursor:pointer;font-weight:700;color:#000}
-
-@media(max-width:900px){.kai-lateral{display:none}}
-@media(max-width:700px){.sidebar{width:100%}.chat-area{display:none}}
+/* MODAL POSTAR */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;display:none;align-items:center;justify-content:center;z-index:99}
+.modal.ativa{display:flex}
+.modal-content{background:var(--bg2);padding:20px;border-radius:15px;width:90%;max-width:400px}
+.modal input,.modal textarea{width:100%;padding:10px;margin:10px 0;background:var(--bg3);border:none;border-radius:8px;color:var(--text)}
 </style>
 </head>
 <body>
 
-<!-- TELA LOGIN -->
-<div id="tela-login">
-  <div class="login-card">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png">
-    <h2>K-ONVERSA</h2>
-    <p>Conecte. Converse. KORVIL.</p>
-    <input type="text" id="meu-nome" placeholder="Digite seu ID K-TP">
-    <button onclick="entrar()">ENTRAR</button>
+<!-- TELA FEED -->
+<div id="tela-feed" class="tela ativa">
+  <div class="topbar"><h1>K-SOCIAL</h1><div>✈️ ❤️</div></div>
+  <div class="stories" id="stories"></div>
+  <div class="feed" id="feed"></div>
+  <div class="bottom-nav">
+    <div class="nav-item ativo" onclick="mudarTela('feed')">🏠</div>
+    <div class="nav-item" onclick="mudarTela('reels')">🎬</div>
+    <div class="nav-item" onclick="abrirModal()">➕</div>
+    <div class="nav-item" onclick="mudarTela('chat')">💬</div>
+    <div class="nav-item" onclick="mudarTela('perfil')">👤</div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="container">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="header-app">
-        <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png">
-        <h1>K-ONVERSA</h1>
-      </div>
-      <div class="contatos" id="lista-contatos">
-        <div class="contato" onclick="abrirChat('K-AI')">
-          <div class="avatar">AI</div>
-          <div class="info-contato"><h3>K-AI</h3><p>Assistente KORVIL</p></div>
-        </div>
-        <div class="contato" onclick="abrirChat('Suporte KTP')">
-          <div class="avatar">S</div>
-          <div class="info-contato"><h3>Suporte KTP</h3><p>Online</p></div>
-        </div>
-      </div>
-    </div>
+<!-- TELA REELS -->
+<div id="tela-reels" class="tela">
+  <div class="reels" id="reels"></div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="mudarTela('feed')">🏠</div>
+    <div class="nav-item ativo" onclick="mudarTela('reels')">🎬</div>
+    <div class="nav-item" onclick="abrirModal()">➕</div>
+    <div class="nav-item" onclick="mudarTela('chat')">💬</div>
+    <div class="nav-item" onclick="mudarTela('perfil')">👤</div>
+  </div>
+</div>
 
-    <!-- CHAT -->
-    <div class="chat-area">
-      <div class="chat-header"><h2 id="chat-nome">Selecione um chat</h2></div>
-      <div class="mensagens" id="mensagens"></div>
-      <div class="input-area">
-        <input type="text" id="input-msg" placeholder="Digite uma mensagem" onkeydown="if(event.key==='Enter')enviarMsg()">
-        <button onclick="enviarMsg()">ENVIAR</button>
-      </div>
-    </div>
+<!-- TELA CHAT -->
+<div id="tela-chat" class="tela">
+  <div class="topbar"><h1>K-ONVERSA</h1></div>
+  <div class="chat-lista" id="chat-lista"></div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="mudarTela('feed')">🏠</div>
+    <div class="nav-item" onclick="mudarTela('reels')">🎬</div>
+    <div class="nav-item" onclick="abrirModal()">➕</div>
+    <div class="nav-item ativo" onclick="mudarTela('chat')">💬</div>
+    <div class="nav-item" onclick="mudarTela('perfil')">👤</div>
+  </div>
+</div>
 
-    <!-- K-AI -->
-    <div class="kai-lateral">
-      <div class="kai-header"><h2>K-AI Assistente</h2></div>
-      <div class="kai-chat" id="kai-chat">
-        <div class="kai-msg kai">Olá! Sou o K-AI. Como posso te ajudar hoje?</div>
-      </div>
-      <div class="kai-input">
-        <input type="text" id="kai-input" placeholder="Pergunte ao K-AI..." onkeydown="if(event.key==='Enter')perguntarKai()">
-        <button onclick="perguntarKai()">➤</button>
+<!-- TELA PERFIL -->
+<div id="tela-perfil" class="tela">
+  <div class="topbar"><h1>korvil_oficial</h1></div>
+  <div class="perfil-topo">
+    <div style="display:flex;gap:20px;align-items:center">
+      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" style="width:80px;height:80px;border-radius:50%">
+      <div>
+        <b>korvil_oficial</b><p style="color:var(--text2)">KORVIL - Projeto Transformação</p>
       </div>
     </div>
+    <div class="perfil-stats">
+      <div><b id="qtd-posts">3</b><br>Posts</div>
+      <div><b id="qtd-seguidores">1.2k</b><br>Seguidores</div>
+      <div><b id="qtd-seguindo">500</b><br>Seguindo</div>
+    </div>
+    <button onclick="alert('Editar Perfil')" style="width:100%;padding:8px;background:var(--bg3);border:none;color:var(--text);border-radius:8px">Editar Perfil</button>
+  </div>
+  <div class="perfil-grid" id="perfil-grid"></div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="mudarTela('feed')">🏠</div>
+    <div class="nav-item" onclick="mudarTela('reels')">🎬</div>
+    <div class="nav-item" onclick="abrirModal()">➕</div>
+    <div class="nav-item" onclick="mudarTela('chat')">💬</div>
+    <div class="nav-item ativo" onclick="mudarTela('perfil')">👤</div>
+  </div>
+</div>
+
+<!-- MODAL POSTAR -->
+<div id="modal-post" class="modal">
+  <div class="modal-content">
+    <h2>Novo Post / Reel</h2>
+    <input type="text" id="post-url" placeholder="Cole URL da Imagem ou Vídeo MP4">
+    <textarea id="post-legenda" placeholder="Escreva uma legenda..."></textarea>
+    <button onclick="criarPost()" style="width:100%;padding:10px;background:var(--c);border:none;color:#000;border-radius:8px;font-weight:700">PUBLICAR</button>
+    <button onclick="fecharModal()" style="width:100%;padding:10px;margin-top:10px;background:var(--bg3);border:none;color:var(--text);border-radius:8px">CANCELAR</button>
   </div>
 </div>
 
 <script>
-let meuNome = "";
-let chatAtual = "";
-const canal = new BroadcastChannel('k-onversa');
+let dados = JSON.parse(localStorage.getItem('k_social') || '{"posts":[],"seguidores":1200,"seguindo":500,"eu":"korvil_oficial"}');
 
-// ENTRAR
-function entrar(){
-  meuNome = document.getElementById('meu-nome').value.trim();
-  if(!meuNome) return alert("Digite seu ID");
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='flex';
-  carregarMensagens();
+if(dados.posts.length===0){
+  dados.posts = [
+    {tipo:'img', user:'korvil_oficial', url:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500', legenda:'Treino finalizado 💪 #KTP', likes:124, comentarios:[]},
+    {tipo:'video', user:'k_ai', url:'https://www.w3schools.com/html/mov_bbb.mp4', legenda:'K-AI criando app novo', likes:89, comentarios:[]},
+    {tipo:'img', user:'amor', url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500', legenda:'Dia lindo ❤️', likes:256, comentarios:[]}
+  ];
+  salvar();
 }
 
-// ABRIR CHAT
-function abrirChat(nome){
-  chatAtual = nome;
-  document.getElementById('chat-nome').innerText = nome;
-  document.querySelectorAll('.contato').forEach(c=>c.classList.remove('ativo'));
-  event.target.closest('.contato').classList.add('ativo');
-  carregarMensagens();
+function salvar(){localStorage.setItem('k_social', JSON.stringify(dados))}
+
+function carregarFeed(){
+  document.getElementById('feed').innerHTML = dados.posts.map((p,i)=>`
+    <div class="post">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?u=${p.user}"><b>${p.user}</b>
+        <button class="btn-seguir" onclick="seguir(this)">Seguir</button>
+      </div>
+      <div class="post-media">
+        ${p.tipo==='img'?`<img src="${p.url}">`:`<video src="${p.url}" controls></video>`}
+      </div>
+      <div class="post-actions">
+        <span onclick="curtir(this,${i})">❤️</span> <span>💬</span> <span>✈️</span>
+      </div>
+      <div class="post-info"><b>${p.likes} curtidas</b><br><b>${p.user}</b> ${p.legenda}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('perfil-grid').innerHTML = dados.posts.filter(p=>p.user===dados.eu).map(p=>`<img src="${p.url}">`).join('');
+  document.getElementById('qtd-seguidores').innerText = dados.seguidores;
+  document.getElementById('qtd-seguindo').innerText = dados.seguindo;
 }
 
-// ENVIAR MSG
-function enviarMsg(){
-  const input = document.getElementById('input-msg');
-  const texto = input.value.trim();
-  if(!texto || !chatAtual) return;
-  const msg = {de:meuNome, para:chatAtual, texto, hora:new Date().toLocaleTimeString().slice(0,5)};
-  salvarMsg(msg);
-  canal.postMessage(msg);
-  input.value="";
+function carregarReels(){
+  document.getElementById('reels').innerHTML = dados.posts.filter(p=>p.tipo==='video').map(p=>`
+    <div class="reel">
+      <video src="${p.url}" autoplay loop muted playsinline></video>
+      <div class="reel-info"><b>@${p.user}</b><p>${p.legenda}</p></div>
+    </div>
+  `).join('');
 }
 
-// SALVAR E CARREGAR
-function salvarMsg(msg){
-  const chave = `chat_${chatAtual}`;
-  let msgs = JSON.parse(localStorage.getItem(chave) || "[]");
-  msgs.push(msg);
-  localStorage.setItem(chave, JSON.stringify(msgs));
-  mostrarMsg(msg);
-}
-function carregarMensagens(){
-  document.getElementById('mensagens').innerHTML="";
-  const chave = `chat_${chatAtual}`;
-  let msgs = JSON.parse(localStorage.getItem(chave) || "[]");
-  msgs.forEach(mostrarMsg);
-}
-function mostrarMsg(msg){
-  const div = document.createElement('div');
-  div.className = 'msg ' + (msg.de===meuNome ? 'eu' : 'outro');
-  div.innerHTML = `${msg.texto}<div class="hora">${msg.hora}</div>`;
-  document.getElementById('mensagens').appendChild(div);
-  document.getElementById('mensagens').scrollTop = 99999;
+function carregarChats(){
+  document.getElementById('chat-lista').innerHTML = ['K-TP','K-AI','Amor ❤️'].map(n=>`
+    <div class="chat-item" onclick="alert('Abrir chat com '+n)">
+      <img src="https://i.pravatar.cc/100?u=${n}" class="avatar">
+      <div><b>${n}</b><p style="color:var(--text2)">Última mensagem...</p></div>
+    </div>
+  `).join('');
 }
 
-// RECEBER EM TEMPO REAL
-canal.onmessage = e => {
-  if(e.data.para===meuNome || e.data.de===chatAtual){
-    if(chatAtual===e.data.de) mostrarMsg(e.data);
-    salvarMsg(e.data);
+function curtir(el,i){
+  dados.posts[i].likes++;
+  el.style.color='red';
+  salvar(); carregarFeed();
+}
+
+function seguir(btn){
+  if(btn.innerText==='Seguir'){
+    btn.innerText='Seguindo'; btn.style.background='#333'; btn.style.color='#fff';
+    dados.seguindo++;
+  }else{
+    btn.innerText='Seguir'; btn.style.background='var(--c)'; btn.style.color='#000';
+    dados.seguindo--;
   }
+  salvar();
 }
 
-// K-AI
-function perguntarKai(){
-  const input = document.getElementById('kai-input');
-  const pergunta = input.value.trim();
-  if(!pergunta) return;
-  addKaiMsg(pergunta, 'eu');
-  input.value="";
-  
-  setTimeout(()=>{
-    let resposta = "Entendi. Como K-AI do KORVIL, posso te ajudar com treinos, dieta e sistemas. ";
-    if(pergunta.toLowerCase().includes("treino")) resposta = "Quer que eu monte um treino ABC pra você? Me diga seu objetivo.";
-    if(pergunta.toLowerCase().includes("site")) resposta = "Posso gerar o código pra você no K-RIADOR. Qual app você quer criar?";
-    addKaiMsg(resposta, 'kai');
-  }, 800);
+function criarPost(){
+  const url = document.getElementById('post-url').value;
+  const legenda = document.getElementById('post-legenda').value;
+  const tipo = url.includes('.mp4')? 'video' : 'img';
+  dados.posts.unshift({tipo,user:dados.eu,url,legenda,likes:0,comentarios:[]});
+  salvar(); fecharModal(); carregarFeed();
 }
-function addKaiMsg(texto, quem){
-  const div = document.createElement('div');
-  div.className = 'kai-msg ' + quem;
-  div.innerText = texto;
-  document.getElementById('kai-chat').appendChild(div);
-  document.getElementById('kai-chat').scrollTop = 99999;
+
+function abrirModal(){document.getElementById('modal-post').classList.add('ativa')}
+function fecharModal(){document.getElementById('modal-post').classList.remove('ativa')}
+
+function mudarTela(t){
+  document.querySelectorAll('.tela').forEach(x=>x.classList.remove('ativa'));
+  document.getElementById('tela-'+t).classList.add('ativa');
+  if(t==='feed') carregarFeed();
+  if(t==='reels') carregarReels();
+  if(t==='chat') carregarChats();
 }
+
+carregarFeed();
 </script>
 </body>
 </html>
