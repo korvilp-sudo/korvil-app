@@ -2,185 +2,106 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL OS v3.1 FIX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KORVIL OS LITE</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden;font-family:'Orbitron';color:#00f5ff}
-
-/* CÂMERA VISÍVEL AGORA */
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1;opacity:0.6} 
-#canvas{position:absolute;z-index:2;pointer-events:none;opacity:0.5}
-
-/* TUDO 40% MENOR */
-.canto{position:absolute;width:100px;height:100px;border:2px solid #00f5ff;box-shadow:0 0 20px #00f5ff}
-#tl{top:10px;left:10px;border-right:0;border-bottom:0}
-#tr{top:10px;right:10px;border-left:0;border-bottom:0}
-#bl{bottom:10px;left:10px;border-right:0;border-top:0}
-#br{bottom:10px;right:10px;border-left:0;border-top:0}
-
-/* MENU MENOR */
-#menu{position:absolute;top:10px;left:10px;width:180px;background:rgba(0,0,0,0.8);border:2px solid #00f5ff;backdrop-filter:blur(10px);padding:10px;z-index:10;border-radius:8px;font-size:12px}
-#menu h3{font-size:12px;margin-bottom:8px}
-.btnMenu{width:100%;padding:6px;margin:4px 0;background:rgba(0,245,255,0.2);border:1px solid #00f5ff;color:#00f5ff;font-family:'Orbitron';font-size:11px;border-radius:5px}
-.btnMenu.ativo{background:#00f5ff;color:#000}
-
-/* LIXEIRA MENOR */
-#lixeira{position:absolute;bottom:10px;left:10px;width:70px;height:70px;font-size:40px;text-align:center;line-height:70px;border:2px dashed #ff0000;border-radius:10px;z-index:10}
-#lixeira.ativo{background:rgba(255,0,0,0.3);box-shadow:0 0 30px #ff0000;transform:scale(1.15)}
-
-/* TUTORIAL MENOR */
-#tutorial{position:absolute;bottom:10px;right:10px;width:200px;background:rgba(0,0,0,0.8);border:2px solid #00f5ff;padding:8px;border-radius:8px;font-size:9px;z-index:10}
-#tutorial h4{color:#ff00ff;margin-bottom:5px;font-size:10px}
-
-/* CUBO MENOR */
-.cubo{position:absolute;width:120px;height:120px;transform-style:preserve-3d;z-index:5}
-.face{position:absolute;width:100%;height:100%;border:2px solid #00f5ff;background:rgba(0,245,255,0.1)}
-.f1{transform:translateZ(60px)}.f2{transform:rotateY(180deg) translateZ(60px)}
-.f3{transform:rotateY(90deg) translateZ(60px)}.f4{transform:rotateY(-90deg) translateZ(60px)}
-.f5{transform:rotateX(90deg) translateZ(60px)}.f6{transform:rotateX(-90deg) translateZ(60px)}
-
-.mao{position:absolute;width:20px;height:20px;border-radius:50%;z-index:6}
-#m1{background:#00f5ff;box-shadow:0 0 20px #00f5ff}
-#m2{background:#ff00ff;box-shadow:0 0 20px #ff00ff}
-
-@keyframes sumir{0%{transform:scale(1)}100%{transform:scale(0);opacity:0}}
+body{margin:0;background:#000;overflow:hidden;font-family:Arial}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.7}
+#menu{position:absolute;top:10px;left:10px;width:160px;background:#000;border:2px solid #00f5ff;padding:8px;color:#00f5ff;font-size:11px}
+.btn{width:100%;padding:5px;margin:3px 0;background:#00f5ff22;border:1px solid #00f5ff;color:#00f5ff;font-size:10px}
+#lixeira{position:absolute;bottom:10px;left:10px;font-size:35px;border:2px dashed red;padding:10px}
+.cubo{position:absolute;width:100px;height:100px;border:3px solid #00f5ff;box-shadow:0 0 20px #00f5ff}
+#ponto{position:absolute;width:25px;height:25px;background:#ff00ff;border-radius:50%;box-shadow:0 0 20px #ff00ff}
+#info{position:absolute;bottom:10px;right:10px;color:#00f5ff;font-size:10px;width:180px;background:#000;padding:5px}
 </style>
 </head>
 <body>
-<div id="tl" class="canto"></div><div id="tr" class="canto"></div>
-<div id="bl" class="canto"></div><div id="br" class="canto"></div>
-
 <div id="menu">
-  <h3>> KORVIL MENU</h3>
-  <button class="btnMenu" id="btnNovo">NOVO CUBO</button>
-  <button class="btnMenu" id="btnLimpar">LIMPAR TUDO</button>
-  <button class="btnMenu" id="btnCor">MUDAR COR</button>
-  <div id="statusMenu">STATUS: AGUARDANDO</div>
+  <div>> KORVIL MENU</div>
+  <button class="btn" onclick="criarCubo()">NOVO CUBO</button>
+  <button class="btn" onclick="limpar()">LIMPAR</button>
+  <button class="btn" id="btnLight">LANTERNA</button>
+  <div id="status">STATUS: AGUARDANDO</div>
 </div>
-
 <div id="lixeira">🗑️</div>
-
-<div id="tutorial">
-  <h4>TUTORIAL</h4>
-  <div>Pinça = Segurar</div>
-  <div>Abrir = Soltar</div>
-  <div>2x Pinça = Novo</div>
-  <div>2x Paz = Deletar</div>
-</div>
-
+<div id="info">1 DEDO = MOVER<br>2 DEDOS = NOVO<br>JUNTA MÃOS = LIXEIRA</div>
 <video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
-
-<div id="m1" class="mao"></div>
-<div id="m2" class="mao"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="gestos.js"></script>
+<div id="ponto"></div>
+<div id="c1" class="cubo" style="top:50%;left:50%"></div>
 
 <script>
 const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
+const ponto = document.getElementById('ponto');
+const status = document.getElementById('status');
+const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-const m1 = document.getElementById('m1');
-const m2 = document.getElementById('m2');
-const lixeira = document.getElementById('lixeira');
+let stream, cubos = [document.getElementById('c1')];
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let cubos = [];
-let cuboSegurado = null;
-let offsetX = 0, offsetY = 0;
-const detector = new DetectorGestos();
-
-function criarCubo(x=window.innerWidth/2, y=window.innerHeight/2){
-  const c = document.createElement('div');
-  c.className = 'cubo';
-  c.innerHTML = `<div class="face f1"></div><div class="face f2"></div><div class="face f3"></div><div class="face f4"></div><div class="face f5"></div><div class="face f6"></div>`;
-  c.style.left = x+'px';
-  c.style.top = y+'px';
-  document.body.appendChild(c);
-  cubos.push({el:c, x:x, y:y, rotX:0, rotY:0});
-}
-
-function deletarCubo(cubo){
-  cubo.el.style.animation = 'sumir 0.3s';
-  setTimeout(()=>cubo.el.remove(), 300);
-  cubos = cubos.filter(c=>c!=cubo);
-}
-
-criarCubo();
-
-// CORREÇÃO IMPORTANTE: PEDIR CÂMERA TRASEIRA NO CELULAR
-navigator.mediaDevices.getUserMedia({video:{facingMode:"environment", width:640, height:480}}).then(s=>{
-  video.srcObject=s;
-}).catch(e=>{alert("Erro câmera: "+e)});
-
-const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2, minDetectionConfidence:0.6});
-
-hands.onResults(r=>{
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(r.image,0,0,canvas.width,canvas.height);
-
-  const maos = r.multiHandLandmarks;
-  if(maos.length > 0){
-    const p1 = maos[0][8];
-    const x1 = (1-p1.x)*window.innerWidth;
-    const y1 = p1.y*window.innerHeight;
-    m1.style.left = x1+'px'; m1.style.top = y1+'px';
-
-    const sobreLixeira = x1 > 10 && x1 < 80 && y1 > window.innerHeight-80;
-    lixeira.classList.toggle('ativo', sobreLixeira);
-
-    if(cuboSegurado){
-      cuboSegurado.x = x1 - offsetX;
-      cuboSegurado.y = y1 - offsetY;
-      cuboSegurado.el.style.left = cuboSegurado.x+'px';
-      cuboSegurado.el.style.top = cuboSegurado.y+'px';
-      cuboSegurado.rotY = (x1 - window.innerWidth/2) * 0.3;
-      cuboSegurado.rotX = (y1 - window.innerHeight/2) * 0.3;
-      cuboSegurado.el.style.transform = `translate(-50%,-50%) rotateX(${cuboSegurado.rotX}deg) rotateY(${cuboSegurado.rotY}deg)`;
-    }
-
-    if(maos.length > 1){
-      const p2 = maos[1][8];
-      const x2 = (1-p2.x)*window.innerWidth;
-      const y2 = p2.y*window.innerHeight;
-      m2.style.opacity = 1; m2.style.left = x2+'px'; m2.style.top = y2+'px';
-      const gesto = detector.detectarDuasMaos(maos[0], maos[1], {x:x1,y:y1}, {x:x2,y:y2});
-      detector.executar(gesto, {criarCubo, deletarCubo, cubos});
-    }else{
-      m2.style.opacity = 0;
-      const gesto = detector.detectarMao(maos[0]);
-      if(gesto == "CLIQUE" &&!cuboSegurado){
-        for(let c of cubos){
-          if(Math.hypot(x1 - c.x, y1 - c.y) < 80){
-            cuboSegurado = c;
-            offsetX = x1 - c.x;
-            offsetY = y1 - c.y;
-            break;
-          }
-        }
-      }
-      if(gesto == "ABRIR" && cuboSegurado){
-        if(sobreLixeira) deletarCubo(cuboSegurado);
-        cuboSegurado = null;
-      }
-    }
+// LIGA CÂMERA FRONTAL
+navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(s=>{
+  stream=s; video.srcObject=s;
+  video.onloadeddata=()=>{
+    canvas.width=320; canvas.height=240;
+    loop();
   }
 });
 
-const camera = new Camera(video, {onFrame: async()=>await hands.send({image:video}), width:640, height:480});
-camera.start();
+// DETECÇÃO SIMPLES POR COR
+function loop(){
+  ctx.drawImage(video,0,0,320,240);
+  const data = ctx.getImageData(0,0,320,240).data;
+  let x=0,y=0,total=0;
 
-document.getElementById('btnNovo').onclick = ()=>criarCubo();
-document.getElementById('btnLimpar').onclick = ()=>{cubos.forEach(c=>c.el.remove()); cubos=[]};
-document.getElementById('btnCor').onclick = ()=>{document.querySelectorAll('.face').forEach(f=>{const cor = `hsl(${Math.random()*360},100%,50%)`; f.style.borderColor = cor})}
+  for(let i=0;i<data.length;i+=40){ // Pula pixels pra ficar leve
+    const r=data[i], g=data[i+1], b=data[i+2];
+    if(r>80 && g>50 && b>30 && r>g){ // Pele
+      x += (i/4)%320;
+      y += Math.floor((i/4)/320);
+      total++;
+    }
+  }
+
+  if(total>100){
+    x = (320 - x/total) * window.innerWidth/320;
+    y = y/total * window.innerHeight/240;
+    ponto.style.left=x+'px'; ponto.style.top=y+'px';
+
+    // MOVER CUBO
+    cubos[0].style.left = x-50+'px';
+    cubos[0].style.top = y-50+'px';
+
+    // SE TÁ NA LIXEIRA
+    if(x<80 && y>window.innerHeight-80){
+      document.getElementById('lixeira').style.background='red';
+      cubos[0].style.opacity='0.3';
+    }else{
+      document.getElementById('lixeira').style.background='';
+      cubos[0].style.opacity='1';
+    }
+
+    status.innerText = "MÃO DETECTADA";
+  }else{
+    status.innerText = "PROCURE LUZ BOA";
+  }
+  requestAnimationFrame(loop);
+}
+
+function criarCubo(){
+  const c = document.createElement('div');
+  c.className='cubo';
+  c.style.top='50%'; c.style.left='50%';
+  document.body.appendChild(c);
+  cubos.push(c);
+}
+function limpar(){cubos.forEach(c=>c.remove()); cubos=[]; criarCubo()}
+
+// LANTERNA
+document.getElementById('btnLight').onclick=async()=>{
+  const track = stream.getVideoTracks()[0];
+  try{
+    await track.applyConstraints({advanced:[{torch:true}]});
+  }catch(e){alert("Lanterna não suportada")}
+}
 </script>
 </body>
 </html>
