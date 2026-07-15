@@ -10,7 +10,6 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-@keyframes spin3d{0%{transform:rotateX(-20deg) rotateY(0deg);}100%{transform:rotateX(-20deg) rotateY(360deg);}}
 
 .topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(0,0,0,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:center;z-index:100;animation:fadeIn.3s;}
 .menu-btn{position:absolute;left:14px;background:transparent;border:1.5px solid var(--c);color:var(--c);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;transition:.2s;}
@@ -18,21 +17,17 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;}
 .logo{color:var(--c);font-weight:900;font-size:17px;letter-spacing:1.5px;text-shadow:0 0 10px var(--c);}
 .icon-top{position:absolute;right:14px;display:flex;gap:12px;}
 .icon-top svg{width:22px;height:22px;stroke:var(--c);cursor:pointer;transition:.2s;}
-.icon-top svg:active{filter:drop-shadow(0 0 6px var(--c));}
 
 .wrap{padding:70px 16px 110px;max-width:700px;margin:auto;animation:fadeIn.4s;min-height:calc(100vh - 180px);}
 h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;}
 h2{font-size:16px;font-weight:700;margin:0 0 8px;}
 h4{color:var(--c);font-size:13px;margin:0 0 6px;font-weight:700;}
-p{color:var(--text2);font-size:14px;line-height:1.7;}
 h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12px;font-weight:600;letter-spacing:1px;}
 
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
 .btn-app{background:transparent;border:1.5px solid var(--borda);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
 .btn-app:active{border-color:var(--c);transform:scale(.96);box-shadow:0 0 12px var(--c)30;}
-.btn-app img{width:100%;height:60px;object-fit:contain;border-radius:12px;background:#111;border:1.5px solid var(--c);box-shadow:0 0 10px var(--c)40;padding:4px;transition:.3s;}
-.btn-app:active img{box-shadow:0 0 18px var(--c)80;}
-.btn-app span{font-size:11px;font-weight:800;color:var(--text);text-align:center;line-height:1.2;}
+.btn-app img{width:100%;height:60px;object-fit:contain;border-radius:12px;background:#111;border:1.5px solid var(--c);box-shadow:0 0 10px var(--c)40;padding:4px;}
 
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.2s;animation:fadeIn.5s;}
 .card:active{border-color:var(--c);box-shadow:0 0 15px var(--c)30;}
@@ -47,7 +42,7 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .sub-aba li:hover{color:var(--c);padding-left:6px;}
 
 .btn{display:block;background:var(--c);color:#000;text-align:center;padding:14px 16px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;transition:.2s;border:0;cursor:pointer;margin-top:14px;width:100%;}
-.btn:active{transform:scale(.97);filter:brightness(1.2);}
+.btn:active{transform:scale(.97);}
 .btn.voltar{background:#222;color:var(--text);width:auto;display:inline-block;padding:12px 18px;margin-right:10px;}
 
 .menu-lateral{position:fixed;top:0;left:-280px;width:270px;height:100%;background:#080808;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:70px;}
@@ -58,7 +53,6 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 .overlay.ativo{display:block;}
 
 .logo-central{width:100%;max-width:320px;margin:0 auto 16px auto;display:block;border-radius:16px;border:2px solid var(--c);box-shadow:0 0 20px var(--c)40;padding:8px;background:#000;cursor:pointer;}
-iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-radius:12px;background:#111;box-shadow:0 0 15px var(--c)20;display:block;}
 </style>
 </head>
 <body>
@@ -137,20 +131,11 @@ iframe.korvil-frame{width:100%;height:75vh;border:1.5px solid var(--c);border-ra
   <section id="sistema" class="tela"><h1>SISTEMA K</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kafortunado" class="tela"><h1>K-AFORTUNADO</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
   <section id="kalma" class="tela"><h1>K-ALMA</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
-  
-  <section id="ktp-iframe" class="tela">
-    <h1>K-TP PROJETO TRANSFORMAÇÃO</h1>
-    <iframe class="korvil-frame" id="iframeKTP" src="about:blank"></iframe>
-    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
-  </section>
 </main>
 
 <script>
-const WHATS_NUMBER = '5513997690898';
-
 function irParaKTP(){ 
-  abrirTela('ktp-iframe'); 
-  document.getElementById('iframeKTP').src = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetotransformacao.index";
+  window.location.href = "korvil-app/sections/ktp/projetotransformacao/index.html";
 }
 
 function abrirTela(id){ 
