@@ -58,7 +58,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </div>
 
 <script>
-// MESMOS IDS DO cronograma.html ALUNOS_DB
+// MESMOS IDS DO projetotransformacao.html ALUNOS_DB
 const idsPermitidos = ["carla38", "vhellem39", "gon19", "dani36", "ktp1"]; 
 
 function acessarProjeto(){
@@ -66,7 +66,8 @@ function acessarProjeto(){
   if(!senha){return;}
   const senhaNormalizada = senha.trim().toLowerCase();
   if(idsPermitidos.includes(senhaNormalizada)){
-    window.location.href = "projetotransformacao.html";
+    localStorage.setItem('idLogado', senhaNormalizada); // SALVA O ID PRA USAR LA
+    window.location.href = "projetotransformacao.html"; // DIRECIONA PRA PAGINA
   } else {
     alert("Acesso negado. ID não encontrado no cronograma do projeto.");
   }
