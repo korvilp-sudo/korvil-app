@@ -19,7 +19,6 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;}
 .wrap{padding:70px 16px 110px;max-width:700px;margin:auto;animation:fadeIn.4s;min-height:calc(100vh - 180px);}
 h1{font-size:20px;font-weight:800;margin:0 0 16px;text-align:center;}
 h2{font-size:16px;font-weight:700;margin:0 0 8px;}
-h4{color:var(--c);font-size:13px;margin:0 0 6px;font-weight:700;}
 h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12px;font-weight:600;letter-spacing:1px;}
 
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
@@ -33,15 +32,6 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 
 .tela{display:none;animation:fadeIn.3s;}
 .tela.ativa{display:block;}
-.sub-aba{background:var(--card);border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:10px;}
-.sub-aba ul{list-style:none;padding-left:0;}
-.sub-aba li{color:var(--text2);font-size:14px;padding:12px 0;border-bottom:1px solid #151515;cursor:pointer;transition:.2s;}
-.sub-aba li:last-child{border:0;}
-.sub-aba li:hover{color:var(--c);padding-left:6px;}
-
-.btn{display:block;background:var(--c);color:#000;text-align:center;padding:14px 16px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;transition:.2s;border:0;cursor:pointer;margin-top:14px;width:100%;}
-.btn:active{transform:scale(.97);}
-.btn.voltar{background:#222;color:var(--text);width:auto;display:inline-block;padding:12px 18px;margin-right:10px;}
 
 .menu-lateral{position:fixed;top:0;left:-280px;width:270px;height:100%;background:#080808;border-right:1px solid #222;z-index:101;transition:left.3s ease;padding-top:70px;}
 .menu-lateral.ativo{left:0;}
@@ -80,19 +70,9 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
       <div class="btn-app" onclick="abrirTela('kalma')"><img src="https://korvilp-sudo.github.io/korvil-app/sections/kalma/images/logokalma.png"><span>K-ALMA</span></div>
     </div>
     <h3 class="sectitle">CENTRAL:</h3>
-    <div class="card" onclick="abrirTela('humano')"><h2>1. DESENVOLVIMENTO HUMANO</h2><p>Cursos</p></div>
+    <div class="card" onclick="irParaDesenvolvimentoHumano()"><h2>1. DESENVOLVIMENTO HUMANO</h2><p>Cursos</p></div>
     <div class="card" onclick="abrirTela('negocios')"><h2>2. NEGOCIOS</h2><p>Parcerias com Profissionais</p></div>
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
-  </section>
-
-  <section id="humano" class="tela">
-    <h1>DESENVOLVIMENTO HUMANO</h1>
-    <div class="sub-aba">
-      <ul>
-        <li onclick="window.location.href='desenvolvimento-humano/index.html'">CURSOS: ÁREAS</li>
-      </ul>
-    </div>
-    <button class="btn voltar" onclick="abrirTela('central')">Voltar</button>
   </section>
 
   <section id="negocios" class="tela"><h1>NEGOCIOS</h1><div class="sub-aba"><p>Conteúdo aqui</p></div><button class="btn voltar" onclick="abrirTela('central')">Voltar</button></section>
@@ -105,6 +85,10 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
 <script>
 function irParaKTP(){ 
   window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html";
+}
+
+function irParaDesenvolvimentoHumano(){
+  window.location.href = "desenvolvimento-humano/index.html";
 }
 
 function abrirTela(id){ 
