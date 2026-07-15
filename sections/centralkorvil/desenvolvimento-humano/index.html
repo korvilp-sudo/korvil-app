@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,20 +10,29 @@ body{background:var(--bg);color:var(--text);padding:20px;max-width:700px;margin:
 .logo{max-width:200px;margin:0 auto 16px;display:block;border:2px solid var(--c);border-radius:12px;padding:8px;background:#000;}
 h1{text-align:center;color:var(--c);font-size:20px;margin-bottom:8px;}
 .sub{text-align:center;color:var(--text2);font-size:12px;margin-bottom:20px;}
-.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;}
-.card:active{border-color:var(--c);transform:scale(.98);}
-.card h2{font-size:15px;color:var(--c);margin-bottom:4px;}
-.card p{font-size:12px;color:var(--text2);}
-.btn-voltar{display:block;background:#222;color:#fff;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-weight:800;margin-top:20px;}
+.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
+.card h2{font-size:15px;color:var(--c);margin-bottom:8px;}
+.card p{font-size:12px;color:var(--text2);line-height:1.8;}
+.btn{background:var(--c);color:#000;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:800;display:block;margin-top:12px;}
+.btn:active{transform:scale(.97);}
+.btn-voltar{display:block;background:#222;color:#fff;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-weight:800;margin-top:8px;}
 </style>
 </head>
 <body>
 <img src="https://korvilp-sudo.github.io/korvil-app/assets/images/korvil-logo.png" class="logo">
+<h1>DESENVOLVIMENTO HUMANO</h1>
+<div class="sub">Cursos Profissionalizantes KORVIL</div>
 
-<div class="card" onclick="window.location.href='cursos/index.html'">
-  <h2>📚 CURSOS</h2><p>Acesse todas as áreas de cursos profissionalizantes</p>
+<div class="card">
+  <h2>🎯 ÁREAS DE CURSOS:</h2>
+  <p>• 📱 Serviços Profissionais</p>
+  <p>• 💪 Treinamento Personalizado</p>
+  <p>• 🚀 Empreendedorismo</p>
+  <p>• 🏥 Saúde</p>
+  <p>• ✂️ Beleza</p>
 </div>
 
-<a href="https://korvilp-sudo.github.io/korvil-app/sections/centralkorvil/desenvolvimento-humano/cursos/index.html" class="btn-voltar">Voltar para Central</a>
+<a href="cursos/areas/index.html" class="btn">ABRIR ÁREAS</a>
+<a href="../index.html" class="btn-voltar">Voltar para Central</a>
 </body>
 </html>
