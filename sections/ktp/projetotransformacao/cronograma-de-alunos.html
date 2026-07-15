@@ -19,7 +19,6 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 .container{display:flex;max-width:1200px;margin:auto;}
 
-/* MENU LATERAL */
 #menu-lateral{position:fixed;left:-320px;top:0;width:300px;height:100%;background:#0a0a0a;border-right:2px solid var(--c);z-index:200;transition:.3s;overflow-y:auto;padding:70px 0 20px;}
 #menu-lateral.ativo{left:0;}
 #overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:199;display:none;}
@@ -27,19 +26,10 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 
 .conteudo{flex:1;padding:16px;padding-bottom:100px;}
 
-/* CARDS */
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
 .logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-
-.semana-atual{padding:20px;background:linear-gradient(180deg,#000,#0a0a0a);border:2px solid var(--c);border-radius:14px;margin-bottom:16px;box-shadow:0 0 30px var(--c)30;}
-.semana-titulo{font-weight:900;color:var(--c);font-size:18px;margin-bottom:4px;text-align:center;}
-.semana-tipo{font-size:12px;color:var(--aviso);font-weight:800;margin-bottom:12px;text-align:center;}
-.img-metodo{width:100%;border-radius:10px;border:2px solid var(--c);margin-bottom:12px;object-fit:contain;height:auto;max-height:500px;background:#000;}
-.protocolo{padding:16px;background:#0a0a0a;border:1px solid var(--c);border-radius:8px;font-size:13px;white-space:pre-wrap;line-height:1.7;}
-.badge{padding:5px 12px;background:var(--ok);color:#000;border-radius:20px;font-size:10px;font-weight:900;}
-.data-grande{font-size:15px;color:var(--c);font-weight:800;text-align:center;margin-bottom:8px;}
 
 /* MODAL ALUNO */
 #modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
@@ -53,18 +43,22 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
 
-/* TABELA CRONOGRAMA */
-.tabela-crono{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;margin-bottom:15px;}
-.tabela-crono th{background:#111;color:var(--c);padding:6px;text-align:left;font-size:10px;border-bottom:1px solid var(--borda);}
-.tabela-crono td{padding:6px;border-bottom:1px solid #111;}
-.grupo-horario{margin-top:15px;margin-bottom:5px;color:var(--c);font-weight:900;font-size:13px;border-bottom:2px solid var(--c);padding-bottom:4px;}
-.grupo-status{margin-top:8px;margin-bottom:4px;color:var(--aviso);font-weight:800;font-size:11px;}
-.obs-pix{padding:12px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:10px 0;text-align:center;}
+/* TABELA CRONOGRAMA MELHORADA */
+.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
+.tabela-crono{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;}
+.tabela-crono th{background:#111;color:var(--c);padding:10px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--c);}
+.tabela-crono td{padding:10px 8px;border-bottom:1px solid #1a1a1a;}
+.tabela-crono tbody tr:hover{background:#0f0f0f;}
+.tabela-crono tbody tr:last-child td{border-bottom:0;}
+
+.grupo-horario{margin-top:25px;margin-bottom:10px;color:var(--c);font-weight:900;font-size:14px;border-bottom:2px solid var(--c);padding-bottom:6px;display:flex;align-items:center;gap:8px;}
+.grupo-status{margin-top:12px;margin-bottom:8px;color:var(--aviso);font-weight:800;font-size:12px;padding-left:4px;}
+.obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
 
 /* BUSCA ID */
 .busca-id{display:flex;gap:6px;margin-top:10px;}
-.busca-id input{flex:1;padding:8px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
-.busca-id button{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
+.busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
+.busca-id button{padding:10px 14px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
 
 @media(min-width:768px){
   #menu-lateral{position:relative;left:0;width:320px;border-right:1px solid var(--borda);}
@@ -112,9 +106,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 </div>
 
 <script>
-const PASTA_IMG = 'images/imagens/2026/imagens-dos-metodos/';
-
-// LISTA COMPLETA DA SUA LISTA DE BAIXO
+// LISTA COMPLETA
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
@@ -173,11 +165,11 @@ function fecharBuscaAluno(){
 }
 
 function mostrarCronogramaCompleto(){
-  const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id, ...data}));
+  const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
 
   alunos.sort((a,b)=>{
-    if(a.horario !== b.horario) return a.horario.localeCompare(b.horario);
-    if(a.status !== b.status) return a.status === 'Ativo' ? -1 : 1;
+    if(a.horario!== b.horario) return a.horario.localeCompare(b.horario);
+    if(a.status!== b.status) return a.status === 'Ativo'? -1 : 1;
     return a.nome.localeCompare(b.nome);
   });
 
@@ -189,15 +181,15 @@ function mostrarCronogramaCompleto(){
   let contador = 1;
 
   alunos.forEach(a=>{
-    if(a.horario !== horarioAtual){
+    if(a.horario!== horarioAtual){
       horarioAtual = a.horario;
       html += `<div class="grupo-horario">🕒 ${horarioAtual}</div>`;
       statusAtual = '';
     }
-    if(a.status !== statusAtual){
+    if(a.status!== statusAtual){
       statusAtual = a.status;
-      html += `<div class="grupo-status">${statusAtual === 'Ativo' ? '✅ ATIVOS' : '❌ DESATIVADOS'}</div>`;
-      html += `<table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      html += `<div class="grupo-status">${statusAtual === 'Ativo'? '✅ ATIVOS' : '❌ DESATIVADOS'}</div>`;
+      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
     }
     html += `<tr>
       <td>${contador++}</td>
@@ -205,13 +197,13 @@ function mostrarCronogramaCompleto(){
       <td>${a.dias}</td>
       <td>${a.freq}</td>
       <td>${a.objetivo}</td>
-      <td>${a.valor}</td>
+      <td>R$ ${a.valor}</td>
       <td>${a.venc}</td>
       <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
       <td>${a.id}</td>
     </tr>`;
   });
-  html += `</tbody></table>`;
+  html += `</tbody></table></div>`;
   return html;
 }
 
