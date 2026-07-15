@@ -3,94 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15</title>
+<title>KORVIL G15 ULTRA 2.0</title>
 <style>
-*{margin:0;padding:0}
+*{margin:0;padding:0;touch-action:none}
 body{background:#000;overflow:hidden;font-family:Arial}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.3}
-#menu{position:absolute;top:5px;left:5px;width:130px;background:#000c;border:2px solid #0ff;padding:5px;color:#0ff;font-size:10px}
-.btn{width:100%;padding:5px;margin:2px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:9px}
-.btn.on{background:#0ff;color:#000}
-.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff}
-#lixeira{position:absolute;bottom:5px;left:5px;font-size:30px;border:2px dashed red;padding:5px}
-#pino{position:absolute;width:15px;height:15px;background:magenta;border-radius:50%}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.2}
+#menu{position:absolute;top:5px;left:5px;width:160px;background:#000e;border:2px solid #0ff;padding:5px;color:#0ff;font-size:10px}
+.btn{width:100%;padding:6px;margin:3px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:10px}
+.btn.hover{border-color:#fff;box-shadow:0 0 10px #fff;background:#fff2}
+.btn.click{animation:clickAnim 0.2s}
+@keyframes clickAnim{0%{transform:scale(1)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
+.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff;background:#0ff1;box-shadow:0 0 10px #0ff;transition:transform 0.1s}
+.cubo.segurado{border-color:magenta;box-shadow:0 0 20px magenta}
+.cubo.redimensionando{border-color:#ff0;box-shadow:0 0 30px #ff0}
+#lixeira{position:absolute;bottom:5px;left:5px;font-size:40px;border:3px dashed red;padding:10px;border-radius:12px;background:#0008}
+#lixeira.ativo{border-color:#f00;background:#f003;transform:scale(1.2)}
+.pino{position:absolute;width:14px;height:14px;border-radius:50%;pointer-events:none}
+#pino1{background:magenta;box-shadow:0 0 10px magenta}
+#pino2{background:cyan;box-shadow:0 0 10px cyan}
+#cursor{position:absolute;width:25px;height:25px;border:2px solid #fff;border-radius:50%;pointer-events:none}
+#status{position:absolute;bottom:5px;right:5px;color:#0ff;font-size:9px;background:#000c;padding:4px;min-width:120px}
 </style>
 </head>
 <body>
 <div id="menu">
-  <div>GESTO G15</div>
+  <div>> G15 ULTRA 2.0</div>
   <button class="btn" id="novo">NOVO</button>
   <button class="btn" id="limpar">LIMPAR</button>
+  <button class="btn" id="cor">TROCAR COR</button>
 </div>
 <div id="lixeira">🗑️</div>
-<video id="video" autoplay></video>
-<div id="pino"></div>
-<div id="c1" class="cubo" style="left:50%;top:50%"></div>
+<video id="video" autoplay playsinline></video>
+<div id="pino1" class="pino"></div>
+<div id="pino2" class="pino"></div>
+<div id="cursor"></div>
+<div id="status">Carregando...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script>
 const video = document.getElementById('video');
-const pino = document.getElementById('pino');
-let cubos = [document.getElementById('c1')];
-let seguro = null;
+const pino1 = document.getElementById('pino1');
+const pino2 = document.getElementById('pino2');
+const cursor = document.getElementById('cursor');
+const status = document.getElementById('status');
+let cubos = [];
+let segurado = null;
+let redimensionando = null;
+let escalaInicial = 1;
+let distInicial = 0;
 let ultimoFrame = 0;
+let posSuave = {x:0,y:0, cx:0, cy:0};
+let cores = ['#0ff','#f0f','#ff0','#0f0','#f00'];
+let corAtual = 0;
 
-// 1. CÂMERA 240P
+// 1. CÂMERA
 navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:240, height:180}}).then(s=>video.srcObject=s);
 
-// 2. MEDIAPIPE NO MÍNIMO
+// 2. MEDIAPIPE 2 MÃOS
 const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.4});
+hands.setOptions({maxNumHands:2, modelComplexity:0, minDetectionConfidence:0.5, minTrackingConfidence:0.5});
+
+const dist = (a,b)=>Math.hypot(a.x-b.x, a.y-b.y);
+function isPinca(h){ return dist(h[4], h[8]) < 0.05; }
+function isAberta(h){ return dist(h[8], h[0]) > 0.25; }
+function isClick(h){ return h[8].y < h[6].y && dist(h[8], h[12]) > 0.15; }
+function isFechada(h){ return dist(h[8], h[5]) < 0.15 && dist(h[12], h[9]) < 0.15; } // punho
 
 hands.onResults(res=>{
-  if(res.multiHandLandmarks.length > 0){
-    const h = res.multiHandLandmarks[0];
-    const x = (1-h[8].x)*window.innerWidth;
-    const y = h[8].y*window.innerHeight;
-    pino.style.left=x+'px'; pino.style.top=y+'px';
+  const maos = res.multiHandLandmarks;
+  if(maos.length > 0){
+    // MÃO 1
+    const h1 = maos[0];
+    let x1 = (1-h1[8].x)*window.innerWidth;
+    let y1 = h1[8].y*window.innerHeight;
+    posSuave.x = posSuave.x*0.6 + x1*0.4;
+    posSuave.y = posSuave.y*0.6 + y1*0.4;
+    pino1.style.left=(posSuave.x-7)+'px'; pino1.style.top=(posSuave.y-7)+'px';
 
-    const pinça = Math.hypot(x - (1-h[4].x)*window.innerWidth, y - h[4].y*window.innerHeight) < 45;
+    const pinca1 = isPinca(h1);
+    const aberta1 = isAberta(h1);
 
-    // MOVE CUBO
-    if(pinça &&!seguro){
-      for(let c of cubos) if(Math.abs(x-c.offsetLeft-40)<50) seguro=c;
+    // PEGAR CUBO COM 1 MÃO
+    if(pinca1 &&!segurado &&!redimensionando){
+      cubos.forEach(c=>{
+        const cx = c.offsetLeft + c.offsetWidth/2;
+        const cy = c.offsetTop + c.offsetHeight/2;
+        if(Math.abs(posSuave.x-cx)<70 && Math.abs(posSuave.y-cy)<70) segurado = c;
+      });
     }
-    if(seguro && pinça){
-      seguro.style.left=x-40+'px'; seguro.style.top=y-40+'px';
+    if(segurado && pinca1){
+      segurado.classList.add('segurado');
+      segurado.style.left=(posSuave.x-segurado.offsetWidth/2)+'px';
+      segurado.style.top=(posSuave.y-segurado.offsetHeight/2)+'px';
     }
-    if(!pinça && seguro){
-      if(x<70 && y>window.innerHeight-70) seguro.remove();
-      seguro=null;
+    if(!pinca1 && segurado){
+      const lix = document.getElementById('lixeira').getBoundingClientRect();
+      const distLixo = Math.hypot(posSuave.x - (lix.left+lix.width/2), posSuave.y - (lix.top+lix.height/2));
+      if(distLixo < 120){
+        segurado.style.transition = '0.3s';
+        segurado.style.left = (lix.left)+'px';
+        segurado.style.top = (lix.top)+'px';
+        setTimeout(()=>{segurado.remove(); cubos = cubos.filter(c=>c!=segurado)}, 300);
+      }
+      segurado.classList.remove('segurado');
+      segurado = null;
     }
 
-    // CLIQUE MENU
-    const menu = document.getElementById('menu').getBoundingClientRect();
-    document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));
-    if(x<menu.right && y>menu.top && y<menu.bottom && pinça){
-      const i = Math.floor((y-menu.top)/30);
-      if(document.querySelectorAll('.btn')[i]) document.querySelectorAll('.btn')[i].click();
+    // MÃO 2
+    if(maos.length > 1){
+      const h2 = maos[1];
+      let x2 = (1-h2[8].x)*window.innerWidth;
+      let y2 = h2[8].y*window.innerHeight - 80;
+      posSuave.cx = posSuave.cx*0.6 + x2*0.4;
+      posSuave.cy = posSuave.cy*0.6 + y2*0.4;
+      pino2.style.left=(posSuave.cx-7)+'px'; pino2.style.top=(posSuave.cy-7)+'px';
+      cursor.style.left=(posSuave.cx-12)+'px'; cursor.style.top=(posSuave.cy-12)+'px';
+
+      const pinca2 = isPinca(h2);
+
+      // GESTO NOVO 1: REDIMENSIONAR COM 2 MÃOS
+      if(pinca1 && pinca2 &&!redimensionando){
+        cubos.forEach(c=>{
+          const cx = c.offsetLeft + c.offsetWidth/2;
+          const cy = c.offsetTop + c.offsetHeight/2;
+          const d1 = Math.hypot(posSuave.x-cx, posSuave.y-cy);
+          const d2 = Math.hypot(posSuave.cx-cx, posSuave.cy-cy);
+          if(d1<70 && d2<70){ // as 2 mãos estão no mesmo cubo
+            redimensionando = c;
+            escalaInicial = parseFloat(c.style.transform.replace(/[^0-9.]/g,'')) || 1;
+            distInicial = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
+            c.classList.add('redimensionando');
+          }
+        });
+      }
+      if(redimensionando && pinca1 && pinca2){
+        const distAtual = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
+        const novaEscala = escalaInicial * (distAtual / distInicial);
+        const escalaLimitada = Math.max(0.3, Math.min(3, novaEscala)); // min 30% max 300%
+        redimensionando.style.transform = `scale(${escalaLimitada})`;
+        status.innerText = `ESCALA: ${Math.round(escalaLimitada*100)}%`;
+      }
+      if((!pinca1 ||!pinca2) && redimensionando){
+        redimensionando.classList.remove('redimensionando');
+        redimensionando = null;
+      }
+
+      // GESTO NOVO 2: JUNTAR AS 2 MÃOS FECHADAS = DIMINUIR PRO MÍNIMO
+      const fechada1 = isFechada(h1);
+      const fechada2 = isFechada(h2);
+      if(fechada1 && fechada2){
+        const distMaos = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
+        if(distMaos < 80 && segurado){
+          segurado.style.transform = 'scale(0.3)';
+          status.innerText = "DIMINUIDO AO MINIMO";
+        }
+      }
+
+      // CLICK NO MENU
+      const btns = document.querySelectorAll('.btn');
+      btns.forEach(b=>b.classList.remove('hover'));
+      const menuRect = document.getElementById('menu').getBoundingClientRect();
+      if(posSuave.cx > menuRect.left && posSuave.cx < menuRect.right && posSuave.cy > menuRect.top){
+        btns.forEach(b=>{
+          const r = b.getBoundingClientRect();
+          if(posSuave.cx > r.left && posSuave.cx < r.right && posSuave.cy > r.top && posSuave.cy < r.bottom){
+            b.classList.add('hover');
+            if(isClick(h2)){
+              b.classList.add('click');
+              setTimeout(()=>b.click(), 50);
+            }
+          }
+        });
+      }
     }
+  }else{
+    status.innerText = "SEM MÃO";
+    if(segurado){segurado.classList.remove('segurado'); segurado=null}
+    if(redimensionando){redimensionando.classList.remove('redimensionando'); redimensionando=null}
   }
 });
 
-// 3. TRAVAR FPS EM 15 PRA NÃO TRAVAR O G15
+// LOOP 15FPS
 const camera = new Camera(video, {
   onFrame: async () => {
     const agora = Date.now();
-    if(agora - ultimoFrame > 66){ // 1000/15 = 66ms
-      await hands.send({image: video});
-      ultimoFrame = agora;
-    }
+    if(agora - ultimoFrame > 66){ await hands.send({image: video}); ultimoFrame = agora; }
   },
-  width: 240,
-  height: 180
+  width: 240, height: 180
 });
 camera.start();
 
 // BOTOES
-document.getElementById('novo').onclick=()=>{const c=document.createElement('div');c.className='cubo';c.style.left='50%';c.style.top='50%';document.body.appendChild(c);cubos.push(c)}
+document.getElementById('novo').onclick=()=>{
+  const c=document.createElement('div');c.className='cubo';
+  c.style.left=(window.innerWidth/2-40)+'px';c.style.top=(window.innerHeight/2-40)+'px';
+  c.style.background = cores[corAtual]+'2';
+  c.style.borderColor = cores[corAtual];
+  document.body.appendChild(c);cubos.push(c)
+}
 document.getElementById('limpar').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('novo').click()}
+document.getElementById('cor').onclick=()=>{
+  corAtual = (corAtual+1)%cores.length;
+  document.getElementById('cor').style.color = cores[corAtual];
+}
+document.getElementById('novo').click();
 </script>
 </body>
 </html>
