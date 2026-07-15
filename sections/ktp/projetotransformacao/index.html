@@ -4,94 +4,191 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
-<title>K-TP PROJETO TRANSFORMAÇÃO</title>
+<title>K-TP PROJETO TRANSFORMAÇÃO 2026</title>
 <style>
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
-h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
+body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;display:flex;}
+
+/* LAYOUT COM MENU LATERAL */
+#menu-container{width:270px;min-width:270px;height:100vh;position:fixed;left:0;top:0;background:#080808;border-right:1px solid #222;z-index:100;overflow-y:auto;}
+.conteudo-principal{margin-left:270px;width:calc(100% - 270px);padding:16px;max-width:700px;}
+
+.header{padding:12px 16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:50;}
+h1{font-size:14px;font-weight:900;color:var(--c);}
+.btn-acessar{position:absolute;right:16px;top:10px;padding:8px 12px;background:transparent;border:1.5px solid var(--c);color:var(--c);border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;}
+
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
-.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:10px;}
-.btn.voltar{background:#222;color:var(--text);}
-.btn.acessar{background:transparent;border:1.5px solid var(--c);color:var(--c);}
-.btn.acessar:active{background:var(--c);color:#000;}
 .logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .oculto{display:none;}
-.fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
+
+.card-semana{background:#0a0a0a;border:2px solid var(--c);border-radius:12px;padding:16px;margin-bottom:16px;white-space:pre-line;}
+.titulo-fase{font-size:15px;font-weight:900;color:var(--c);text-align:center;margin-bottom:4px;}
+.data-semana{font-size:11px;color:var(--text2);text-align:center;margin-bottom:12px;}
+.box-texto{font-size:12px;line-height:1.6;margin-bottom:12px;}
+
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.item-metodo{background:#111;border-radius:8px;padding:6px;text-align:center;border:2px solid transparent;}
+.item-metodo.ativa{border:2px solid var(--c);box-shadow:0 0 10px var(--c)40;}
+.item-metodo img{width:100%;border-radius:6px;margin-bottom:4px;aspect-ratio:1/1;object-fit:cover;}
+.item-metodo.nome{font-size:9px;font-weight:900;margin-bottom:2px;}
+.item-metodo.foco{font-size:8px;color:var(--text2);line-height:1.2;}
+
+.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:10px;}
+.btn.voltar{background:#222;color:var(--text);}
+
+/* MOBILE */
+@media(max-width: 768px){
+  #menu-container{width:100%;transform:translateX(-100%);transition:.3s;}
+  #menu-container.ativo{transform:translateX(0);}
+ .conteudo-principal{margin-left:0;width:100%;}
+ .menu-btn-mobile{position:fixed;top:10px;left:12px;z-index:101;background:transparent;border:1.5px solid var(--c);color:var(--c);border-radius:8px;padding:8px 14px;font-weight:800;font-size:12px;cursor:pointer;}
+}
 </style>
 </head>
 <body>
 
-<!-- TELA INICIAL: APRESENTAÇÃO -->
-<div id="apresentacao">
-  <div class="card">
-    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+<!-- MENU LATERAL É CARREGADO AQUI -->
+<div id="menu-container"></div>
+<button class="menu-btn-mobile oculto" onclick="document.getElementById('menu-container').classList.toggle('ativo')">MENU</button>
 
-    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
-    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
-
-    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
-    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
-
-    <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
-    <button class="btn acessar" onclick="acessarProjeto()">ACESSAR</button>
+<div class="conteudo-principal">
+  <div class="header">
+    <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
+    <button class="btn-acessar" onclick="acessarProjeto()">ACESSAR</button>
   </div>
-</div>
 
-<!-- TELA 1: ANAMNESE -->
-<div id="tela1" class="oculto">
-  <h1>K-T.P KORVIL</h1>
-  <div class="card">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
-    <p>Formulário de inscrição aqui...</p>
-    <button class="btn voltar" onclick="mostrarTela('apresentacao')">Voltar</button>
+  <div id="apresentacao" class="oculto">
+    <div class="card">
+      <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
+      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
+      <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
+      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+      <div class="titulo-secao">| SOBRE O PROGRAMA</div>
+      <button class="btn" onclick="mostrarTela('tela1')">COMEÇAR INSCRIÇÃO</button>
+    </div>
+  </div>
+
+  <div id="conteudo-semana"></div>
+
+  <div id="tela1" class="oculto">
+    <h1 style="text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;text-shadow:0 0 10px var(--c);">K-T.P KORVIL</h1>
+    <div class="card">
+      <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
+      <p>Formulário de inscrição aqui...</p>
+      <button class="btn voltar" onclick="voltarInicio()">Voltar</button>
+    </div>
   </div>
 </div>
 
 <script>
-// LISTA DE IDS PERMITIDOS DO CRONOGRAMA DO PROJETO
-const idsPermitidos = [
-  "ktp1", // você
-  "ktp2",
-  "ktp3",
-  "ktp4",
-  "ktp5"
-  // adicione aqui os outros IDs dos alunos do cronograma
-];
+const PASTA_IMG = 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/imagens/2026/imagens-dos-metodos/';
+
+// BANCO DE MENSAGENS 2026 COMPLETO
+const MENSAGENS_2026 = {
+  "2026-01-05": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO\nEssa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.\n\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados`,
+  "2026-01-12": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nMais repetições, menos peso.`,
+  "2026-12-28": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA\nOBJETIVO: Mostrar os resultados\nÚltimo treino do ano. Celebração. 💪`
+  //... COLE AQUI TODAS AS 48 SEMANAS
+};
+
+function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
+function getSegunda(data){const dt=new Date(data);dt.setDate(dt.getDate()-dt.getDay()+1);return dt.toISOString().split('T')[0];}
+
+// CARREGAR MENU EXTERNO
+async function carregarMenu(){
+  try{
+    const res = await fetch('menu/menu-esquerdo.html');
+    const html = await res.text();
+    document.getElementById('menu-container').innerHTML = html;
+  }catch(e){
+    console.error("Erro ao carregar menu:", e)
+  }
+}
+
+function detectarTipoSemana(texto){
+  if(texto.includes('MANUTENÇÃO')) return 'manutencao';
+  if(texto.includes('RESISTÊNCIA')) return 'resistencia';
+  if(texto.includes('FORÇA')) return 'forca';
+  if(texto.includes('HIPERTROFIA')) return 'hipertrofia';
+  return 'manutencao';
+}
+
+function mostrarSemana(data){
+  document.getElementById('apresentacao').classList.add('oculto');
+  document.getElementById('tela1').classList.add('oculto');
+  document.getElementById('conteudo-semana').classList.remove('oculto');
+
+  const texto = MENSAGENS_2026[data];
+  const linhas = texto.split('\n');
+  const tituloFase = linhas[0];
+  const tipoSemana = detectarTipoSemana(texto);
+  const tipos=['manutencao','resistencia','forca','hipertrofia'];
+
+  let grid='';
+  tipos.forEach(t=>{
+    grid+=`<div class="item-metodo ${t===tipoSemana?'ativa':''}">
+      <img src="${PASTA_IMG}${t}/${t}.png" onerror="this.src='https://via.placeholder.com/100'">
+      <div class="nome">${t.toUpperCase()}</div>
+      <div class="foco">${t==='manutencao'?'Recuperação':t==='resistencia'?'Definição':t==='forca'?'Força':'Hipertrofia'}</div>
+    </div>`;
+  });
+
+  document.getElementById('conteudo-semana').innerHTML=`
+  <div class="card-semana">
+    <div class="titulo-fase">${tituloFase}</div>
+    <div class="data-semana">${formatarData(data)}</div>
+    <div class="grid-4">${grid}</div>
+    <div class="box-texto">${texto}</div>
+  </div>
+  <button class="btn voltar" onclick="voltarInicio()">Voltar ao Início</button>
+  `;
+  window.scrollTo(0,0);
+  
+  // Fecha menu no mobile
+  if(window.innerWidth<768) document.getElementById('menu-container').classList.remove('ativo');
+}
+
+function voltarInicio(){
+  document.getElementById('conteudo-semana').classList.add('oculto');
+  document.getElementById('apresentacao').classList.remove('oculto');
+}
 
 function mostrarTela(id){
   document.getElementById('apresentacao').classList.add('oculto');
+  document.getElementById('conteudo-semana').classList.add('oculto');
   document.querySelectorAll('#tela1').forEach(t => t.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
 }
 
+const idsPermitidos = ["ktp1"];
 function acessarProjeto(){
   const senha = prompt("Digite sua senha/ID de aluno do Projeto Transformação:");
-  
-  if(!senha){
-    return;
-  }
-
+  if(!senha){return;}
   const senhaNormalizada = senha.trim().toLowerCase();
-
   if(idsPermitidos.includes(senhaNormalizada)){
     window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/projetotransformacao.html";
   } else {
     alert("Acesso negado. ID não encontrado no cronograma do projeto.");
   }
 }
+
+function carregarSemanaAtual(){
+  const hoje = new Date().toISOString().split('T')[0];
+  const segundaAtual = getSegunda(hoje);
+  let chave = Object.keys(MENSAGENS_2026).sort().find(d => d >= segundaAtual);
+  if(!chave) chave = Object.keys(MENSAGENS_2026).sort().pop();
+  mostrarSemana(chave);
+}
+
+window.onload=async function(){
+  await carregarMenu();
+  carregarSemanaAtual();
+  if(window.innerWidth<768) document.querySelector('.menu-btn-mobile').classList.remove('oculto');
+};
 </script>
 </body>
 </html>
