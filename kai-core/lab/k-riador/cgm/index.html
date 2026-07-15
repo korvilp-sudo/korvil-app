@@ -3,54 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL OS v2.0</title>
+<title>KORVIL OS v3.0</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;overflow:hidden;font-family:'Orbitron';color:#00f5ff}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1;opacity:0.3}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1;opacity:0.25}
 #canvas{position:absolute;z-index:2;pointer-events:none}
 
-#hud{position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none}
-.canto{position:absolute;width:200px;height:200px;border:3px solid #00f5ff;box-shadow:0 0 30px #00f5ff}
+/* HUD */
+.canto{position:absolute;width:180px;height:180px;border:3px solid #00f5ff;box-shadow:0 0 30px #00f5ff}
 #tl{top:20px;left:20px;border-right:0;border-bottom:0}
 #tr{top:20px;right:20px;border-left:0;border-bottom:0}
 #bl{bottom:20px;left:20px;border-right:0;border-top:0}
 #br{bottom:20px;right:20px;border-left:0;border-top:0}
 
-#info{position:absolute;top:30px;width:100%;text-align:center;font-size:20px;text-shadow:0 0 20px #00f5ff;animation:pulso 2s infinite}
-#status{position:absolute;bottom:30px;width:100%;text-align:center;font-size:16px;color:#ff00ff}
+/* MENU */
+#menu{position:absolute;top:20px;left:20px;width:250px;background:rgba(0,245,255,0.1);border:2px solid #00f5ff;backdrop-filter:blur(10px);padding:15px;z-index:10;border-radius:10px}
+#menu h3{font-size:14px;margin-bottom:10px;text-shadow:0 0 10px #00f5ff}
+.btnMenu{width:100%;padding:10px;margin:5px 0;background:rgba(0,245,255,0.2);border:1px solid #00f5ff;color:#00f5ff;font-family:'Orbitron';cursor:pointer;border-radius:5px;transition:0.2s}
+.btnMenu.ativo{background:#00f5ff;color:#000;box-shadow:0 0 20px #00f5ff}
 
-#cubo{position:absolute;top:50%;left:50%;width:300px;height:300px;transform:translate(-50%,-50%);z-index:4;transition:0.08s cubic-bezier(0.4,0,0.2,1)}
-.face{position:absolute;width:100%;height:100%;border:4px solid #00f5ff;background:rgba(0,245,255,0.05);box-shadow:0 0 40px #00f5ff inset}
-.f1{transform:translateZ(150px)}.f2{transform:rotateY(180deg) translateZ(150px)}
-.f3{transform:rotateY(90deg) translateZ(150px)}.f4{transform:rotateY(-90deg) translateZ(150px)}
-.f5{transform:rotateX(90deg) translateZ(150px)}.f6{transform:rotateX(-90deg) translateZ(150px)}
+/* LIXEIRA */
+#lixeira{position:absolute;bottom:20px;left:20px;width:100px;height:100px;font-size:60px;text-align:center;line-height:100px;border:3px dashed #ff0000;border-radius:15px;z-index:10;transition:0.3s}
+#lixeira.ativo{background:rgba(255,0,0,0.3);box-shadow:0 0 40px #ff0000;transform:scale(1.2)}
 
-.mao{position:absolute;width:25px;height:25px;border-radius:50%;box-shadow:0 0 25px;z-index:5;transition:0.05s}
-#m1{background:#00f5ff;box-shadow:0 0 25px #00f5ff}
-#m2{background:#ff00ff;box-shadow:0 0 25px #ff00ff}
+/* TUTORIAL */
+#tutorial{position:absolute;bottom:20px;right:20px;width:300px;background:rgba(0,0,0,0.7);border:2px solid #00f5ff;padding:15px;border-radius:10px;font-size:11px;z-index:10}
+#tutorial h4{color:#ff00ff;margin-bottom:8px}
 
-@keyframes pulso{0%,100%{opacity:1}50%{opacity:0.5}}
-@keyframes explodir{0%{transform:scale(1)}50%{transform:scale(3) rotate(720deg)}100%{transform:scale(1)}}
+/* CUBO */
+.cubo{position:absolute;width:200px;height:200px;transform-style:preserve-3d;z-index:5;transition:0.1s}
+.face{position:absolute;width:100%;height:100%;border:3px solid #00f5ff;background:rgba(0,245,255,0.08);box-shadow:0 0 30px #00f5ff inset}
+.f1{transform:translateZ(100px)}.f2{transform:rotateY(180deg) translateZ(100px)}
+.f3{transform:rotateY(90deg) translateZ(100px)}.f4{transform:rotateY(-90deg) translateZ(100px)}
+.f5{transform:rotateX(90deg) translateZ(100px)}.f6{transform:rotateX(-90deg) translateZ(100px)}
+
+.mao{position:absolute;width:30px;height:30px;border-radius:50%;z-index:6;transition:0.05s}
+#m1{background:#00f5ff;box-shadow:0 0 30px #00f5ff}
+#m2{background:#ff00ff;box-shadow:0 0 30px #ff00ff}
+
+@keyframes sumir{0%{transform:scale(1)}100%{transform:scale(0) rotate(720deg);opacity:0}}
 </style>
 </head>
 <body>
-<div id="hud">
-  <div id="tl" class="canto"></div><div id="tr" class="canto"></div>
-  <div id="bl" class="canto"></div><div id="br" class="canto"></div>
+<div id="tl" class="canto"></div><div id="tr" class="canto"></div>
+<div id="bl" class="canto"></div><div id="br" class="canto"></div>
+
+<!-- MENU -->
+<div id="menu">
+  <h3>> KORVIL MENU</h3>
+  <button class="btnMenu" id="btnNovo">NOVO CUBO</button>
+  <button class="btnMenu" id="btnLimpar">LIMPAR TUDO</button>
+  <button class="btnMenu" id="btnCor">MUDAR COR</button>
+  <div id="statusMenu">STATUS: AGUARDANDO</div>
 </div>
 
-<div id="info">KORVIL OS v2.0 - SISTEMA ONLINE</div>
-<div id="status">AGUARDANDO MÃOS...</div>
+<!-- LIXEIRA -->
+<div id="lixeira">🗑️</div>
+
+<!-- TUTORIAL -->
+<div id="tutorial">
+  <h4>TUTORIAL DE GESTOS</h4>
+  <div>1 MÃO: Pinça = Segurar/Mover</div>
+  <div>1 MÃO: Abrir = Soltar</div>
+  <div>2 MÃOS: Pinça = Criar Novo</div>
+  <div>2 MÃOS: Paz = Deletar</div>
+  <div>PAZ + LIKE = Abrir Menu</div>
+  <div>APONTE pro Menu e faça Pinça</div>
+</div>
 
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
-
-<div id="cubo">
-  <div class="face f1"></div><div class="face f2"></div><div class="face f3"></div>
-  <div class="face f4"></div><div class="face f5"></div><div class="face f6"></div>
-</div>
 
 <div id="m1" class="mao"></div>
 <div id="m2" class="mao"></div>
@@ -64,23 +88,45 @@ body{background:#000;overflow:hidden;font-family:'Orbitron';color:#00f5ff}
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const cubo = document.getElementById('cubo');
 const m1 = document.getElementById('m1');
 const m2 = document.getElementById('m2');
-const status = document.getElementById('status');
+const lixeira = document.getElementById('lixeira');
+const menu = document.getElementById('menu');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let rotX=0, rotY=0, escala=1, targetEscala=1;
+let cubos = [];
+let cuboSegurado = null;
+let offsetX = 0, offsetY = 0;
 const detector = new DetectorGestos();
 
-// LIGA CÂMERA
+// CRIA CUBO
+function criarCubo(x=window.innerWidth/2, y=window.innerHeight/2){
+  const c = document.createElement('div');
+  c.className = 'cubo';
+  c.innerHTML = `<div class="face f1"></div><div class="face f2"></div><div class="face f3"></div><div class="face f4"></div><div class="face f5"></div><div class="face f6"></div>`;
+  c.style.left = x+'px';
+  c.style.top = y+'px';
+  document.body.appendChild(c);
+  cubos.push({el:c, x:x, y:y, rotX:0, rotY:0});
+  falar("Novo cubo criado");
+}
+
+// DELETA CUBO
+function deletarCubo(cubo){
+  cubo.el.style.animation = 'sumir 0.4s';
+  setTimeout(()=>cubo.el.remove(), 400);
+  cubos = cubos.filter(c=>c!=cubo);
+  falar("Cubo deletado");
+}
+
+criarCubo(); // Cria primeiro
+
 navigator.mediaDevices.getUserMedia({video:{width:1280,height:720}}).then(s=>{video.srcObject=s});
 
-// MEDIAPIPE
 const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2, minDetectionConfidence:0.7, minTrackingConfidence:0.7});
+hands.setOptions({maxNumHands:2, minDetectionConfidence:0.7});
 
 hands.onResults(r=>{
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -88,18 +134,29 @@ hands.onResults(r=>{
 
   const maos = r.multiHandLandmarks;
   if(maos.length > 0){
-    status.innerText = `MÃOS DETECTADAS: ${maos.length}`;
-
-    // MÃO 1
     const p1 = maos[0][8];
     const x1 = (1-p1.x)*window.innerWidth;
     const y1 = p1.y*window.innerHeight;
     m1.style.left = x1+'px'; m1.style.top = y1+'px';
 
-    rotY = (x1 - window.innerWidth/2) * 0.4;
-    rotX = (y1 - window.innerHeight/2) * 0.4;
+    // VERIFICA SE ESTÁ SOBRE LIXEIRA
+    const sobreLixeira = x1 > 20 && x1 < 120 && y1 > window.innerHeight-120;
+    lixeira.classList.toggle('ativo', sobreLixeira);
 
-    // MÃO 2
+    // VERIFICA SE ESTÁ SOBRE MENU
+    const sobreMenu = x1 > 20 && x1 < 270 && y1 > 20 && y1 < 200;
+
+    // LÓGICA DE ARRASTAR CUBO
+    if(cuboSegurado){
+      cuboSegurado.x = x1 - offsetX;
+      cuboSegurado.y = y1 - offsetY;
+      cuboSegurado.el.style.left = cuboSegurado.x+'px';
+      cuboSegurado.el.style.top = cuboSegurado.y+'px';
+      cuboSegurado.rotY = (x1 - window.innerWidth/2) * 0.2;
+      cuboSegurado.rotX = (y1 - window.innerHeight/2) * 0.2;
+      cuboSegurado.el.style.transform = `translate(-50%,-50%) rotateX(${cuboSegurado.rotX}deg) rotateY(${cuboSegurado.rotY}deg)`;
+    }
+
     if(maos.length > 1){
       const p2 = maos[1][8];
       const x2 = (1-p2.x)*window.innerWidth;
@@ -107,31 +164,54 @@ hands.onResults(r=>{
       m2.style.opacity = 1; m2.style.left = x2+'px'; m2.style.top = y2+'px';
 
       const gesto = detector.detectarDuasMaos(maos[0], maos[1], {x:x1,y:y1}, {x:x2,y:y2});
-      detector.executar(gesto, cubo);
+      detector.executar(gesto, {criarCubo, deletarCubo, cubos, menu});
     }else{
       m2.style.opacity = 0;
       const gesto = detector.detectarMao(maos[0]);
-      detector.executar(gesto, cubo);
+
+      // SEGURAR CUBO
+      if(gesto == "CLIQUE" &&!cuboSegurado){
+        for(let c of cubos){
+          const dist = Math.hypot(x1 - c.x, y1 - c.y);
+          if(dist < 120){
+            cuboSegurado = c;
+            offsetX = x1 - c.x;
+            offsetY = y1 - c.y;
+            falar("Segurando");
+            break;
+          }
+        }
+        // CLICAR NO MENU
+        if(sobreMenu){
+          if(y1 < 80) document.getElementById('btnNovo').click();
+          else if(y1 < 130) document.getElementById('btnLimpar').click();
+          else document.getElementById('btnCor').click();
+        }
+      }
+      if(gesto == "ABRIR" && cuboSegurado){
+        // SOLTOU NA LIXEIRA
+        if(sobreLixeira) deletarCubo(cuboSegurado);
+        cuboSegurado = null;
+        falar("Soltou");
+      }
     }
 
-    drawConnectors(ctx, maos[0], HAND_CONNECTIONS, {color:'#00f5ff', lineWidth:2});
-    if(maos[1]) drawConnectors(ctx, maos[1], HAND_CONNECTIONS, {color:'#ff00ff', lineWidth:2});
-  }else{
-    status.innerText = "AGUARDANDO MÃOS...";
+    drawConnectors(ctx, maos[0], HAND_CONNECTIONS, {color:'#00f5ff'});
+    if(maos[1]) drawConnectors(ctx, maos[1], HAND_CONNECTIONS, {color:'#ff00ff'});
   }
-
-  // ANIMAÇÃO SUAVE
-  escala += (targetEscala - escala) * 0.2;
-  cubo.style.transform = `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${escala})`;
 });
 
-const camera = new Camera(video, {onFrame: async()=>await hands.send({image:video}), width:1280, height:720});
+const camera = new Camera(video, {onFrame: async()=>await hands.send({image:video})});
 camera.start();
 
-window.setTargetEscala = (v)=>{targetEscala = v};
-window.explodirCubo = ()=>{
-  cubo.style.animation = 'explodir 0.5s';
-  setTimeout(()=>cubo.style.animation='', 500);
+// BOTÕES DO MENU
+document.getElementById('btnNovo').onclick = ()=>criarCubo();
+document.getElementById('btnLimpar').onclick = ()=>{cubos.forEach(c=>c.el.remove()); cubos=[]; falar("Tudo limpo")};
+document.getElementById('btnCor').onclick = ()=>{
+  document.querySelectorAll('.face').forEach(f=>{
+    const cor = `hsl(${Math.random()*360},100%,50%)`;
+    f.style.borderColor = cor; f.style.boxShadow = `0 0 30px ${cor} inset`;
+  });
 }
 </script>
 </body>
