@@ -38,7 +38,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
 .aba-plano.ativa{background:var(--c);color:#000;}
 
-/* TABELA CRONOGRAMA MELHORADA */
+/* TABELA CRONOGRAMA */
 .tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
 .tabela-crono{width:100%;border-collapse:collapse;font-size:11px;}
 .tabela-crono th{background:#111;color:var(--c);padding:12px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
@@ -80,7 +80,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
       <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
     </div>
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="COLAR ID">
+      <input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
     <div id="resultado-aluno" style="margin-top:12px;"></div>
@@ -94,41 +94,7 @@ const ALUNOS_DB = {
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"13/05/26", status:"Ativo"},
   "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Ativo"},
-  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado"},
-  "joss21": {nome:"Jossiane Alves", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado"},
-  "amigaadrum": {nome:"amigaadrum", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"–", freq:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado"},
-  "amigaadrdois": {nome:"amigaadrdois", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"–", freq:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado"},
-  "angel02": {nome:"Angélica", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado"},
-  "anapaula22": {nome:"Ana Paula", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado"},
-  "gusta23": {nome:"Gustavo Geraldino", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado"},
-  "sueli24": {nome:"Sueli", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado"},
-  "fabi03": {nome:"Fabiana", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado"},
-  "alexandra25": {nome:"Alexandra", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter Qui", freq:"2x", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado"},
-  "michele26": {nome:"Michele B", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado"},
-  "aline27": {nome:"Aline", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg Qui", freq:"2x", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado"},
-  "paula06": {nome:"Paula Cristine", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Ter a Sex", freq:"4x", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado"},
-  "nop07": {nome:"Natan Osvath Paoli", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado"},
-  "bianca28": {nome:"Bianca", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado"},
-  "lau08": {nome:"Laura Jesus Aragão", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Qui", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado"},
-  "cass09": {nome:"Cassandra Jesus", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Ter Qui", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado"},
-  "katiap11": {nome:"Kátia Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado"},
-  "mara13": {nome:"Lucimara", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado"},
-  "edn14": {nome:"Edna", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", freq:"3x", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado"},
-  "banip12": {nome:"Luciane Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado"},
-  "marly18": {nome:"Marly", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado"},
-  "mcris10": {nome:"Maria Cristina", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado"},
-  "juci29": {nome:"Jucilene", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado"},
-  "joce30": {nome:"Jocélia", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado"},
-  "marcosf31": {nome:"Marcos França", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Sex", freq:"1x", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado"},
-  "lucas32": {nome:"Lucas", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado"},
-  "celi33": {nome:"Celidalva", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua", freq:"1x", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado"},
-  "jaque15": {nome:"Jaqueline", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "elisa16": {nome:"Elisangela", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "gice01": {nome:"Gicelia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua", freq:"2x", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado"},
-  "pati34": {nome:"Patrícia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"–", status:"Desativado"},
-  "mel35": {nome:"Melissa", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado"},
-  "naty17": {nome:"Natália Melo", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado"},
-  "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", freq:"–", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"}
+  "ktp1": {nome:"SAY KORVIL", plano:"ADMIN", horario:"--", dias:"--", freq:"--", objetivo:"ADMIN", valor:"--", venc:"--", status:"Ativo"}
 };
 
 let planoAtivo = 'PRESENCIAL';
@@ -136,6 +102,7 @@ let planoAtivo = 'PRESENCIAL';
 function abrirBuscaAluno(){
   document.getElementById('modal-aluno').classList.add('ativo');
   document.getElementById('input-id-aluno').focus();
+  document.getElementById('resultado-aluno').innerHTML = mostrarCronogramaCompleto();
 }
 function fecharBuscaAluno(){
   document.getElementById('modal-aluno').classList.remove('ativo');
@@ -207,6 +174,12 @@ function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
   const div = document.getElementById('resultado-aluno');
 
+  if(id === ''){
+    div.innerHTML = `<div style="color:var(--aviso);text-align:center;padding:10px;">Digite um ID</div>`;
+    return;
+  }
+
+  // SE FOR KTP1 MOSTRA TUDO
   if(id === 'ktp1'){
     div.innerHTML = mostrarCronogramaCompleto();
     return;
@@ -219,15 +192,19 @@ function buscarAluno(){
   }
 
   div.innerHTML = `
-    <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
-    <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
-    <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
-    <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
-    <div class="dado-aluno"><b>Frequência:</b> ${aluno.freq}</div>
-    <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
-    <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
-    <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
-    <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+    <div class="card">
+      <div class="titulo-secao">DADOS DO ALUNO</div>
+      <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
+      <div class="dado-aluno"><b>ID:</b> ${id}</div>
+      <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
+      <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
+      <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
+      <div class="dado-aluno"><b>Frequência:</b> ${aluno.freq}</div>
+      <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
+      <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
+      <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
+      <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+    </div>
   `;
 }
 
