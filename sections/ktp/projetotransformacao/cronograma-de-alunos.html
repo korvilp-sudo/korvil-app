@@ -44,8 +44,8 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .tabela-crono th{background:#111;color:var(--c);padding:12px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
 .tabela-crono td{padding:12px 8px;border-bottom:1px solid #1a1a1a;}
 .tabela-crono tbody tr:hover{background:#0f0f0f;}
-.tabela-crono .col-nome{font-weight:800;color:#fff;min-width:140px;}
-.tabela-crono .col-id{font-size:10px;color:var(--text2);}
+.tabela-crono.col-id{font-weight:900;color:var(--c);min-width:100px;}
+.tabela-crono.col-nome{font-weight:800;color:#fff;min-width:140px;}
 
 .grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
 .grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
@@ -119,12 +119,12 @@ function trocarAba(plano){
 
 function mostrarCronogramaCompleto(){
   const alunos = Object.entries(ALUNOS_DB)
-    .map(([id, data]) => ({id,...data}))
-    .filter(a => a.plano === planoAtivo);
+   .map(([id, data]) => ({id,...data}))
+   .filter(a => a.plano === planoAtivo);
 
   alunos.sort((a,b)=>{
-    if(a.horario !== b.horario) return a.horario.localeCompare(b.horario);
-    if(a.status !== b.status) return a.status === 'Ativo'? -1 : 1;
+    if(a.horario!== b.horario) return a.horario.localeCompare(b.horario);
+    if(a.status!== b.status) return a.status === 'Ativo'? -1 : 1;
     return a.nome.localeCompare(b.nome);
   });
 
@@ -141,20 +141,21 @@ function mostrarCronogramaCompleto(){
   let contador = 1;
 
   alunos.forEach(a=>{
-    if(a.horario !== horarioAtual){
+    if(a.horario!== horarioAtual){
       horarioAtual = a.horario;
       html += `<div class="grupo-horario">🕒 ${horarioAtual}</div>`;
       statusAtual = '';
     }
-    if(a.status !== statusAtual){
+    if(a.status!== statusAtual){
       statusAtual = a.status;
       html += `<div class="grupo-status">${statusAtual === 'Ativo'? '✅ ATIVOS' : '❌ DESATIVADOS'}</div>`;
       html += `<div class="tabela-wrapper"><table class="tabela-crono">
         <thead><tr>
-          <th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
+          <th>ID</th><th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th>
         </tr></thead><tbody>`;
     }
     html += `<tr>
+      <td class="col-id">${a.id}</td>
       <td>${contador++}</td>
       <td class="col-nome">${a.nome}</td>
       <td>${a.dias}</td>
@@ -163,7 +164,6 @@ function mostrarCronogramaCompleto(){
       <td>R$ ${a.valor}</td>
       <td>${a.venc}</td>
       <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
-      <td class="col-id">${a.id}</td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
@@ -194,8 +194,8 @@ function buscarAluno(){
   div.innerHTML = `
     <div class="card">
       <div class="titulo-secao">DADOS DO ALUNO</div>
-      <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
       <div class="dado-aluno"><b>ID:</b> ${id}</div>
+      <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
       <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
       <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
       <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
