@@ -29,13 +29,15 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
 .container{padding:12px;max-width:1200px;margin:auto;}
 
 /* CARD ALUNO LOGADO */
-.card-aluno{background:#001a1a;border:2px solid var(--c);border-radius:10px;padding:12px;margin-bottom:12px;}
+.card-aluno{background:#001a1a;border:2px solid var(--c);border-radius:10px;padding:12px;margin-bottom:12px;position:relative;}
 .card-aluno h2{font-size:12px;color:var(--c);margin-bottom:6px;}
 .card-aluno p{font-size:11px;color:var(--text2);line-height:1.6;}
+.btn-fechar-resultado{position:absolute;top:8px;right:8px;background:var(--erro);color:#fff;border:0;border-radius:50%;width:22px;height:22px;font-weight:900;font-size:12px;cursor:pointer;line-height:22px;text-align:center;}
 
 /* AVISO PIX */
 .obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
 .titulo-crono{font-size:16px;font-weight:900;text-align:center;color:var(--c);margin-bottom:10px;}
+.msg-inicial{text-align:center;color:var(--text2);font-size:12px;margin-top:40px;}
 
 /* ABAS PLANO */
 .abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
@@ -48,6 +50,7 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
 .tabela-crono th{background:#111;color:var(--c);padding:8px 6px;text-align:left;font-size:9px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
 .tabela-crono td{padding:8px 6px;border-bottom:1px solid #1a1a1a;}
 .tabela-crono tbody tr:hover{background:#0f0f0f;}
+.tabela-crono tbody tr.destaque{background:#001a1a;box-shadow:0 0 0 2px var(--c) inset;}
 
 .grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
 .grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
@@ -85,7 +88,9 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
     <div class="sub-titulo" style="font-size:10px;color:var(--text2);text-align:center;">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
   </div>
 
-  <div id="cronograma-container"></div>
+  <div id="cronograma-container">
+    <div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>
+  </div>
 </div>
 
 <!-- MODAL BUSCA ALUNO -->
@@ -104,7 +109,6 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
 </div>
 
 <script>
-// 1. BANCO DE DADOS DO MENU - TODAS AS FASES E SEMANAS
 const MENSAGENS_2026_MENU = {
   "2026-01-05": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO`,
   "2026-01-12": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA`,
@@ -168,7 +172,6 @@ const FASES_MENU = {
   "DEZEMBRO: FÉRIAS": ["2026-12-07","2026-12-14","2026-12-21","2026-12-28"]
 };
 
-// 2. BANCO DE DADOS DO CRONOGRAMA NA ORDEM CERTA
 const CRONOGRAMA_DB = {
   "PRESENCIAL": [
     {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[{aluno:"Adriana", dias:"Ter Qua", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado", id:"adriana20"},{aluno:"Jossiane Alves", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado", id:"joss21"},{aluno:"amigaadrum", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrum"},{aluno:"amigaadrdois", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrdois"}]},
@@ -187,7 +190,6 @@ const CRONOGRAMA_DB = {
   ]
 };
 
-// DADOS DOS ALUNOS PARA O CARD
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", objetivo:"Definição muscular"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", objetivo:"Definição muscular"},
@@ -202,6 +204,7 @@ let idLogado = '';
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
+function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
 
 function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 
@@ -210,7 +213,7 @@ function carregarMenu(){
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div>`;
     html+=`<div class="semanas-da-fase">`;
-    FASES_MENU[fase].forEach(data=>{
+    FASES_MENU.forEach(data=>{
       const segundaLinha = MENSAGENS_2026_MENU[data].split('\n')[1] || 'SEMANA';
       html+=`<div class="semana-item" onclick="mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
@@ -221,7 +224,7 @@ function carregarMenu(){
 
 function mostrarInfoSemana(data){
   const info = MENSAGENS_2026_MENU[data].replace('\n','<br>');
-  alert(info); // Por enquanto só alerta. Depois podemos mostrar abaixo do cronograma
+  alert(info);
   if(window.innerWidth<768)toggleMenu();
 }
 
@@ -236,9 +239,9 @@ function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
   if(id === 'ktp1'){
-    container.innerHTML = `<div class="card-aluno"><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
-    container.innerHTML = `<div class="card-aluno"><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
   }
 }
 
@@ -268,11 +271,13 @@ function mostrarCronograma(){
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
 
       bloco.alunos.forEach(a=>{
-        html += `<tr>`;
+        let classe = a.id === idLogado? 'destaque' : '';
+        html += `<tr class="${classe}">`;
         if(a.n) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}
+<td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
     });
@@ -300,14 +305,10 @@ function buscarAluno(){
 
 window.onload=function(){
   carregarMenu();
-  const idSalvo = localStorage.getItem('idLogado');
-  if(idSalvo && ALUNOS_DB[idSalvo]){
-    idLogado = idSalvo;
-    if(idSalvo!== 'ktp1') planoAtivo = ALUNOS_DB[idSalvo].plano;
-    mostrarDadosAluno(idSalvo);
-  }
-  mostrarCronograma();
+  // REMOVIDO: não mostra mais cronograma sozinho
 };
 </script>
 </body>
 </html>
+
+Assim?
