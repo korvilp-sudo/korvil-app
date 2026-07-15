@@ -2,111 +2,95 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL OS G5s</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KORVIL G15</title>
 <style>
-body{margin:0;background:#000;overflow:hidden;font-family:Arial;color:#0ff}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.4}
-#menu{position:absolute;top:5px;left:5px;width:150px;background:#000a;border:2px solid #0ff;padding:5px;font-size:10px}
-.btn{width:100%;padding:5px;margin:3px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:9px}
-.btn.ativo{background:#0ff;color:#000}
-#lixeira{position:absolute;bottom:5px;left:5px;font-size:30px;border:2px dashed red;padding:8px}
-.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff;box-shadow:0 0 15px #0ff}
-#mira{position:absolute;width:30px;height:30px;border:2px solid yellow;border-radius:50%;pointer-events:none}
-#info{position:absolute;bottom:5px;right:5px;width:160px;background:#000a;border:1px solid #0ff;font-size:8px;padding:4px}
+*{margin:0;padding:0}
+body{background:#000;overflow:hidden;font-family:Arial}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.3}
+#menu{position:absolute;top:5px;left:5px;width:130px;background:#000c;border:2px solid #0ff;padding:5px;color:#0ff;font-size:10px}
+.btn{width:100%;padding:5px;margin:2px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:9px}
+.btn.on{background:#0ff;color:#000}
+.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff}
+#lixeira{position:absolute;bottom:5px;left:5px;font-size:30px;border:2px dashed red;padding:5px}
+#pino{position:absolute;width:15px;height:15px;background:magenta;border-radius:50%}
 </style>
 </head>
 <body>
 <div id="menu">
-  <div>> MENU GESTUAL</div>
-  <button class="btn" id="b1">1.NOVO</button>
-  <button class="btn" id="b2">2.LIMPAR</button>
-  <button class="btn" id="b3">3.COR</button>
-  <div id="status">AGUARDE...</div>
+  <div>GESTO G15</div>
+  <button class="btn" id="novo">NOVO</button>
+  <button class="btn" id="limpar">LIMPAR</button>
 </div>
 <div id="lixeira">🗑️</div>
-<div id="info">1 DEDO = MOVER<br>FECHA MÃO = SEGURA<br>ABRE MÃO = SOLTA<br>APONTA + FECHA = CLICA MENU</div>
-<video id="video" autoplay playsinline></video>
-<div id="mira"></div>
+<video id="video" autoplay></video>
+<div id="pino"></div>
 <div id="c1" class="cubo" style="left:50%;top:50%"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script>
 const video = document.getElementById('video');
-const mira = document.getElementById('mira');
-const status = document.getElementById('status');
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d', {willReadFrequently:true});
-let x=window.innerWidth/2, y=window.innerHeight/2;
-let maoFechada = false;
+const pino = document.getElementById('pino');
 let cubos = [document.getElementById('c1')];
-let cuboSeguro = null;
+let seguro = null;
+let ultimoFrame = 0;
 
-navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:320, height:240}}).then(s=>{
-  video.srcObject=s;
-  video.onloadeddata=()=>{canvas.width=160; canvas.height=120; loop()}
+// 1. CÂMERA 240P
+navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:240, height:180}}).then(s=>video.srcObject=s);
+
+// 2. MEDIAPIPE NO MÍNIMO
+const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+hands.setOptions({maxNumHands:1, modelComplexity:0, minDetectionConfidence:0.4});
+
+hands.onResults(res=>{
+  if(res.multiHandLandmarks.length > 0){
+    const h = res.multiHandLandmarks[0];
+    const x = (1-h[8].x)*window.innerWidth;
+    const y = h[8].y*window.innerHeight;
+    pino.style.left=x+'px'; pino.style.top=y+'px';
+
+    const pinça = Math.hypot(x - (1-h[4].x)*window.innerWidth, y - h[4].y*window.innerHeight) < 45;
+
+    // MOVE CUBO
+    if(pinça &&!seguro){
+      for(let c of cubos) if(Math.abs(x-c.offsetLeft-40)<50) seguro=c;
+    }
+    if(seguro && pinça){
+      seguro.style.left=x-40+'px'; seguro.style.top=y-40+'px';
+    }
+    if(!pinça && seguro){
+      if(x<70 && y>window.innerHeight-70) seguro.remove();
+      seguro=null;
+    }
+
+    // CLIQUE MENU
+    const menu = document.getElementById('menu').getBoundingClientRect();
+    document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));
+    if(x<menu.right && y>menu.top && y<menu.bottom && pinça){
+      const i = Math.floor((y-menu.top)/30);
+      if(document.querySelectorAll('.btn')[i]) document.querySelectorAll('.btn')[i].click();
+    }
+  }
 });
 
-function loop(){
-  ctx.drawImage(video,0,0,160,120);
-  const img = ctx.getImageData(0,0,160,120).data;
-  let mx=0,my=0,total=0,mov=0;
-
-  // DETECTA MOVIMENTO + COR DE PELE. É 10x MAIS LEVE
-  for(let i=0;i<img.length;i+=16){
-    const r=img[i],g=img[i+1],b=img[i+2];
-    if(r>70 && g>40 && b<80 && r>g){ // pele
-      mx += (i/4)%160;
-      my += Math.floor((i/4)/160);
-      total++;
+// 3. TRAVAR FPS EM 15 PRA NÃO TRAVAR O G15
+const camera = new Camera(video, {
+  onFrame: async () => {
+    const agora = Date.now();
+    if(agora - ultimoFrame > 66){ // 1000/15 = 66ms
+      await hands.send({image: video});
+      ultimoFrame = agora;
     }
-  }
-
-  if(total>50){
-    x = (160 - mx/total) * window.innerWidth/160;
-    y = my/total * window.innerHeight/120;
-    mira.style.left = x-15+'px'; mira.style.top = y-15+'px';
-
-    // DETECTA SE MÃO FECHOU: menos pixels de pele = mão fechada
-    const maoAgoraFechada = total < 200;
-
-    // CLIQUE NO MENU
-    const menu = document.getElementById('menu').getBoundingClientRect();
-    if(x>menu.left && x<menu.right && y>menu.top && y<menu.bottom){
-      const btns = document.querySelectorAll('.btn');
-      let i = Math.floor((y-menu.top)/25);
-      btns.forEach(b=>b.classList.remove('ativo'));
-      if(btns[i]) btns[i].classList.add('ativo');
-      if(maoAgoraFechada &&!maoFechada) btns[i].click(); // CLICOU
-    }
-
-    // SEGURA CUBO
-    if(maoAgoraFechada &&!maoFechada){
-      for(let c of cubos){
-        if(Math.abs(x - c.offsetLeft - 40) < 60 && Math.abs(y - c.offsetTop - 40) < 60){
-          cuboSeguro = c; break;
-        }
-      }
-    }
-    if(maoAgoraFechada && cuboSeguro){
-      cuboSeguro.style.left = x-40+'px';
-      cuboSeguro.style.top = y-40+'px';
-    }
-    if(!maoAgoraFechada && cuboSeguro){
-      if(x<90 && y>window.innerHeight-90) cuboSeguro.remove(); // LIXEIRA
-      cuboSeguro = null;
-    }
-    maoFechada = maoAgoraFechada;
-    status.innerText = maoFechada? "SEGURANDO" : "SOLTO";
-  }else{
-    status.innerText = "SEM MÃO - USE LUZ";
-  }
-  requestAnimationFrame(loop);
-}
+  },
+  width: 240,
+  height: 180
+});
+camera.start();
 
 // BOTOES
-document.getElementById('b1').onclick=()=>{const c=document.createElement('div');c.className='cubo';c.style.left='50%';c.style.top='50%';document.body.appendChild(c);cubos.push(c)}
-document.getElementById('b2').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('b1').click()}
-document.getElementById('b3').onclick=()=>{document.querySelectorAll('.cubo').forEach(c=>c.style.borderColor=`hsl(${Math.random()*360},100%,50%)`)}
+document.getElementById('novo').onclick=()=>{const c=document.createElement('div');c.className='cubo';c.style.left='50%';c.style.top='50%';document.body.appendChild(c);cubos.push(c)}
+document.getElementById('limpar').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('novo').click()}
 </script>
 </body>
 </html>
