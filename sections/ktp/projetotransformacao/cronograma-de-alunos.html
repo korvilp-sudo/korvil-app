@@ -4,32 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
-<title>Dados do Cronograma do aluno</title>
+<title>Projeto Transformação - Aluno</title>
 <style>
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --aviso:#ffaa00; --erro:#ff0044;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
+
 .header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
 .btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;}
+
 .container{max-width:1200px;margin:auto;padding:16px;padding-bottom:100px;}
+
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
 .logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
-#modal-aluno.ativo{display:flex;}
-.modal-card{background:var(--card);border:2px solid var(--c);border-radius:14px;padding:20px;max-width:1000px;width:100%;box-shadow:0 0 40px var(--c)40;max-height:90vh;overflow-y:auto;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.modal-titulo{font-size:16px;font-weight:900;color:var(--c);}
-.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:6px;padding:6px 10px;font-weight:900;cursor:pointer;}
+
+/* TELA DO CRONOGRAMA */
+#tela-cronograma{display:none;}
+#tela-cronograma.ativo{display:block;}
+
+/* TELA DADOS DO ALUNO */
+#tela-aluno{display:none;}
+#tela-aluno.ativo{display:block;}
+
 .dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
 .dado-aluno b{color:var(--c);}
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
+
+/* ABAS PLANO */
 .abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
 .aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
 .aba-plano.ativa{background:var(--c);color:#000;}
+
+/* TABELA CRONOGRAMA */
 .tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
 .tabela-crono{width:100%;border-collapse:collapse;font-size:11px;}
 .tabela-crono th{background:#111;color:var(--c);padding:12px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
@@ -37,19 +47,23 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .tabela-crono tbody tr:hover{background:#0f0f0f;}
 .tabela-crono .col-id{font-weight:900;color:var(--c);min-width:100px;}
 .tabela-crono .col-nome{font-weight:800;color:#fff;min-width:140px;}
+
 .grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
 .grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
 .obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
-.busca-id{display:flex;gap:6px;margin-top:10px;}
+
+/* BUSCA ID */
+.busca-id{display:flex;gap:6px;margin-bottom:16px;}
 .busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
 .busca-id button{padding:10px 14px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
+.btn-voltar{padding:10px 14px;background:#222;color:#fff;border:0;border-radius:6px;font-weight:900;cursor:pointer;margin-bottom:16px;}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
-  <button class="btn-aluno" onclick="abrirBuscaAluno()">👤 SEU PROJETO: COLAR ID</button>
+  <button class="btn-aluno" onclick="mostrarBusca()">🔍 BUSCAR</button>
 </div>
 
 <div class="container">
@@ -57,24 +71,24 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
     <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
     <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
   </div>
-  <div id="semanaAtualContainer"></div>
-</div>
 
-<div id="modal-aluno">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div class="modal-titulo">BUSCAR ALUNO PELO ID</div>
-      <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
-    </div>
+  <!-- BARRA DE BUSCA -->
+  <div id="barra-busca" class="card">
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()">
+      <input type="text" id="input-id-aluno" placeholder="DIGITE SEU ID E CLIQUE EM BUSCAR">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
-    <div id="resultado-aluno" style="margin-top:12px;"></div>
   </div>
+
+  <!-- TELA 1: DADOS DO ALUNO -->
+  <div id="tela-aluno"></div>
+
+  <!-- TELA 2: CRONOGRAMA COMPLETO -->
+  <div id="tela-cronograma"></div>
 </div>
 
 <script>
+// LISTA COMPLETA - MESMA DO CRONOGRAMA.HTML
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
@@ -84,24 +98,20 @@ const ALUNOS_DB = {
 };
 
 let planoAtivo = 'PRESENCIAL';
-let idLogado = localStorage.getItem('idLogado') || '';
+let idLogado = '';
 
-function abrirBuscaAluno(){
-  document.getElementById('modal-aluno').classList.add('ativo');
+function mostrarBusca(){
+  document.getElementById('tela-aluno').classList.remove('ativo');
+  document.getElementById('tela-cronograma').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'block';
   document.getElementById('input-id-aluno').focus();
-  document.getElementById('resultado-aluno').innerHTML = mostrarCronogramaCompleto();
-}
-function fecharBuscaAluno(){
-  document.getElementById('modal-aluno').classList.remove('ativo');
-  document.getElementById('resultado-aluno').innerHTML = '';
-  document.getElementById('input-id-aluno').value = '';
 }
 
 function trocarAba(plano){
   planoAtivo = plano;
   document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
   event.target.classList.add('ativa');
-  document.getElementById('resultado-aluno').innerHTML = mostrarCronogramaCompleto();
+  buscarAluno();
 }
 
 function horaParaNumero(horario){
@@ -111,14 +121,8 @@ function horaParaNumero(horario){
   return hora;
 }
 
-function mostrarCronogramaCompleto(){
-  // SE FOR KTP1 PEGA TODOS OS PLANOS. SE NÃO, SÓ O PLANO ATIVO
-  let alunos;
-  if(idLogado === 'ktp1'){
-    alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
-  } else {
-    alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data})).filter(a => a.plano === planoAtivo);
-  }
+function mostrarTelaCronograma(){
+  const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
 
   alunos.sort((a,b)=>{
     let ha = horaParaNumero(a.horario);
@@ -128,19 +132,23 @@ function mostrarCronogramaCompleto(){
     return a.nome.localeCompare(b.nome);
   });
 
-  let html = `<div class="abas-plano">
+  let html = `<button class="btn-voltar" onclick="mostrarBusca()">← VOLTAR BUSCA</button>`;
+
+  html += `<div class="abas-plano">
     <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL')">🏋️ PRESENCIAL</button>
     <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE')">💻 ONLINE</button>
   </div>`;
 
-  html += `<div class="titulo-secao">📋 CRONOGRAMA ${idLogado==='ktp1' ? 'GERAL' : planoAtivo}</div>`;
+  html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
   let horarioAtual = '';
   let statusAtual = '';
   let contador = 1;
 
-  alunos.forEach(a=>{
+  const alunosFiltrados = idLogado === 'ktp1' ? alunos : alunos.filter(a => a.plano === planoAtivo);
+
+  alunosFiltrados.forEach(a=>{
     if(a.horario!== horarioAtual){
       horarioAtual = a.horario;
       html += `<div class="grupo-horario">🕒 ${horarioAtual}</div>`;
@@ -151,13 +159,12 @@ function mostrarCronogramaCompleto(){
       html += `<div class="grupo-status">${statusAtual === 'Ativo'? '✅ ATIVOS' : '❌ DESATIVADOS'}</div>`;
       html += `<div class="tabela-wrapper"><table class="tabela-crono">
         <thead><tr>
-          <th>Nº</th><th>ALUNO</th><th>PLANO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
+          <th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
         </tr></thead><tbody>`;
     }
     html += `<tr>
       <td>${contador++}</td>
       <td class="col-nome">${a.nome}</td>
-      <td>${a.plano}</td>
       <td>${a.dias}</td>
       <td>${a.freq}</td>
       <td>${a.objetivo}</td>
@@ -168,32 +175,39 @@ function mostrarCronogramaCompleto(){
     </tr>`;
   });
   html += `</tbody></table></div>`;
-  return html;
+  
+  document.getElementById('tela-cronograma').innerHTML = html;
+  document.getElementById('tela-cronograma').classList.add('ativo');
+  document.getElementById('tela-aluno').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'none';
 }
 
 function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  const div = document.getElementById('resultado-aluno');
+  idLogado = id;
 
   if(id === ''){
-    div.innerHTML = `<div style="color:var(--aviso);text-align:center;padding:10px;">Digite um ID</div>`;
+    alert('Digite um ID');
     return;
   }
 
+  // SE FOR KTP1 ABRE A TELA DO CRONOGRAMA COMPLETO
   if(id === 'ktp1'){
-    div.innerHTML = mostrarCronogramaCompleto();
+    mostrarTelaCronograma();
     return;
   }
 
   const aluno = ALUNOS_DB[id];
   if(!aluno){
-    div.innerHTML = `<div style="color:var(--erro);text-align:center;padding:10px;">ID não encontrado</div>`;
+    alert('ID não encontrado');
     return;
   }
 
-  div.innerHTML = `
+  // SE FOR ALUNO NORMAL MOSTRA SÓ OS DADOS DELE
+  document.getElementById('tela-aluno').innerHTML = `
+    <button class="btn-voltar" onclick="mostrarBusca()">← VOLTAR BUSCA</button>
     <div class="card">
-      <div class="titulo-secao">DADOS DO ALUNO</div>
+      <div class="titulo-secao">MEUS DADOS</div>
       <div class="dado-aluno"><b>ID:</b> ${id}</div>
       <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
       <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
@@ -205,14 +219,15 @@ function buscarAluno(){
       <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
       <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
     </div>
+    <button class="btn-aluno" style="width:100%;margin-top:10px;" onclick="mostrarTelaCronograma()">VER CRONOGRAMA COMPLETO</button>
   `;
+  document.getElementById('tela-aluno').classList.add('ativo');
+  document.getElementById('tela-cronograma').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'none';
 }
 
 window.onload = function(){
-  // SE LOGOU COM KTP1 JÁ ABRE O CRONOGRAMA GERAL AUTOMATICO
-  if(idLogado === 'ktp1'){
-    document.getElementById('semanaAtualContainer').innerHTML = mostrarCronogramaCompleto();
-  }
+  mostrarBusca();
 };
 </script>
 </body>
