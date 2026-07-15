@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>CGM | Controle de Gestos com as Mãos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+body{margin:0;background:radial-gradient(circle,#001a33 0%,#000 100%);overflow:hidden;font-family:'Orbitron'}
+#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:16px;text-shadow:0 0 20px #00f5ff;z-index:10}
+#video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.2}
+canvas{position:absolute;top:0;left:0}
+#cursor{position:absolute;width:40px;height:40px;border:2px solid #00f5ff;border-radius:50%;box-shadow:0 0 30px #00f5ff;pointer-events:none;transition:.05s}
+#cursor.click{background:#00f5ff}
+#voz{position:fixed;bottom:20px;width:100%;text-align:center;color:#00f5ff}
+</style>
+</head>
+<body>
+<div id="info">OBJETIVO: 1.Gire a mão 2.Pinça pra clicar 3.Abra e feche mão pra Zoom 4.Fale "K-AI"</div>
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
+<div id="cursor"></div>
+<div id="voz">🎤 Fale um comando...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+// 1. CONFIGURA 3D - O CUBO K-AI
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.position.z = 5;
+
+const geometry = new THREE.BoxGeometry(2,2,2);
+const material = new THREE.MeshBasicMaterial({color:0x00f5ff,wireframe:true});
+const cubo = new THREE.Mesh(geometry, material);
+scene.add(cubo);
+scene.add(new THREE.AmbientLight(0x00f5ff));
+
+// 2. CONTROLE COM A MÃO
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const cursor = document.getElementById('cursor');
+let maoX=0, maoY=0, maoZ=0, maoAnteriorZ=0;
+
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+hands.setOptions({maxNumHands: 1});
+hands.onResults(onResults);
+
+const cameraFeed = new Camera(video, {onFrame: async () => { await hands.send({image: video}); }});
+cameraFeed.start();
+
+function onResults(results){
+  if(results.multiHandLandmarks){
+    const l = results.multiHandLandmarks[0];
+
+    // MOVIMENTO: Indicador controla cursor
+    maoX = (1 - l[8].x) * window.innerWidth;
+    maoY = l[8].y * window.innerHeight;
+    maoZ = l[8].z; // Profundidade pra zoom
+    cursor.style.left = maoX-20+'px';
+    cursor.style.top = maoY-20+'px';
+
+    // OBJETIVO 1: GIRAR CUBO - Move mão pra qualquer lado
+    cubo.rotation.x = (maoY / window.innerHeight) * Math.PI * 2;
+    cubo.rotation.y = (maoX / window.innerWidth) * Math.PI * 2;
+
+    // OBJETIVO 2: CLICAR - Pinça Polegar + Indicador
+    const distPinca = Math.hypot(l[4].x - l[8].x, l[4].y - l[8].y);
+    if(distPinca < 0.04){
+      cursor.classList.add('click');
+      cubo.material.color.set(0xff00ff); // Cubo fica roxo ao clicar
+      falar('Clicado');
+    }else{
+      cursor.classList.remove('click');
+      cubo.material.color.set(0x00f5ff);
+    }
+
+    // OBJETIVO 3: ZOOM - Abre e fecha a mão
+    const distMao = Math.hypot(l[5].x - l[17].x, l[5].y - l[17].y); // Base do dedo mindinho ao indicador
+    if(distMao > maoAnteriorZ + 0.02){ camera.position.z -= 0.1 } // Abre mão = Zoom In
+    if(distMao < maoAnteriorZ - 0.02){ camera.position.z += 0.1 } // Fecha mão = Zoom Out
+    maoAnteriorZ = distMao;
+  }
+  renderer.render(scene, camera);
+}
+
+// 3. CONTROLE POR VOZ
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = 'pt-BR'; recognition.continuous = true;
+
+recognition.onresult = (e) => {
+  const comando = e.results[e.results.length-1][0].transcript.toLowerCase();
+  document.getElementById('voz').innerText = '🎤 Você disse: '+comando;
+
+  if(comando.includes('k ai') || comando.includes('cubo')){
+    cubo.material.wireframe =!cubo.material.wireframe;
+    falar('Modo holograma ativado');
+  }
+  if(comando.includes('girar')){
+    cubo.rotation.y += 1;
+    falar('Girando cubo');
+  }
+  if(comando.includes('aumentar') || comando.includes('zoom')){
+    camera.position.z -= 1;
+  }
+  if(comando.includes('diminuir')){
+    camera.position.z += 1;
+  }
+}
+recognition.start();
+
+function falar(txt){
+  const s = new SpeechSynthesisUtterance(txt);
+  s.lang = 'pt-BR'; speechSynthesis.speak(s);
+}
+</script>
+</body>
+</html>
