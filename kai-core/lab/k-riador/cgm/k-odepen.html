@@ -3,24 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL AI CODEPEN</title>
+<title>KORVIL GPT CODEPEN</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Consolas', monospace}
 body{display:flex;height:100vh;background:#0a0a0a;color:#0ff}
-
 #painel-esq{width:50%;display:flex;flex-direction:column;border-right:2px solid #0ff}
 #painel-dir{width:50%;display:flex;flex-direction:column}
-
 header{padding:10px;background:#111;border-bottom:1px solid #0ff}
 header h2{color:#0ff;font-size:14px}
-
 #prompt{width:100%;height:80px;background:#000;border:1px solid #0ff;color:#0ff;padding:8px;resize:none;font-size:12px}
 #btnGerar{width:100%;padding:10px;background:#0ff;color:#000;border:0;font-weight:bold;cursor:pointer}
 #btnGerar:hover{background:#fff}
 #btnGerar:disabled{background:#555;color:#aaa}
-
 #codigo{flex:1;width:100%;background:#000;color:#0f0;border:0;padding:10px;font-size:12px;resize:none}
-
 iframe{flex:1;width:100%;border:0;background:#fff}
 #status{padding:5px;font-size:10px;color:#ff0;background:#111}
 </style>
@@ -28,9 +23,9 @@ iframe{flex:1;width:100%;border:0;background:#fff}
 <body>
 
 <div id="painel-esq">
-  <header><h2>> KORVIL AI - DIGA O QUE QUER</h2></header>
-  <textarea id="prompt" placeholder="Ex: Crie um botão 3D neon que pulsa quando passo o mouse"></textarea>
-  <button id="btnGerar">GERAR CÓDIGO + RODAR</button>
+  <header><h2>> KORVIL GPT - DIGA O QUE QUER</h2></header>
+  <textarea id="prompt" placeholder="Ex: Crie um loading 3D que gira"></textarea>
+  <button id="btnGerar">GERAR COM GPT-4o</button>
   <textarea id="codigo" placeholder="O código vai aparecer aqui..."></textarea>
 </div>
 
@@ -47,34 +42,39 @@ const codigo = document.getElementById('codigo');
 const preview = document.getElementById('preview');
 const status = document.getElementById('status');
 
-// SUA CHAVE DA API DO GEMINI. PEGA EM: https://aistudio.google.com/app/apikey
-const GEMINI_KEY = "COLE_SUA_CHAVE_AQUI"; 
+// SUA CHAVE DA OPENAI. PEGA EM: https://platform.openai.com/api-keys
+const OPENAI_KEY = "sk-COLE_SUA_CHAVE_AQUI";
 
 btn.onclick = async () => {
   if(!prompt.value) return alert("Digite o que você quer");
-  if(GEMINI_KEY == "COLE_SUA_CHAVE_AQUI") return alert("Cole sua chave do Gemini primeiro");
+  if(OPENAI_KEY == "sk-COLE_SUA_CHAVE_AQUI") return alert("Cole sua chave da OpenAI primeiro");
 
   btn.disabled = true;
-  status.innerText = "IA pensando...";
-  
-  const iaPrompt = `Você é um gerador de código HTML. Retorne APENAS o código HTML completo com CSS e JS dentro da mesma tag <html>. Sem explicação. Sem \`\`\`. 
+  status.innerText = "GPT-4o pensando...";
+
+  const iaPrompt = `Você é um gerador de código. Retorne APENAS 1 arquivo HTML completo com CSS e JS inline. Sem explicação. Sem \`\`.
   Pedido: ${prompt.value}`;
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+    const res = await fetch(`https://api.openai.com/v1/chat/completions`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_KEY}`
+      },
       body: JSON.stringify({
-        contents: [{parts: [{text: iaPrompt}]}]
+        model: "gpt-4o-mini", // usa esse que é barato e rápido. Se quiser o melhor troca pra "gpt-4o"
+        messages: [{role: "user", content: iaPrompt}],
+        temperature: 0.3
       })
     });
 
     const data = await res.json();
-    let cod = data.candidates[0].content.parts[0].text;
-    
+    let cod = data.choices[0].message.content;
+
     // Limpa se vier com ```html
     cod = cod.replace(/```html/g, '').replace(/```/g, '');
-    
+
     codigo.value = cod;
     preview.srcdoc = cod; // RODA NA HORA
     status.innerText = "Código gerado e rodando!";
