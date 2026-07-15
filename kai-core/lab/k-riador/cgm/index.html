@@ -2,199 +2,111 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL OS v4.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KORVIL OS G5s</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden;font-family:'Orbitron';color:#00f5ff}
-
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1;opacity:0.5}
-#canvas{position:absolute;z-index:2;pointer-events:none}
-
-/* MENU COM ZONA DE CLIQUE */
-#menu{position:absolute;top:10px;left:10px;width:200px;background:rgba(0,0,0,0.85);border:2px solid #00f5ff;backdrop-filter:blur(10px);padding:10px;z-index:10;border-radius:8px;font-size:12px}
-.btnMenu{width:100%;padding:8px;margin:4px 0;background:rgba(0,245,255,0.15);border:1px solid #00f5ff;color:#00f5ff;font-family:'Orbitron';font-size:11px;border-radius:5px}
-.btnMenu.selecionado{background:#00f5ff;color:#000;box-shadow:0 0 20px #00f5ff;transform:scale(1.05)}
-
-#lixeira{position:absolute;bottom:10px;left:10px;width:80px;height:80px;font-size:45px;text-align:center;line-height:80px;border:3px dashed #ff0000;border-radius:10px;z-index:10}
-#lixeira.ativo{background:rgba(255,0,0,0.4);box-shadow:0 0 40px #ff0000;transform:scale(1.2)}
-
-#tutorial{position:absolute;bottom:10px;right:10px;width:210px;background:rgba(0,0,0,0.85);border:2px solid #00f5ff;padding:8px;border-radius:8px;font-size:9px;z-index:10}
-
-/* CUBO SEGUE A MÃO */
-.cubo{position:absolute;width:100px;height:100px;transform-style:preserve-3d;z-index:5;transition:0.05s linear}
-.face{position:absolute;width:100%;height:100%;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);box-shadow:0 0 20px #00f5ff inset}
-.f1{transform:translateZ(50px)}.f2{transform:rotateY(180deg) translateZ(50px)}
-.f3{transform:rotateY(90deg) translateZ(50px)}.f4{transform:rotateY(-90deg) translateZ(50px)}
-.f5{transform:rotateX(90deg) translateZ(50px)}.f6{transform:rotateX(-90deg) translateZ(50px)}
-
-.mao{position:absolute;width:15px;height:15px;border-radius:50%;z-index:6;border:2px solid #fff}
-#m1{background:#00f5ff;box-shadow:0 0 25px #00f5ff}
-#m2{background:#ff00ff;box-shadow:0 0 25px #ff00ff}
-.mira{position:absolute;width:40px;height:40px;border:2px solid #ffff00;border-radius:50%;z-index:7;pointer-events:none}
-
-@keyframes sumir{0%{transform:scale(1)}100%{transform:scale(0);opacity:0}}
+body{margin:0;background:#000;overflow:hidden;font-family:Arial;color:#0ff}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.4}
+#menu{position:absolute;top:5px;left:5px;width:150px;background:#000a;border:2px solid #0ff;padding:5px;font-size:10px}
+.btn{width:100%;padding:5px;margin:3px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:9px}
+.btn.ativo{background:#0ff;color:#000}
+#lixeira{position:absolute;bottom:5px;left:5px;font-size:30px;border:2px dashed red;padding:8px}
+.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff;box-shadow:0 0 15px #0ff}
+#mira{position:absolute;width:30px;height:30px;border:2px solid yellow;border-radius:50%;pointer-events:none}
+#info{position:absolute;bottom:5px;right:5px;width:160px;background:#000a;border:1px solid #0ff;font-size:8px;padding:4px}
 </style>
 </head>
 <body>
 <div id="menu">
-  <h3>> KORVIL MENU</h3>
-  <button class="btnMenu" id="btnNovo">1. NOVO CUBO</button>
-  <button class="btnMenu" id="btnLimpar">2. LIMPAR TUDO</button>
-  <button class="btnMenu" id="btnCor">3. MUDAR COR</button>
-  <div id="statusMenu">STATUS: AGUARDANDO MÃO</div>
+  <div>> MENU GESTUAL</div>
+  <button class="btn" id="b1">1.NOVO</button>
+  <button class="btn" id="b2">2.LIMPAR</button>
+  <button class="btn" id="b3">3.COR</button>
+  <div id="status">AGUARDE...</div>
 </div>
-
 <div id="lixeira">🗑️</div>
-<div id="tutorial">
-  <h4>GESTOS</h4>
-  <div>👌 PINÇA = SEGURAR/CLIQUAR</div>
-  <div>✋ ABRIR = SOLTAR</div>
-  <div>👌👌 2x PINÇA = NOVO</div>
-  <div>APONTE PRO MENU + PINÇA = CLICAR</div>
-</div>
-
+<div id="info">1 DEDO = MOVER<br>FECHA MÃO = SEGURA<br>ABRE MÃO = SOLTA<br>APONTA + FECHA = CLICA MENU</div>
 <video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
-
-<div id="m1" class="mao"></div>
-<div id="m2" class="mao"></div>
-<div id="mira" class="mira"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<div id="mira"></div>
+<div id="c1" class="cubo" style="left:50%;top:50%"></div>
 
 <script>
 const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const m1 = document.getElementById('m1');
 const mira = document.getElementById('mira');
-const menu = document.getElementById('menu');
+const status = document.getElementById('status');
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d', {willReadFrequently:true});
+let x=window.innerWidth/2, y=window.innerHeight/2;
+let maoFechada = false;
+let cubos = [document.getElementById('c1')];
+let cuboSeguro = null;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let cubos = [];
-let cuboSegurado = null;
-let ultimoClique = 0;
-
-// CRIA CUBO
-function criarCubo(x=window.innerWidth/2, y=window.innerHeight/2){
-  const c = document.createElement('div');
-  c.className = 'cubo';
-  c.innerHTML = `<div class="face f1"></div><div class="face f2"></div><div class="face f3"></div><div class="face f4"></div><div class="face f5"></div><div class="face f6"></div>`;
-  c.style.left = x+'px';
-  c.style.top = y+'px';
-  document.body.appendChild(c);
-  cubos.push({el:c, x:x, y:y});
-}
-
-function deletarCubo(cubo){
-  cubo.el.style.animation = 'sumir 0.3s';
-  setTimeout(()=>cubo.el.remove(), 300);
-  cubos = cubos.filter(c=>c!=cubo);
-}
-
-criarCubo();
-
-navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:640, height:480}}).then(s=>{video.srcObject=s});
-
-const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2, modelComplexity:1, minDetectionConfidence:0.5, minTrackingConfidence:0.5});
-
-hands.onResults(r=>{
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(r.image,0,0,canvas.width,canvas.height);
-
-  const maos = r.multiHandLandmarks;
-  if(maos.length > 0){
-    // USA A PONTA DO INDICADOR
-    const p1 = maos[0][8];
-    const x1 = (1-p1.x)*window.innerWidth;
-    const y1 = p1.y*window.innerHeight;
-    m1.style.left = x1-7+'px'; m1.style.top = y1-7+'px';
-    mira.style.left = x1-20+'px'; mira.style.top = y1-20+'px';
-
-    // CALCULA PINÇA
-    const polegar = maos[0][4];
-    const px = (1-polegar.x)*window.innerWidth;
-    const py = polegar.y*window.innerHeight;
-    const distPinca = Math.hypot(x1-px, y1-py);
-    const estaPinçando = distPinca < 40;
-
-    // VERIFICA ZONAS
-    const menuRect = menu.getBoundingClientRect();
-    const sobreMenu = x1 > menuRect.left && x1 < menuRect.right && y1 > menuRect.top && y1 < menuRect.bottom;
-    const sobreLixeira = x1 > 10 && x1 < 90 && y1 > window.innerHeight-90;
-    document.getElementById('lixeira').classList.toggle('ativo', sobreLixeira);
-
-    // LÓGICA DE CLICAR NO MENU
-    if(sobreMenu){
-      const botoes = menu.querySelectorAll('.btnMenu');
-      let index = Math.floor((y1 - menuRect.top) / 35) - 1; // -1 por causa do h3
-      if(index >= 0 && index < botoes.length){
-        botoes.forEach(b=>b.classList.remove('selecionado'));
-        botoes[index].classList.add('selecionado');
-        
-        // SE PINÇOU = CLICA
-        if(estaPinçando && Date.now() - ultimoClique > 800){
-          ultimoClique = Date.now();
-          botoes[index].click();
-          document.getElementById('statusMenu').innerText = "CLICOU: "+botoes[index].innerText;
-        }
-      }
-    }
-
-    // LÓGICA DE ARRASTAR CUBO EM QUALQUER LUGAR
-    if(estaPinçando &&!cuboSegurado){
-      for(let c of cubos){
-        if(Math.hypot(x1 - c.x, y1 - c.y) < 70){
-          cuboSegurado = c;
-          break;
-        }
-      }
-    }
-    
-    if(cuboSegurado){
-      // CUBO SEGUE A MÃO 1:1 EM TODA TELA
-      cuboSegurado.x = x1;
-      cuboSegurado.y = y1;
-      cuboSegurado.el.style.left = cuboSegurado.x+'px';
-      cuboSegurado.el.style.top = cuboSegurado.y+'px';
-      cuboSegurado.el.style.transform = `translate(-50%,-50%) rotateX(${(y1-window.innerHeight/2)*0.1}deg) rotateY(${(x1-window.innerWidth/2)*0.1}deg)`;
-    }
-
-    if(!estaPinçando && cuboSegurado){
-      if(sobreLixeira) deletarCubo(cuboSegurado);
-      cuboSegurado = null;
-    }
-
-    // 2 MÃOS PINÇA = NOVO CUBO
-    if(maos.length > 1){
-      const p2 = maos[1][8];
-      const px2 = (1-p2.x)*window.innerWidth;
-      const py2 = p2.y*window.innerHeight;
-      const dist2 = Math.hypot(x1-px2, y1-py2);
-      if(dist2 < 100 && Date.now() - ultimoClique > 800){
-        ultimoClique = Date.now();
-        criarCubo(x1, y1);
-      }
-    }
-  }else{
-    document.getElementById('statusMenu').innerText = "STATUS: SEM MÃO";
-  }
+navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:320, height:240}}).then(s=>{
+  video.srcObject=s;
+  video.onloadeddata=()=>{canvas.width=160; canvas.height=120; loop()}
 });
 
-const camera = new Camera(video, {onFrame: async()=>await hands.send({image:video}), width:640, height:480});
-camera.start();
+function loop(){
+  ctx.drawImage(video,0,0,160,120);
+  const img = ctx.getImageData(0,0,160,120).data;
+  let mx=0,my=0,total=0,mov=0;
 
-// BOTÕES
-document.getElementById('btnNovo').onclick = ()=>criarCubo();
-document.getElementById('btnLimpar').onclick = ()=>{cubos.forEach(c=>c.el.remove()); cubos=[]; criarCubo()};
-document.getElementById('btnCor').onclick = ()=>{document.querySelectorAll('.face').forEach(f=>{const cor = `hsl(${Math.random()*360},100%,50%)`; f.style.borderColor = cor})}
+  // DETECTA MOVIMENTO + COR DE PELE. É 10x MAIS LEVE
+  for(let i=0;i<img.length;i+=16){
+    const r=img[i],g=img[i+1],b=img[i+2];
+    if(r>70 && g>40 && b<80 && r>g){ // pele
+      mx += (i/4)%160;
+      my += Math.floor((i/4)/160);
+      total++;
+    }
+  }
+
+  if(total>50){
+    x = (160 - mx/total) * window.innerWidth/160;
+    y = my/total * window.innerHeight/120;
+    mira.style.left = x-15+'px'; mira.style.top = y-15+'px';
+
+    // DETECTA SE MÃO FECHOU: menos pixels de pele = mão fechada
+    const maoAgoraFechada = total < 200;
+
+    // CLIQUE NO MENU
+    const menu = document.getElementById('menu').getBoundingClientRect();
+    if(x>menu.left && x<menu.right && y>menu.top && y<menu.bottom){
+      const btns = document.querySelectorAll('.btn');
+      let i = Math.floor((y-menu.top)/25);
+      btns.forEach(b=>b.classList.remove('ativo'));
+      if(btns[i]) btns[i].classList.add('ativo');
+      if(maoAgoraFechada &&!maoFechada) btns[i].click(); // CLICOU
+    }
+
+    // SEGURA CUBO
+    if(maoAgoraFechada &&!maoFechada){
+      for(let c of cubos){
+        if(Math.abs(x - c.offsetLeft - 40) < 60 && Math.abs(y - c.offsetTop - 40) < 60){
+          cuboSeguro = c; break;
+        }
+      }
+    }
+    if(maoAgoraFechada && cuboSeguro){
+      cuboSeguro.style.left = x-40+'px';
+      cuboSeguro.style.top = y-40+'px';
+    }
+    if(!maoAgoraFechada && cuboSeguro){
+      if(x<90 && y>window.innerHeight-90) cuboSeguro.remove(); // LIXEIRA
+      cuboSeguro = null;
+    }
+    maoFechada = maoAgoraFechada;
+    status.innerText = maoFechada? "SEGURANDO" : "SOLTO";
+  }else{
+    status.innerText = "SEM MÃO - USE LUZ";
+  }
+  requestAnimationFrame(loop);
+}
+
+// BOTOES
+document.getElementById('b1').onclick=()=>{const c=document.createElement('div');c.className='cubo';c.style.left='50%';c.style.top='50%';document.body.appendChild(c);cubos.push(c)}
+document.getElementById('b2').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('b1').click()}
+document.getElementById('b3').onclick=()=>{document.querySelectorAll('.cubo').forEach(c=>c.style.borderColor=`hsl(${Math.random()*360},100%,50%)`)}
 </script>
 </body>
 </html>
