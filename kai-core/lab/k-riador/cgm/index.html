@@ -2,123 +2,109 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>K-CUBO HOLOGRAMA REAL</title>
+<title>K-CUBO FIX</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{overflow:hidden;background:#000;font-family:'Orbitron'}
-
-#video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1}
-#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none}
-#canvasMao{position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none}
-
-#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:16px;text-shadow:0 0 20px #00f5ff;z-index:10}
-#cursor{position:absolute;width:30px;height:30px;border:3px solid #00f5ff;border-radius:50%;box-shadow:0 0 20px #00f5ff;z-index:4;pointer-events:none;transform:translate(-50%,-50%)}
-#cursor.click{background:#00f5ff;transform:translate(-50%,-50%) scale(1.5)}
+body{margin:0;background:#000;overflow:hidden}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:1}
+#canvas{position:absolute;z-index:2;pointer-events:none}
+#info{position:fixed;top:20px;width:100%;text-align:center;color:#00f5ff;font-size:18px;text-shadow:0 0 10px #00f5ff;z-index:10;font-family:Arial}
+#cursor{position:absolute;width:40px;height:40px;border:3px solid #00f5ff;border-radius:50%;box-shadow:0 0 20px #00f5ff;z-index:3;pointer-events:none;transform:translate(-50%,-50%)}
+#cursor.click{background:#00f5ff}
 </style>
 </head>
 <body>
-<div id="info">CÂMERA ATIVA - MEXA A MÃO PRA GIRAR O CUBO - PINÇA PRA CLICAR</div>
+<div id="info">1.GIRE A MÃO = GIRA CUBO 2.PINÇA = CLIQUE 3.ABRA/FECHE MÃO = ZOOM</div>
 <video id="video" autoplay playsinline></video>
-<canvas id="canvas3d"></canvas>
-<canvas id="canvasMao"></canvas>
+<canvas id="canvas"></canvas>
 <div id="cursor"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { Hands } from 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js';
+import { Camera } from 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js';
+import { drawConnectors, drawLandmarks, HAND_CONNECTIONS } from 'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js';
 
-<script>
-// 1. LIGA A CÂMERA NORMAL
+// 1. FORÇA O CUBO APARECER NO CENTRO
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true, antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.position.z = 3; // Cubo mais perto
+
+const geometry = new THREE.BoxGeometry(1.2,1.2,1.2);
+const material = new THREE.MeshBasicMaterial({color:0x00f5ff, wireframe:true}); // Wireframe pra ver sempre
+const cubo = new THREE.Mesh(geometry, material);
+scene.add(cubo); // GARANTE QUE O CUBO ESTÁ NA CENA
+
+// Luz pra ficar neon
+scene.add(new THREE.AmbientLight(0x00f5ff));
+
+// 2. CÂMERA E MÃO
 const video = document.getElementById('video');
-navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
-  video.srcObject = stream;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const cursor = document.getElementById('cursor');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`});
+hands.setOptions({maxNumHands: 1, minDetectionConfidence: 0.5});
+
+hands.onResults((results)=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+
+  if(results.multiHandLandmarks && results.multiHandLandmarks.length > 0){
+    const l = results.multiHandLandmarks[0];
+
+    // POSIÇÃO DA MÃO
+    let x = (1 - l[8].x) * window.innerWidth;
+    let y = l[8].y * window.innerHeight;
+    cursor.style.left = x+'px';
+    cursor.style.top = y+'px';
+
+    // FUNÇÃO 1: GIRAR CUBO PRA QUALQUER LADO
+    cubo.rotation.y = (x / window.innerWidth) * Math.PI * 2;
+    cubo.rotation.x = (y / window.innerHeight) * Math.PI * 2;
+
+    // FUNÇÃO 2: CLICAR = PINÇA
+    const distPinca = Math.hypot(l[4].x - l[8].x, l[4].y - l[8].y);
+    if(distPinca < 0.05){
+      cursor.classList.add('click');
+      material.color.set(0xff00ff);
+    }else{
+      cursor.classList.remove('click');
+      material.color.set(0x00f5ff);
+    }
+
+    // FUNÇÃO 3: ZOOM = ABRIR/FECHAR MÃO
+    const distMao = Math.hypot(l[5].x - l[17].x, l[5].y - l[17].y);
+    camera.position.z = 3 + (0.3 - distMao) * 5; // Mapeia abertura da mão pro zoom
+
+    drawConnectors(ctx, l, HAND_CONNECTIONS, {color: '#00f5ff'});
+    drawLandmarks(ctx, l, {color: '#00f5ff'});
+  }
+  renderer.render(scene, camera);
 });
 
-// 2. CRIA O CUBO K-AI POR CIMA DA CÂMERA
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.z = 4;
-
-const geometry = new THREE.BoxGeometry(1.5,1.5,1.5);
-const material = new THREE.MeshPhongMaterial({color:0x00f5ff, transparent:true, opacity:0.8, wireframe:false});
-const cubo = new THREE.Mesh(geometry, material);
-scene.add(cubo);
-
-const light = new THREE.PointLight(0x00f5ff, 2, 100);
-light.position.set(2,2,2);
-scene.add(light);
-scene.add(new THREE.AmbientLight(0x00f5ff, 0.5));
-
-// 3. DETECÇÃO DA MÃO PRA MEXER SEM TOCAR
-const canvasMao = document.getElementById('canvasMao');
-const ctx = canvasMao.getContext('2d');
-const cursor = document.getElementById('cursor');
-canvasMao.width = window.innerWidth;
-canvasMao.height = window.innerHeight;
-
-let maoX = window.innerWidth/2, maoY = window.innerHeight/2;
-let distAnterior = 0;
-
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({maxNumHands: 1, modelComplexity: 1});
-hands.onResults(onResults);
-
+// LIGA CÂMERA
 const cameraFeed = new Camera(video, {
   onFrame: async () => { await hands.send({image: video}); },
   width: 1280, height: 720
 });
 cameraFeed.start();
 
-function onResults(results){
-  ctx.clearRect(0, 0, canvasMao.width, canvasMao.height);
-
-  if(results.multiHandLandmarks){
-    const l = results.multiHandLandmarks[0];
-
-    // PEGA POSIÇÃO DO DEDO INDICADOR
-    maoX = (1 - l[8].x) * window.innerWidth; // Inverte pq câmera espelha
-    maoY = l[8].y * window.innerHeight;
-    cursor.style.left = maoX+'px';
-    cursor.style.top = maoY+'px';
-
-    // DESENHA A MÃO POR CIMA
-    drawConnectors(ctx, l, HAND_CONNECTIONS, {color: '#00f5ff', lineWidth: 2});
-    drawLandmarks(ctx, l, {color: '#00f5ff', lineWidth: 1});
-
-    // OBJETIVO 1: GIRAR CUBO PRA QUALQUER LADO
-    // Quanto mais você mexe a mão, mais o cubo gira
-    cubo.rotation.y += (maoX - window.innerWidth/2) * 0.00005;
-    cubo.rotation.x += (maoY - window.innerHeight/2) * 0.00005;
-
-    // OBJETIVO 2: CLICAR = PINÇA
-    const distPinca = Math.hypot(l[4].x - l[8].x, l[4].y - l[8].y);
-    if(distPinca < 0.04){
-      cursor.classList.add('click');
-      cubo.material.color.set(0xff00ff); // Muda pra roxo ao clicar
-      cubo.scale.set(1.1,1.1,1.1);
-    }else{
-      cursor.classList.remove('click');
-      cubo.material.color.set(0x00f5ff);
-      cubo.scale.set(1,1,1);
-    }
-
-    // OBJETIVO 3: ZOOM = ABRIR E FECHAR A MÃO
-    const distMao = Math.hypot(l[5].x - l[17].x, l[5].y - l[17].y);
-    if(distMao > distAnterior + 0.01){ camera.position.z -= 0.05 } // Abre = Zoom
-    if(distMao < distAnterior - 0.01){ camera.position.z += 0.05 } // Fecha = Afasta
-    distAnterior = distMao;
-  }
-  renderer.render(scene, camera);
-}
-
 window.addEventListener('resize', ()=>{
   renderer.setSize(window.innerWidth, window.innerHeight);
-  canvasMao.width = window.innerWidth;
-  canvasMao.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 })
 </script>
 </body>
