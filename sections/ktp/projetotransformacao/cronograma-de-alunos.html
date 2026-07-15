@@ -12,8 +12,7 @@ body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
 
 .header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
-.btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.btn-aluno:hover{box-shadow:0 0 15px var(--c);}
+.btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;}
 
 .container{max-width:1200px;margin:auto;padding:16px;padding-bottom:100px;}
 
@@ -34,15 +33,22 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
 
-/* TABELA CRONOGRAMA */
-.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
-.tabela-crono{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;}
-.tabela-crono th{background:#111;color:var(--c);padding:10px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--c);}
-.tabela-crono td{padding:10px 8px;border-bottom:1px solid #1a1a1a;white-space:nowrap;}
-.tabela-crono tbody tr:hover{background:#0f0f0f;}
+/* ABAS PLANO */
+.abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
+.aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
+.aba-plano.ativa{background:var(--c);color:#000;}
 
-.grupo-horario{margin-top:25px;margin-bottom:10px;color:var(--c);font-weight:900;font-size:14px;border-bottom:2px solid var(--c);padding-bottom:6px;}
-.grupo-status{margin-top:12px;margin-bottom:8px;color:var(--aviso);font-weight:800;font-size:12px;padding-left:4px;}
+/* TABELA CRONOGRAMA MELHORADA */
+.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
+.tabela-crono{width:100%;border-collapse:collapse;font-size:11px;}
+.tabela-crono th{background:#111;color:var(--c);padding:12px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
+.tabela-crono td{padding:12px 8px;border-bottom:1px solid #1a1a1a;}
+.tabela-crono tbody tr:hover{background:#0f0f0f;}
+.tabela-crono .col-nome{font-weight:800;color:#fff;min-width:140px;}
+.tabela-crono .col-id{font-size:10px;color:var(--text2);}
+
+.grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
+.grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
 .obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
 
 /* BUSCA ID */
@@ -82,7 +88,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 </div>
 
 <script>
-// LISTA COMPLETA - 40 ALUNOS
+// LISTA COMPLETA
 const ALUNOS_DB = {
   "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
   "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
@@ -125,6 +131,8 @@ const ALUNOS_DB = {
   "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", freq:"–", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"}
 };
 
+let planoAtivo = 'PRESENCIAL';
+
 function abrirBuscaAluno(){
   document.getElementById('modal-aluno').classList.add('ativo');
   document.getElementById('input-id-aluno').focus();
@@ -135,8 +143,17 @@ function fecharBuscaAluno(){
   document.getElementById('input-id-aluno').value = '';
 }
 
+function trocarAba(plano){
+  planoAtivo = plano;
+  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
+  event.target.classList.add('ativa');
+  document.getElementById('resultado-aluno').innerHTML = mostrarCronogramaCompleto();
+}
+
 function mostrarCronogramaCompleto(){
-  const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
+  const alunos = Object.entries(ALUNOS_DB)
+    .map(([id, data]) => ({id,...data}))
+    .filter(a => a.plano === planoAtivo);
 
   alunos.sort((a,b)=>{
     if(a.horario !== b.horario) return a.horario.localeCompare(b.horario);
@@ -144,7 +161,12 @@ function mostrarCronogramaCompleto(){
     return a.nome.localeCompare(b.nome);
   });
 
-  let html = `<div class="titulo-secao">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
+  let html = `<div class="abas-plano">
+    <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL')">🏋️ PRESENCIAL</button>
+    <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE')">💻 ONLINE</button>
+  </div>`;
+
+  html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
   let horarioAtual = '';
@@ -160,18 +182,21 @@ function mostrarCronogramaCompleto(){
     if(a.status !== statusAtual){
       statusAtual = a.status;
       html += `<div class="grupo-status">${statusAtual === 'Ativo'? '✅ ATIVOS' : '❌ DESATIVADOS'}</div>`;
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>R$</th><th>Venc</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      html += `<div class="tabela-wrapper"><table class="tabela-crono">
+        <thead><tr>
+          <th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
+        </tr></thead><tbody>`;
     }
     html += `<tr>
       <td>${contador++}</td>
-      <td><b>${a.nome}</b></td>
+      <td class="col-nome">${a.nome}</td>
       <td>${a.dias}</td>
       <td>${a.freq}</td>
       <td>${a.objetivo}</td>
       <td>R$ ${a.valor}</td>
       <td>${a.venc}</td>
       <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
-      <td>${a.id}</td>
+      <td class="col-id">${a.id}</td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
@@ -182,7 +207,6 @@ function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
   const div = document.getElementById('resultado-aluno');
 
-  // SENHA SECRETA KTp1
   if(id === 'ktp1'){
     div.innerHTML = mostrarCronogramaCompleto();
     return;
