@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cors());
-const OPENAI_KEY = "sk-SUA_CHAVE_AQUI"; // fica escondida aqui
+const OPENAI_KEY = "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"; // fica escondida aqui
 
 app.post("/gerar", async (req, res) => {
   const { prompt } = req.body;
