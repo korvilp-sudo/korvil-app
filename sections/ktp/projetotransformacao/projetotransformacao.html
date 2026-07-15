@@ -26,7 +26,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .abas-fases{display:flex;flex-direction:column;}
 .aba-fase{padding:12px 16px;background:#111;border-bottom:1px solid var(--borda);cursor:pointer;font-weight:900;font-size:12px;color:var(--c);display:flex;justify-content:space-between;align-items:center;}
 .aba-fase.ativa{background:rgba(0,245,255,.1);border-left:3px solid var(--c);}
-.seta{transition:.3s;}
+.seta{transition:.3s;display:inline-block;}
 .aba-fase.ativa.seta{transform:rotate(90deg);}
 .semanas-da-fase{display:none;padding:8px;background:#050505;}
 .semanas-da-fase.ativa{display:block;}
@@ -63,7 +63,7 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
 .sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
-.logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
+.logo{display:block;margin:0 auto 12px;max-width:420px; /* 3X MAIOR */ border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 
 .semana-atual{padding:20px;background:linear-gradient(180deg,#000,#0a0a0a);border:2px solid var(--c);border-radius:14px;margin-bottom:16px;box-shadow:0 0 30px var(--c)30;}
 .semana-titulo{font-weight:900;color:var(--c);font-size:18px;margin-bottom:4px;text-align:center;}
@@ -173,7 +173,7 @@ const CALENDARIO_KTP = {
 let semanaSelecionada = null;
 
 function formatarData(dataString) {
-  const data = new Date(dataString);
+  const data = new Date(dataString + 'T12:00:00'); // evita bug de fuso
   const dia = String(data.getDate()).padStart(2, '0');
   const mes = String(data.getMonth() + 1).padStart(2, '0');
   const ano = data.getFullYear();
@@ -234,7 +234,6 @@ function toggleAba(faseId){
   document.querySelector(`[onclick="toggleAba('${faseId}')"]`).classList.add('ativa');
 }
 
-// FUNÇÃO DO MENU - AGORA CHAMADA NO ONLOAD
 function carregarMenu(){
   const hoje = new Date();
   const chaveHoje = getSegundaSemana(hoje).toISOString().split('T')[0];
@@ -248,20 +247,22 @@ function carregarMenu(){
 
   let html = '<div class="abas-fases">';
   let indiceAbaAtual = 0;
+  let i = 0;
 
-  Object.keys(fases).forEach((fase, index)=>{
-    if(fases.some(s => s.data === chaveHoje)) indiceAbaAtual = index;
-    const faseId = `fase-${index}`;
+  for(let fase in fases){
+    if(fases[fase].some(s => s.data === chaveHoje)) indiceAbaAtual = i;
+    const faseId = `fase-${i}`;
     html += `<div class="aba-fase" onclick="toggleAba('${faseId}')">${fase} <span class="seta">›</span></div>`;
     html += `<div class="semanas-da-fase" id="${faseId}">`;
-    fases.forEach(s => {
+    fases[fase].forEach(s => {
       let classe = '';
       if(s.data === chaveHoje) classe = 'ativa';
       else if(s.data < chaveHoje) classe = 'passada';
       html += `<div class="semana-item ${classe}" onclick="mostrarSemana('${s.data}')">${formatarData(s.data)} - ${s.nome}</div>`;
     });
     html += `</div>`;
-  });
+    i++;
+  }
   html += '</div>';
   document.getElementById('menu-lateral').innerHTML = html;
   toggleAba(`fase-${indiceAbaAtual}`);
@@ -327,7 +328,6 @@ function enviarKAI(){
   setTimeout(()=>addMsgAI(`${semana.texto}`), 500);
 }
 
-// CORRIGIDO: AGORA CHAMA AS FUNÇÕES
 window.onload = function(){
   carregarMenu();
   carregarSemanaAtual();
