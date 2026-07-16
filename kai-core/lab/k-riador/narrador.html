@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>K-AI | Assistente KORVIL</title>
+<style>
+  body{background:#000;color:#00f5ff;font-family:'Segoe UI',Arial,sans-serif;text-align:center;padding:40px;}
+  h1{font-size:24px;text-shadow:0 0 10px #00f5ff;}
+  p{color:#aaa;font-size:14px;margin-bottom:20px;}
+  button{background:#00f5ff;color:#000;border:0;padding:14px 28px;border-radius:10px;font-weight:900;font-size:16px;cursor:pointer;transition:.2s;}
+  button:hover{box-shadow:0 0 20px #00f5ff;}
+  #status{margin-top:20px;color:#00ff88;font-weight:700;}
+</style>
+</head>
+<body>
+
+<h1>K-AI</h1>
+<p>Assistente de Inteligência Artificial do Sistema KORVIL</p>
+
+<button onclick="falar()">ATIVAR K-AI</button>
+
+<div id="status">Aguardando comando...</div>
+
+<script>
+function falar() {
+  document.getElementById('status').innerText = "K-AI falando...";
+  
+  // Texto que o K-AI vai falar
+  // Usei "CRIADOR" e "SAI Corvil" para a pronúncia ficar correta
+  const texto = `
+    Olá. Eu sou o K-AI.
+    Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
+    Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema geral K.
+    Meu criador é o CRIADOR, SAI Corvil.
+    Ele é o dono e único criador de todo o sistema geral K, KORVIL.
+    Estou online e pronto para servir.
+  `;
+
+  const fala = new SpeechSynthesisUtterance(texto);
+  fala.lang = 'pt-BR'; // Voz em português Brasil
+  fala.rate = 1.0; // Velocidade normal
+  fala.pitch = 1.0; // Tom normal
+  fala.volume = 1;
+
+  // Tenta pegar uma voz masculina mais "Jarvis"
+  const vozes = window.speechSynthesis.getVoices();
+  const vozBR = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')) 
+              || vozes.find(v => v.lang === 'pt-BR');
+  if(vozBR) fala.voice = vozBR;
+
+  fala.onend = () => {
+    document.getElementById('status').innerText = "Aguardando comando...";
+  }
+
+  window.speechSynthesis.speak(fala);
+}
+
+// Carrega as vozes do navegador
+window.speechSynthesis.onvoiceschanged = () => {};
+</script>
+
+</body>
+</html>
