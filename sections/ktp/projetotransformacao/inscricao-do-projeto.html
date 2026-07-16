@@ -104,22 +104,23 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="card">
     <div class="titulo-secao">1. ESCOLHA UM PLANO - SEGUNDA-FEIRA A SEXTA-FEIRA</div>
 
+    <div style="margin:8px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">AULAS AVULSAS</div>
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso" data-modalidade="online">
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso" data-modalidade="online" data-freq="1">
         <div class="nome">AVULSA ONLINE</div><div class="valor">R$20,00</div>
       </div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso" data-modalidade="presencial">
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso" data-modalidade="presencial" data-freq="1">
         <div class="nome">AVULSA PRESENCIAL</div><div class="valor">R$20,00</div>
       </div>
     </div>
 
     <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">PLANOS MENSAIS</div>
 
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online" data-modalidade="online">
-      <div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div><div style="font-size:10px;color:var(--text2);">Acompanhamento via WhatsApp. Escolha quantos dias treinar</div>
+    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online" data-modalidade="online" data-freq="5">
+      <div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div><div style="font-size:10px;color:var(--text2);">Acompanhamento WhatsApp. Escolha dias e horário fixo</div>
     </div>
 
-    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">PLANO PRESENCIAL POR FREQUÊNCIA</div>
+    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">PLANO PRESENCIAL</div>
     <div class="grid-2">
       <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-tipo="presencial" data-modalidade="presencial" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
       <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-tipo="presencial" data-modalidade="presencial" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
@@ -142,7 +143,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div id="alertaDias" class="alerta"></div>
   </div>
 
-  <div class="card">
+  <div id="cardHorario" class="card oculto">
     <div class="titulo-secao">2. ESCOLHA UM HORÁRIO FIXO</div>
 
     <div style="font-size:11px;color:var(--c);font-weight:700;margin-bottom:8px;">MANHÃ</div>
@@ -171,10 +172,10 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="plano" onclick="selecionarHorario(this)" data-valor="04:00"><div>04:00</div><div class="vagas">7 vagas</div></div>
       <div class="plano" onclick="selecionarHorario(this)" data-valor="05:00"><div>05:00</div><div class="vagas">7 vagas</div></div>
     </div>
-
-    <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
   </div>
+
+  <button class="btn" onclick="irParaDados()">CONTINUAR</button>
+  <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
 </div>
 
 <!-- TELA 3: DADOS PESSOAIS -->
@@ -219,7 +220,7 @@ function mostrarTela(id){
 }
 
 function atualizarPrioridadeObjetivos(){
-  document.querySelectorAll('#tela1.plano.prioridade-badge').forEach(b => b.remove());
+  document.querySelectorAll('#tela1.prioridade-badge').forEach(b => b.remove());
   objetivosSelecionados.forEach((obj, index) => {
     const el = document.querySelector(`#tela1.plano[data-obj="${obj}"]`);
     if(el){
@@ -269,12 +270,16 @@ function atualizarDias(){
     }
   });
   let faltam = frequenciaMaxima - diasSelecionados.length;
-  if(faltam > 0){
-    document.getElementById('alertaDias').innerText = `Faltam ${faltam} dia(s): ${diasSelecionados.join(', ')}`;
-    document.getElementById('alertaDias').style.color = 'var(--erro)';
-  } else {
-    document.getElementById('alertaDias').innerText = `Dias selecionados: ${diasSelecionados.join(', ')}`;
-    document.getElementById('alertaDias').style.color = 'var(--ok)';
+  if(frequenciaMaxima > 0){
+    if(faltam > 0){
+      document.getElementById('alertaDias').innerText = `Faltam ${faltam} dia(s). Selecionados: ${diasSelecionados.join(', ')}`;
+      document.getElementById('alertaDias').style.color = 'var(--erro)';
+      document.getElementById('cardHorario').classList.add('oculto');
+    } else {
+      document.getElementById('alertaDias').innerText = `Dias selecionados: ${diasSelecionados.join(', ')}`;
+      document.getElementById('alertaDias').style.color = 'var(--ok)';
+      document.getElementById('cardHorario').classList.remove('oculto');
+    }
   }
 }
 
@@ -284,41 +289,49 @@ function selecionarPlano(el){
     planoSelecionado = '';
     frequenciaMaxima = 0;
     diasSelecionados = [];
+    horarioSelecionado = '';
     document.getElementById('cardDias').classList.add('oculto');
+    document.getElementById('cardHorario').classList.add('oculto');
     return;
   }
+
   limparTodosOsPlanos();
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
-  let tipo = el.getAttribute('data-tipo');
-  let freq = el.getAttribute('data-freq');
+  frequenciaMaxima = parseInt(el.getAttribute('data-freq'));
   diasSelecionados = [];
+  horarioSelecionado = '';
 
-  if(tipo === 'presencial'){
-    frequenciaMaxima = parseInt(freq);
-    document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('textoDias').innerText = `Selecione ${freq} dia(s) na semana. Ex: Seg, Qua, Sex`;
-    document.getElementById('alertaDias').innerText = `Faltam ${freq} dia(s) para escolher`;
-    document.getElementById('alertaDias').style.color = 'var(--erro)';
-    document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
+  document.getElementById('cardDias').classList.remove('oculto');
+  document.getElementById('cardHorario').classList.add('oculto');
+  document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
+  document.querySelectorAll('#cardHorario.plano').forEach(h => h.classList.remove('selecionado'));
+
+  let tipo = el.getAttribute('data-tipo');
+  if(tipo === 'avulso'){
+    document.getElementById('textoDias').innerText = `Selecione 1 dia para sua aula avulsa`;
+    document.getElementById('alertaDias').innerText = `Falta 1 dia para escolher`;
   } else if(tipo === 'online'){
-    frequenciaMaxima = 5;
-    document.getElementById('cardDias').classList.remove('oculto');
-    document.getElementById('textoDias').innerText = `Selecione quantos dias quiser treinar de Seg a Sex`;
-    document.getElementById('alertaDias').innerText = `Escolha os dias fixos`;
-    document.getElementById('alertaDias').style.color = 'var(--c)';
-    document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
+    document.getElementById('textoDias').innerText = `Selecione até ${frequenciaMaxima} dias para treinar de Seg a Sex`;
+    document.getElementById('alertaDias').innerText = `Escolha os dias fixos. Máx ${frequenciaMaxima}`;
   } else {
-    frequenciaMaxima = 0;
-    document.getElementById('cardDias').classList.add('oculto');
+    document.getElementById('textoDias').innerText = `Selecione ${frequenciaMaxima} dia(s) fixos na semana`;
+    document.getElementById('alertaDias').innerText = `Faltam ${frequenciaMaxima} dia(s) para escolher`;
   }
+  document.getElementById('alertaDias').style.color = 'var(--erro)';
 }
 
 function selecionarHorario(el){
-  document.querySelectorAll('#tela2.plano[data-valor]').forEach(item => {
-    if(item.onclick && item.onclick.toString().includes('selecionarHorario')){
-      item.classList.remove('selecionado');
-    }
+  // Se clicar no mesmo horário desmarca
+  if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    horarioSelecionado = '';
+    return;
+  }
+
+  // Senão limpa todos e marca só este
+  document.querySelectorAll('#cardHorario.plano[data-valor]').forEach(item => {
+    item.classList.remove('selecionado');
   });
   el.classList.add('selecionado');
   horarioSelecionado = el.getAttribute('data-valor');
@@ -330,10 +343,7 @@ function selecionarDia(el){
     el.classList.remove('selecionado');
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
-    if(frequenciaMaxima > 0 && diasSelecionados.length >= frequenciaMaxima && frequenciaMaxima < 5){
-      document.getElementById('alertaDias').innerText = `Você só pode escolher ${frequenciaMaxima} dia(s) para este plano!`;
-      return;
-    }
+    if(diasSelecionados.length >= frequenciaMaxima) return;
     el.classList.add('selecionado');
     diasSelecionados.push(el.getAttribute('data-dia'));
   }
@@ -363,8 +373,8 @@ function irParaDados(){
     alert('Selecione um plano');
     return;
   }
-  if(frequenciaMaxima > 0 && diasSelecionados.length === 0){
-    alert(`Selecione os dias de treino`);
+  if(diasSelecionados.length!== frequenciaMaxima){
+    alert(`Selecione ${frequenciaMaxima} dia(s) de treino`);
     return;
   }
   if(horarioSelecionado === ''){
@@ -385,7 +395,7 @@ function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\
 
 function finalizarInscricao(){
   let ordemObjetivos = objetivosSelecionados.map((o,i) => `${i+1}. ${o}`).join('\n');
-  let resumo = `*NOVA INSCRIÇÃO K-TP*\n\n*OBJETIVOS PRIORIDADE:*\n${ordemObjetivos}\n\n*Plano:* ${planoSelecionado}\n*Dias:* ${diasSelecionados.length > 0? diasSelecionados.join(', ') : 'N/A'}\n*Horário:* ${horarioSelecionado}\n*Nome:* ${document.getElementById('nome').value}`;
+  let resumo = `*NOVA INSCRIÇÃO K-TP*\n\n*OBJETIVOS PRIORIDADE:*\n${ordemObjetivos}\n\n*Plano:* ${planoSelecionado}\n*Dias:* ${diasSelecionados.join(', ')}\n*Horário:* ${horarioSelecionado}\n*Nome:* ${document.getElementById('nome').value}`;
   alert(resumo);
 }
 </script>
