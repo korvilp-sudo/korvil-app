@@ -200,14 +200,13 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <script>
 let plano={}, dias=[], hora='', maxDias=0;
-let objetivosSelecionados = []; // NOVO
+let objetivosSelecionados = [];
 
 const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 horarios.forEach(h=>{
   document.getElementById('horasGrid').innerHTML += `<div class="hora" data-hora="${h}">${h}<div class="vagas">7 vagas</div></div>`;
 });
 
-// FUNÇÃO NOVA DOS OBJETIVOS
 function toggleObjetivo(el){
   let obj = el.dataset.obj;
   let index = objetivosSelecionados.indexOf(obj);
@@ -325,13 +324,9 @@ function enviarWhatsApp(){
             `Objetivos: ${document.getElementById('objetivos').value}`;
 
   let numero = "5513997690898"; // COLOQUE SEU NUMERO COM DDI 55
-  
+
   // Abre o WhatsApp que estiver como padrão. Funciona Normal e Business
   window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(msg)}`, '_blank');
-}
-  
-  // Funciona para WhatsApp Normal e WhatsApp Business
-  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
 }
 </script>
 
