@@ -27,11 +27,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .dia.sel,.hora.sel{border-color:var(--c);background:rgba(0,245,255,.15);opacity:1;}
 .dia.bloq{opacity:0.2;cursor:not-allowed;background:#050505;}
 .vagas{font-size:9px;color:var(--ok);}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
+.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:10px;}
 .btn.voltar{background:#222;color:var(--text);}
 .input-group{margin-bottom:10px;}
 .input-group label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:4px;display:block;}
-.input-group input,.input-group select{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
+.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px;background:#111;border:1.5px solid var(--borda);border-radius:8px;color:#fff;font-size:14px;}
 .input-group input[readonly]{background:#0a0a0a;color:var(--ok);font-weight:800;}
 .oculto{display:none;}
 .aviso{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;text-align:center;}
@@ -40,85 +40,80 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .etapa.num{font-weight:900;font-size:12px;display:block;}
 .ativo{color:var(--c);}
 .sub{font-size:11px;color:var(--c);font-weight:700;margin:8px 0 6px;}
+.check-group{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;}
+.check-group input{width:18px;height:18px;}
 </style>
 </head>
 <body>
 
-<!-- TELA 1: PLANOS -->
+<!-- TELA 1: ANAMNESE -->
 <div id="tela1">
   <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
   <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>PLANOS</div>
-    <div class="etapa"><span class="num">2</span>DADOS</div>
+    <div class="etapa ativo"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANO</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
+  </div>
+
+  <div class="card">
+    <div class="titulo">FICHA DE ANAMNESE</div>
+    <div class="input-group"><label>Você pratica atividade física?</label>
+      <select id="atv_fisica"><option>Não</option><option>Sim, 1x a 2x</option><option>Sim, 3x a 5x</option></select>
+    </div>
+    <div class="input-group"><label>Tem alguma lesão ou dor?</label><input type="text" id="lesao" placeholder="Ex: Joelho, Lombar..."></div>
+    <div class="input-group"><label>Tem alguma doença?</label><input type="text" id="doenca" placeholder="Ex: Hipertensão, Diabetes..."></div>
+    <div class="input-group"><label>Objetivo Principal</label>
+      <select id="objetivo"><option>Emagrecimento</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select>
+    </div>
+    <div class="input-group"><label>Observações</label><textarea id="obs" rows="3"></textarea></div>
+    <div class="check-group"><input type="checkbox" id="termo"><label for="termo">Declaro que as informações acima são verdadeiras</label></div>
+  </div>
+  <button class="btn" onclick="irParaPlanos()">CONTINUAR</button>
+</div>
+
+<!-- TELA 2: PLANOS -->
+<div id="tela2" class="oculto">
+  <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
+  <div class="passos">
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">2</span>PLANO</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
     <div class="titulo">1. ESCOLHA 1 PLANO</div>
-
-    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5">
-      <div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div>
-      <div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div>
-    </div>
-
-    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1">
-      <div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div>
-      <div class="info">1x Dia | Presencial | Matrícula: GRÁTIS | 7 vagas/horário</div>
-    </div>
-
-    <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5">
-      <div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div>
-      <div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div>
-    </div>
-
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1">
-      <div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div>
-      <div class="info">Matrícula: R$50,00</div>
-    </div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2">
-      <div class="topo"><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="valor">R$80,00/mês</div></div>
-      <div class="info">Matrícula: R$50,00</div>
-    </div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3">
-      <div class="topo"><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="valor">R$100,00/mês</div></div>
-      <div class="info">Matrícula: R$50,00</div>
-    </div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4">
-      <div class="topo"><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="valor">R$130,00/mês</div></div>
-      <div class="info">Matrícula: R$50,00</div>
-    </div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5">
-      <div class="topo"><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="valor">R$150,00/mês</div></div>
-      <div class="info">Matrícula: R$50,00</div>
-    </div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5"><div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div><div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1"><div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div><div class="info">1x Dia | Presencial | Matrícula: GRÁTIS</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5"><div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div><div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1"><div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2"><div class="topo"><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="valor">R$80,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3"><div class="topo"><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="valor">R$100,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4"><div class="topo"><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="valor">R$130,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5"><div class="topo"><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="valor">R$150,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
     <div style="font-size:10px;color:var(--text2);margin-top:8px;">*Matrícula R$50,00 obrigatória para novos. Válida até Dezembro.</div>
   </div>
 
-  <!-- TABELA UNICA DE DIAS E HORARIOS -->
   <div class="card">
     <div class="titulo">2. ESCOLHA DIAS E HORÁRIO</div>
     <div class="sub">DIAS: SEG À SEX</div>
     <div class="grid-5" id="diasGrid">
-      <div class="dia" data-dia="Segunda">SEG</div>
-      <div class="dia" data-dia="Terça">TER</div>
-      <div class="dia" data-dia="Quarta">QUA</div>
-      <div class="dia" data-dia="Quinta">QUI</div>
-      <div class="dia" data-dia="Sexta">SEX</div>
+      <div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div>
     </div>
     <div id="avisoDias" class="aviso">Selecione um plano primeiro</div>
-
     <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
     <div class="grid-4" id="horasGrid"></div>
   </div>
-
   <button class="btn" onclick="irParaDados()">CONTINUAR</button>
+  <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
 </div>
 
-<!-- TELA 2: DADOS -->
-<div id="tela2" class="oculto">
+<!-- TELA 3: DADOS PESSOAIS -->
+<div id="tela3" class="oculto">
   <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">2</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa"><span class="num">2</span>PLANO</div>
+    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
   </div>
   <div class="card">
     <div class="titulo">DADOS PESSOAIS</div>
@@ -133,8 +128,8 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-    <button class="btn" onclick="finalizar()">FINALIZAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela1')">Voltar</button>
+    <button class="btn" onclick="enviarWhatsApp()">FINALIZAR INSCRIÇÃO</button>
+    <button class="btn voltar" onclick="mostrarTela('tela2')">VOLTAR</button>
   </div>
 </div>
 
@@ -147,9 +142,14 @@ horarios.forEach(h=>{
 });
 
 function mostrarTela(id){
-  document.querySelectorAll('#tela1,#tela2').forEach(t=>t.classList.add('oculto'));
+  document.querySelectorAll('#tela1,#tela2,#tela3').forEach(t=>t.classList.add('oculto'));
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
+}
+
+function irParaPlanos(){
+  if(!document.getElementById('termo').checked){alert('Aceite o termo de responsabilidade');return;}
+  mostrarTela('tela2');
 }
 
 function selPlano(el){
@@ -158,10 +158,8 @@ function selPlano(el){
   plano = {nome:el.dataset.nome, valor:el.dataset.valor, mat:el.dataset.mat, tipo:el.dataset.tipo, freq:parseInt(el.dataset.freq)};
   dias=[]; hora='';
   document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel','lib','bloq'));
-
   maxDias=plano.freq;
   document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.add('lib'));
-
   if(plano.freq==5){
     document.querySelectorAll('.dia').forEach(d=>{d.classList.add('sel','bloq'); dias.push(d.dataset.dia);});
     document.getElementById('avisoDias').innerText=`Dias: Segunda, Terça, Quarta, Quinta, Sexta`;
@@ -193,17 +191,46 @@ function irParaDados(){
   if(!plano.nome){alert('Selecione um plano');return;}
   if(dias.length!=maxDias){alert(`Selecione ${maxDias} dia(s)`);return;}
   if(!hora){alert('Selecione 1 horário');return;}
-  mostrarTela('tela2');
+  mostrarTela('tela3');
 }
 
 function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!nasc) return;let idade = new Date().getFullYear() - new Date(nasc).getFullYear();document.getElementById('idade').value = idade + ' anos';}
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
-function finalizar(){
-  if(document.getElementById('nome').value==''){alert('Preencha o nome');return;}
+function enviarWhatsApp(){
+  let nome = document.getElementById('nome').value;
+  if(nome==''){alert('Preencha o nome');return;}
+  if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
+  if(document.getElementById('whats').value==''){alert('Preencha o WhatsApp');return;}
+
   let total = parseInt(plano.valor)+parseInt(plano.mat);
-  alert(`*INSCRIÇÃO K-TP*\n\nPLANO: ${plano.nome}\nDIAS: ${dias.join(', ')}\nHORÁRIO: ${hora}\nTOTAL: R$${total},00\nNOME: ${document.getElementById('nome').value}`);
+  let msg = `*NOVA INSCRIÇÃO K-TP*\n\n` +
+            `*DADOS PESSOAIS*\n` +
+            `Nome: ${nome}\n` +
+            `CPF: ${document.getElementById('cpf').value}\n` +
+            `Nascimento: ${document.getElementById('nasc').value}\n` +
+            `Idade: ${document.getElementById('idade').value}\n` +
+            `Gênero: ${document.getElementById('publico').value}\n` +
+            `WhatsApp: ${document.getElementById('whats').value}\n` +
+            `Email: ${document.getElementById('email').value}\n\n` +
+            `*PLANO ESCOLHIDO*\n` +
+            `Plano: ${plano.nome}\n` +
+            `Dias: ${dias.join(', ')}\n` +
+            `Horário: ${hora}\n` +
+            `Mensalidade: R$${plano.valor},00\n` +
+            `Matrícula: R$${plano.mat},00\n` +
+            `Total: R$${total},00\n` +
+            `*ANAMNESE*\n` +
+            `Atividade Física: ${document.getElementById('atv_fisica').value}\n` +
+            `Lesão/Dor: ${document.getElementById('lesao').value}\n` +
+            `Doença: ${document.getElementById('doenca').value}\n` +
+            `Objetivo: ${document.getElementById('objetivo').value}\n` +
+            `Obs: ${document.getElementById('obs').value}`;
+
+  let numero = "5513997690898"; // DDI 55 + 13 + 997690898
+  let url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank'); // Funciona pra WhatsApp Normal e Business
 }
 </script>
 
