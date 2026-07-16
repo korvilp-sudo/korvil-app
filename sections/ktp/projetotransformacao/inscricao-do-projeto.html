@@ -328,6 +328,24 @@ function finalizarInscricao(){
   let url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 }
+  function enviarWhatsApp(){
+  let nome=document.getElementById('nome').value;
+  let cpf=document.getElementById('cpf').value;
+  let whats=document.getElementById('whats').value;
+  if(!nome||!cpf||!whats){alert('Preencha Nome, CPF e WhatsApp');return;}
+
+  let total=parseInt(plano.valor)+parseInt(plano.mat);
+  let msg=`*NOVA INSCRIÇÃO - K-TP*\n\n`+
+  `*DADOS PESSOAIS*\n`+
+  `Nome: ${nome}\nCPF: ${cpf}\nNasc: ${document.getElementById('nasc').value}\nIdade: ${document.getElementById('idade').value}\nGênero: ${document.getElementById('genero').value}\nWhats: ${whats}\nEmail: ${document.getElementById('email').value}\n\n`+
+  `*PLANO*\nPlano: ${plano.nome}\nDias: ${dias.join(', ')}\nHorário: ${hora}\nMensal: R$${plano.valor},00\nMatrícula: R$${plano.mat},00\nTotal: R$${total},00\n`+
+  `*ANAMNESE*\nNível: ${document.getElementById('nivelAtividade').value}\nObjetivos: ${document.getElementById('objetivos').value}\n1: ${document.getElementById('q1').value}\n2: ${document.getElementById('q2').value}\n3: ${document.getElementById('q3').value}\n4: ${document.getElementById('q4').value}\n5: ${document.getElementById('q5').value}\n6: ${document.getElementById('q6').value}\n7: ${document.getElementById('q7').value}\n8: ${document.getElementById('q8').value}\n9: ${document.getElementById('q9').value}`;
+
+  let numero="5513997690898"; // COLOQUE SEU NUMERO COM DDI 55
+  
+  // Funciona para WhatsApp Normal e WhatsApp Business
+  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+  }
 </script>
 
 </body>
