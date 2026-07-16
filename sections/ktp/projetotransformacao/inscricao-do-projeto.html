@@ -209,6 +209,7 @@ horarios.forEach(h=>{
 });
 
 function toggleObjetivo(el){
+function toggleObjetivo(el){
   let obj = el.dataset.obj;
   let index = objetivosSelecionados.indexOf(obj);
 
@@ -221,15 +222,19 @@ function toggleObjetivo(el){
     el.classList.add('sel');
   }
 
-  // Renumera todos os botões na ordem de clique
+  // Atualiza todos os botões com a numeração
   document.querySelectorAll('.obj').forEach(item=>{
     let nome = item.dataset.obj;
     let pos = objetivosSelecionados.indexOf(nome);
-    item.innerHTML = pos > -1? `<span style="color:var(--ok);font-weight:900;">${pos+1}.</span> ${nome}` : nome;
+    if(pos > -1){
+      item.innerHTML = `<b style="color:var(--ok);">${pos+1}.</b> ${nome}`;
+    } else {
+      item.innerHTML = nome;
+    }
   });
 
-  // Mostra a ordem embaixo também
-  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'Prioridade: ' + objetivosSelecionados.map((o,i)=>`${i+1}º ${o}`).join(' > ') : '';
+  // Atualiza a linha de baixo
+  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'PRIORIDADE: ' + objetivosSelecionados.map((o,i)=>`${i+1}º ${o}`).join(' > ') : '';
   document.getElementById('objetivos').value = objetivosSelecionados.join(' | ');
 }
 
