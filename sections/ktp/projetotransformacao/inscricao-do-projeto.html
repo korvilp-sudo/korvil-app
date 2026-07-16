@@ -24,7 +24,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .dia,.hora{padding:10px;background:#111;border:1.5px solid var(--borda);border-radius:8px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;}
 .dia:hover,.hora:hover{border-color:var(--c);}
 .dia.sel,.hora.sel{border-color:var(--c);background:rgba(0,245,255,.15);}
-.dia.bloq{opacity:0.3;cursor:not-allowed;background:#050505;}
+.dia.bloq{opacity:0.3;cursor:not-allowed;background:#050505;pointer-events:none;}
 .vagas{font-size:9px;color:var(--ok);}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .oculto{display:none;}
@@ -131,7 +131,7 @@ function selPlano(el){
   el.classList.add('sel');
   plano = {nome:el.dataset.nome, valor:el.dataset.valor, mat:el.dataset.mat, tipo:el.dataset.tipo, freq:el.dataset.freq};
   dias=[]; hora='';
-  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel'));
+  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel','bloq'));
   document.getElementById('cardDias').classList.remove('oculto');
   document.getElementById('cardHora').classList.add('oculto');
 
@@ -139,7 +139,15 @@ function selPlano(el){
   if(plano.tipo=='avulso_pres'){maxDias=1; document.getElementById('txtDias').innerText='Escolha 1 dia';}
   if(plano.tipo=='mensal_online'){maxDias=5; document.getElementById('txtDias').innerText='Escolha quantos dias quiser treinar';}
   if(plano.tipo=='mensal_pres'){maxDias=parseInt(plano.freq); document.getElementById('txtDias').innerText=`Escolha ${maxDias} dia(s) fixos`;}
-  document.getElementById('avisoDias').innerText=`Faltam ${maxDias} dia(s)`;
+  
+  // SE FOR 5X JÁ MARCA TUDO E TRAVA
+  if(maxDias==5){
+    document.querySelectorAll('.dia').forEach(d=>{d.classList.add('sel','bloq'); dias.push(d.dataset.dia);});
+    document.getElementById('avisoDias').innerText=`Dias: Segunda, Terça, Quarta, Quinta, Sexta`;
+    document.getElementById('cardHora').classList.remove('oculto'); // JÁ LIBERA HORARIO
+  } else {
+    document.getElementById('avisoDias').innerText=`Faltam ${maxDias} dia(s)`;
+  }
 }
 
 function selDia(el){
