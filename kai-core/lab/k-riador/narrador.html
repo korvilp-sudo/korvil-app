@@ -9,12 +9,12 @@
   p{color:#aaa;font-size:14px;margin-bottom:15px;}
   button{background:#00f5ff;color:#000;border:0;padding:12px 22px;border-radius:10px;font-weight:900;font-size:15px;cursor:pointer;transition:.2s;margin:5px;}
   button:hover{box-shadow:0 0 20px #00f5ff;}
+  button.ativo{background:#00ff88; box-shadow:0 0 20px #00ff88;}
   #status{margin-top:10px;color:#00ff88;font-weight:700;min-height:20px;}
   #canvas3d{width:100%;height:300px;display:block;margin:10px auto;}
- .ouvindo{animation:piscar 1s infinite;}
+.ouvindo{animation:piscar 1s infinite;}
   @keyframes piscar{0%,100%{opacity:1}50%{opacity:.3}}
 
-  /* CAIXA DE TEXTO DO K-AI */
   #texto-kai{
     margin:15px auto;
     padding:16px;
@@ -32,13 +32,7 @@
   }
 </style>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-  }
-}
-</script>
+<script type="importmap">{"imports": {"three": "https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
 
@@ -46,15 +40,14 @@
 <p>Assistente de Inteligência Artificial do Sistema KORVIL</p>
 
 <button onclick="falar()">ATIVAR K-AI</button>
-<button onclick="ouvirComando()">🎤 FALAR COM K-AI</button>
+<button id="btnMic" onclick="ouvirComando()">🎤 FALAR COM K-AI</button>
 
 <div id="status">Aguardando comando...</div>
 
-<!-- TEXTO QUE APARECE NA TELA -->
 <div id="texto-kai">Olá. Eu sou o K-AI.
 Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
 Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL.
-Meu chefe é o único inventor geral. Say Korvil, chamado de K-RIADOR.
+Meu chefe é o único inventor geral. Say Korvil, chamado de CRIADOR.
 Ele é o dono e único fundador de todo o sistema geral K, KORVIL.
 Estou online e pronto para servir.</div>
 
@@ -63,29 +56,22 @@ Estou online e pronto para servir.</div>
 <script type="module">
 import * as THREE from 'three';
 
-// CENA 3D
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 300, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas3d'), alpha: true, antialias: true});
-renderer.setSize(window.innerWidth, 300);
+renderer.setSize(window.innerWidth < 700? window.innerWidth-40 : 700, 300);
 renderer.setClearColor(0x000, 0);
 
-const luz = new THREE.PointLight(0x00f5ff, 2, 100);
-luz.position.set(5,5,5);
-scene.add(luz);
+scene.add(new THREE.PointLight(0x00f5ff, 2, 100).position.set(5,5,5));
 scene.add(new THREE.AmbientLight(0x00f5ff, 0.3));
 
 let cubo, hipercubo = [], hologramas = [];
-let modo = 'cubo'; // cubo | hipercubo | holograma
+let modo = 'cubo';
 
-// 1. CUBO GRANDE GIRANDO
-const geoCubo = new THREE.BoxGeometry(2,2,2);
-const matCubo = new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, transparent:true, opacity:0.8});
-cubo = new THREE.Mesh(geoCubo, matCubo);
-scene.add(cubo);
-camera.position.z = 5;
+// CUBO
+cubo = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, transparent:true, opacity:0.8}));
+scene.add(cubo); camera.position.z = 5;
 
-// 2. HIPERCUBO 4D = 8 cubos
 function criarHipercubo(){
   const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
   const mat = new THREE.MeshPhongMaterial({color:0x00ff88, wireframe:true});
@@ -93,126 +79,102 @@ function criarHipercubo(){
     const c = new THREE.Mesh(geo, mat);
     const ang = i * Math.PI/4;
     c.position.set(Math.cos(ang)*2, Math.sin(ang)*2, Math.sin(ang*2));
-    hipercubo.push(c);
-    scene.add(c);
+    hipercubo.push(c); scene.add(c); c.visible=false;
   }
 }
-
-// 3. HOLOGRAMA 5 CUBOS
-const nomesHolo = ["1: sistema K","2: K-TP","3: K-AFORTUNADO","4: K-ALMA","5: K-CORE"];
 function criarHolograma(){
+  const nomes = ["1: sistema K","2: K-TP","3: K-AFORTUNADO","4: K-ALMA","5: K-CORE"];
   const geo = new THREE.BoxGeometry(1,1,1);
   for(let i=0;i<5;i++){
-    const mat = new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, opacity:0.6, transparent:true});
-    const c = new THREE.Mesh(geo, mat);
+    const c = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, opacity:0.6, transparent:true}));
     c.position.set((i-2)*2.5, 0, 0);
-    scene.add(c);
-    hologramas.push(c);
+    hologramas.push(c); scene.add(c); c.visible=false;
   }
 }
-
 function animate() {
   requestAnimationFrame(animate);
-
-  if(modo === 'cubo'){
-    cubo.rotation.x += 0.01;
-    cubo.rotation.y += 0.01;
-  }
-  if(modo === 'hipercubo'){
-    hipercubo.forEach((c,i)=>{
-      c.rotation.x += 0.02;
-      c.rotation.y += 0.02;
-    })
-  }
-  if(modo === 'holograma'){
-    hologramas.forEach((c,i)=>{
-      c.rotation.y += 0.015;
-      c.position.y = Math.sin(Date.now()*0.002 + i)*0.3;
-    })
-  }
-
+  if(modo === 'cubo'){ cubo.rotation.x += 0.01; cubo.rotation.y += 0.01; }
+  if(modo === 'hipercubo'){ hipercubo.forEach(c=>{c.rotation.x += 0.02; c.rotation.y += 0.02;}) }
+  if(modo === 'holograma'){ hologramas.forEach((c,i)=>{c.rotation.y += 0.015; c.position.y = Math.sin(Date.now()*0.002 + i)*0.3;}) }
   renderer.render(scene, camera);
 }
 animate();
 
-// FUNÇÕES DE MODO
-function ativarCubo(){
-  modo='cubo'; cubo.visible=true;
-  hipercubo.forEach(c=>c.visible=false);
-  hologramas.forEach(c=>c.visible=false);
-}
-function ativarHipercubo(){
-  if(hipercubo.length===0) criarHipercubo();
-  modo='hipercubo'; cubo.visible=false;
-  hipercubo.forEach(c=>c.visible=true);
-  hologramas.forEach(c=>c.visible=false);
-}
-function ativarHolograma(){
-  if(hologramas.length===0) criarHolograma();
-  modo='holograma'; cubo.visible=false;
-  hipercubo.forEach(c=>c.visible=false);
-  hologramas.forEach(c=>c.visible=true);
+function setModo(m){
+  modo=m;
+  cubo.visible = m==='cubo';
+  hipercubo.forEach(c=>c.visible = m==='hipercubo');
+  hologramas.forEach(c=>c.visible = m==='holograma');
+  if(m==='hipercubo' && hipercubo.length===0) criarHipercubo();
+  if(m==='holograma' && hologramas.length===0) criarHolograma();
 }
 
-// FALA + TEXTO
 function falar() { responderKAI(); }
 function responderKAI() {
   document.getElementById('status').innerText = "K-AI falando...";
   document.getElementById('texto-kai').style.display = 'block';
-
-  const textoFala = `Olá. Eu sou o KAI.
-  Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
-  Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL.
-  Meu chefe é o único inventor geral. SAI Corvil, chamado de CRIADOR.
-  Ele é o dono e único fundador de todo o sistema geral K, KORVIL.
-  Estou online e pronto para servir.`;
-
+  const textoFala = `Olá. Eu sou o KAI. Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL. Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL. Meu chefe é o único inventor geral. SAI Corvil, chamado de CRIADOR. Ele é o dono e único fundador de todo o sistema geral K, KORVIL. Estou online e pronto para servir.`;
   const fala = new SpeechSynthesisUtterance(textoFala);
-  fala.lang = 'pt-BR'; fala.rate = 1.0; fala.pitch = 1.0; fala.volume = 1;
+  fala.lang = 'pt-BR'; fala.rate = 0.95; fala.pitch = 1.0; fala.volume = 1;
   const vozes = window.speechSynthesis.getVoices();
-  const vozBR = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')) || vozes.find(v => v.lang === 'pt-BR');
+  const vozBR = vozes.find(v => v.lang === 'pt-BR') || vozes[0];
   if(vozBR) fala.voice = vozBR;
   fala.onend = () => { document.getElementById('status').innerText = "Aguardando comando..."; }
   window.speechSynthesis.speak(fala);
 }
 
-// COMANDO DE VOZ
+// COMANDO DE VOZ CORRIGIDO
+let reconhecimento;
 function ouvirComando() {
+  const btn = document.getElementById('btnMic');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition){ alert("Use Chrome para comando de voz"); return; }
+  if(!SpeechRecognition){
+    document.getElementById('status').innerText = "ERRO: Use Google Chrome no PC ou Celular";
+    return;
+  }
 
-  const reconhecimento = new SpeechRecognition();
-  reconhecimento.lang = 'pt-BR'; reconhecimento.continuous = false;
-  document.getElementById('status').innerText = "Ouvindo... Fale agora";
-  document.getElementById('status').classList.add('ouvindo');
+  if(!reconhecimento){
+    reconhecimento = new SpeechRecognition();
+    reconhecimento.lang = 'pt-BR';
+    reconhecimento.continuous = false;
+    reconhecimento.interimResults = false;
+
+    reconhecimento.onstart = () => {
+      btn.classList.add('ativo');
+      document.getElementById('status').innerText = "Ouvindo... Fale agora";
+      document.getElementById('status').classList.add('ouvindo');
+    }
+    reconhecimento.onend = () => {
+      btn.classList.remove('ativo');
+      document.getElementById('status').classList.remove('ouvindo');
+    }
+    reconhecimento.onresult = (event) => {
+      const comando = event.results[0][0].transcript.toLowerCase();
+      document.getElementById('status').innerText = `Você disse: "${comando}"`;
+
+      const ativou = comando.includes("k-ai") || comando.includes("cai") || comando.includes("kai");
+
+      if(ativou && comando.includes("resume")){
+        responderKAI();
+      }
+      else if(ativou && comando.includes("expandir") && comando.includes("cubo")){
+        document.getElementById('status').innerText = "Expandindo para Hipercubo 4D...";
+        setModo('hipercubo');
+      }
+      else if(ativou && comando.includes("abrir") && comando.includes("hipercubo")){
+        document.getElementById('status').innerText = "Abrindo Holograma de Sistemas...";
+        setModo('holograma');
+      }
+      else {
+        document.getElementById('status').innerText = 'Comando não reconhecido';
+      }
+    };
+    reconhecimento.onerror = (e) => {
+      document.getElementById('status').innerText = "Erro: " + e.error + ". Permita o microfone.";
+      btn.classList.remove('ativo');
+    };
+  }
   reconhecimento.start();
-
-  reconhecimento.onresult = (event) => {
-    const comando = event.results[0][0].transcript.toLowerCase();
-    document.getElementById('status').innerText = `Você disse: "${comando}"`;
-    document.getElementById('status').classList.remove('ouvindo');
-
-    const ativou = comando.includes("k-ai") || comando.includes("cai") || comando.includes("kai");
-
-    if(ativou && comando.includes("resume") && comando.includes("descrição")){
-      responderKAI();
-    }
-    else if(ativou && comando.includes("expandir") && comando.includes("cubo")){
-      document.getElementById('status').innerText = "Expandindo para Hipercubo 4D...";
-      ativarHipercubo();
-    }
-    else if(ativou && comando.includes("abrir") && comando.includes("hipercubo")){
-      document.getElementById('status').innerText = "Abrindo Holograma de Sistemas...";
-      ativarHolograma();
-    }
-    else {
-      document.getElementById('status').innerText = 'Comandos: "resume descrição" | "expandir cubo" | "abrir hipercubo"';
-    }
-  };
-  reconhecimento.onerror = () => {
-    document.getElementById('status').innerText = "Erro ao ouvir.";
-    document.getElementById('status').classList.remove('ouvindo');
-  };
 }
 window.speechSynthesis.onvoiceschanged = () => {};
 </script>
