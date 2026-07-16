@@ -99,7 +99,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-
 <!-- TELA 2: PLANOS -->
 <div id="tela2" class="oculto">
   <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
@@ -111,22 +110,18 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
   <div class="card">
     <div class="titulo">1. ESCOLHA 1 PLANO</div>
-
     <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5">
       <div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div>
       <div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div>
     </div>
-
     <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1">
       <div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div>
       <div class="info">1x Dia | Presencial | Matrícula: GRÁTIS | 7 vagas/horário</div>
     </div>
-
     <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5">
       <div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div>
       <div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div>
     </div>
-
     <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1">
       <div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div>
       <div class="info">Matrícula: R$50,00</div>
@@ -150,7 +145,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="font-size:10px;color:var(--text2);margin-top:8px;">*Matrícula R$50,00 obrigatória para novos. Válida até Dezembro.</div>
   </div>
 
-  <!-- TABELA UNICA DE DIAS E HORARIOS -->
   <div class="card">
     <div class="titulo">2. ESCOLHA DIAS E HORÁRIO</div>
     <div class="sub">DIAS: SEG À SEX</div>
@@ -162,7 +156,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
       <div class="dia" data-dia="Sexta">SEX</div>
     </div>
     <div id="avisoDias" class="aviso">Selecione um plano primeiro</div>
-
     <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
     <div class="grid-4" id="horasGrid"></div>
   </div>
@@ -193,7 +186,6 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-
     <button class="btn" onclick="enviarWhatsApp()">FINALIZAR INSCRIÇÃO</button>
     <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
@@ -211,7 +203,6 @@ horarios.forEach(h=>{
 function toggleObjetivo(el){
   let obj = el.dataset.obj;
   let index = objetivosSelecionados.indexOf(obj);
-
   if(index > -1){
     objetivosSelecionados.splice(index, 1);
     el.classList.remove('sel');
@@ -220,19 +211,15 @@ function toggleObjetivo(el){
     objetivosSelecionados.push(obj);
     el.classList.add('sel');
   }
-
-  // Atualiza todos os botões com a numeração
   document.querySelectorAll('.obj').forEach(item=>{
     let nome = item.dataset.obj;
     let pos = objetivosSelecionados.indexOf(nome);
     if(pos > -1){
-      item.innerHTML = `<b style="color:var(--ok);">${pos+1}.</b> ${nome}`;
+      item.innerHTML = `<b style="color:#00ff88;">${pos+1}.</b> ${nome}`;
     } else {
       item.innerHTML = nome;
     }
   });
-
-  // Atualiza a linha de baixo
   document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'PRIORIDADE: ' + objetivosSelecionados.map((o,i)=>`${i+1}º ${o}`).join(' > ') : '';
   document.getElementById('objetivos').value = objetivosSelecionados.join(' | ');
 }
@@ -242,12 +229,10 @@ function mostrarTela(id){
   document.getElementById(id).classList.remove('oculto');
   window.scrollTo(0,0);
 }
-
 function irParaPlanos(){
   if(objetivosSelecionados.length == 0){alert('Selecione pelo menos 1 objetivo');return;}
   mostrarTela('tela2');
 }
-
 function selPlano(el){
   document.querySelectorAll('.plano').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');
@@ -263,7 +248,6 @@ function selPlano(el){
     document.getElementById('avisoDias').innerText=`Faltam ${maxDias} dia(s)`;
   }
 }
-
 document.querySelectorAll('.dia').forEach(dia=>{
   dia.addEventListener('click', function(){
     if(!this.classList.contains('lib') || this.classList.contains('bloq')) return;
@@ -274,7 +258,6 @@ document.querySelectorAll('.dia').forEach(dia=>{
     document.getElementById('avisoDias').innerText= faltam>0? `Faltam ${faltam} dia(s)` : `Dias: ${dias.join(', ')}`;
   });
 });
-
 document.querySelectorAll('.hora').forEach(horaEl=>{
   horaEl.addEventListener('click', function(){
     if(!this.classList.contains('lib')) return;
@@ -282,24 +265,20 @@ document.querySelectorAll('.hora').forEach(horaEl=>{
     this.classList.add('sel'); hora=this.dataset.hora;
   });
 });
-
 function irParaDados(){
   if(!plano.nome){alert('Selecione um plano');return;}
   if(dias.length!=maxDias){alert(`Selecione ${maxDias} dia(s)`);return;}
   if(!hora){alert('Selecione 1 horário');return;}
   mostrarTela('tela3');
 }
-
 function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!nasc) return;let idade = new Date().getFullYear() - new Date(nasc).getFullYear();document.getElementById('idade').value = idade + ' anos';}
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
-
 function enviarWhatsApp(){
   let nome = document.getElementById('nome').value;
   if(nome==''){alert('Preencha o nome');return;}
   if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
   if(document.getElementById('whats').value==''){alert('Preencha o WhatsApp');return;}
-
   let total = parseInt(plano.valor)+parseInt(plano.mat);
   let msg = `*NOVA INSCRIÇÃO K-TP*\n\n` +
             `*1. ANAMNESE*\n` +
@@ -320,7 +299,7 @@ function enviarWhatsApp(){
             `Horário: ${hora}\n` +
             `Mensalidade: R$${plano.valor},00\n` +
             `Matrícula: R$${plano.mat},00\n` +
-            `Total: R$${total},00\n\n` +
+            `Total: R$${total},00\n` +
             `*3. DADOS PESSOAIS*\n` +
             `Nome: ${nome}\n` +
             `CPF: ${document.getElementById('cpf').value}\n` +
@@ -329,12 +308,9 @@ function enviarWhatsApp(){
             `Gênero: ${document.getElementById('publico').value}\n` +
             `WhatsApp: ${document.getElementById('whats').value}\n` +
             `Email: ${document.getElementById('email').value}`;
-
-  let numero = "5513997690898"; // K-TP
-
-  // Link oficial. Abre direto no WhatsApp padrão
+  let numero = "5513997690898";
   window.location.href = `whatsapp://send?phone=${numero}&text=${encodeURIComponent(msg)}`;
+}
 </script>
-
 </body>
 </html>
