@@ -326,8 +326,7 @@ function enviarWhatsApp(){
   let numero = "5513997690898"; // K-TP
 
   // Link oficial. Abre direto no WhatsApp padrão
-  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-}
+  window.location.href = `whatsapp://send?phone=${numero}&text=${encodeURIComponent(msg)}`;
 </script>
 
 </body>
