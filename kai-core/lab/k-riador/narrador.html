@@ -4,16 +4,19 @@
 <meta charset="UTF-8">
 <title>K-AI | Assistente KORVIL</title>
 <style>
-  body{background:#000;color:#00f5ff;font-family:'Segoe UI',Arial,sans-serif;text-align:center;padding:40px;}
-  h1{font-size:24px;text-shadow:0 0 10px #00f5ff;}
-  p{color:#aaa;font-size:14px;margin-bottom:20px;}
-  button{background:#00f5ff;color:#000;border:0;padding:14px 28px;border-radius:10px;font-weight:900;font-size:16px;cursor:pointer;transition:.2s;margin:5px;}
+  body{background:#000;color:#00f5ff;font-family:'Segoe UI',Arial,sans-serif;text-align:center;padding:20px;overflow-x:hidden;}
+  h1{font-size:24px;text-shadow:0 0 10px #00f5ff;margin:0;}
+  p{color:#aaa;font-size:14px;margin-bottom:15px;}
+  button{background:#00f5ff;color:#000;border:0;padding:12px 22px;border-radius:10px;font-weight:900;font-size:15px;cursor:pointer;transition:.2s;margin:5px;}
   button:hover{box-shadow:0 0 20px #00f5ff;}
-  #status{margin-top:20px;color:#00ff88;font-weight:700;min-height:20px;}
+  #status{margin-top:10px;color:#00ff88;font-weight:700;min-height:20px;}
+  #canvas3d{width:100%;height:300px;display:block;margin:10px auto;}
+ .ouvindo{animation:piscar 1s infinite;}
+  @keyframes piscar{0%,100%{opacity:1}50%{opacity:.3}}
 
   /* CAIXA DE TEXTO DO K-AI */
   #texto-kai{
-    margin-top:25px;
+    margin:15px auto;
     padding:16px;
     background:#0a0a0a;
     border:1.5px solid #00f5ff;
@@ -23,15 +26,19 @@
     line-height:1.6;
     text-align:left;
     max-width:500px;
-    margin-left:auto;
-    margin-right:auto;
     white-space:pre-line;
     box-shadow:0 0 15px #00f5ff30;
-    display:none; /* começa oculto */
+    display:none;
   }
- .ouvindo{animation:piscar 1s infinite;}
-  @keyframes piscar{0%,100%{opacity:1}50%{opacity:.3}}
 </style>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -47,65 +54,137 @@
 <div id="texto-kai">Olá. Eu sou o K-AI.
 Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
 Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL.
-Meu chefe é o único inventor geral. Say Korvil, chamado de KRIADOR.
+Meu chefe é o único inventor geral. Say Korvil, chamado de K-RIADOR.
 Ele é o dono e único fundador de todo o sistema geral K, KORVIL.
-Estou online e pronto para servir. Oque mais você quer que eu faça agora K-RIADOR?</div>
+Estou online e pronto para servir.</div>
 
-<script>
-const textoTela = document.getElementById('texto-kai').innerText;
+<canvas id="canvas3d"></canvas>
 
-function falar() {
-  responderKAI();
+<script type="module">
+import * as THREE from 'three';
+
+// CENA 3D
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 300, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas3d'), alpha: true, antialias: true});
+renderer.setSize(window.innerWidth, 300);
+renderer.setClearColor(0x000, 0);
+
+const luz = new THREE.PointLight(0x00f5ff, 2, 100);
+luz.position.set(5,5,5);
+scene.add(luz);
+scene.add(new THREE.AmbientLight(0x00f5ff, 0.3));
+
+let cubo, hipercubo = [], hologramas = [];
+let modo = 'cubo'; // cubo | hipercubo | holograma
+
+// 1. CUBO GRANDE GIRANDO
+const geoCubo = new THREE.BoxGeometry(2,2,2);
+const matCubo = new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, transparent:true, opacity:0.8});
+cubo = new THREE.Mesh(geoCubo, matCubo);
+scene.add(cubo);
+camera.position.z = 5;
+
+// 2. HIPERCUBO 4D = 8 cubos
+function criarHipercubo(){
+  const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
+  const mat = new THREE.MeshPhongMaterial({color:0x00ff88, wireframe:true});
+  for(let i=0;i<8;i++){
+    const c = new THREE.Mesh(geo, mat);
+    const ang = i * Math.PI/4;
+    c.position.set(Math.cos(ang)*2, Math.sin(ang)*2, Math.sin(ang*2));
+    hipercubo.push(c);
+    scene.add(c);
+  }
 }
 
-function responderKAI() {
-  document.getElementById('status').innerText = "K-AI falando...";
-  document.getElementById('texto-kai').style.display = 'block'; // mostra o texto
+// 3. HOLOGRAMA 5 CUBOS
+const nomesHolo = ["1: sistema K","2: K-TP","3: K-AFORTUNADO","4: K-ALMA","5: K-CORE"];
+function criarHolograma(){
+  const geo = new THREE.BoxGeometry(1,1,1);
+  for(let i=0;i<5;i++){
+    const mat = new THREE.MeshPhongMaterial({color:0x00f5ff, wireframe:true, opacity:0.6, transparent:true});
+    const c = new THREE.Mesh(geo, mat);
+    c.position.set((i-2)*2.5, 0, 0);
+    scene.add(c);
+    hologramas.push(c);
+  }
+}
 
-  // Texto que o K-AI vai FALAR - com pronúncia ajustada
-  const textoFala = `
-    Olá. Eu sou o KAI.
-    Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
-    Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL.
-    Meu chefe é o único inventor geral. SAI Corvil, chamado de CRIADOR.
-    Ele é o dono e único fundador de todo o sistema geral K, KORVIL.
-    Estou online e pronto para servir. Oque mais você quer que eu faça criador?
-  `;
+function animate() {
+  requestAnimationFrame(animate);
 
-  const fala = new SpeechSynthesisUtterance(textoFala);
-  fala.lang = 'pt-BR';
-  fala.rate = 1.0;
-  fala.pitch = 1.0;
-  fala.volume = 1;
-
-  const vozes = window.speechSynthesis.getVoices();
-  const vozBR = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male'))
-              || vozes.find(v => v.lang === 'pt-BR');
-  if(vozBR) fala.voice = vozBR;
-
-  fala.onend = () => {
-    document.getElementById('status').innerText = "Aguardando comando...";
+  if(modo === 'cubo'){
+    cubo.rotation.x += 0.01;
+    cubo.rotation.y += 0.01;
+  }
+  if(modo === 'hipercubo'){
+    hipercubo.forEach((c,i)=>{
+      c.rotation.x += 0.02;
+      c.rotation.y += 0.02;
+    })
+  }
+  if(modo === 'holograma'){
+    hologramas.forEach((c,i)=>{
+      c.rotation.y += 0.015;
+      c.position.y = Math.sin(Date.now()*0.002 + i)*0.3;
+    })
   }
 
+  renderer.render(scene, camera);
+}
+animate();
+
+// FUNÇÕES DE MODO
+function ativarCubo(){
+  modo='cubo'; cubo.visible=true;
+  hipercubo.forEach(c=>c.visible=false);
+  hologramas.forEach(c=>c.visible=false);
+}
+function ativarHipercubo(){
+  if(hipercubo.length===0) criarHipercubo();
+  modo='hipercubo'; cubo.visible=false;
+  hipercubo.forEach(c=>c.visible=true);
+  hologramas.forEach(c=>c.visible=false);
+}
+function ativarHolograma(){
+  if(hologramas.length===0) criarHolograma();
+  modo='holograma'; cubo.visible=false;
+  hipercubo.forEach(c=>c.visible=false);
+  hologramas.forEach(c=>c.visible=true);
+}
+
+// FALA + TEXTO
+function falar() { responderKAI(); }
+function responderKAI() {
+  document.getElementById('status').innerText = "K-AI falando...";
+  document.getElementById('texto-kai').style.display = 'block';
+
+  const textoFala = `Olá. Eu sou o KAI.
+  Sistema de Inteligência Artificial desenvolvido para o ecossistema KORVIL.
+  Fui criado para gerenciar, organizar e otimizar todos os protocolos do sistema K, KORVIL.
+  Meu chefe é o único inventor geral. SAI Corvil, chamado de CRIADOR.
+  Ele é o dono e único fundador de todo o sistema geral K, KORVIL.
+  Estou online e pronto para servir.`;
+
+  const fala = new SpeechSynthesisUtterance(textoFala);
+  fala.lang = 'pt-BR'; fala.rate = 1.0; fala.pitch = 1.0; fala.volume = 1;
+  const vozes = window.speechSynthesis.getVoices();
+  const vozBR = vozes.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')) || vozes.find(v => v.lang === 'pt-BR');
+  if(vozBR) fala.voice = vozBR;
+  fala.onend = () => { document.getElementById('status').innerText = "Aguardando comando..."; }
   window.speechSynthesis.speak(fala);
 }
 
 // COMANDO DE VOZ
 function ouvirComando() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
-    alert("Seu navegador não suporta reconhecimento de voz. Use Chrome.");
-    return;
-  }
+  if(!SpeechRecognition){ alert("Use Chrome para comando de voz"); return; }
 
   const reconhecimento = new SpeechRecognition();
-  reconhecimento.lang = 'pt-BR';
-  reconhecimento.continuous = false;
-  reconhecimento.interimResults = false;
-
+  reconhecimento.lang = 'pt-BR'; reconhecimento.continuous = false;
   document.getElementById('status').innerText = "Ouvindo... Fale agora";
   document.getElementById('status').classList.add('ouvindo');
-
   reconhecimento.start();
 
   reconhecimento.onresult = (event) => {
@@ -113,24 +192,28 @@ function ouvirComando() {
     document.getElementById('status').innerText = `Você disse: "${comando}"`;
     document.getElementById('status').classList.remove('ouvindo');
 
-    // ACEITA: k-ai, cai, kai
     const ativou = comando.includes("k-ai") || comando.includes("cai") || comando.includes("kai");
-    const pediuResumo = comando.includes("resume") && comando.includes("descrição");
 
-    if(ativou && pediuResumo){
-      setTimeout(responderKAI, 500);
-    } else {
-      document.getElementById('status').innerText = 'Comando não reconhecido. Tente: "K-AI resume uma descrição sobre nós para os usuários"';
+    if(ativou && comando.includes("resume") && comando.includes("descrição")){
+      responderKAI();
+    }
+    else if(ativou && comando.includes("expandir") && comando.includes("cubo")){
+      document.getElementById('status').innerText = "Expandindo para Hipercubo 4D...";
+      ativarHipercubo();
+    }
+    else if(ativou && comando.includes("abrir") && comando.includes("hipercubo")){
+      document.getElementById('status').innerText = "Abrindo Holograma de Sistemas...";
+      ativarHolograma();
+    }
+    else {
+      document.getElementById('status').innerText = 'Comandos: "resume descrição" | "expandir cubo" | "abrir hipercubo"';
     }
   };
-
   reconhecimento.onerror = () => {
-    document.getElementById('status').innerText = "Erro ao ouvir. Tente novamente.";
+    document.getElementById('status').innerText = "Erro ao ouvir.";
     document.getElementById('status').classList.remove('ouvindo');
   };
 }
-
-// Carrega as vozes
 window.speechSynthesis.onvoiceschanged = () => {};
 </script>
 
