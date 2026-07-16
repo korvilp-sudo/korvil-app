@@ -1,3 +1,8 @@
+AFF 
+O código mais certo foi esse 
+Só arrume o seletor dos objetivos, permita escolher de 1 a 7 objetivos por ordem numérica de prioridades, permita tirar a seleção dos objetivos se aluno quiser mudar 
+Nesse código só faça isso e não mexa em mais nada 
+Mantenha todo o resto como já está 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -62,24 +67,9 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <div class="input-group"><label>Tem alguma lesão ou dor?</label><input type="text" id="lesao" placeholder="Ex: Joelho, Lombar..."></div>
     <div class="input-group"><label>Tem alguma doença?</label><input type="text" id="doenca" placeholder="Ex: Hipertensão, Diabetes..."></div>
-
-    <!-- OBJETIVOS NOVO - PRIORIDADE 1 A 7 -->
-    <div class="input-group">
-      <label>Objetivos: Clique na ordem de prioridade. Máx 7</label>
-      <div id="listaObjetivos" style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;min-height:18px;"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
-        <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Reabilitação Física">Reabilitação Física</div>
-      </div>
-      <input type="hidden" id="objetivo" value="">
+    <div class="input-group"><label>Objetivo Principal</label>
+      <select id="objetivo"><option>Emagrecimento</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select>
     </div>
-    <!-- FIM OBJETIVOS -->
-
     <div class="input-group"><label>Observações</label><textarea id="obs" rows="3"></textarea></div>
     <div class="check-group"><input type="checkbox" id="termo"><label for="termo">Declaro que as informações acima são verdadeiras</label></div>
   </div>
@@ -150,36 +140,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <script>
 let plano={}, dias=[], hora='', maxDias=0;
-let objetivosSelecionados = []; // NOVO
 
 const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 horarios.forEach(h=>{
   document.getElementById('horasGrid').innerHTML += `<div class="hora" data-hora="${h}">${h}<div class="vagas">7 vagas</div></div>`;
 });
-
-// NOVO: FUNÇÃO DOS OBJETIVOS
-function toggleObjetivo(el){
-  let obj = el.dataset.obj;
-  let index = objetivosSelecionados.indexOf(obj);
-
-  if(index > -1){
-    objetivosSelecionados.splice(index, 1);
-    el.classList.remove('sel');
-  } else {
-    if(objetivosSelecionados.length >= 7) return;
-    objetivosSelecionados.push(obj);
-    el.classList.add('sel');
-  }
-
-  document.querySelectorAll('.obj').forEach(item=>{
-    let nome = item.dataset.obj;
-    let pos = objetivosSelecionados.indexOf(nome);
-    item.innerHTML = pos > -1? `${pos+1}. ${nome}` : nome;
-  });
-
-  document.getElementById('listaObjetivos').innerText = objetivosSelecionados.length > 0? 'Ordem: ' + objetivosSelecionados.map((o,i)=>`${i+1}.${o}`).join(' | ') : '';
-  document.getElementById('objetivo').value = objetivosSelecionados.join(' | ');
-}
 
 function mostrarTela(id){
   document.querySelectorAll('#tela1,#tela2,#tela3').forEach(t=>t.classList.add('oculto'));
@@ -189,7 +154,6 @@ function mostrarTela(id){
 
 function irParaPlanos(){
   if(!document.getElementById('termo').checked){alert('Aceite o termo de responsabilidade');return;}
-  if(objetivosSelecionados.length == 0){alert('Selecione pelo menos 1 objetivo');return;} // VALIDAÇÃO NOVA
   mostrarTela('tela2');
 }
 
@@ -266,12 +230,12 @@ function enviarWhatsApp(){
             `Atividade Física: ${document.getElementById('atv_fisica').value}\n` +
             `Lesão/Dor: ${document.getElementById('lesao').value}\n` +
             `Doença: ${document.getElementById('doenca').value}\n` +
-            `Objetivos: ${document.getElementById('objetivo').value}\n` + // MUDOU AQUI
+            `Objetivo: ${document.getElementById('objetivo').value}\n` +
             `Obs: ${document.getElementById('obs').value}`;
 
-  let numero = "5513997690898";
+  let numero = "5513997690898"; // DDI 55 + 13 + 997690898
   let url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  window.open(url, '_blank'); // Funciona pra WhatsApp Normal e Business
 }
 </script>
 
