@@ -226,19 +226,7 @@ function carregarMenu(){
   document.getElementById('menu-lateral').innerHTML=html;
 }
 
-function mostrarInfoSemana(data){
-  const container = document.getElementById('cronograma-container');
-  const infoCompleta = MENU[data];
-  const linhas = infoCompleta.split('\n');
-  const titulo = linhas[0];
-  const subtitulo = linhas[1];
-
-  const imagens = {
-    'MANUTENÇÃO': 'semana-de-manutencao',
-    'RESISTÊNCIA': 'semana-de-resistencia',
-    'FORÇA': 'semana-de-forca',
-    'HIPERTROFIA': 'semana-de-hipertrofia'
-  };
+imagens-dos-metodos
 
   let pastaImagem = 'semana-de-manutencao';
   for(let key in imagens){
