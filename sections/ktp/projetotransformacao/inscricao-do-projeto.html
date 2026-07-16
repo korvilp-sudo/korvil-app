@@ -323,10 +323,10 @@ function enviarWhatsApp(){
             `Q9: ${document.getElementById('q9').value}\n` +
             `Objetivos: ${document.getElementById('objetivos').value}`;
 
-  let numero = "5513997690898"; // COLOQUE SEU NUMERO COM DDI 55
-
-  // Abre o WhatsApp que estiver como padrão. Funciona Normal e Business
-  window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(msg)}`, '_blank');
+  let numero = "5513997690898"; // K-TP
+  
+  // Esse link funciona em Normal e Business. Abre o que estiver como padrão
+  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
 }
 </script>
 
