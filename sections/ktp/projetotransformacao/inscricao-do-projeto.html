@@ -12,6 +12,7 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;}
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo{font-size:14px;font-weight:800;color:var(--c);margin-bottom:10px;border-left:3px solid var(--c);padding-left:8px;}
+.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:10px;border-left:3px solid var(--c);padding-left:8px;}
 .plano{padding:14px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:10px;cursor:pointer;}
 .plano:hover{border-color:var(--c);}
 .plano.sel{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
@@ -21,6 +22,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .info{font-size:11px;color:var(--text2);margin-top:4px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .dia,.hora{padding:10px;background:#0a0a0a;border:1.5px solid var(--borda);border-radius:8px;text-align:center;font-size:12px;font-weight:700;cursor:not-allowed;opacity:0.4;}
 .dia.lib,.hora.lib{cursor:pointer;opacity:1;}
 .dia.lib:hover,.hora.lib:hover{border-color:var(--c);}
@@ -60,16 +62,17 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;">Preencha todos os dados. Assim o profissional consegue planejar os protocolos para seu projeto.</div>
 
     <div class="titulo-secao">OBJETIVOS: Clique e escolha seus objetivos na ordem de prioridade. De 1 até no máximo 7</div>
-    <div id="listaObjetivosSelecionados" style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;"></div>
+    <div id="listaObjetivosSelecionados" style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;min-height:18px;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
-      <div class="plano" onclick="toggleObjetivo(this)" data-obj="Reabilitação Física">Reabilitação Física</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Emagrecimento">Emagrecimento</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Definição Muscular">Definição Muscular</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Saúde">Saúde</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Condicionamento Físico">Condicionamento Físico</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Hipertrofia">Hipertrofia</div>
+      <div class="plano obj" onclick="toggleObjetivo(this)" data-obj="Reabilitação Física">Reabilitação Física</div>
     </div>
+    <input type="hidden" id="objetivos" value="">
   </div>
 
   <div class="card">
@@ -96,13 +99,13 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-
-<!-- TELA 1: PLANOS -->
-<div id="tela1">
+<!-- TELA 2: PLANOS -->
+<div id="tela2" class="oculto">
   <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
   <div class="passos">
-    <div class="etapa ativo"><span class="num">1</span>PLANOS</div>
-    <div class="etapa"><span class="num">2</span>DADOS</div>
+    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
+    <div class="etapa ativo"><span class="num">2</span>PLANOS</div>
+    <div class="etapa"><span class="num">3</span>DADOS</div>
   </div>
 
   <div class="card">
@@ -164,9 +167,9 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <button class="btn" onclick="irParaDados()">CONTINUAR</button>
+  <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
 </div>
 
-<!-- TELA 3: DADOS PESSOAIS -->
 <!-- TELA 3: DADOS PESSOAIS -->
 <div id="tela3" class="oculto">
   <h1>K-TP Treinamento Personalizado | Projeto TRANSFORMAÇÃO</h1>
@@ -197,11 +200,36 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 
 <script>
 let plano={}, dias=[], hora='', maxDias=0;
+let objetivosSelecionados = []; // NOVO
 
 const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
 horarios.forEach(h=>{
   document.getElementById('horasGrid').innerHTML += `<div class="hora" data-hora="${h}">${h}<div class="vagas">7 vagas</div></div>`;
 });
+
+// FUNÇÃO NOVA DOS OBJETIVOS
+function toggleObjetivo(el){
+  let obj = el.dataset.obj;
+  let index = objetivosSelecionados.indexOf(obj);
+
+  if(index > -1){
+    objetivosSelecionados.splice(index, 1);
+    el.classList.remove('sel');
+  } else {
+    if(objetivosSelecionados.length >= 7) return;
+    objetivosSelecionados.push(obj);
+    el.classList.add('sel');
+  }
+
+  document.querySelectorAll('.obj').forEach(item=>{
+    let nome = item.dataset.obj;
+    let pos = objetivosSelecionados.indexOf(nome);
+    item.innerHTML = pos > -1? `${pos+1}. ${nome}` : nome;
+  });
+
+  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'Ordem: ' + objetivosSelecionados.map((o,i)=>`${i+1}.${o}`).join(' | ') : '';
+  document.getElementById('objetivos').value = objetivosSelecionados.join(' | ');
+}
 
 function mostrarTela(id){
   document.querySelectorAll('#tela1,#tela2,#tela3').forEach(t=>t.classList.add('oculto'));
@@ -210,7 +238,7 @@ function mostrarTela(id){
 }
 
 function irParaPlanos(){
-  if(!document.getElementById('termo').checked){alert('Aceite o termo de responsabilidade');return;}
+  if(objetivosSelecionados.length == 0){alert('Selecione pelo menos 1 objetivo');return;}
   mostrarTela('tela2');
 }
 
@@ -260,7 +288,7 @@ function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!n
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
-function enviarWhatsApp(){
+function finalizarInscricao(){
   let nome = document.getElementById('nome').value;
   if(nome==''){alert('Preencha o nome');return;}
   if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
@@ -284,15 +312,21 @@ function enviarWhatsApp(){
             `Matrícula: R$${plano.mat},00\n` +
             `Total: R$${total},00\n` +
             `*ANAMNESE*\n` +
-            `Atividade Física: ${document.getElementById('atv_fisica').value}\n` +
-            `Lesão/Dor: ${document.getElementById('lesao').value}\n` +
-            `Doença: ${document.getElementById('doenca').value}\n` +
-            `Objetivo: ${document.getElementById('objetivo').value}\n` +
-            `Obs: ${document.getElementById('obs').value}`;
+            `Nível: ${document.getElementById('nivelAtividade').value}\n` +
+            `Q1: ${document.getElementById('q1').value}\n` +
+            `Q2: ${document.getElementById('q2').value}\n` +
+            `Q3: ${document.getElementById('q3').value}\n` +
+            `Q4: ${document.getElementById('q4').value}\n` +
+            `Q5: ${document.getElementById('q5').value}\n` +
+            `Q6: ${document.getElementById('q6').value}\n` +
+            `Q7: ${document.getElementById('q7').value}\n` +
+            `Q8: ${document.getElementById('q8').value}\n` +
+            `Q9: ${document.getElementById('q9').value}\n` +
+            `Objetivos: ${document.getElementById('objetivos').value}`;
 
-  let numero = "5513997690898"; // DDI 55 + 13 + 997690898
+  let numero = "5513997690898";
   let url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank'); // Funciona pra WhatsApp Normal e Business
+  window.open(url, '_blank');
 }
 </script>
 
