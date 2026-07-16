@@ -221,13 +221,15 @@ function toggleObjetivo(el){
     el.classList.add('sel');
   }
 
+  // Renumera todos os botões na ordem de clique
   document.querySelectorAll('.obj').forEach(item=>{
     let nome = item.dataset.obj;
     let pos = objetivosSelecionados.indexOf(nome);
-    item.innerHTML = pos > -1? `${pos+1}. ${nome}` : nome;
+    item.innerHTML = pos > -1? `<span style="color:var(--ok);font-weight:900;">${pos+1}.</span> ${nome}` : nome;
   });
 
-  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'Ordem: ' + objetivosSelecionados.map((o,i)=>`${i+1}.${o}`).join(' | ') : '';
+  // Mostra a ordem embaixo também
+  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'Prioridade: ' + objetivosSelecionados.map((o,i)=>`${i+1}º ${o}`).join(' > ') : '';
   document.getElementById('objetivos').value = objetivosSelecionados.join(' | ');
 }
 
