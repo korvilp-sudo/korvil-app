@@ -280,14 +280,14 @@ function mostrarInfoSemana(data){
     if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
   }
   
-  // CORRIGIDO: era "imagens-dos-metodos", agora é "images-dos-metodos"
-  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/2026/images-dos-metodos`;
-  const caminhoImagem = `${baseURL}/${pastaImagem}.png`; // a imagem fica direto na pasta
+  // CAMINHO CORRIGIDO PEGANDO DO SEU PRINT
+  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
+  const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
 
   let html = `
     <div class="card-semana">
       <h3>${titulo}</h3>
-      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.style.display='none'">
+      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'">
       <p><b>${subtitulo}</b></p>
       <div class="mensagem-semana">${mensagem}</div>
       <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
