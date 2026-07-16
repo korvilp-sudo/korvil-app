@@ -64,7 +64,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:12px;">K-TP PROJETO TRANSFORMAÇÃO</div>
     <div style="font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;">Preencha todos os dados. Assim o profissional consegue planejar os protocolos para seu projeto.</div>
 
-    <div class="titulo-secao">OBJETIVOS: Clique na ordem de prioridade. Máx 7</div>
+    <div class="titulo-secao">OBJETIVOS: Clique e escolha seus objetivos na ordem de prioridade. De 1 até no máximo 7</div>
     <div id="listaObjetivosSelecionados" style="font-size:11px;color:var(--ok);margin-bottom:8px;font-weight:700;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div class="plano" onclick="toggleObjetivo(this)" data-obj="Ganho de Peso">Ganho de Peso</div>
@@ -101,40 +101,74 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 </div>
 
-<!-- TELA 2: PLANOS -->
-<div id="tela2" class="oculto">
+
+<!-- TELA 1: PLANOS -->
+<div id="tela1">
   <h1>K-TP | PROJETO TRANSFORMAÇÃO</h1>
   <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa ativo"><span class="num">2</span>PLANO</div>
-    <div class="etapa"><span class="num">3</span>DADOS</div>
+    <div class="etapa ativo"><span class="num">1</span>PLANOS</div>
+    <div class="etapa"><span class="num">2</span>DADOS</div>
   </div>
 
   <div class="card">
     <div class="titulo">1. ESCOLHA 1 PLANO</div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5"><div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div><div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1"><div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div><div class="info">1x Dia | Presencial | Matrícula: GRÁTIS</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5"><div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div><div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1"><div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2"><div class="topo"><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="valor">R$80,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3"><div class="topo"><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="valor">R$100,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4"><div class="topo"><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="valor">R$130,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
-    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5"><div class="topo"><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="valor">R$150,00/mês</div></div><div class="info">Matrícula: R$50,00</div></div>
+
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5">
+      <div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div>
+      <div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div>
+    </div>
+
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1">
+      <div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div>
+      <div class="info">1x Dia | Presencial | Matrícula: GRÁTIS | 7 vagas/horário</div>
+    </div>
+
+    <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5">
+      <div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div>
+      <div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div>
+    </div>
+
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
+    </div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="valor">R$80,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
+    </div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="valor">R$100,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
+    </div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="valor">R$130,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
+    </div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="valor">R$150,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
+    </div>
     <div style="font-size:10px;color:var(--text2);margin-top:8px;">*Matrícula R$50,00 obrigatória para novos. Válida até Dezembro.</div>
   </div>
 
+  <!-- TABELA UNICA DE DIAS E HORARIOS -->
   <div class="card">
     <div class="titulo">2. ESCOLHA DIAS E HORÁRIO</div>
     <div class="sub">DIAS: SEG À SEX</div>
     <div class="grid-5" id="diasGrid">
-      <div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div>
+      <div class="dia" data-dia="Segunda">SEG</div>
+      <div class="dia" data-dia="Terça">TER</div>
+      <div class="dia" data-dia="Quarta">QUA</div>
+      <div class="dia" data-dia="Quinta">QUI</div>
+      <div class="dia" data-dia="Sexta">SEX</div>
     </div>
     <div id="avisoDias" class="aviso">Selecione um plano primeiro</div>
+
     <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
     <div class="grid-4" id="horasGrid"></div>
   </div>
+
   <button class="btn" onclick="irParaDados()">CONTINUAR</button>
-  <button class="btn voltar" onclick="mostrarTela('tela1')">VOLTAR</button>
 </div>
 
 <!-- TELA 3: DADOS PESSOAIS -->
