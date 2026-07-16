@@ -37,24 +37,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .ativo{color:var(--c);}
 .aviso-dias{font-size:12px;color:var(--c);background:rgba(0,245,255,.1);border:1.5px solid var(--c);padding:10px;border-radius:8px;margin-bottom:12px;font-weight:700;text-align:center;}
 .alerta{font-size:11px;color:var(--erro);margin-top:6px;font-weight:700;}
-
-/* NOVO: BADGE DE PRIORIDADE */
-.prioridade-badge{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:var(--c);
-  color:#000;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:12px;
-  box-shadow:0 0 8px var(--c);
-}
+.prioridade-badge{position:absolute;top:-6px;right:-6px;background:var(--c);color:#000;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;box-shadow:0 0 8px var(--c);}
 </style>
 </head>
 <body>
@@ -235,7 +218,7 @@ let frequenciaMaxima = 0;
 let diasSelecionados = [];
 let planoSelecionado = '';
 let horarioSelecionado = '';
-let objetivosSelecionados = []; // NOVO: guarda ordem
+let objetivosSelecionados = [];
 
 function mostrarTela(id){
   document.querySelectorAll('#tela1, #tela2, #tela3').forEach(t => t.classList.add('oculto'));
@@ -244,10 +227,7 @@ function mostrarTela(id){
 }
 
 function atualizarPrioridadeObjetivos(){
-  // Limpa todos os badges
   document.querySelectorAll('#tela1.plano.prioridade-badge').forEach(b => b.remove());
-
-  // Adiciona badge na ordem
   objetivosSelecionados.forEach((obj, index) => {
     const el = document.querySelector(`#tela1.plano[data-obj="${obj}"]`);
     if(el){
@@ -257,8 +237,6 @@ function atualizarPrioridadeObjetivos(){
       el.appendChild(badge);
     }
   });
-
-  // Atualiza texto resumo
   if(objetivosSelecionados.length > 0){
     document.getElementById('listaObjetivosSelecionados').innerText =
       'Ordem: ' + objetivosSelecionados.map((o,i) => `${i+1}. ${o}`).join(' | ');
@@ -270,11 +248,10 @@ function atualizarPrioridadeObjetivos(){
 function toggleObjetivo(el){
   const obj = el.getAttribute('data-obj');
   const idx = objetivosSelecionados.indexOf(obj);
-
-  if(idx > -1){ // já está selecionado, então remove
+  if(idx > -1){
     objetivosSelecionados.splice(idx, 1);
     el.classList.remove('selecionado');
-  } else { // adiciona
+  } else {
     if(objetivosSelecionados.length >= 7){
       alert('Você pode escolher no máximo 7 objetivos');
       return;
@@ -286,10 +263,8 @@ function toggleObjetivo(el){
 }
 
 function limparTodosOsPlanos(){
-  document.querySelectorAll('#tela2.plano').forEach(item => {
-    if(item.onclick && item.onclick.toString().includes('selecionarPlano')){
-      item.classList.remove('selecionado');
-    }
+  document.querySelectorAll('#tela2.plano[data-tipo]').forEach(item => {
+    item.classList.remove('selecionado');
   });
 }
 
@@ -312,6 +287,14 @@ function atualizarDias(){
 }
 
 function selecionarPlano(el){
+  if(el.classList.contains('selecionado')){
+    el.classList.remove('selecionado');
+    planoSelecionado = '';
+    frequenciaMaxima = 0;
+    diasSelecionados = [];
+    document.getElementById('cardDias').classList.add('oculto');
+    return;
+  }
   limparTodosOsPlanos();
   el.classList.add('selecionado');
   planoSelecionado = el.getAttribute('data-valor');
@@ -332,7 +315,7 @@ function selecionarPlano(el){
 }
 
 function selecionarHorario(el){
-  document.querySelectorAll('#tela2.plano').forEach(item => {
+  document.querySelectorAll('#tela2.plano[data-valor]').forEach(item => {
     if(item.onclick && item.onclick.toString().includes('selecionarHorario')){
       item.classList.remove('selecionado');
     }
