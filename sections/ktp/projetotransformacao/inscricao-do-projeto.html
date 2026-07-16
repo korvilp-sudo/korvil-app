@@ -12,18 +12,20 @@ body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:
 h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;}
 .card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
 .titulo{font-size:14px;font-weight:800;color:var(--c);margin-bottom:10px;border-left:3px solid var(--c);padding-left:8px;}
-.plano{padding:14px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:16px;}
+.plano{padding:14px;background:#111;border:1.5px solid var(--borda);border-radius:10px;margin-bottom:10px;cursor:pointer;}
+.plano:hover{border-color:var(--c);}
 .plano.sel{border-color:var(--c);background:rgba(0,245,255,.15);box-shadow:0 0 15px var(--c)40;}
-.plano-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:10px;}
+.topo{display:flex;justify-content:space-between;align-items:center;}
 .nome{font-weight:800;color:var(--c);font-size:14px;}
 .valor{font-weight:900;color:var(--ok);font-size:15px;}
 .info{font-size:11px;color:var(--text2);margin-top:4px;}
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.dia,.hora{padding:10px;background:#0a0a0a;border:1.5px solid var(--borda);border-radius:8px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;}
-.dia:hover,.hora:hover{border-color:var(--c);}
-.dia.sel,.hora.sel{border-color:var(--c);background:rgba(0,245,255,.15);}
-.dia.bloq{opacity:0.3;cursor:not-allowed;background:#050505;pointer-events:none;}
+.dia,.hora{padding:10px;background:#0a0a0a;border:1.5px solid var(--borda);border-radius:8px;text-align:center;font-size:12px;font-weight:700;cursor:not-allowed;opacity:0.4;}
+.dia.lib,.hora.lib{cursor:pointer;opacity:1;}
+.dia.lib:hover,.hora.lib:hover{border-color:var(--c);}
+.dia.sel,.hora.sel{border-color:var(--c);background:rgba(0,245,255,.15);opacity:1;}
+.dia.bloq{opacity:0.2;cursor:not-allowed;background:#050505;}
 .vagas{font-size:9px;color:var(--ok);}
 .btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:14px;}
 .btn.voltar{background:#222;color:var(--text);}
@@ -51,101 +53,61 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   </div>
 
   <div class="card">
-    <div class="titulo">ESCOLHA 1 PLANO</div>
+    <div class="titulo">1. ESCOLHA 1 PLANO</div>
 
-    <!-- PLANO 1 -->
-    <div class="plano" id="plano1" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5">
-      <div class="plano-header" onclick="selecionarPlano('plano1')">
-        <div><div class="nome">AULA AVULSA ONLINE</div><div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div></div><div class="valor">R$20,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha de 1 a 5 dias</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas1"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Online" data-valor="20" data-mat="0" data-tipo="avulso_online" data-freq="5">
+      <div class="topo"><div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00/aula</div></div>
+      <div class="info">1x a 5x Dias | WhatsApp | Matrícula: GRÁTIS</div>
     </div>
 
-    <!-- PLANO 2 -->
-    <div class="plano" id="plano2" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1">
-      <div class="plano-header" onclick="selecionarPlano('plano2')">
-        <div><div class="nome">AULA AVULSA PRESENCIAL</div><div class="info">1x Dia | Presencial | Matrícula: GRÁTIS</div></div><div class="valor">R$20,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha 1 dia</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas2"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Avulsa Presencial" data-valor="20" data-mat="0" data-tipo="avulso_pres" data-freq="1">
+      <div class="topo"><div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00/aula</div></div>
+      <div class="info">1x Dia | Presencial | Matrícula: GRÁTIS | 7 vagas/horário</div>
     </div>
 
-    <!-- PLANO 3 -->
-    <div class="plano" id="plano3" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5">
-      <div class="plano-header" onclick="selecionarPlano('plano3')">
-        <div><div class="nome">PLANO ONLINE MENSAL</div><div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div></div><div class="valor">R$60,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha quantos dias quiser</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas3"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Online Mensal" data-valor="60" data-mat="50" data-tipo="mensal_online" data-freq="5">
+      <div class="topo"><div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00/mês</div></div>
+      <div class="info">Escolha dias | App + WhatsApp | Matrícula: R$50,00</div>
     </div>
 
-    <!-- PLANO 4 AO 8 PRESENCIAL -->
-    <div class="plano" id="plano4" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1">
-      <div class="plano-header" onclick="selecionarPlano('plano4')">
-        <div><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="info">Matrícula: R$50,00</div></div><div class="valor">R$60,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha 1 dia</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas4"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 1x" data-valor="60" data-mat="50" data-tipo="mensal_pres" data-freq="1">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 1x SEMANA</div><div class="valor">R$60,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
     </div>
-
-    <div class="plano" id="plano5" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2">
-      <div class="plano-header" onclick="selecionarPlano('plano5')">
-        <div><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="info">Matrícula: R$50,00</div></div><div class="valor">R$80,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha 2 dias</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas5"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 2x" data-valor="80" data-mat="50" data-tipo="mensal_pres" data-freq="2">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 2x SEMANA</div><div class="valor">R$80,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
     </div>
-
-    <div class="plano" id="plano6" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3">
-      <div class="plano-header" onclick="selecionarPlano('plano6')">
-        <div><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="info">Matrícula: R$50,00</div></div><div class="valor">R$100,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha 3 dias</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas6"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 3x" data-valor="100" data-mat="50" data-tipo="mensal_pres" data-freq="3">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 3x SEMANA</div><div class="valor">R$100,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
     </div>
-
-    <div class="plano" id="plano7" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4">
-      <div class="plano-header" onclick="selecionarPlano('plano7')">
-        <div><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="info">Matrícula: R$50,00</div></div><div class="valor">R$130,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">Escolha 4 dias</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas7"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 4x" data-valor="130" data-mat="50" data-tipo="mensal_pres" data-freq="4">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 4x SEMANA</div><div class="valor">R$130,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
     </div>
-
-    <div class="plano" id="plano8" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5">
-      <div class="plano-header" onclick="selecionarPlano('plano8')">
-        <div><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="info">Matrícula: R$50,00</div></div><div class="valor">R$150,00</div>
-      </div>
-      <div class="sub">DIAS: SEG À SEX</div>
-      <div class="grid-5"><div class="dia" data-dia="Segunda">SEG</div><div class="dia" data-dia="Terça">TER</div><div class="dia" data-dia="Quarta">QUA</div><div class="dia" data-dia="Quinta">QUI</div><div class="dia" data-dia="Sexta">SEX</div></div>
-      <div class="aviso">SEG A SEX JÁ MARCADO</div>
-      <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
-      <div class="grid-4" id="horas8"></div>
+    <div class="plano" onclick="selPlano(this)" data-nome="Presencial 5x" data-valor="150" data-mat="50" data-tipo="mensal_pres" data-freq="5">
+      <div class="topo"><div class="nome">PLANO PRESENCIAL 5x SEMANA</div><div class="valor">R$150,00/mês</div></div>
+      <div class="info">Matrícula: R$50,00</div>
     </div>
-
     <div style="font-size:10px;color:var(--text2);margin-top:8px;">*Matrícula R$50,00 obrigatória para novos. Válida até Dezembro.</div>
+  </div>
+
+  <!-- TABELA UNICA DE DIAS E HORARIOS -->
+  <div class="card">
+    <div class="titulo">2. ESCOLHA DIAS E HORÁRIO</div>
+    <div class="sub">DIAS: SEG À SEX</div>
+    <div class="grid-5" id="diasGrid">
+      <div class="dia" data-dia="Segunda">SEG</div>
+      <div class="dia" data-dia="Terça">TER</div>
+      <div class="dia" data-dia="Quarta">QUA</div>
+      <div class="dia" data-dia="Quinta">QUI</div>
+      <div class="dia" data-dia="Sexta">SEX</div>
+    </div>
+    <div id="avisoDias" class="aviso">Selecione um plano primeiro</div>
+
+    <div class="sub">HORÁRIO FIXO: 06h às 10h | 16h às 05h</div>
+    <div class="grid-4" id="horasGrid"></div>
   </div>
 
   <button class="btn" onclick="irParaDados()">CONTINUAR</button>
@@ -177,18 +139,12 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </div>
 
 <script>
-let planoSel='', diasSel=[], horaSel='', maxDias=0;
+let plano={}, dias=[], hora='', maxDias=0;
 
 const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
-function gerarHorarios(){
-  for(let i=1;i<=8;i++){
-    let div = document.getElementById('horas'+i);
-    horarios.forEach(h=>{
-      div.innerHTML += `<div class="hora" onclick="selHora(this,'plano${i}')">${h}<div class="vagas">7 vagas</div></div>`;
-    });
-  }
-}
-gerarHorarios();
+horarios.forEach(h=>{
+  document.getElementById('horasGrid').innerHTML += `<div class="hora" data-hora="${h}">${h}<div class="vagas">7 vagas</div></div>`;
+});
 
 function mostrarTela(id){
   document.querySelectorAll('#tela1,#tela2').forEach(t=>t.classList.add('oculto'));
@@ -196,42 +152,47 @@ function mostrarTela(id){
   window.scrollTo(0,0);
 }
 
-function selecionarPlano(id){
+function selPlano(el){
   document.querySelectorAll('.plano').forEach(p=>p.classList.remove('sel'));
-  document.getElementById(id).classList.add('sel');
-  let el = document.getElementById(id);
-  planoSel = {id:id, nome:el.dataset.nome, valor:el.dataset.valor, mat:el.dataset.mat, tipo:el.dataset.tipo, freq:parseInt(el.dataset.freq)};
-  diasSel=[]; horaSel=''; maxDias=planoSel.freq;
+  el.classList.add('sel');
+  plano = {nome:el.dataset.nome, valor:el.dataset.valor, mat:el.dataset.mat, tipo:el.dataset.tipo, freq:parseInt(el.dataset.freq)};
+  dias=[]; hora='';
+  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel','lib','bloq'));
 
-  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel','bloq'));
+  maxDias=plano.freq;
+  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.add('lib'));
 
-  if(planoSel.freq==5){
-    let planoDiv = document.getElementById(id);
-    planoDiv.querySelectorAll('.dia').forEach(d=>{d.classList.add('sel','bloq'); diasSel.push(d.dataset.dia);});
+  if(plano.freq==5){
+    document.querySelectorAll('.dia').forEach(d=>{d.classList.add('sel','bloq'); dias.push(d.dataset.dia);});
+    document.getElementById('avisoDias').innerText=`Dias: Segunda, Terça, Quarta, Quinta, Sexta`;
+  } else {
+    document.getElementById('avisoDias').innerText=`Faltam ${maxDias} dia(s)`;
   }
 }
 
 document.querySelectorAll('.dia').forEach(dia=>{
   dia.addEventListener('click', function(){
-    let planoDiv = this.closest('.plano');
-    if(!planoDiv.classList.contains('sel')) return;
-    if(this.classList.contains('bloq')) return;
-    if(this.classList.contains('sel')){this.classList.remove('sel'); diasSel=diasSel.filter(d=>d!=this.dataset.dia);}
-    else{if(diasSel.length>=maxDias)return; this.classList.add('sel'); diasSel.push(this.dataset.dia);}
-    planoDiv.querySelectorAll('.dia').forEach(d=>{if(!d.classList.contains('sel')&&diasSel.length>=maxDias)d.classList.add('bloq');else d.classList.remove('bloq');});
+    if(!this.classList.contains('lib') || this.classList.contains('bloq')) return;
+    if(this.classList.contains('sel')){this.classList.remove('sel'); dias=dias.filter(d=>d!=this.dataset.dia);}
+    else{if(dias.length>=maxDias)return; this.classList.add('sel'); dias.push(this.dataset.dia);}
+    document.querySelectorAll('.dia').forEach(d=>{if(!d.classList.contains('sel')&&dias.length>=maxDias)d.classList.add('bloq');else d.classList.remove('bloq');});
+    let faltam=maxDias-dias.length;
+    document.getElementById('avisoDias').innerText= faltam>0? `Faltam ${faltam} dia(s)` : `Dias: ${dias.join(', ')}`;
   });
 });
 
-function selHora(el, id){
-  if(!document.getElementById(id).classList.contains('sel')) return;
-  document.querySelectorAll(`#${id}.hora`).forEach(h=>h.classList.remove('sel'));
-  el.classList.add('sel'); horaSel=el.innerText.split('\n')[0];
-}
+document.querySelectorAll('.hora').forEach(horaEl=>{
+  horaEl.addEventListener('click', function(){
+    if(!this.classList.contains('lib')) return;
+    document.querySelectorAll('.hora').forEach(h=>h.classList.remove('sel'));
+    this.classList.add('sel'); hora=this.dataset.hora;
+  });
+});
 
 function irParaDados(){
-  if(!planoSel){alert('Selecione um plano');return;}
-  if(diasSel.length!=maxDias){alert(`Selecione ${maxDias} dia(s)`);return;}
-  if(!horaSel){alert('Selecione 1 horário');return;}
+  if(!plano.nome){alert('Selecione um plano');return;}
+  if(dias.length!=maxDias){alert(`Selecione ${maxDias} dia(s)`);return;}
+  if(!hora){alert('Selecione 1 horário');return;}
   mostrarTela('tela2');
 }
 
@@ -241,8 +202,8 @@ function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\
 
 function finalizar(){
   if(document.getElementById('nome').value==''){alert('Preencha o nome');return;}
-  let total = parseInt(planoSel.valor)+parseInt(planoSel.mat);
-  alert(`*INSCRIÇÃO K-TP*\n\nPLANO: ${planoSel.nome}\nDIAS: ${diasSel.join(', ')}\nHORÁRIO: ${horaSel}\nTOTAL: R$${total},00\nNOME: ${document.getElementById('nome').value}`);
+  let total = parseInt(plano.valor)+parseInt(plano.mat);
+  alert(`*INSCRIÇÃO K-TP*\n\nPLANO: ${plano.nome}\nDIAS: ${dias.join(', ')}\nHORÁRIO: ${hora}\nTOTAL: R$${total},00\nNOME: ${document.getElementById('nome').value}`);
 }
 </script>
 
