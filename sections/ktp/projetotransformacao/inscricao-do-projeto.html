@@ -287,123 +287,6 @@ function irParaDados(){
 function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!nasc) return;let idade = new Date().getFullYear() - new Date(nasc).getFullYear();document.getElementById('idade').value = idade + ' anos';}
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
-<!-- TELA 3: DADOS PESSOAIS -->
-<div id="tela3" class="oculto">
-  <h1>K-TP Treinamento Personalizado | Projeto TRANSFORMAÇÃO</h1>
-  <div class="passos">
-    <div class="etapa"><span class="num">1</span>ANAMNESE</div>
-    <div class="etapa"><span class="num">2</span>PLANOS</div>
-    <div class="etapa ativo"><span class="num">3</span>DADOS</div>
-  </div>
-
-  <div class="card">
-    <div class="titulo-secao">3. DADOS PESSOAIS</div>
-    <div class="input-group"><label>Nome Completo *</label><input type="text" id="nome"></div>
-    <div class="grid-2">
-      <div class="input-group"><label>CPF *</label><input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCPF(this)"></div>
-      <div class="input-group"><label>Data Nasc *</label><input type="date" id="nasc" onchange="calcularIdade()"></div>
-    </div>
-    <div class="grid-2">
-      <div class="input-group"><label>Idade</label><input type="text" id="idade" readonly></div>
-      <div class="input-group"><label>Gênero *</label><select id="publico"><option>Selecione</option><option>Masculino</option><option>Feminino</option></select></div>
-    </div>
-    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
-    <div class="input-group"><label>Email</label><input type="email" id="email"></div>
-
-    <button class="btn" onclick="enviarWhatsApp()">FINALIZAR INSCRIÇÃO</button>
-    <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
-  </div>
-</div>
-
-<script>
-let plano={}, dias=[], hora='', maxDias=0;
-let objetivosSelecionados = []; // NOVO
-
-const horarios = ['06:00','07:00','08:00','09:00','10:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
-horarios.forEach(h=>{
-  document.getElementById('horasGrid').innerHTML += `<div class="hora" data-hora="${h}">${h}<div class="vagas">7 vagas</div></div>`;
-});
-
-// FUNÇÃO NOVA DOS OBJETIVOS
-function toggleObjetivo(el){
-  let obj = el.dataset.obj;
-  let index = objetivosSelecionados.indexOf(obj);
-
-  if(index > -1){
-    objetivosSelecionados.splice(index, 1);
-    el.classList.remove('sel');
-  } else {
-    if(objetivosSelecionados.length >= 7) return;
-    objetivosSelecionados.push(obj);
-    el.classList.add('sel');
-  }
-
-  document.querySelectorAll('.obj').forEach(item=>{
-    let nome = item.dataset.obj;
-    let pos = objetivosSelecionados.indexOf(nome);
-    item.innerHTML = pos > -1? `${pos+1}. ${nome}` : nome;
-  });
-
-  document.getElementById('listaObjetivosSelecionados').innerText = objetivosSelecionados.length > 0? 'Ordem: ' + objetivosSelecionados.map((o,i)=>`${i+1}.${o}`).join(' | ') : '';
-  document.getElementById('objetivos').value = objetivosSelecionados.join(' | ');
-}
-
-function mostrarTela(id){
-  document.querySelectorAll('#tela1,#tela2,#tela3').forEach(t=>t.classList.add('oculto'));
-  document.getElementById(id).classList.remove('oculto');
-  window.scrollTo(0,0);
-}
-
-function irParaPlanos(){
-  if(objetivosSelecionados.length == 0){alert('Selecione pelo menos 1 objetivo');return;}
-  mostrarTela('tela2');
-}
-
-function selPlano(el){
-  document.querySelectorAll('.plano').forEach(p=>p.classList.remove('sel'));
-  el.classList.add('sel');
-  plano = {nome:el.dataset.nome, valor:el.dataset.valor, mat:el.dataset.mat, tipo:el.dataset.tipo, freq:parseInt(el.dataset.freq)};
-  dias=[]; hora='';
-  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.remove('sel','lib','bloq'));
-  maxDias=plano.freq;
-  document.querySelectorAll('.dia,.hora').forEach(i=>i.classList.add('lib'));
-  if(plano.freq==5){
-    document.querySelectorAll('.dia').forEach(d=>{d.classList.add('sel','bloq'); dias.push(d.dataset.dia);});
-    document.getElementById('avisoDias').innerText=`Dias: Segunda, Terça, Quarta, Quinta, Sexta`;
-  } else {
-    document.getElementById('avisoDias').innerText=`Faltam ${maxDias} dia(s)`;
-  }
-}
-
-document.querySelectorAll('.dia').forEach(dia=>{
-  dia.addEventListener('click', function(){
-    if(!this.classList.contains('lib') || this.classList.contains('bloq')) return;
-    if(this.classList.contains('sel')){this.classList.remove('sel'); dias=dias.filter(d=>d!=this.dataset.dia);}
-    else{if(dias.length>=maxDias)return; this.classList.add('sel'); dias.push(this.dataset.dia);}
-    document.querySelectorAll('.dia').forEach(d=>{if(!d.classList.contains('sel')&&dias.length>=maxDias)d.classList.add('bloq');else d.classList.remove('bloq');});
-    let faltam=maxDias-dias.length;
-    document.getElementById('avisoDias').innerText= faltam>0? `Faltam ${faltam} dia(s)` : `Dias: ${dias.join(', ')}`;
-  });
-});
-
-document.querySelectorAll('.hora').forEach(horaEl=>{
-  horaEl.addEventListener('click', function(){
-    if(!this.classList.contains('lib')) return;
-    document.querySelectorAll('.hora').forEach(h=>h.classList.remove('sel'));
-    this.classList.add('sel'); hora=this.dataset.hora;
-  });
-});
-
-function irParaDados(){
-  if(!plano.nome){alert('Selecione um plano');return;}
-  if(dias.length!=maxDias){alert(`Selecione ${maxDias} dia(s)`);return;}
-  if(!hora){alert('Selecione 1 horário');return;}
-  mostrarTela('tela3');
-}
-
-function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!nasc) return;let idade = new Date().getFullYear() - new Date(nasc).getFullYear();document.getElementById('idade').value = idade + ' anos';}
-function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
-function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
 function enviarWhatsApp(){
   let nome = document.getElementById('nome').value;
@@ -442,7 +325,7 @@ function enviarWhatsApp(){
             `Objetivos: ${document.getElementById('objetivos').value}`;
 
   let numero = "5513997690898"; // COLOQUE SEU NUMERO COM DDI 55
-  
+
   // Funciona para WhatsApp Normal e WhatsApp Business
   window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
 }
