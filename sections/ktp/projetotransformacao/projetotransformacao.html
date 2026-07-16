@@ -229,10 +229,45 @@ function carregarMenu(){
 
 function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
-  const infoCompleta = MENU[data]; // Puxa do seu objeto MENU
+  const infoCompleta = MENU[data]; // Puxa do objeto MENU
   const linhas = infoCompleta.split('\n');
   const titulo = linhas[0];
   const subtitulo = linhas[1];
+
+  // MAPEAMENTO DE TODAS AS 4 IMAGENS DAS SEMANAS
+  const imagens = {
+    'MANUTENÇÃO': 'semana-de-manutencao',
+    'RESISTÊNCIA': 'semana-de-resistencia',
+    'FORÇA': 'semana-de-forca',
+    'HIPERTROFIA': 'semana-de-hipertrofia'
+  };
+
+  // Descobre qual imagem usar
+  let pastaImagem = 'semana-de-manutencao'; // padrão
+  for(let key in imagens){
+    if(subtitulo.includes(key)){
+      pastaImagem = imagens[key];
+      break;
+    }
+  }
+
+  // CAMINHO COMPLETO DAS IMAGENS NO GITHUB
+  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/imagens/2026/imagens-dos-metodos`;
+  const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
+
+  // MONTA O CARD DA SEMANA
+  let html = `
+    <div class="card-semana">
+      <h3>${titulo}</h3>
+      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.style.display='none'">
+      <p><b>${subtitulo}</b></p>
+      <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
+    </div>
+  `;
+
+  container.innerHTML = html;
+  if(window.innerWidth<768)toggleMenu(); // Fecha menu no mobile
+}
 
   // Descobre qual imagem usar pela segunda linha
   let nomeImagem = '';
