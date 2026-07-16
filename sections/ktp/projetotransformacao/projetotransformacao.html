@@ -268,6 +268,7 @@ function mostrarInfoSemana(data){
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
 
+  // As 4 imagens se repetem em todas as fases
   const imagens = {
     'MANUTENÇÃO': 'semana-de-manutencao',
     'RESISTÊNCIA': 'semana-de-resistencia',
@@ -278,8 +279,10 @@ function mostrarInfoSemana(data){
   for(let key in imagens){
     if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
   }
-  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/2026/imagens-dos-metodos`;
-  const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
+  
+  // CORRIGIDO: era "imagens-dos-metodos", agora é "images-dos-metodos"
+  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/2026/images-dos-metodos`;
+  const caminhoImagem = `${baseURL}/${pastaImagem}.png`; // a imagem fica direto na pasta
 
   let html = `
     <div class="card-semana">
