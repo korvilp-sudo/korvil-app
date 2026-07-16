@@ -19,7 +19,11 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
 .check{color:var(--ok);margin-right:6px;}
-.fase-box{padding:10px;background:#111;border-left:3px solid var(--c);border-radius:6px;margin-bottom:8px;font-size:12px;}
+.fase-card{background:#0a0a0a;border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:12px;}
+.meses{background:rgba(0,245,255,.1);border:1px solid var(--c);color:var(--c);font-size:11px;font-weight:900;padding:8px 10px;border-radius:6px;text-align:center;margin-bottom:10px;}
+.titulo-fase{font-size:14px;font-weight:900;color:var(--c);margin-bottom:8px;}
+.desc-fase{font-size:11px;color:var(--text2);line-height:1.7;text-align:justify;}
+.numero{color:var(--ok);}
 </style>
 </head>
 <body>
@@ -46,11 +50,51 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
 
     <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 1. OFF SEASON</b><br>Janeiro e Fevereiro</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 2. BULKING</b><br>Março, Abril e Maio</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 3. MAINTENANCE</b><br>Junho, Julho e Agosto</div>
-    <div class="fase-box"><b style="color:var(--c)">FASE 4. CUTTING</b><br>Setembro, Outubro e Novembro</div>
-    <div class="fase-box"><b style="color:var(--ok)">DEZEMBRO: FÉRIAS</b></div>
+
+    <!-- FASE 1: OFF SEASON -->
+    <div class="fase-card">
+      <div class="meses">JANEIRO A FEVEREIRO - OFF SEASON: PREPARO</div>
+      <div class="titulo-fase"><span class="numero">1.</span> OFF SEASON - ADAPTAÇÃO GERAL</div>
+      <div class="desc-fase">
+        Fase de adaptação total de corpo e mente às rotinas do Projeto TRANSFORMAÇÃO. Não existe dieta restritiva aqui. O objetivo é aumentar a ingestão calórica de forma estratégica para elevar energia, disposição, recuperação e preparar o metabolismo para o bulking. Para quem já fez o projeto no ano anterior, é o momento de liberdade consciente: aproveitar o que gosta sem sabotar os objetivos. Foco também na adaptação técnica: aprender execução correta dos exercícios e entender a metodologia semanal de cada fase. Essencial para ectomorfos e alunos com dificuldade de ganhar massa e peso. Se o objetivo for ganho de peso e hipertrofia, trabalhamos com superávit calórico. Se for emagrecimento e definição muscular, já iniciamos o controle calórico. Dieta mais liberal, mas sempre direcionada.
+      </div>
+    </div>
+
+    <!-- FASE 2: BULKING -->
+    <div class="fase-card">
+      <div class="meses">MARÇO A MAIO - BULKING: EVOLUÇÃO</div>
+      <div class="titulo-fase"><span class="numero">2.</span> BULKING - HIPERTROFIA MÁXIMA</div>
+      <div class="desc-fase">
+        Fase prioritária de construção. Objetivo principal: hipertrofia muscular, ganho de força, regeneração tecidual, reabilitação e condicionamento físico geral com foco em saúde e performance. Regra básica: comer mais do que gasta. Dieta limpa e protocolar, totalmente alinhada aos objetivos escolhidos por cada aluno, com prioridade máxima em proteínas de alta qualidade, carboidratos complexos e micronutrientes. Treinos estruturados para progressão de carga e execução técnica impecável, sem erros. Zero desperdício. Essa é a fase de ganhar massa magra de verdade, volume e densidade muscular. Disciplina na dieta e no treino é obrigatória para construir a base sólida do físico.
+      </div>
+    </div>
+
+    <!-- FASE 3: MAINTENANCE -->
+    <div class="fase-card">
+      <div class="meses">JUNHO A AGOSTO - MAINTENANCE: MANTER RESULTADOS</div>
+      <div class="titulo-fase"><span class="numero">3.</span> MAINTENANCE - CONSOLIDAÇÃO</div>
+      <div class="desc-fase">
+        Fase de manutenção e consolidação de todos os ganhos conquistados no bulking. Momento de verificar, ajustar e refinar o protocolo geral do projeto. Objetivo: manter massa magra, reduzir levemente a gordura corporal e densificar a musculatura. Preparação física e mental para a fase de cutting. Foco total em disciplina, consistência e nutrição inteligente para nutrir o físico. Trabalhamos também o equilíbrio da mente, da alma e do estado de espírito. Os treinos são de intensidade mediana para evitar lesões, preservar articulações e não comprometer a energia da fase final. Esta é a ponte entre construção e definição. Fase de lapidar o que foi construído.
+      </div>
+    </div>
+
+    <!-- FASE 4: CUTTING -->
+    <div class="fase-card">
+      <div class="meses">SETEMBRO A NOVEMBRO - CUTTING: FINALIZAÇÃO</div>
+      <div class="titulo-fase"><span class="numero">4.</span> CUTTING - DEFINIÇÃO TOTAL</div>
+      <div class="desc-fase">
+        Fase de finalização e exposição do resultado do Projeto TRANSFORMAÇÃO. Objetivo: eliminar o máximo de gordura corporal possível preservando 100% da massa muscular conquistada. Dieta rigorosa com déficit calórico controlado e estratégico. Treinos intensos, técnicos e precisos. Não pode errar e não pode se lesionar. Foco total em estética, simetria, vascularização e modelagem do físico. É aqui que o trabalho do ano inteiro aparece. Fase de definição muscular geral, performance máxima e resultado visível. Execução perfeita em dieta e treino. Sem falhas.
+      </div>
+    </div>
+
+    <!-- FASE 5: DEZEMBRO -->
+    <div class="fase-card">
+      <div class="meses">DEZEMBRO - FÉRIAS: APROVEITAR OS RESULTADOS</div>
+      <div class="titulo-fase"><span class="numero">5.</span> DEZEMBRO - FÉRIAS ESTRATÉGICAS</div>
+      <div class="desc-fase">
+        Período oficial de férias e recarga. Treinos leves com exercícios de rotina, mobilidade e manutenção. Objetivo: aproveitar os resultados conquistados, descansar corpo e articulações e manter o corpo ativo sem pressão. Momento para avaliar o ano, celebrar a evolução e repensar as escolhas de objetivos para o próximo ciclo do projeto. É a fase de transição: manter a constância sem estresse. Para voltar no ano seguinte com mais foco, mais energia e mais estratégia para atingir um novo nível.
+      </div>
+    </div>
 
     <button class="btn" onclick="window.location.href='inscricao-do-projeto.html'">COMEÇAR INSCRIÇÃO</button>
     <button class="btn acessar" onclick="acessarProjeto()">ACESSAR</button>
