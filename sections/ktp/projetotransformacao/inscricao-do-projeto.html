@@ -288,7 +288,7 @@ function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!n
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
-function finalizarInscricao(){
+function enviarWhatsApp(){
   let nome = document.getElementById('nome').value;
   if(nome==''){alert('Preencha o nome');return;}
   if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
@@ -301,7 +301,7 @@ function finalizarInscricao(){
             `CPF: ${document.getElementById('cpf').value}\n` +
             `Nascimento: ${document.getElementById('nasc').value}\n` +
             `Idade: ${document.getElementById('idade').value}\n` +
-            `Gênero: ${document.getElementById('publico').value}\n` +
+            `Gênero: ${document.getElementById('publico').value}\n` + // <- arrumei aqui
             `WhatsApp: ${document.getElementById('whats').value}\n` +
             `Email: ${document.getElementById('email').value}\n\n` +
             `*PLANO ESCOLHIDO*\n` +
@@ -324,9 +324,10 @@ function finalizarInscricao(){
             `Q9: ${document.getElementById('q9').value}\n` +
             `Objetivos: ${document.getElementById('objetivos').value}`;
 
-  let numero = "5513997690898";
-  let url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  let numero = "5513997690898"; // COLOQUE SEU NUMERO COM DDI 55
+  
+  // Funciona para WhatsApp Normal e WhatsApp Business
+  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
 }
   function enviarWhatsApp(){
   let nome=document.getElementById('nome').value;
