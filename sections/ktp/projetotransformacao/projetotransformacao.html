@@ -213,8 +213,8 @@ function carregarMenu(){
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div>`;
     html+=`<div class="semanas-da-fase">`;
-    FASES_MENU.forEach(data=>{
-      const segundaLinha = MENSAGENS_2026_MENU[data].split('\n')[1] || 'SEMANA';
+    FASES_MENU[fase].forEach(data=>{
+      const segundaLinha = MENU[data].split('\n')[1] || 'SEMANA';
       html+=`<div class="semana-item" onclick="mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
     html+=`</div>`;
@@ -223,7 +223,7 @@ function carregarMenu(){
 }
 
 function mostrarInfoSemana(data){
-  const info = MENSAGENS_2026_MENU[data].replace('\n','<br>');
+  const info = MENU[data].replace('\n','<br>');
   alert(info);
   if(window.innerWidth<768)toggleMenu();
 }
