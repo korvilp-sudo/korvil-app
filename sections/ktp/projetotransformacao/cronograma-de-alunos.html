@@ -159,14 +159,14 @@ function trocarAba(plano){
 
 function calcularTotais(){
   let totalAtivos = 0, totalDesativados = 0, somaValores = 0;
-  Object.values(ALUNOS_DB).forEach(a=>{
-    if(a.id === 'ktp1') return;
-    if(a.status === 'Ativo'){totalAtivos++; somaValores += Number(a.valor) || 0;}
+  Object.entries(ALUNOS_DB).forEach(([id, a])=>{
+    if(id === 'ktp1') return;
+    if(a.status.toLowerCase() === 'ativo'){totalAtivos++; somaValores += Number(a.valor) || 0;}
     else {totalDesativados++;}
   });
   return {totalAtivos, totalDesativados, somaValores};
 }
-
+  
 function mostrarTelaCronograma(){
   const totais = calcularTotais();
   const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
