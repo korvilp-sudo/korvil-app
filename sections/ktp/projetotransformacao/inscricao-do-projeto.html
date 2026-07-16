@@ -104,36 +104,28 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
   <div class="card">
     <div class="titulo-secao">1. ESCOLHA UM PLANO - SEGUNDA-FEIRA A SEXTA-FEIRA</div>
 
-    <div class="input-group">
-      <label>Nível *</label>
-      <select id="nivelPlano">
-        <option value="">Selecione</option>
-        <option value="Iniciante">Iniciante</option>
-        <option value="Intermediário">Intermediário</option>
-        <option value="Avançado">Avançado</option>
-      </select>
-    </div>
-
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso">
-        <div class="nome">AULA AVULSA ONLINE</div><div class="valor">R$20,00</div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Online - R$20,00" data-tipo="avulso" data-modalidade="online">
+        <div class="nome">AVULSA ONLINE</div><div class="valor">R$20,00</div>
       </div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso">
-        <div class="nome">AULA AVULSA PRESENCIAL</div><div class="valor">R$20,00</div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Aula Avulsa Presencial - R$20,00" data-tipo="avulso" data-modalidade="presencial">
+        <div class="nome">AVULSA PRESENCIAL</div><div class="valor">R$20,00</div>
       </div>
     </div>
 
-    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online">
-      <div class="nome">ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div>
+    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">PLANOS MENSAIS</div>
+
+    <div class="plano" onclick="selecionarPlano(this)" data-valor="Online Mensal - R$60,00/mês" data-tipo="online" data-modalidade="online">
+      <div class="nome">PLANO ONLINE MENSAL</div><div class="valor">R$60,00 / MÊS</div><div style="font-size:10px;color:var(--text2);">Acompanhamento via WhatsApp. Escolha quantos dias treinar</div>
     </div>
 
-    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;">VALORES PRESENCIAL POR FREQUÊNCIA:</div>
+    <div style="margin:12px 0;font-size:12px;color:var(--text2);font-weight:700;text-align:center;">PLANO PRESENCIAL POR FREQUÊNCIA</div>
     <div class="grid-2">
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-tipo="presencial" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-tipo="presencial" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-tipo="presencial" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-tipo="presencial" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
-      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-tipo="presencial" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 1x semana - R$60,00" data-tipo="presencial" data-modalidade="presencial" data-freq="1"><div class="nome">1x na semana</div><div class="valor">R$60,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 2x semana - R$80,00" data-tipo="presencial" data-modalidade="presencial" data-freq="2"><div class="nome">2x na semana</div><div class="valor">R$80,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 3x semana - R$100,00" data-tipo="presencial" data-modalidade="presencial" data-freq="3"><div class="nome">3x na semana</div><div class="valor">R$100,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 4x semana - R$130,00" data-tipo="presencial" data-modalidade="presencial" data-freq="4"><div class="nome">4x na semana</div><div class="valor">R$130,00</div></div>
+      <div class="plano" onclick="selecionarPlano(this)" data-valor="Presencial 5x semana - R$150,00" data-tipo="presencial" data-modalidade="presencial" data-freq="5"><div class="nome">5x na semana</div><div class="valor">R$150,00</div></div>
     </div>
   </div>
 
@@ -301,12 +293,20 @@ function selecionarPlano(el){
   let tipo = el.getAttribute('data-tipo');
   let freq = el.getAttribute('data-freq');
   diasSelecionados = [];
+
   if(tipo === 'presencial'){
     frequenciaMaxima = parseInt(freq);
     document.getElementById('cardDias').classList.remove('oculto');
     document.getElementById('textoDias').innerText = `Selecione ${freq} dia(s) na semana. Ex: Seg, Qua, Sex`;
     document.getElementById('alertaDias').innerText = `Faltam ${freq} dia(s) para escolher`;
     document.getElementById('alertaDias').style.color = 'var(--erro)';
+    document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
+  } else if(tipo === 'online'){
+    frequenciaMaxima = 5;
+    document.getElementById('cardDias').classList.remove('oculto');
+    document.getElementById('textoDias').innerText = `Selecione quantos dias quiser treinar de Seg a Sex`;
+    document.getElementById('alertaDias').innerText = `Escolha os dias fixos`;
+    document.getElementById('alertaDias').style.color = 'var(--c)';
     document.querySelectorAll('#cardDias.dia').forEach(d => d.classList.remove('selecionado', 'bloqueado'));
   } else {
     frequenciaMaxima = 0;
@@ -330,7 +330,7 @@ function selecionarDia(el){
     el.classList.remove('selecionado');
     diasSelecionados = diasSelecionados.filter(d => d!== el.getAttribute('data-dia'));
   } else {
-    if(diasSelecionados.length >= frequenciaMaxima){
+    if(frequenciaMaxima > 0 && diasSelecionados.length >= frequenciaMaxima && frequenciaMaxima < 5){
       document.getElementById('alertaDias').innerText = `Você só pode escolher ${frequenciaMaxima} dia(s) para este plano!`;
       return;
     }
@@ -363,8 +363,8 @@ function irParaDados(){
     alert('Selecione um plano');
     return;
   }
-  if(frequenciaMaxima > 0 && diasSelecionados.length!== frequenciaMaxima){
-    alert(`Selecione ${frequenciaMaxima} dia(s) de treino`);
+  if(frequenciaMaxima > 0 && diasSelecionados.length === 0){
+    alert(`Selecione os dias de treino`);
     return;
   }
   if(horarioSelecionado === ''){
