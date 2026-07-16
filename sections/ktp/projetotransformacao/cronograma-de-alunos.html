@@ -187,7 +187,8 @@ function mostrarTelaCronograma(){
   html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
-  const alunosFiltrados = idLogado === 'ktp1' ? alunos : alunos.filter(a => a.plano === planoAtivo && a.id !== 'ktp1');
+  // AQUI ESTAVA O ERRO: tinha que filtrar por ID e não por plano
+  const alunosFiltrados = idLogado === 'ktp1' ? alunos : alunos.filter(a => a.plano === planoAtivo && a.id === idLogado);
 
   HORARIOS_ORDEM.forEach(horario=>{
     if(planoAtivo === 'ONLINE' && !horario.includes('14h00')) return;
@@ -197,8 +198,9 @@ function mostrarTelaCronograma(){
     
     html += `<div class="grupo-horario">🕒 ${horario}</div>`;
     
-    const ativos = alunosDoHorario.filter(a=>a.status==='Ativo');
-    const desativados = alunosDoHorario.filter(a=>a.status==='Desativado');
+    // AQUI ESTAVA O OUTRO ERRO: status com maiuscula/minuscula
+    const ativos = alunosDoHorario.filter(a=>a.status.toLowerCase()==='ativo');
+    const desativados = alunosDoHorario.filter(a=>a.status.toLowerCase()==='desativado');
 
     if(ativos.length > 0){
       html += `<div class="grupo-status">✅ ATIVOS</div>`;
@@ -211,6 +213,13 @@ function mostrarTelaCronograma(){
     if(ativos.length === 0 && desativados.length === 0){
       html += `<div class="sem-alunos">SEM ALUNOS CADASTRADOS NESTE HORÁRIO</div>`;
     }
+  });
+  
+  document.getElementById('tela-cronograma').innerHTML = html;
+  document.getElementById('tela-cronograma').classList.add('ativo');
+  document.getElementById('tela-aluno').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'none';
+}
   });
   
   document.getElementById('tela-cronograma').innerHTML = html;
