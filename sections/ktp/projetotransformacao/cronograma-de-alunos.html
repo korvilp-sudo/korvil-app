@@ -233,9 +233,10 @@ function gerarTabela(lista, idDestaque){
     <thead><tr>
       <th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
     </tr></thead><tbody>`;
-  
+
   lista.forEach((a, i)=>{
-    let classe = a.id === idDestaque? 'destaque' : '';
+    // SÓ PINTA DE AZUL SE FOR O ID LOGADO. PRO KTP1 NÃO PINTA NADA
+    let classe = (a.id === idDestaque && idDestaque!== 'ktp1')? 'destaque' : '';
     html += `<tr class="${classe}">
       <td>${i+1}</td>
       <td class="col-nome">${a.nome}</td>
@@ -244,14 +245,14 @@ function gerarTabela(lista, idDestaque){
       <td>${a.objetivo}</td>
       <td>R$ ${a.valor}</td>
       <td>${a.venc}</td>
-      <td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
+      <td class="${a.status.toLowerCase()==='ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
       <td class="col-id">${a.id}</td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
   return html;
 }
-
+  
 function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
   idLogado = id;
