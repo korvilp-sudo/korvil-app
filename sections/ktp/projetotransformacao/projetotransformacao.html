@@ -314,21 +314,106 @@ function mostrarDadosAluno(id){
   }
 }
 
+const CRONOGRAMA_DB = {
+  "PRESENCIAL": [
+    {hora:"06h00 🐦", alunos:[{n:1, aluno:"Adriana", dias:"Ter Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Ativo", id:"adriana20"},{aluno:"Jossiane Alves", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado", id:"joss21"},{aluno:"amigaadrum", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrum"},{aluno:"amigaadrdois", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrdois"}]},
+    {hora:"07h00 🌙", alunos:[{n:2, aluno:"Angélica", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Ativo", id:"angel02"},{aluno:"Ana Paula", dias:"Seg Qua Sex", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado", id:"anapaula22"},{aluno:"Gustavo Geraldino", dias:"Seg Qua Sex", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado", id:"gusta23"},{aluno:"Sueli", dias:"Ter Qui Sex", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado", id:"sueli24"},{aluno:"Fabiana", dias:"Ter Qui", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado", id:"fabi03"}]},
+    {hora:"08h00 🐢", alunos:[{n:1, aluno:"Maria Carla", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo", id:"carla38"},{n:2, aluno:"Hellem Vitoria", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo", id:"vhellem39"},{aluno:"Alexandra", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado", id:"alexandra25"},{aluno:"Michele B", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado", id:"michele26"},{aluno:"Aline", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado", id:"aline27"}]},
+    {hora:"09h00", alunos:[]},
+    {hora:"10h00 🐙", alunos:[{n:3, aluno:"Paula Cristine", dias:"Ter a Sex", freq:"4x", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Ativo", id:"paula06"},{aluno:"Natan Osvath Paoli", dias:"Seg Qua Sex", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado", id:"nop07"},{aluno:"Bianca", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado", id:"bianca28"}]},
+    {hora:"16h00 🕊️", alunos:[{n:4, aluno:"Laura Jesus Aragão", dias:"Seg Qui", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Ativo", id:"lau08"},{n:5, aluno:"Cassandra Jesus", dias:"Seg Ter Qui", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Ativo", id:"cass09"}]},
+    {hora:"17h00 🐼", alunos:[{n:6, aluno:"Kátia Paoli", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Ativo", id:"katiap11"},{n:7, aluno:"Lucimara", dias:"Ter Qui Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Ativo", id:"mara13"},{n:8, aluno:"Edna", dias:"Ter Qui Sex", freq:"3x", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Ativo", id:"edn14"},{aluno:"Luciane Paoli", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado", id:"banip12"},{aluno:"Marly", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado", id:"marly18"},{aluno:"Maria Cristina", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado", id:"mcris10"}]},
+    {hora:"18h00 🐸", alunos:[{aluno:"Jucilene", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado", id:"juci29"},{aluno:"Jocélia", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado", id:"joce30"},{aluno:"Marcos França", dias:"Sex", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado", id:"marcosf31"},{aluno:"Lucas", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado", id:"lucas32"},{aluno:"Celidalva", dias:"Qua", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado", id:"celi33"},{aluno:"Jaqueline", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"jaque15"},{aluno:"Elisangela", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"elisa16"}]},
+    {hora:"19h00 🌑", alunos:[{n:9, aluno:"Gicelia", dias:"Seg Qua", freq:"2x", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Ativo", id:"gice01"},{aluno:"Patrícia", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"–", status:"Desativado", id:"pati34"},{aluno:"Melissa", dias:"Seg Qua Sex", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado", id:"mel35"},{aluno:"Natália Melo", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado", id:"naty17"}]},
+    {hora:"20h00 ⭐", alunos:[{n:10, aluno:"José Gonzaga", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo", id:"gon19"}]},
+    {hora:"21h00", alunos:[]},
+    {hora:"22h00", alunos:[]},
+    {hora:"23h00", alunos:[]},
+    {hora:"00h00", alunos:[]},
+    {hora:"01h00", alunos:[]},
+    {hora:"02h00", alunos:[]},
+    {hora:"03h00", alunos:[]},
+    {hora:"04h00", alunos:[]},
+    {hora:"05h00", alunos:[]},
+  ],
+  "ONLINE": [
+    {hora:"14h00", alunos:[{n:11, aluno:"Tchuco", dias:"Online", freq:"--", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Ativo", id:"tchu37"},{aluno:"Daniele Vieira Leite", dias:"Seg a Sex", objetivo:"Definição", valor:60, venc:"08/12/25", status:"Desativado", id:"dani36"},{aluno:"Aluno Online 1", dias:"Online", objetivo:"--", valor:"--", venc:"--", status:"Desativado", id:"online01"},{aluno:"Aluno Online 2", dias:"Online", objetivo:"--", valor:"--", venc:"--", status:"Desativado", id:"online02"}]},
+  ]
+};
+
+const ALUNOS_DB = {
+  "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", objetivo:"Definição muscular"},
+  "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", objetivo:"Definição muscular"},
+  "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"20h00 ⭐", dias:"Seg • Qua • Sex", objetivo:"Hipertrofia"},
+  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter • Qua", objetivo:"Emagrecimento"},
+  "angel02": {nome:"Angélica", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg • Qua • Sex", objetivo:"Definição"},
+  "paula06": {nome:"Paula Cristine", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Ter a Sex", objetivo:"Condicionamento físico"},
+  "lau08": {nome:"Laura Jesus Aragão", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg • Qui", objetivo:"Emagrecimento"},
+  "cass09": {nome:"Cassandra Jesus", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg • Ter • Qui", objetivo:"Hipertrofia"},
+  "katiap11": {nome:"Kátia Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter • Qua • Qui", objetivo:"Emagrecimento"},
+  "mara13": {nome:"Lucimara", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter • Qui • Sex", objetivo:"Emagrecimento"},
+  "edn14": {nome:"Edna", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter • Qui • Sex", objetivo:"Saúde"},
+  "gice01": {nome:"Gicelia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua", objetivo:"Saúde"},
+  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", objetivo:"Definição"},
+  "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", objetivo:"Condicionamento físico"},
+  "online01": {nome:"Aluno Online 1", plano:"ONLINE", horario:"14h00", dias:"Online", objetivo:"--"},
+  "online02": {nome:"Aluno Online 2", plano:"ONLINE", horario:"14h00", dias:"Online", objetivo:"--"},
+  "ktp1": {nome:"SAY KORVIL", plano:"ADMIN", horario:"--", dias:"--", objetivo:"ADMIN"}
+};
+
+let planoAtivo = 'PRESENCIAL';
+let idLogado = '';
+
+function toggleMenu(){}
+function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
+function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
+function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
+
+function buscarAluno(){
+  const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
+  if(!id){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--aviso)">Digite um ID</div>';return;}
+  if(ALUNOS_DB[id]){
+    idLogado = id;
+    localStorage.setItem('idLogado', id);
+    if(id!== 'ktp1') planoAtivo = ALUNOS_DB[id].plano;
+    else planoAtivo = 'PRESENCIAL';
+    fecharBuscaAluno();
+    mostrarDadosAluno(id);
+    mostrarCronograma();
+    document.getElementById('resultado-aluno').innerHTML='';
+    document.getElementById('input-id-aluno').value='';
+  } else {
+    document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';
+  }
+}
+
+function mostrarDadosAluno(id){
+  const aluno = ALUNOS_DB[id];
+  const container = document.getElementById('info-aluno-container');
+  if(id === 'ktp1'){
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
+  } else {
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
+  }
+}
+
+function trocarAba(plano, el){
+  planoAtivo = plano;
+  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
+  el.classList.add('ativa');
+  mostrarCronograma();
+}
+
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   let html = '';
-
   const ehAdmin = idLogado === 'ktp1';
   const planoDoAluno = ehAdmin? planoAtivo : ALUNOS_DB[idLogado].plano;
-
-  if(!ehAdmin) planoAtivo = planoDoAluno; // Força aluno cair na aba do plano dele
+  if(!ehAdmin) planoAtivo = planoDoAluno;
 
   html += `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
   if(ehAdmin){
     html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-  }
-
-  if(ehAdmin){
     html += `<div class="abas-plano">
       <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
       <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
@@ -336,22 +421,17 @@ function mostrarCronograma(){
   }
 
   const planosParaRenderizar = ehAdmin? [planoAtivo] : [planoDoAluno];
-
   planosParaRenderizar.forEach(plano=>{
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
-
     CRONOGRAMA_DB[plano].forEach(bloco=>{
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
 
-      let encontrouAluno = false;
-      let mostrouTabela = false;
+      const ativos = bloco.alunos.filter(a => a.status === 'Ativo');
+      const desativados = bloco.alunos.filter(a => a.status === 'Desativado');
 
-      // MODO ALUNO: só mostra a linha dele
       if(!ehAdmin){
-        const todos = [...bloco.alunosAtivos,...bloco.alunosDes];
-        const alunoEncontrado = todos.find(a => a.id === idLogado);
+        const alunoEncontrado = bloco.alunos.find(a => a.id === idLogado);
         if(alunoEncontrado){
-          encontrouAluno = true;
           html += `<div class="grupo-status">${alunoEncontrado.status==='Ativo'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
           html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
           if(alunoEncontrado.n!== undefined) html += `<th>Nº</th>`;
@@ -361,43 +441,31 @@ function mostrarCronograma(){
           html += `<tr class="destaque"><td>${alunoEncontrado.n||''}</td><td>${alunoEncontrado.aluno}</td><td>${alunoEncontrado.dias}</td>${alunoEncontrado.freq?`<td>${alunoEncontrado.freq}</td>`:''}<td>${alunoEncontrado.objetivo}</td><td>R$ ${alunoEncontrado.valor}</td><td>${alunoEncontrado.venc}</td><td class="${alunoEncontrado.status==='Ativo'?'status-ativo':'status-desativado'}">${alunoEncontrado.status}</td><td style="font-weight:900;color:var(--c)">${alunoEncontrado.id}</td></tr>`;
           html += `</tbody></table></div>`;
         }
-      }
-      // MODO ADMIN: mostra todos, ativos e desativados
-      else {
-        if(bloco.alunosAtivos.length > 0){
+      } else {
+        let mostrouTabela = false;
+        if(ativos.length > 0){
           mostrouTabela = true;
           html += `<div class="grupo-status">✅ ATIVOS</div>`;
           html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-          bloco.alunosAtivos.forEach(a=>{ html += `<tr><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-ativo">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
+          ativos.forEach(a=>{ html += `<tr><td>${a.n||''}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq||''}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-ativo">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
           html += `</tbody></table></div>`;
         }
-        if(bloco.alunosDes.length > 0){
+        if(desativados.length > 0){
           mostrouTabela = true;
           html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
           html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Aluno</th><th>Dias</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-          bloco.alunosDes.forEach(a=>{ html += `<tr><td>${a.aluno}</td><td>${a.dias}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-desativado">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
+          desativados.forEach(a=>{ html += `<tr><td>${a.aluno}</td><td>${a.dias}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-desativado">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
           html += `</tbody></table></div>`;
         }
-        if(!mostrouTabela){ // horário vazio
+        if(!mostrouTabela){
           html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
           html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Aluno</th><th>Dias</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody><tr><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td></tr></tbody></table></div>`;
         }
       }
     });
   });
-
   container.innerHTML = html;
 }
-
-function trocarAba(plano, btn){
-  planoAtivo = plano;
-  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
-  btn.classList.add('ativa');
-  mostrarCronograma();
-}
-
-// Chama ao carregar
-mostrarCronograma();
 </script>
 </body>
 </html>
