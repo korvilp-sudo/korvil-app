@@ -316,7 +316,7 @@ function mostrarDadosAluno(id){
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
-  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP</div>`;
+  let html = `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
   // REGRA DAS ABAS: ADMIN vê as 2. Aluno normal vê só a do plano dele
@@ -328,14 +328,19 @@ function mostrarCronograma(){
   });
   html += `</div>`;
 
+  let encontrou = false;
+
   planosParaMostrar.forEach(plano=>{
     if(plano!== planoAtivo) return; // só renderiza a aba ativa
 
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = bloco.alunos;
+      // AQUI É O FILTRO: pega só o aluno logado
+      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+
       if(alunosDoBloco.length === 0) return;
+      encontrou = true;
 
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
@@ -347,9 +352,7 @@ function mostrarCronograma(){
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
 
       alunosDoBloco.forEach(a=>{
-        // Se for o aluno logado, adiciona classe destaque
-        const classeDestaque = a.id === idLogado? 'class="destaque"' : '';
-        html += `<tr ${classeDestaque}>`;
+        html += `<tr class="destaque">`;
         if(a.n!== undefined) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq!== undefined) html += `<td>${a.freq}</td>`;
@@ -358,6 +361,11 @@ function mostrarCronograma(){
       html += `</tbody></table></div>`;
     });
   });
+
+  if(!encontrou && idLogado!== 'ktp1'){
+    html += `<div style="text-align:center;color:var(--erro);padding:20px">Você não está em nenhum horário do plano ${planoAtivo}</div>`;
+  }
+
   container.innerHTML = html;
 }
 function buscarAluno(){
