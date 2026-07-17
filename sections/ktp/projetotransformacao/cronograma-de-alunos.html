@@ -53,8 +53,8 @@ h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:
 .tabela-crono td{padding:12px 8px;border-bottom:1px solid #1a1a1a;}
 .tabela-crono tbody tr:hover{background:#0f0f0f;}
 .tabela-crono tbody tr.destaque{background:#001a1a;box-shadow:0 0 0 2px var(--c) inset;}
-.tabela-crono .col-id{font-weight:900;color:var(--c);min-width:100px;}
-.tabela-crono .col-nome{font-weight:800;color:#fff;min-width:140px;}
+.tabela-crono.col-id{font-weight:900;color:var(--c);min-width:100px;}
+.tabela-crono.col-nome{font-weight:800;color:#fff;min-width:140px;}
 
 .grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
 .grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
@@ -166,7 +166,7 @@ function calcularTotais(){
   });
   return {totalAtivos, totalDesativados, somaValores};
 }
-  
+
 function mostrarTelaCronograma(){
   const totais = calcularTotais();
   const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
@@ -187,41 +187,37 @@ function mostrarTelaCronograma(){
   html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
-  // AQUI ESTAVA O ERRO: tinha que filtrar por ID e não por plano
-  const alunosFiltrados = idLogado === 'ktp1' ? alunos : alunos.filter(a => a.plano === planoAtivo && a.id === idLogado);
-  
-  HORARIOS_ORDEM.forEach(horario=>{
-    if(planoAtivo === 'ONLINE' && !horario.includes('14h00')) return;
-    if(planoAtivo === 'PRESENCIAL' && horario.includes('14h00')) return;
+  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
 
-    const alunosDoHorario = alunosFiltrados.filter(a => a.horario === horario);
-    
-    html += `<div class="grupo-horario">🕒 ${horario}</div>`;
-    
-    // AQUI ESTAVA O OUTRO ERRO: status com maiuscula/minuscula
-    const ativos = alunosDoHorario.filter(a=>a.status.toLowerCase()==='ativo');
-    const desativados = alunosDoHorario.filter(a=>a.status.toLowerCase()==='desativado');
+  planosParaMostrar.forEach(plano=>{
+    if(idLogado === 'ktp1') html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
-    if(ativos.length > 0){
-      html += `<div class="grupo-status">✅ ATIVOS</div>`;
-      html += gerarTabela(ativos, idLogado);
-    }
-    if(desativados.length > 0){
-      html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
-      html += gerarTabela(desativados, idLogado);
-    }
-    if(ativos.length === 0 && desativados.length === 0){
-      html += `<div class="sem-alunos">SEM ALUNOS CADASTRADOS NESTE HORÁRIO</div>`;
-    }
+    HORARIOS_ORDEM.forEach(horario=>{
+      if(plano === 'ONLINE' &&!horario.includes('14h00')) return;
+      if(plano === 'PRESENCIAL' && horario.includes('14h00')) return;
+
+      const alunosDoHorario = idLogado === 'ktp1'
+     ? alunos.filter(a => a.plano === plano && a.horario === horario)
+        : alunos.filter(a => a.plano === plano && a.horario === horario && a.id === idLogado);
+
+      if(alunosDoHorario.length === 0) return;
+
+      html += `<div class="grupo-horario">🕒 ${horario}</div>`;
+
+      const ativos = alunosDoHorario.filter(a=>a.status.toLowerCase()==='ativo');
+      const desativados = alunosDoHorario.filter(a=>a.status.toLowerCase()==='desativado');
+
+      if(ativos.length > 0){
+        html += `<div class="grupo-status">✅ ATIVOS</div>`;
+        html += gerarTabela(ativos, idLogado);
+      }
+      if(desativados.length > 0){
+        html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
+        html += gerarTabela(desativados, idLogado);
+      }
+    });
   });
-  
-  document.getElementById('tela-cronograma').innerHTML = html;
-  document.getElementById('tela-cronograma').classList.add('ativo');
-  document.getElementById('tela-aluno').classList.remove('ativo');
-  document.getElementById('barra-busca').style.display = 'none';
-}
-  });
-  
+
   document.getElementById('tela-cronograma').innerHTML = html;
   document.getElementById('tela-cronograma').classList.add('ativo');
   document.getElementById('tela-aluno').classList.remove('ativo');
@@ -235,7 +231,6 @@ function gerarTabela(lista, idDestaque){
     </tr></thead><tbody>`;
 
   lista.forEach((a, i)=>{
-    // SÓ PINTA DE AZUL SE FOR O ID LOGADO. PRO KTP1 NÃO PINTA NADA
     let classe = (a.id === idDestaque && idDestaque!== 'ktp1')? 'destaque' : '';
     html += `<tr class="${classe}">
       <td>${i+1}</td>
@@ -252,7 +247,7 @@ function gerarTabela(lista, idDestaque){
   html += `</tbody></table></div>`;
   return html;
 }
-  
+
 function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
   idLogado = id;
@@ -277,7 +272,6 @@ function buscarAluno(){
   planoAtivo = aluno.plano;
   mostrarTelaCronograma();
 
-  // DADOS DO ALUNO AGORA APARECEM EMBAIXO
   document.getElementById('tela-aluno').innerHTML = `
     <div class="card">
       <button class="btn-fechar" onclick="mostrarBusca()">X</button>
@@ -291,7 +285,7 @@ function buscarAluno(){
       <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
       <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
       <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
-      <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status==='Ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
+      <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status.toLowerCase()==='ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
     </div>
   `;
   document.getElementById('tela-aluno').classList.add('ativo');
