@@ -1,0 +1,27 @@
+name: Salvar Aluno
+on:
+  workflow_dispatch:
+    inputs:
+      nome:
+        description: 'Nome do Aluno'
+        required: true
+      id:
+        description: 'ID do Aluno'
+        required: true
+
+jobs:
+  salvar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Criar arquivo
+        run: |
+          mkdir -p sections/ktp/projetotransformacao/projetos/2026
+          echo '${{ inputs.dados }}' > sections/ktp/projetotransformacao/projetos/2026/${{ inputs.id }}.json
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Add aluno ${{ inputs.id }}" || exit 0
+          git push
