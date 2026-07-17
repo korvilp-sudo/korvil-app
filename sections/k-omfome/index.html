@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-OMFOME - Matando sua fome</title>
+<style>
+:root{
+  --korvil:#00f5ff;
+  --korvil2:#00ff88;
+  --bg:#030303;
+  --card:#0a0a0a;
+  --text:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:var(--bg);color:var(--text)}
+header{background:linear-gradient(90deg,var(--korvil),var(--korvil2));padding:15px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.logo{font-size:26px;font-weight:900;color:#000}
+.search{flex:1;margin:0 20px}
+.search input{width:100%;padding:12px;border-radius:10px;border:0}
+.cart-btn{background:#000;color:var(--korvil);border:0;padding:12px 20px;border-radius:10px;font-weight:800;cursor:pointer}
+
+.banner{margin:20px 5%;background:linear-gradient(135deg,var(--korvil),var(--korvil2));color:#000;padding:30px;border-radius:16px;text-align:center}
+.banner h1{font-size:32px}
+
+.categorias{padding:20px 5%;display:flex;gap:15px;overflow-x:auto}
+.cat{background:var(--card);padding:15px 25px;border-radius:12px;cursor:pointer;border:1px solid #222}
+.cat.active{background:var(--korvil);color:#000}
+
+.grid{padding:20px 5%;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.card{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid #222}
+.card img{width:100%;height:180px;background:#111;object-fit:cover}
+.card-body{padding:15px}
+.price{color:var(--korvil2);font-size:20px;font-weight:900}
+.btn{background:var(--korvil);color:#000;border:0;width:100%;padding:12px;border-radius:8px;margin-top:10px;font-weight:800;cursor:pointer}
+
+.cart{position:fixed;right:-400px;top:0;width:380px;height:100%;background:#0a0a0a;border-left:3px solid var(--korvil);transition:0.4s;padding:20px;overflow-y:auto}
+.cart.open{right:0}
+.cart-item{display:flex;justify-content:space-between;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #222}
+
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-content{background:var(--card);padding:30px;border-radius:16px;width:90%;max-width:500px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">K-OMFOME</div>
+  <div class="search"><input id="search" placeholder="Buscar: X-Burguer, Pizza, Açaí..."></div>
+  <button class="cart-btn" onclick="toggleCart()">🛒 <span id="cartCount">0</span></button>
+</header>
+
+<div class="banner">
+  <h1>ATÉ 40% OFF NO 1º PEDIDO</h1>
+  <p>Delivery, Retirada e Consumo no Local</p>
+</div>
+
+<div class="categorias" id="categorias"></div>
+
+<div class="grid" id="produtos"></div>
+
+<div class="cart" id="cart">
+  <h2 style="color:var(--korvil)">Seu Pedido</h2>
+  <div id="cartItems"></div>
+  <h3>Total: R$ <span id="total">0.00</span></h3>
+  <button class="btn" onclick="openCheckout()">FINALIZAR PEDIDO</button>
+</div>
+
+<div class="modal" id="checkoutModal">
+  <div class="modal-content">
+    <h2>Finalizar Pedido</h2>
+    <p><b>Tipo:</b></p>
+    <select id="tipo" style="width:100%;padding:10px;margin:10px 0;background:#222;color:#fff;border:0;border-radius:8px">
+      <option>Delivery</option>
+      <option>Retirada</option>
+      <option>Consumo no Local</option>
+    </select>
+    <p><b>Pagamento:</b></p>
+    <select id="pagamento" style="width:100%;padding:10px;margin:10px 0;background:#222;color:#fff;border:0;border-radius:8px">
+      <option>Pix - 10% OFF</option>
+      <option>Cartão</option>
+      <option>Dinheiro</option>
+    </select>
+    <textarea id="obs" placeholder="Observações do pedido" style="width:100%;padding:10px;margin:10px 0;background:#222;color:#fff;border:0;border-radius:8px"></textarea>
+    <button class="btn" onclick="finalizar()">CONFIRMAR PEDIDO</button>
+    <button class="btn" style="background:#444;margin-top:10px" onclick="closeCheckout()">CANCELAR</button>
+  </div>
+</div>
+
+<script>
+const categorias = ['Todos','Hambúrguer','Pizza','Pastel','Açaí','Marmita','Bebidas','Sobremesa'];
+const produtos = [
+  {id:1,nome:"X-Burguer KORVIL",preco:29.90,cat:"Hambúrguer",img:"https://placehold.co/400x300/00f5ff/000?text=XBURGUER"},
+  {id:2,nome:"Pizza Calabresa G",preco:49.90,cat:"Pizza",img:"https://placehold.co/400x300/ffaa00/000?text=PIZZA"},
+  {id:3,nome:"Pastel de Carne",preco:12.90,cat:"Pastel",img:"https://placehold.co/400x300/ff00aa/000?text=PASTEL"},
+  {id:4,nome:"Açaí 500ml",preco:24.90,cat:"Açaí",img:"https://placehold.co/400x300/00ff88/000?text=ACAI"},
+  {id:5,nome:"Marmita Fitness",preco:22.90,cat:"Marmita",img:"https://placehold.co/400x300/00ccff/000?text=MARMITA"},
+  {id:6,nome:"Coca Cola 2L",preco:14.90,cat:"Bebidas",img:"https://placehold.co/400x300/ff004d/000?text=COCA"},
+  {id:7,nome:"Milk Shake",preco:18.90,cat:"Sobremesa",img:"https://placehold.co/400x300/aa00ff/000?text=SHAKE"},
+  {id:8,nome:"X-Tudo",preco:39.90,cat:"Hambúrguer",img:"https://placehold.co/400x300/00f5ff/000?text=XTUDO"},
+];
+
+let carrinho = [];
+let catAtiva = 'Todos';
+
+// RENDER CATEGORIAS
+document.getElementById('categorias').innerHTML = categorias.map(c=>`
+  <div class="cat ${c=='Todos'?'active':''}" onclick="filtrar('${c}',this)">${c}</div>
+`).join('');
+
+// RENDER PRODUTOS
+function render(){
+  let lista = catAtiva=='Todos'?produtos:produtos.filter(p=>p.cat==catAtiva);
+  document.getElementById('produtos').innerHTML = lista.map(p=>`
+    <div class="card">
+      <img src="${p.img}">
+      <div class="card-body">
+        <h3>${p.nome}</h3>
+        <div class="price">R$ ${p.preco.toFixed(2)}</div>
+        <button class="btn" onclick="addCarrinho(${p.id})">ADICIONAR</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filtrar(cat,el){
+  catAtiva = cat;
+  document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function addCarrinho(id){
+  const prod = produtos.find(p=>p.id==id);
+  const item = carrinho.find(i=>i.id==id);
+  if(item) item.qtd++; else carrinho.push({...prod,qtd:1});
+  updateCart(); toggleCart();
+}
+
+function updateCart(){
+  document.getElementById('cartCount').innerText = carrinho.reduce((a,b)=>a+b.qtd,0);
+  document.getElementById('cartItems').innerHTML = carrinho.map(i=>`
+    <div class="cart-item">
+      <div>${i.nome} x${i.qtd}</div>
+      <div>R$ ${(i.preco*i.qtd).toFixed(2)}</div>
+    </div>
+  `).join('');
+  const total = carrinho.reduce((a,b)=>a+b.preco*b.qtd,0);
+  document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function toggleCart(){document.getElementById('cart').classList.toggle('open')}
+function openCheckout(){if(carrinho.length==0)return alert('Carrinho vazio');document.getElementById('checkoutModal').classList.add('open')}
+function closeCheckout(){document.getElementById('checkoutModal').classList.remove('open')}
+
+function finalizar(){
+  const tipo = document.getElementById('tipo').value;
+  const pag = document.getElementById('pagamento').value;
+  const obs = document.getElementById('obs').value;
+  let msg = `*NOVO PEDIDO K-OMFOME*%0A%0A`;
+  carrinho.forEach(i=> msg += `• ${i.nome} x${i.qtd}%0A`);
+  msg += `%0ATipo: ${tipo}%0APagamento: ${pag}%0AObs: ${obs}%0ATotal: R$ ${document.getElementById('total').innerText}`;
+  window.open(`https://wa.me/55SEUNUMERO?text=${msg}`,'_blank');
+  alert('Pedido enviado! Aguarde contato.');
+  carrinho = []; updateCart(); closeCheckout(); toggleCart();
+}
+
+render();
+</script>
+</body>
+</html>
