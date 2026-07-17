@@ -319,25 +319,31 @@ function mostrarCronograma(){
   let html = `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
-  // REGRA DAS ABAS: ADMIN vê as 2. Aluno normal vê só a do plano dele
   const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [ALUNOS_DB[idLogado].plano];
 
-  html += `<div class="abas-plano">`;
-  planosParaMostrar.forEach(p=>{
-    html += `<button class="aba-plano ${planoAtivo===p?'ativa':''}" onclick="trocarAba('${p}', this)"> ${p==='PRESENCIAL'?'🌐 PRESENCIAL':'💻 ONLINE'} </button>`;
-  });
-  html += `</div>`;
+  if(planosParaMostrar.length > 1){
+    html += `<div class="abas-plano">`;
+    planosParaMostrar.forEach(p=>{
+      html += `<button class="aba-plano ${planoAtivo===p?'ativa':''}" onclick="trocarAba('${p}', this)"> ${p==='PRESENCIAL'?'🌐 PRESENCIAL':'💻 ONLINE'} </button>`;
+    });
+    html += `</div>`;
+  }
 
   let encontrou = false;
 
   planosParaMostrar.forEach(plano=>{
-    if(plano!== planoAtivo) return; // só renderiza a aba ativa
+    if(planosParaMostrar.length > 1 && plano!== planoAtivo) return;
 
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // AQUI É O FILTRO: pega só o aluno logado
-      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+      // COPIA A LÓGICA DO GON19: Filtra só o aluno logado
+      let alunosDoBloco = [];
+      if(idLogado === 'ktp1'){
+        alunosDoBloco = bloco.alunos; // admin vê tudo
+      } else {
+        alunosDoBloco = bloco.alunos.filter(a => a.id === idLogado); // aluno só vê ele
+      }
 
       if(alunosDoBloco.length === 0) return;
       encontrou = true;
