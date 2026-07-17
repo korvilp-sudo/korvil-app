@@ -275,7 +275,7 @@ function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
 
 // CONFIGS GITHUB - TROCA AQUI
-const GITHUB_TOKEN = 'ghp_SEU_TOKEN_AQUI'
+const GITHUB_TOKEN = 'https://raw.githubusercontent.com/${REPO}/main/${ARQ}?t=${Date.now()'
 const REPO = 'korvilp-sudo/korvil-app'
 const PASTA_ALUNOS = 'sections/ktp/projetotransformacao/projetos/2026'
 const ARQUIVO_CRONOGRAMA = 'sections/ktp/projetotransformacao/cronograma-de-alunos.json'
