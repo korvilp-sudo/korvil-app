@@ -269,6 +269,7 @@ function gerarTabela(lista, idDestaque){
     </tr></thead><tbody>`;
 
   lista.forEach((a, i)=>{
+    // SÓ DESTACA SE FOR ALUNO INDIVIDUAL. KTP1 FICA NORMAL
     let classe = (a.id === idDestaque && idDestaque!== 'ktp1')? 'destaque' : '';
     html += `<tr class="${classe}">
       <td>${i+1}</td>
