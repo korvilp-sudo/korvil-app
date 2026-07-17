@@ -316,30 +316,43 @@ function mostrarDadosAluno(id){
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
-  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
-  html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-  html += `<div class="abas-plano">
-    <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
-    <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
-  </div>`;
-  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP</div>`;
+  html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
+
+  // REGRA DAS ABAS: ADMIN vê as 2. Aluno normal vê só a do plano dele
+  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [ALUNOS_DB[idLogado].plano];
+
+  html += `<div class="abas-plano">`;
+  planosParaMostrar.forEach(p=>{
+    html += `<button class="aba-plano ${planoAtivo===p?'ativa':''}" onclick="trocarAba('${p}', this)"> ${p==='PRESENCIAL'?'🌐 PRESENCIAL':'💻 ONLINE'} </button>`;
+  });
+  html += `</div>`;
+
   planosParaMostrar.forEach(plano=>{
+    if(plano!== planoAtivo) return; // só renderiza a aba ativa
+
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+      let alunosDoBloco = bloco.alunos;
       if(alunosDoBloco.length === 0) return;
+
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+
       html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n) html += `<th>Nº</th>`;
+      if(bloco.alunos[0].n!== undefined) html += `<th>Nº</th>`;
       html += `<th>Aluno</th><th>Dias</th>`;
-      if(bloco.alunos[0].freq) html += `<th>Freq</th>`;
+      if(bloco.alunos[0].freq!== undefined) html += `<th>Freq</th>`;
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+
       alunosDoBloco.forEach(a=>{
-        html += `<tr class="destaque">`;
-        if(a.n) html += `<td>${a.n}</td>`;
+        // Se for o aluno logado, adiciona classe destaque
+        const classeDestaque = a.id === idLogado? 'class="destaque"' : '';
+        html += `<tr ${classeDestaque}>`;
+        if(a.n!== undefined) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
-        if(a.freq) html += `<td>${a.freq}</td>`;
+        if(a.freq!== undefined) html += `<td>${a.freq}</td>`;
         html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
@@ -347,7 +360,6 @@ function mostrarCronograma(){
   });
   container.innerHTML = html;
 }
-
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
   if(!id){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--aviso)">Digite um ID</div>';return;}
