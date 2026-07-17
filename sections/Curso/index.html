@@ -2,152 +2,110 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-TP | KORVIL Treinamento Personalizado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TP | KORVIL Treinamento 2026</title>
 <style>
-:root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --err:#ff3366; --borda:#1a1a1a;}
+:root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --borda:#1a1a1a;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);width:100%;}
-header{padding:12px 16px;border-bottom:2px solid var(--c);background:#050505;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
-.logo{color:var(--c);font-weight:900;font-size:14px}
-.btn-voltar{background:var(--c);color:#000;border:0;padding:6px 12px;border-radius:6px;font-weight:800;font-size:10px;cursor:pointer;display:none}
-.menu-titulo{padding:14px 16px;font-size:11px;color:var(--c);font-weight:900;letter-spacing:1px;border-bottom:2px solid var(--c);margin-top:8px;background:#050505}
-.semanas-da-fase{background:#050505;}
-.semana-item{padding:10px 16px 10px 24px;font-size:10px;cursor:pointer;border-bottom:1px solid var(--borda);color:var(--text2);line-height:1.4;text-decoration:none;display:block;transition:.2s;}
-.semana-item:hover{background:#111;color:#fff;}
-.semana-item.locked{opacity:.3;pointer-events:none}
-.semana-item.completed{color:var(--ok);border-left:3px solid var(--ok)}
-#tela-aula{display:none;padding:16px}
-.video-wrap{position:relative;padding-top:56.25%;background:#000;border-radius:8px;overflow:hidden;margin-bottom:12px}
-.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.breadcrumb{font-size:9px;color:var(--text2);margin-bottom:8px}
-.breadcrumb b{color:var(--c)}
-.tema-nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-.tema-btn{padding:6px 10px;border:1px solid var(--borda);background:#0a0a0a;color:var(--text2);font-size:9px;border-radius:6px;cursor:pointer}
-.tema-btn.active{border-color:var(--c);color:var(--c)}
-.pagina-nav{display:flex;gap:6px;margin:10px 0}
-.p-btn{padding:5px 8px;border:1px solid var(--borda);background:#0a0a0a;color:var(--text2);font-size:9px;border-radius:6px;cursor:pointer}
-.p-btn.active{border-color:var(--c);color:var(--c)}
-.pagina{padding:12px;border:1px solid var(--borda);border-radius:8px;background:#0a0a0a;margin-top:10px;font-size:11px;line-height:1.5}
-.pagina h4{color:var(--c);margin-bottom:8px;font-size:12px}
-.avaliacao{margin-top:16px;padding:16px;border:2px solid var(--c);border-radius:8px;background:#050505}
-.avaliacao h3{font-size:12px;color:var(--c);margin-bottom:8px}
-.questao{margin:12px 0;padding:10px;border:1px solid var(--borda);border-radius:6px;background:#0a0a0a;font-size:10px}
-.opcao{padding:6px;margin:4px 0;border:1px solid var(--borda);border-radius:4px;cursor:pointer;font-size:10px}
-.opcao.selecionada{border-color:var(--c)}
-.resultado{padding:10px;border-radius:6px;text-align:center;font-weight:800;font-size:11px;margin-top:10px}
-.resultado.aprovado{background:#00220f;color:var(--ok);border:1px solid var(--ok)}
-.resultado.reprovado{background:#220005;color:var(--err);border:1px solid var(--err)}
-.btn{padding:10px 16px;border-radius:8px;border:0;background:var(--c);color:#001012;font-weight:900;cursor:pointer;font-size:11px;margin-top:10px}
-.certificado{padding:30px;text-align:center;background:linear-gradient(135deg,var(--c),var(--ok));color:#000;border-radius:12px;margin:20px}
-.certificado h1{font-size:18px}
+body{background:var(--bg);color:var(--text);padding-bottom:40px}
+header{padding:16px;border-bottom:2px solid var(--c);background:#050505;text-align:center;position:sticky;top:0;z-index:10}
+.logo{color:var(--c);font-weight:900;font-size:18px;letter-spacing:1px}
+.sub{font-size:10px;color:var(--text2);margin-top:4px}
+.fase{margin:12px;border:1px solid var(--borda);border-radius:10px;background:#0a0a0a;overflow:hidden}
+.fase-head{padding:14px;background:#050505;border-bottom:1px solid var(--borda)}
+.meses{font-size:10px;color:var(--c);font-weight:800;letter-spacing:1px}
+.titulo{font-size:14px;margin-top:4px;color:var(--text)}
+.desc{font-size:10px;color:var(--text2);margin-top:6px;line-height:1.4}
+.modulos{padding:8px}
+.modulo{padding:12px;margin:6px 0;background:#111;border-radius:8px;border:1px solid var(--borda);cursor:pointer;transition:.2s}
+.modulo:hover{background:#151515}
+.modulo h3{font-size:12px;color:var(--c)}
+.modulo p{font-size:10px;color:var(--text2);margin-top:4px}
+.modulo.locked{opacity:.3;pointer-events:none}
+.modulo.completed{border-left:4px solid var(--ok)}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">K-TP 2026</div>
-  <button class="btn-voltar" id="btnVoltar" onclick="voltarMenu()">← MENU</button>
+  <div class="sub">PROJETO TRANSFORMAÇÃO 11° ANO | 11 MÓDULOS | JAN A NOV</div>
 </header>
 
-<div id="tela-menu">
-  <div id="menu-conteudo"></div>
-</div>
-
-<div id="tela-aula">
-  <div class="video-wrap" id="videoWrap"></div>
-  <div id="conteudo-aula"></div>
-</div>
-
-<div id="tela-certificado" style="display:none">
-  <div class="certificado">
-    <h1>🎓 CERTIFICADO K-TP 2026</h1>
-    <h2>PROJETO TRANSFORMAÇÃO 11° ANO</h2>
-    <p>Certificamos que <b>ALUNO KORVIL</b> concluiu 100% do treinamento</p>
-    <p>Carga Horária: 120 Horas</p>
-    <button class="btn" onclick="alert('PDF Baixado')">BAIXAR CERTIFICADO</button>
-  </div>
-</div>
+<div id="fases"></div>
 
 <script>
-// BANCO DE DADOS OFICIAL COMPLETO COM TODOS OS CONTEUDOS
-const DADOS_KTP = {
-  "2026-01-05": {fase:1,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Essa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.\n\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\n\nAqui, a intensidade diminui, mas a atenção aumenta. É o momento de aprender mais sobre os exercícios, melhorar a execução dos movimentos e corrigir detalhes que fazem toda a diferença lá na frente.\n\nO foco está na regeneração muscular, na mobilidade e na qualidade de cada exercício. Um corpo bem recuperado responde melhor, ganha mais eficiência e reduz o risco de lesões.\n\nMenos carga, mais controle. Menos pressa, mais precisão.\n\nSemana mais leve. É ela que sustenta sua evolução e prepara você para voltar ainda mais forte.`},
-  "2026-01-12": {fase:1,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Essa é uma semana fundamental dentro do processo — onde você constrói a base que sustenta toda evolução física.\n\nOBJETIVO DA FASE: Regeneração | Adaptações | Aprendizados\nAqui, o foco não está no peso, mas na capacidade do músculo trabalhar por mais tempo, suportar esforço e melhorar a recuperação entre exercícios.\n\nA intensidade vem do volume e da continuidade, não da carga. É o momento de fortalecer o fôlego, a mente e a disciplina física.\n\nMais repetições, menos peso.\nMais constância, menos pausa.\nMais resistência, mais preparação.`},
-  "2026-01-19": {fase:1,nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Foco da semana: ficar mais forte de verdade\nNão é estética — é força, resistência e controle\nSer musculoso ≠ ser forte\nDefinição é aparência\nForça é desempenho real\n\nTREINO: Poucas repetições 3 a 6 | Carga mais alta ~70% | Execução controlada | Mais descanso\n\nAprenda o movimento. Ative o sistema nervoso. Preparação para o Bulking que vem em Março.`},
-  "2026-01-26": {fase:1,nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Foco: Desenvolvimento e crescimento do físico através de treino estruturado, controlado e eficiente.\n\nESTRUTURA DO TREINO:\nHIPERTROFIA 10 a 12 repetições até a falha\nMistura de força + resistência\nEstímulo máximo para crescimento muscular\nObjetivo: levar o músculo ao limite com controle\nSem pressa. Sem excesso. Execução correta vale mais que velocidade.\nO corpo cresce na recuperação, não no exagero.`},
+const FASES = [
+  {
+    id:1, nome:"FASE 1: OFF SEASON - ADAPTAÇÃO GERAL",
+    meses:"JANEIRO A FEVEREIRO",
+    desc:"Fase de adaptação total de corpo e mente. Aumentar ingestão calórica de forma estratégica para elevar energia, disposição e preparar o metabolismo para o bulking.",
+    modulos:[
+      {id:1, nome:"MÓDULO 1: JANEIRO", aulas:20},
+      {id:2, nome:"MÓDULO 2: FEVEREIRO", aulas:20}
+    ]
+  },
+  {
+    id:2, nome:"FASE 2: BULKING - HIPERTROFIA MÁXIMA",
+    meses:"MARÇO A MAIO",
+    desc:"Fase prioritária de construção. Objetivo: hipertrofia muscular, ganho de força. Regra básica: comer mais do que gasta. Dieta limpa e protocolar.",
+    modulos:[
+      {id:3, nome:"MÓDULO 3: MARÇO", aulas:20},
+      {id:4, nome:"MÓDULO 4: ABRIL", aulas:20},
+      {id:5, nome:"MÓDULO 5: MAIO", aulas:20}
+    ]
+  },
+  {
+    id:3, nome:"FASE 3: MAINTENANCE - CONSOLIDAÇÃO",
+    meses:"JUNHO A AGOSTO",
+    desc:"Fase de manutenção e consolidação dos ganhos. Manter massa magra, reduzir gordura e densificar musculatura. Preparação para o cutting.",
+    modulos:[
+      {id:6, nome:"MÓDULO 6: JUNHO", aulas:20},
+      {id:7, nome:"MÓDULO 7: JULHO", aulas:20},
+      {id:8, nome:"MÓDULO 8: AGOSTO", aulas:20}
+    ]
+  },
+  {
+    id:4, nome:"FASE 4: CUTTING - DEFINIÇÃO TOTAL",
+    meses:"SETEMBRO A NOVEMBRO",
+    desc:"Fase de finalização. Eliminar máximo de gordura preservando 100% da massa muscular. Dieta rigorosa com déficit calórico. Resultado aparece aqui.",
+    modulos:[
+      {id:9, nome:"MÓDULO 9: SETEMBRO", aulas:20},
+      {id:10, nome:"MÓDULO 10: OUTUBRO", aulas:20},
+      {id:11, nome:"MÓDULO 11: NOVEMBRO", aulas:20}
+    ]
+  }
+];
 
-  "2026-02-02": {fase:1,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Essa é uma semana única dentro do processo — uma pausa estratégica para ajustar, aprender e evoluir com mais consciência.\nMenos carga, mais controle. Foco em regeneração muscular e qualidade.`},
-  "2026-02-09": {fase:1,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Construa a base. Mais repetições, menos peso. Foco em fôlego, mente e disciplina.`},
-  "2026-02-16": {fase:1,nome:"SEMANA DE FORÇA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Foco: ficar mais forte de verdade. 3 a 6 reps. Preparação para o Bulking.`},
-  "2026-02-23": {fase:1,nome:"SEMANA DE HIPERTROFIA", objetivo:"Regeneração | Adaptações | Aprendizados", conteudo:`Foco: Desenvolvimento do físico. 10 a 12 reps. Controle total.`},
+const concluidas = JSON.parse(localStorage.getItem('ktp_modulos')||'[]');
 
-  "2026-03-02": {fase:2,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Recuperação estratégica para suportar as cargas altas que virão. É o momento de preparar o corpo para crescer — com inteligência.\n\nSemana leve para absorver o treino anterior e estar 100% para o volume que vem.`},
-  "2026-03-09": {fase:2,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Aumentar a capacidade de treino. Mais volume, mais trabalho. O foco é a continuidade sem parar.\n\nUm corpo resistente queima mais energia e aguenta treinos mais fortes depois.`},
-  "2026-03-16": {fase:2,nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Foco da semana: ficar mais forte de verdade\n\nTREINO: 3 a 6 repetições | Carga alta ~70% | 5s contraindo + 5s alongando\nALIMENTAÇÃO: Proteína média | Carboidrato ALTO | Gordura normal\nFoco: comer mais energia para ganhar peso e força.`},
-  "2026-03-23": {fase:2,nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Foco principal: CRESCER\n\nESTRUTURA: 10 a 12 repetições até a falha\nMistura de força + resistência\nEstímulo máximo para crescimento muscular\n\nALIMENTAÇÃO: Proteína ALTA | Carboidrato ALTO | Gordura moderada\nVocê está transformando o corpo em etapas, com inteligência, disciplina e controle total.`},
-  "2026-03-30": {fase:2,nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Foco principal: CRESCER. 10 a 12 reps até a falha. Proteína Alta + Carbo Alto.`},
+function getMesLibera(m){
+  if(m<=2)return 1; if(m<=5)return 3; if(m<=8)return 6; return 9;
+}
 
-  // COPIEI TODAS ATÉ NOVEMBRO... RESUMINDO PRA NAO FICAR GIGANTE AQUI
-  // MAS NO CODIGO FINAL ESTÁ COMPLETO COM TODAS 48 DATAS IGUAL VC MANDOU
+let html='';
+FASES.forEach(f=>{
+  html+=`<div class="fase"><div class="fase-head"><div class="meses">${f.meses}</div><div class="titulo">${f.nome}</div><div class="desc">${f.desc}</div></div><div class="modulos">`;
 
-  "2026-12-07": {fase:5,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Mostrar os resultados", conteudo:`Movimentar o corpo nas festas. Manter o ritmo.\nMês de avaliação final, fotos e descanso merecido.\nVocê transformou o corpo com inteligência, disciplina e controle total. 💪`},
-  "2026-12-14": {fase:5,nome:"SEMANA DE FORÇA", objetivo:"Mostrar os resultados", conteudo:`Manter o estímulo para não perder força. Fechar forte o 11° ano.`},
-  "2026-12-21": {fase:5,nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", conteudo:`Avaliação final e fotos. Mostrar resultado de 2026.`},
-  "2026-12-28": {fase:5,nome:"SEMANA DE HIPERTROFIA", objetivo:"Mostrar os resultados", conteudo:`Último treino do ano. Celebração. Resultado e descanso merecido 💪`}
-};
+  f.modulos.forEach(m=>{
+    const mesLibera = getMesLibera(m.id);
+    const mesAtual = new Date().getMonth()+1;
+    const locked = mesAtual < mesLibera;
+    const ok = concluidas.includes(m.id);
+    html+=`<div class="modulo ${locked?'locked':''} ${ok?'completed':''}" onclick="abrirModulo(${m.id})">
+      <h3>${m.nome}</h3>
+      <p>${m.aulas} Aulas • 5 Temas • 5 Páginas por Tema ${ok?'✓ Concluído':''} ${locked?'🔒 Libera em '+mesLibera+'/2026':''}</p>
+    </div>`;
+  });
 
-// COMPLETA O RESTO DAS 48 DATAS AQUI - COPIA DO SEU CODIGO ACIMA
-Object.assign(DADOS_KTP, {
-  "2026-04-06": {fase:2,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Recuperação estratégica para suportar as cargas altas.`},
-  "2026-04-13": {fase:2,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Aumentar a capacidade de treino. Mais volume.`},
-  "2026-04-20": {fase:2,nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`3 a 6 reps pesado. Carga alta.`},
-  "2026-04-27": {fase:2,nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Foco principal: CRESCER. 10 a 12 reps até a falha.`},
-  "2026-05-04": {fase:2,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Recuperação estratégica.`},
-  "2026-05-11": {fase:2,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Aumentar a capacidade de treino. Mais volume.`},
-  "2026-05-18": {fase:2,nome:"SEMANA DE FORÇA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`3 a 6 reps pesado. Subir a carga.`},
-  "2026-05-25": {fase:2,nome:"SEMANA DE HIPERTROFIA", objetivo:"Ganhar massa muscular | Cumprir metas | Evolução", conteudo:`Foco principal: CRESCER. 10 a 12 reps até a falha.`},
-  "2026-06-01": {fase:3,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Missão: Manter. Treino técnico, carga estável.`},
-  "2026-06-08": {fase:3,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Manter o condicionamento e gasto calórico.`},
-  "2026-06-15": {fase:3,nome:"SEMANA DE FORÇA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Segurar a força conquistada. Carga alta.`},
-  "2026-06-22": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-06-29": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-07-06": {fase:3,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Missão: Manter. Treino técnico.`},
-  "2026-07-13": {fase:3,nome:"SEMANA DE FORÇA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Segurar a força conquistada.`},
-  "2026-07-20": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-07-27": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-08-03": {fase:3,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Missão: Manter. Preservar massa magra.`},
-  "2026-08-10": {fase:3,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Manter o condicionamento.`},
-  "2026-08-17": {fase:3,nome:"SEMANA DE FORÇA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Segurar a força conquistada.`},
-  "2026-08-24": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-08-31": {fase:3,nome:"SEMANA DE HIPERTROFIA", objetivo:"Manter ganhos | Preservar massa magra", conteudo:`Último estímulo para manter o músculo.`},
-  "2026-09-07": {fase:4,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Acelerar o metabolismo. Proteína ALTA | Carbo BAIXO.`},
-  "2026-09-14": {fase:4,nome:"SEMANA DE FORÇA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Proteger a força durante déficit. Carga pesada.`},
-  "2026-09-21": {fase:4,nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Modelar o físico. 10 a 12 reps com contração.`},
-  "2026-09-28": {fase:4,nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Modelar o físico. Detalhes e definição.`},
-  "2026-10-05": {fase:4,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Recuperar para aguentar o déficit.`},
-  "2026-10-12": {fase:4,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Gasto calórico lá em cima. Secar mais.`},
-  "2026-10-19": {fase:4,nome:"SEMANA DE FORÇA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Proteger a força com pouca caloria.`},
-  "2026-10-26": {fase:4,nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Detalhes do físico. Contração máxima.`},
-  "2026-11-02": {fase:4,nome:"SEMANA DE MANUTENÇÃO", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Recuperar para aguentar o déficit.`},
-  "2026-11-09": {fase:4,nome:"SEMANA DE RESISTÊNCIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Último gás para secar.`},
-  "2026-11-16": {fase:4,nome:"SEMANA DE FORÇA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Último estímulo pesado do ano.`},
-  "2026-11-23": {fase:4,nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Modelagem final antes de dezembro.`},
-  "2026-11-30": {fase:4,nome:"SEMANA DE HIPERTROFIA", objetivo:"Eliminar gordura | Manter massa magra", conteudo:`Modelagem final antes de dezembro.`}
+  html+=`</div></div>`;
 });
 
-const FASES_MENU = {
-  "FASE 1: OFF SEASON": ["2026-01-05","2026-01-12","2026-01-19","2026-01-26","2026-02-02","2026-02-09","2026-02-16","2026-02-23"],
-  "FASE 2: BULKING": ["2026-03-02","2026-03-09","2026-03-16","2026-03-23","2026-03-30","2026-04-06","2026-04-13","2026-04-20","2026-04-27","2026-05-04","2026-05-11","2026-05-18","2026-05-25"],
-  "FASE 3: MAINTENANCE": ["2026-06-01","2026-06-08","2026-06-15","2026-06-22","2026-06-29","2026-07-06","2026-07-13","2026-07-20","2026-07-27","2026-08-03","2026-08-10","2026-08-17","2026-08-24","2026-08-31"],
-  "FASE 4: CUTTING": ["2026-09-07","2026-09-14","2026-09-21","2026-09-28","2026-10-05","2026-10-12","2026-10-19","2026-10-26","2026-11-02","2026-11-09","2026-11-16","2026-11-23","2026-11-30"],
-  "DEZEMBRO: FÉRIAS": ["2026-12-07","2026-12-14","2026-12-21","2026-12-28"]
-};
+document.getElementById('fases').innerHTML=html;
 
-// GERA 20 QUESTÕES POR MÓDULO
-const QUESTOES = {};
-for(let m=1;m<=11;m++){
-  QUESTOES[m]=[];
-  for(let q=1;q<=20;q++){
-    QUESTOES[m].push({
-      q:`${q}. Qual o foco principal da
+function abrirModulo(m){
+  window.location=`modulo-${m}.html`;
+}
+</script>
+</body>
+</html>
