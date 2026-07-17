@@ -18,7 +18,7 @@ jobs:
       - name: Baixar código
         uses: actions/checkout@v4
         with:
-  token: ${{ secrets.MY_TOKEN }}
+          token: ${{ secrets.MY_TOKEN }}  # <-- 2 espaços a mais aqui
   
       - name: Criar arquivo
         run: |
