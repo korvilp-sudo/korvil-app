@@ -316,61 +316,77 @@ function mostrarDadosAluno(id){
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
-  let html = `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
-  html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
+  let html = '';
 
-  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [ALUNOS_DB[idLogado].plano];
+  const ehAdmin = idLogado === 'ktp1';
+  const planoDoAluno = ehAdmin? planoAtivo : ALUNOS_DB[idLogado].plano;
 
-  if(planosParaMostrar.length > 1){
-    html += `<div class="abas-plano">`;
-    planosParaMostrar.forEach(p=>{
-      html += `<button class="aba-plano ${planoAtivo===p?'ativa':''}" onclick="trocarAba('${p}', this)"> ${p==='PRESENCIAL'?'🌐 PRESENCIAL':'💻 ONLINE'} </button>`;
-    });
-    html += `</div>`;
+  // Se for aluno, força abrir na aba do plano dele
+  if(!ehAdmin) planoAtivo = planoDoAluno;
+
+  html += `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
+  if(ehAdmin){
+    html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
   }
 
-  let encontrou = false;
+  // ADMIN vê as 2 abas. ALUNO não vê aba
+  if(ehAdmin){
+    html += `<div class="abas-plano">
+      <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
+      <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
+    </div>`;
+  }
 
-  planosParaMostrar.forEach(plano=>{
-    if(planosParaMostrar.length > 1 && plano!== planoAtivo) return;
+  const planosParaRenderizar = ehAdmin? [planoAtivo] : [planoDoAluno];
 
+  planosParaRenderizar.forEach(plano=>{
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // COPIA A LÓGICA DO GON19: Filtra só o aluno logado
-      let alunosDoBloco = [];
-      if(idLogado === 'ktp1'){
-        alunosDoBloco = bloco.alunos; // admin vê tudo
-      } else {
-        alunosDoBloco = bloco.alunos.filter(a => a.id === idLogado); // aluno só vê ele
-      }
-
-      if(alunosDoBloco.length === 0) return;
-      encontrou = true;
-
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
-      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
 
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n!== undefined) html += `<th>Nº</th>`;
-      html += `<th>Aluno</th><th>Dias</th>`;
-      if(bloco.alunos[0].freq!== undefined) html += `<th>Freq</th>`;
-      html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      let encontrouAluno = false;
 
-      alunosDoBloco.forEach(a=>{
-        html += `<tr class="destaque">`;
-        if(a.n!== undefined) html += `<td>${a.n}</td>`;
-        html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
-        if(a.freq!== undefined) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
-      });
-      html += `</tbody></table></div>`;
+      // MODO ALUNO: só mostra a linha dele
+      if(!ehAdmin){
+        const todos = [...bloco.alunosAtivos,...bloco.alunosDes];
+        const alunoEncontrado = todos.find(a => a.id === idLogado);
+        if(alunoEncontrado){
+          encontrouAluno = true;
+          html += `<div class="grupo-status">${alunoEncontrado.status==='Ativo'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+          html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
+          if(alunoEncontrado.n!== undefined) html += `<th>Nº</th>`;
+          html += `<th>Aluno</th><th>Dias</th>`;
+          if(alunoEncontrado.freq!== undefined) html += `<th>Freq</th>`;
+          html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+          html += `<tr class="destaque"><td>${alunoEncontrado.n||''}</td><td>${alunoEncontrado.aluno}</td><td>${alunoEncontrado.dias}</td>${alunoEncontrado.freq?`<td>${alunoEncontrado.freq}</td>`:''}<td>${alunoEncontrado.objetivo}</td><td>R$ ${alunoEncontrado.valor}</td><td>${alunoEncontrado.venc}</td><td class="${alunoEncontrado.status==='Ativo'?'status-ativo':'status-desativado'}">${alunoEncontrado.status}</td><td style="font-weight:900;color:var(--c)">${alunoEncontrado.id}</td></tr>`;
+          html += `</tbody></table></div>`;
+        }
+      }
+      // MODO ADMIN: mostra todos, ativos e desativados
+      else {
+        let mostrouTabela = false;
+        if(bloco.alunosAtivos.length > 0){
+          mostrouTabela = true;
+          html += `<div class="grupo-status">✅ ATIVOS</div>`;
+          html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+          bloco.alunosAtivos.forEach(a=>{ html += `<tr><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-ativo">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
+          html += `</tbody></table></div>`;
+        }
+        if(bloco.alunosDes.length > 0){
+          mostrouTabela = true;
+          html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
+          html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Aluno</th><th>Dias</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+          bloco.alunosDes.forEach(a=>{ html += `<tr><td>${a.aluno}</td><td>${a.dias}</td><td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="status-desativado">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; });
+          html += `</tbody></table></div>`;
+        }
+        if(!mostrouTabela){ // horário vazio
+          html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
+          html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Aluno</th><th>Dias</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody><tr><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td></tr></tbody></table></div>`;
+        }
+      }
     });
   });
-
-  if(!encontrou && idLogado!== 'ktp1'){
-    html += `<div style="text-align:center;color:var(--erro);padding:20px">Você não está em nenhum horário do plano ${planoAtivo}</div>`;
-  }
 
   container.innerHTML = html;
 }
