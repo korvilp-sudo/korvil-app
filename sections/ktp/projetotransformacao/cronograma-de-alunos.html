@@ -189,7 +189,7 @@ function mostrarTelaCronograma(){
 
   // AQUI ESTAVA O ERRO: tinha que filtrar por ID e não por plano
   const alunosFiltrados = idLogado === 'ktp1' ? alunos : alunos.filter(a => a.plano === planoAtivo && a.id === idLogado);
-
+  
   HORARIOS_ORDEM.forEach(horario=>{
     if(planoAtivo === 'ONLINE' && !horario.includes('14h00')) return;
     if(planoAtivo === 'PRESENCIAL' && horario.includes('14h00')) return;
