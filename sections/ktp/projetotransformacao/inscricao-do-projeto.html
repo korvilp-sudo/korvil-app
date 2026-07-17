@@ -280,6 +280,35 @@ function enviarWhatsApp(){
   if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
   if(document.getElementById('whats').value==''){alert('Preencha o WhatsApp');return;}
   let total = parseInt(plano.valor)+parseInt(plano.mat);
+  // 1. PEGA TUDO DAS 3 TELAS
+let dadosCompletos = {
+  tela1_anamnese: {
+    objetivos: document.getElementById('objetivos').value,
+    nivel_atividade: document.getElementById('nivelAtividade').value,
+    q1_ja_praticou: document.getElementById('q1').value,
+    q2_alimentacao: document.getElementById('q2').value,
+    q3_sono: document.getElementById('q3').value,
+    q4_restricao: document.getElementById('q4').value,
+    q5_melhorar: document.getElementById('q5').value,
+    q6_deficiencia: document.getElementById('q6').value,
+    q7_psicologico: document.getElementById('q7').value,
+    q8_tratamento: document.getElementById('q8').value,
+    q9_medicamentos: document.getElementById('q9').value,
+  },
+  tela2_planos: {
+    plano_nome: plano.nome, plano_valor: plano.valor, plano_matricula: plano.mat,
+    plano_tipo: plano.tipo, plano_frequencia: plano.freq,
+    dias_escolhidos: dias, horario_escolhido: hora, total_a_pagar: parseInt(plano.valor)+parseInt(plano.mat)
+  },
+  tela3_dados_pessoais: {
+    nome: document.getElementById('nome').value, cpf: document.getElementById('cpf').value,
+    nasc: document.getElementById('nasc').value, idade: document.getElementById('idade').value,
+    genero: document.getElementById('publico').value, whats: document.getElementById('whats').value,
+    email: document.getElementById('email').value
+  }
+}
+// 2. SALVA NO GITHUB AUTOMÁTICO
+salvarArquivoAluno(dadosCompletos);
   let msg = `*NOVA INSCRIÇÃO K-TP*\n\n` +
             `*1. ANAMNESE*\n` +
             `Nível de Atividade: ${document.getElementById('nivelAtividade').value}\n` +
