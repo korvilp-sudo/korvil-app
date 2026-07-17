@@ -2,26 +2,33 @@ name: Salvar Aluno
 on:
   workflow_dispatch:
     inputs:
-      nome:
-        description: 'Nome do Aluno'
-        required: true
       id:
         description: 'ID do Aluno'
+        required: true
+      dados:
+        description: 'Dados JSON do Aluno'
         required: true
 
 jobs:
   salvar:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permissão pra criar arquivo
     steps:
-      - uses: actions/checkout@v4
+      - name: Baixar código
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_TOKEN }}  # <-- USA O SEGREDO QUE VOCÊ CRIOU
+
       - name: Criar arquivo
         run: |
           mkdir -p sections/ktp/projetotransformacao/projetos/2026
           echo '${{ inputs.dados }}' > sections/ktp/projetotransformacao/projetos/2026/${{ inputs.id }}.json
-      - name: Commit
+
+      - name: Fazer Commit e Push
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Add aluno ${{ inputs.id }}" || exit 0
+          git commit -m "Adicionar aluno ${{ inputs.id }}" || exit 0
           git push
