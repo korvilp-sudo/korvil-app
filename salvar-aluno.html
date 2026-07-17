@@ -16,10 +16,9 @@ async function criar(){
 
   document.getElementById('log').innerText = "Enviando pedido... Aguarde 20s";
 
-  // Usa o token secreto do Github, não fica no código
   const res = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/salvar-aluno.yml/dispatches`,{
     method:'POST',
-    headers:{"Content-Type":"application/json"},
+    headers:{"Content-Type":"application/json"}, // SEM TOKEN AQUI
     body:JSON.stringify({
       ref:"main",
       inputs:{id:id, dados:dados}
@@ -29,7 +28,8 @@ async function criar(){
   if(res.status == 204){
     document.getElementById('log').innerText = "✅ Pedido enviado!\nEspere 20 segundos e dê F5 na pasta 2026\nArquivo: "+id+".json";
   } else {
-    document.getElementById('log').innerText = "❌ Deu erro: " + res.status;
+    const txt = await res.text();
+    document.getElementById('log').innerText = "❌ Deu erro: " + res.status + "\n" + txt;
   }
 }
 </script></body></html>
