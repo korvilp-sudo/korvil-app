@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8">
+<title>Teste Inscrição KTP</title>
+<style>
+body{background:#000;color:#00f5ff;font-family:Arial;padding:30px;text-align:center}
+input{width:80%;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:18px}
+button{padding:15px 30px;background:#00f5ff;color:#000;border:none;border-radius:10px;font-weight:900;font-size:18px;margin-top:15px;cursor:pointer}
+#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#001a33;border:2px solid #00f5ff;padding:30px;border-radius:15px;z-index:99}
+</style>
+</head>
+<body>
+
+<h1>INSCRIÇÃO TESTE - PROJETO TRANSFORMAÇÃO</h1>
+<input type="text" id="nome" placeholder="Digite Nome Completo">
+<br>
+<button onclick="finalizar()">FINALIZAR</button>
+
+<div id="popup"></div>
+
+<script>
+const TOKEN = "ghp_COLE_SEU_TOKEN_AQUI";
+const REPO = "korvilp-sudo/korvil-app";
+const PASTA = "sections/ktp/projetotransformacao/projetos/2026/";
+
+// SEU CRONOGRAMA ATUAL
+let ALUNOS_DB = {
+  "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢"},
+  "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢"},
+  "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑"},
+  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦"},
+  "ktp1": {nome:"SAY KORVIL", plano:"ADMIN"}
+}
+let ULTIMO_NUM = 39; // Próximo será 40
+
+async function finalizar(){
+  const nome = document.getElementById('nome').value.trim();
+  if(!nome) return alert('Digite o nome');
+
+  // 1. VERIFICAR SE ALUNO JÁ EXISTE PELO NOME
+  let id = Object.keys(ALUNOS_DB).find(key => ALUNOS_DB[key].nome.toLowerCase() === nome.toLowerCase());
+  let isNovo = false;
+
+  if(!id){
+    // 2. SE NÃO EXISTE: CRIAR ID NOVO = aluno40
+    ULTIMO_NUM++;
+    id = "aluno" + ULTIMO_NUM;
+    ALUNOS_DB[id] = {nome: nome, plano:"PRESENCIAL", status:"Ativo", data_cadastro:new Date().toLocaleDateString()};
+    isNovo = true;
+  } else {
+    // 3. SE EXISTE: ATUALIZAR
+    ALUNOS_DB[id].ultima_atualizacao = new Date().toLocaleString();
+  }
+
+  // 4. SALVAR ARQUIVO INDIVIDUAL: /.../projetos/2026/aluno40.json
+  await salvarArquivo(`${PASTA}${id}.json`, ALUNOS_DB[id]);
+
+  // 5. SALVAR CRONOGRAMA GERAL: /.../projetos/2026/cronograma.json
+  await salvarArquivo(`${PASTA}cronograma.json`, ALUNOS_DB);
+
+  // 6. POPUP
+  mostrarPopup(`✅ FINALIZADO! <br><br> Arquivo: ${id}.json <br> ${isNovo? 'Aluno NOVO criado' : 'Aluno ATUALIZADO'}`);
+}
+
+async function salvarArquivo(caminho, dados){
+  let sha = null;
+  try{
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`, {headers:{Authorization:`token ${TOKEN}`}});
+    if(res.ok){ const data = await res.json(); sha = data.sha; }
+  }catch(e){}
+
+  await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`,{
+    method:'PUT',
+    headers:{Authorization:`token ${TOKEN}`},
+    body:JSON.stringify({
+      message: `Update ${caminho}`,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(dados, null, 2)))),
+      sha: sha
+    })
+  });
+}
+
+function mostrarPopup(msg){
+  const p = document.getElementById('popup');
+  p.innerHTML = msg + '<br><br><button onclick="this.parentElement.style.display=\'none\'">OK</button>';
+  p.style.display = 'block';
+}
+
+// CARREGAR CRONOGRAMA AO ABRIR PRA PEGAR O ULTIMO NUMERO
+fetch(`https://raw.githubusercontent.com/${REPO}/main/${PASTA}cronograma.json`)
+.then(r=>r.json())
+.then(d=>{
+  ALUNOS_DB = d;
+  ULTIMO_NUM = Math.max(...Object.keys(d).map(k=>parseInt(k.replace(/\D/g,'')) || 0))
+}).catch(()=>{});
+</script>
+</body>
+</html>
