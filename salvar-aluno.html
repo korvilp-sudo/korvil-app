@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>KTP</title>
+<style>body{background:#000;color:#00f5ff;padding:20px;text-align:center}input,button{padding:14px;width:90%}</style></head><body>
+<h2>CRIAR ALUNO NA PASTA 2026</h2>
+<input id="nome" placeholder="Nome: Lucas Davi8">
+<button onclick="criar()">CRIAR ARQUIVO REAL</button>
+<div id="log" style="margin-top:20px"></div>
+
+<script>
+const REPO = "korvilp-sudo/korvil-app";
+const TOKEN = "ghp_COLE_SEU_TOKEN_AQUI"; // Token com permissão "workflow"
+
+async function criar(){
+  const nome = document.getElementById('nome').value;
+  if(!nome) return alert("Digite nome");
+  const id = "aluno" + Date.now();
+  const dados = JSON.stringify({nome:nome, status:"Ativo", data:new Date().toLocaleString()});
+
+  document.getElementById('log').innerText = "Enviando pedido pro Github...";
+
+  await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/salvar-aluno.yml/dispatches`,{
+    method:'POST',
+    headers:{Authorization:`Bearer ${TOKEN}`, "Accept":"application/vnd.github.v3+json"},
+    body:JSON.stringify({
+      ref:"main",
+      inputs:{id:id, dados:dados}
+    })
+  });
+
+  document.getElementById('log').innerText = "✅ Pedido enviado!\nEspere 15 segundos e dê F5 na pasta 2026\nArquivo criado: "+id+".json";
+}
+</script></body></html>
