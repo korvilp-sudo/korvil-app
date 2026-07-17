@@ -311,6 +311,69 @@ function enviarWhatsApp(){
   let numero = "5513997690898";
   window.location.href = `whatsapp://send?phone=${numero}&text=${encodeURIComponent(msg)}`;
 }
+  // CONFIGS GITHUB - TROCA AQUI
+const GITHUB_TOKEN = 'ghp_SEU_TOKEN_AQUI'
+const REPO = 'korvilp-sudo/korvil-app'
+const PASTA_ALUNOS = 'sections/ktp/projetotransformacao/projetos/2026'
+const ARQUIVO_CRONOGRAMA = 'sections/ktp/projetotransformacao/cronograma.-de-alunos.json'
+
+async function salvarArquivoAluno(dadosCompletos){
+  // GERA O ID: nome + ultimos 4 do cpf. Ex: maria1234
+  const cpfLimpo = dadosCompletos.tela3_dados_pessoais.cpf.replace(/\D/g,'');
+  const id = (dadosCompletos.tela3_dados_pessoais.nome.split(' ')[0] + cpfLimpo.slice(-4)).toLowerCase();
+
+  const arquivoAluno = {
+    id: id,
+    data_inscricao: new Date().toISOString(),
+    status: "Pendente Pagamento",
+    tela1_anamnese: dadosCompletos.tela1_anamnese,
+    tela2_planos: dadosCompletos.tela2_planos,
+    tela3_dados_pessoais: dadosCompletos.tela3_dados_pessoais,
+    historico: [{ "data": new Date().toISOString().split('T')[0], "obs": "Inscricao realizada via site" }]
+  }
+
+  // 1. SALVA O ARQUIVO DO ALUNO EM /projetos/2026/id.json
+  await salvarNoGithub(`${PASTA_ALUNOS}/${id}.json`, arquivoAluno);
+
+  // 2. ATUALIZA O CRONOGRAMA.-DE-ALUNOS.JSON
+  await atualizarCronogramaJson(id, dadosCompletos);
+}
+
+async function atualizarCronogramaJson(id, dados){
+  // 1. Pega o cronograma.-de-alunos.json atual
+  let res = await fetch(`https://api.github.com/repos/${REPO}/contents/${ARQUIVO_CRONOGRAMA}`);
+  let file = await res.json();
+  let cronograma = JSON.parse(atob(file.content));
+
+  // 2. Adiciona o aluno novo dentro de "alunos"
+  cronograma.alunos[id] = {
+    nome: dados.tela3_dados_pessoais.nome,
+    plano: dados.tela2_planos.plano_nome,
+    valor: dados.tela2_planos.plano_valor,
+    matricula: dados.tela2_planos.plano_matricula,
+    dias: dados.tela2_planos.dias_escolhidos,
+    horario: dados.tela2_planos.horario_escolhido,
+    freq: dados.tela2_planos.plano_frequencia,
+    status: "Pendente"
+  }
+
+  // 3. Salva o cronograma.-de-alunos.json de volta
+  const novoConteudo = btoa(unescape(encodeURIComponent(JSON.stringify(cronograma, null, 2))));
+  await fetch(`https://api.github.com/repos/${REPO}/contents/${ARQUIVO_CRONOGRAMA}`, {
+    method: 'PUT',
+    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `Novo aluno: ${id}`, content: novoConteudo, sha: file.sha })
+  });
+}
+
+async function salvarNoGithub(caminho, objeto){
+  const conteudo = btoa(unescape(encodeURIComponent(JSON.stringify(objeto, null, 2))));
+  await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`, {
+    method: 'PUT',
+    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `Novo aluno: ${objeto.id}`, content: conteudo })
+  });
+}
 </script>
 </body>
 </html>
