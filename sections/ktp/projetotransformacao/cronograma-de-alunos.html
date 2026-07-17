@@ -186,7 +186,7 @@ function mostrarTelaCronograma(){
 
   html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-// SE FOR KTP1 MOSTRA OS 2 PLANOS. SE NÃO MOSTRA SÓ 1 ALUNO
+
   const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
 
   planosParaMostrar.forEach(plano=>{
@@ -196,9 +196,8 @@ function mostrarTelaCronograma(){
       if(plano === 'ONLINE' &&!horario.includes('14h00')) return;
       if(plano === 'PRESENCIAL' && horario.includes('14h00')) return;
 
-      // FILTRO: ktp1 = todos do plano. Aluno = só ele
       const alunosDoHorario = idLogado === 'ktp1'
-   ? alunos.filter(a => a.plano === plano && a.horario === horario)
+  ? alunos.filter(a => a.plano === plano && a.horario === horario)
         : alunos.filter(a => a.plano === plano && a.horario === horario && a.id === idLogado);
 
       if(alunosDoHorario.length === 0) return;
@@ -220,6 +219,10 @@ function mostrarTelaCronograma(){
   });
 
   document.getElementById('tela-cronograma').innerHTML = html;
+  document.getElementById('tela-cronograma').classList.add('ativo');
+  document.getElementById('tela-aluno').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'none';
+}
 
 function gerarTabela(lista, idDestaque){
   let html = `<div class="tabela-wrapper"><table class="tabela-crono">
@@ -228,7 +231,6 @@ function gerarTabela(lista, idDestaque){
     </tr></thead><tbody>`;
 
   lista.forEach((a, i)=>{
-    // SÓ DESTACA SE FOR ALUNO INDIVIDUAL. KTP1 FICA NORMAL
     let classe = (a.id === idDestaque && idDestaque!== 'ktp1')? 'destaque' : '';
     html += `<tr class="${classe}">
       <td>${i+1}</td>
@@ -242,7 +244,6 @@ function gerarTabela(lista, idDestaque){
       <td class="col-id">${a.id}</td>
     </tr>`;
   });
-  
   html += `</tbody></table></div>`;
   return html;
 }
@@ -293,7 +294,6 @@ function buscarAluno(){
 window.onload = function(){
   mostrarBusca();
 };
-  
 </script>
 </body>
 </html>
