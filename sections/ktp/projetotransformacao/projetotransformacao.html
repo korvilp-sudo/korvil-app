@@ -321,15 +321,13 @@ function mostrarCronograma(){
   const ehAdmin = idLogado === 'ktp1';
   const planoDoAluno = ehAdmin? planoAtivo : ALUNOS_DB[idLogado].plano;
 
-  // Se for aluno, força abrir na aba do plano dele
-  if(!ehAdmin) planoAtivo = planoDoAluno;
+  if(!ehAdmin) planoAtivo = planoDoAluno; // Força aluno cair na aba do plano dele
 
   html += `<div class="titulo-crono">📋 SEU CRONOGRAMA K-TP</div>`;
   if(ehAdmin){
     html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
   }
 
-  // ADMIN vê as 2 abas. ALUNO não vê aba
   if(ehAdmin){
     html += `<div class="abas-plano">
       <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
@@ -346,6 +344,7 @@ function mostrarCronograma(){
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
 
       let encontrouAluno = false;
+      let mostrouTabela = false;
 
       // MODO ALUNO: só mostra a linha dele
       if(!ehAdmin){
@@ -365,7 +364,6 @@ function mostrarCronograma(){
       }
       // MODO ADMIN: mostra todos, ativos e desativados
       else {
-        let mostrouTabela = false;
         if(bloco.alunosAtivos.length > 0){
           mostrouTabela = true;
           html += `<div class="grupo-status">✅ ATIVOS</div>`;
@@ -390,26 +388,16 @@ function mostrarCronograma(){
 
   container.innerHTML = html;
 }
-function buscarAluno(){
-  const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  if(!id){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--aviso)">Digite um ID</div>';return;}
-  if(ALUNOS_DB[id]){
-    idLogado = id;
-    localStorage.setItem('idLogado', id);
-    if(id!== 'ktp1') planoAtivo = ALUNOS_DB[id].plano;
-    fecharBuscaAluno();
-    mostrarDadosAluno(id);
-    mostrarCronograma();
-    document.getElementById('resultado-aluno').innerHTML='';
-    document.getElementById('input-id-aluno').value='';
-  } else {
-    document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';
-  }
+
+function trocarAba(plano, btn){
+  planoAtivo = plano;
+  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+  mostrarCronograma();
 }
 
-window.onload=function(){
-  carregarMenu();
-};
+// Chama ao carregar
+mostrarCronograma();
 </script>
 </body>
 </html>
