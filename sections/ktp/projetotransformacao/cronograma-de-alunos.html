@@ -1,299 +1,80 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#000">
-<title>CRONOGRAMA DE ALUNOS</title>
+<html lang="pt-br">
+<head><meta charset="UTF-8">
+<title>Cronograma Alunos - KTP</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --aviso:#ffaa00; --erro:#ff0044;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
-
-.header{padding:16px;text-align:center;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
-h1{font-size:16px;font-weight:900;color:var(--c);letter-spacing:1px;text-shadow:0 0 10px var(--c);}
-.btn-aluno{padding:8px 12px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:11px;cursor:pointer;}
-
-.container{max-width:1200px;margin:auto;padding:16px;padding-bottom:100px;}
-
-.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;}
-.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:8px;border-left:3px solid var(--c);padding-left:8px;}
-.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;text-align:center;}
-.logo{display:block;margin:0 auto 12px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-
-/* TELA DO CRONOGRAMA */
-#tela-cronograma{display:none;}
-#tela-cronograma.ativo{display:block;}
-
-/* TELA DADOS DO ALUNO */
-#tela-aluno{display:none;}
-#tela-aluno.ativo{display:block;}
-
-.dado-aluno{padding:8px 0;border-bottom:1px solid var(--borda);font-size:12px;}
-.dado-aluno b{color:var(--c);}
-.status-ativo{color:var(--ok);font-weight:900;}
-.status-desativado{color:var(--erro);font-weight:900;}
-.btn-fechar{position:absolute;top:10px;right:10px;background:var(--erro);color:#fff;border:0;border-radius:50%;width:24px;height:24px;font-weight:900;font-size:14px;cursor:pointer;line-height:24px;text-align:center;}
-
-/* TOTAIS */
-.card-totais{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px;}
-.total-item{background:#0a0a0a;border:1px solid var(--borda);border-radius:8px;padding:10px;text-align:center;}
-.total-item.num{font-size:18px;font-weight:900;color:var(--c);}
-.total-item.label{font-size:9px;color:var(--text2);margin-top:2px;}
-
-/* ABAS PLANO */
-.abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
-.aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
-.aba-plano.ativa{background:var(--c);color:#000;}
-
-/* TABELA CRONOGRAMA */
-.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
-.tabela-crono{width:100%;border-collapse:collapse;font-size:11px;}
-.tabela-crono th{background:#111;color:var(--c);padding:12px 8px;text-align:left;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);}
-.tabela-crono td{padding:12px 8px;border-bottom:1px solid #1a1a1a;}
-.tabela-crono tbody tr:hover{background:#0f0f0f;}
-.tabela-crono tbody tr.destaque{background:#001a1a;box-shadow:0 0 0 2px var(--c) inset;}
-.tabela-crono.col-id{font-weight:900;color:var(--c);min-width:100px;}
-.tabela-crono.col-nome{font-weight:800;color:#fff;min-width:140px;}
-
-.grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
-.grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
-.sem-alunos{padding:12px;text-align:center;color:var(--text2);font-size:10px;background:#050505;border-radius:6px;margin-bottom:10px;}
-.obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
-
-/* BUSCA ID */
-.busca-id{display:flex;gap:6px;margin-bottom:16px;}
-.busca-id input{flex:1;padding:10px;background:#000;border:1.5px solid var(--borda);border-radius:6px;color:#fff;font-size:12px;}
-.busca-id button{padding:10px 14px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;cursor:pointer;}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+body{background:#000;color:#00f5ff;font-family:'Orbitron',sans-serif;padding:20px}
+h1{text-align:center;text-shadow:0 0 10px #00f5ff}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #00f5ff;padding:10px;text-align:left;font-size:12px}
+th{background:#001a33}
+tr:hover{background:#001a33}
+.status-ativo{color:#00ff88} .status-desativado{color:#ff0066}
+#loading{text-align:center;padding:20px}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
-  <button class="btn-aluno" onclick="mostrarBusca()">🔍 BUSCAR</button>
-</div>
-
-<div class="container">
-  <div class="card">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo">
-    <div class="sub-titulo">Link oficial da semana. Atualiza automaticamente toda segunda-feira 00:01</div>
-  </div>
-
-  <!-- BARRA DE BUSCA -->
-  <div id="barra-busca" class="card">
-    <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="DIGITE SEU ID E CLIQUE EM BUSCAR">
-      <button onclick="buscarAluno()">BUSCAR</button>
-    </div>
-  </div>
-
-  <!-- TELA 1: CRONOGRAMA COMPLETO -->
-  <div id="tela-cronograma"></div>
-
-  <!-- TELA 2: DADOS DO ALUNO - AGORA EMBAIXO -->
-  <div id="tela-aluno"></div>
-</div>
+<h1>CRONOGRAMA ALUNOS - PROJETO TRANSFORMAÇÃO 2026</h1>
+<div id="loading">CARREGANDO DADOS...</div>
+<table id="tabela" style="display:none">
+  <thead>
+    <tr>
+      <th>ID</th><th>NOME</th><th>PLANO</th><th>HORARIO</th><th>DIAS</th>
+      <th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th>
+    </tr>
+  </thead>
+  <tbody id="corpoTabela"></tbody>
+</table>
 
 <script>
-const ALUNOS_DB = {
-  "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
-  "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Ter • Qui • Sex", freq:"3x", objetivo:"Definição muscular", valor:100, venc:"06/08/26", status:"Ativo"},
-  "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg • Qua • Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"08/10/25", status:"Ativo"},
-  "adriana20": {nome:"Adriana", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado"},
-  "joss21": {nome:"Jossiane Alves", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado"},
-  "amigaadrum": {nome:"amigaadrum", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"–", freq:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado"},
-  "amigaadrdois": {nome:"amigaadrdois", plano:"PRESENCIAL", horario:"06h00 🐦", dias:"–", freq:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado"},
-  "angel02": {nome:"Angélica", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado"},
-  "anapaula22": {nome:"Ana Paula", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado"},
-  "gusta23": {nome:"Gustavo Geraldino", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado"},
-  "sueli24": {nome:"Sueli", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado"},
-  "fabi03": {nome:"Fabiana", plano:"PRESENCIAL", horario:"07h00 🌙", dias:"Ter Qui", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado"},
-  "paula06": {nome:"Paula Cristine", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Ter a Sex", freq:"4x", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado"},
-  "nop07": {nome:"Natan Osvath Paoli", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado"},
-  "bianca28": {nome:"Bianca", plano:"PRESENCIAL", horario:"10h00 🐙", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado"},
-  "lau08": {nome:"Laura Jesus Aragão", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Qui", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado"},
-  "cass09": {nome:"Cassandra Jesus", plano:"PRESENCIAL", horario:"16h00 🕊️", dias:"Seg Ter Qui", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado"},
-  "katiap11": {nome:"Kátia Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado"},
-  "mara13": {nome:"Lucimara", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado"},
-  "edn14": {nome:"Edna", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qui Sex", freq:"3x", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado"},
-  "banip12": {nome:"Luciane Paoli", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado"},
-  "marly18": {nome:"Marly", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado"},
-  "mcris10": {nome:"Maria Cristina", plano:"PRESENCIAL", horario:"17h00 🐼", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado"},
-  "juci29": {nome:"Jucilene", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado"},
-  "joce30": {nome:"Jocélia", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Seg Qua", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado"},
-  "marcosf31": {nome:"Marcos França", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Sex", freq:"1x", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado"},
-  "lucas32": {nome:"Lucas", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Ter Qua Qui", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado"},
-  "celi33": {nome:"Celidalva", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua", freq:"1x", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado"},
-  "jaque15": {nome:"Jaqueline", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "elisa16": {nome:"Elisangela", plano:"PRESENCIAL", horario:"18h00 🐸", dias:"Qua Sex", freq:"2x", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado"},
-  "gice01": {nome:"Gicelia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua", freq:"2x", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado"},
-  "pati34": {nome:"Patrícia", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Definição", valor:100, venc:"–", status:"Desativado"},
-  "mel35": {nome:"Melissa", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado"},
-  "naty17": {nome:"Natália Melo", plano:"PRESENCIAL", horario:"19h00 🌑", dias:"Seg Qua Sex", freq:"3x", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado"},
-  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Desativado"},
-  "tchu37": {nome:"Tchuco", plano:"ONLINE", horario:"14h00", dias:"Online", freq:"–", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado"},
-  "ktp1": {nome:"SAY KORVIL", plano:"ADMIN", horario:"--", dias:"--", freq:"--", objetivo:"ADMIN", valor:"--", venc:"--", status:"Ativo"}
-};
+const REPO = "korvilp-sudo/korvil-app";
+const ARQ = "sections/ktp/projetotransformacao/projetos/2026/cronograma.json";
 
-let planoAtivo = 'PRESENCIAL';
-let idLogado = '';
-
-const HORARIOS_ORDEM = ["06h00 🐦","07h00 🌙","08h00 🐢","09h00","10h00 🐙","16h00 🕊️","17h00 🐼","18h00 🐸","19h00 🌑","20h00","21h00","22h00","23h00","00h00","01h00","02h00","03h00","04h00","05h00","14h00"];
-
-function mostrarBusca(){
-  document.getElementById('tela-aluno').classList.remove('ativo');
-  document.getElementById('tela-cronograma').classList.remove('ativo');
-  document.getElementById('tela-aluno').innerHTML = '';
-  document.getElementById('tela-cronograma').innerHTML = '';
-  document.getElementById('barra-busca').style.display = 'block';
-  document.getElementById('input-id-aluno').focus();
-}
-
-function trocarAba(plano){
-  planoAtivo = plano;
-  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
-  event.target.classList.add('ativa');
-  mostrarTelaCronograma();
-}
-
-function calcularTotais(){
-  let totalAtivos = 0, totalDesativados = 0, somaValores = 0;
-  Object.entries(ALUNOS_DB).forEach(([id, a])=>{
-    if(id === 'ktp1') return;
-    if(a.status.toLowerCase() === 'ativo'){totalAtivos++; somaValores += Number(a.valor) || 0;}
-    else {totalDesativados++;}
-  });
-  return {totalAtivos, totalDesativados, somaValores};
-}
-
-function mostrarTelaCronograma(){
-  const totais = calcularTotais();
-  const alunos = Object.entries(ALUNOS_DB).map(([id, data]) => ({id,...data}));
-
-  let html = `<button class="btn-fechar" onclick="mostrarBusca()">X</button>`;
-
-  html += `<div class="card-totais">
-    <div class="total-item"><div class="num">${totais.totalAtivos}</div><div class="label">ATIVOS</div></div>
-    <div class="total-item"><div class="num">${totais.totalDesativados}</div><div class="label">DESATIVADOS</div></div>
-    <div class="total-item"><div class="num">R$ ${totais.somaValores}</div><div class="label">TOTAL MENSAL ATIVOS</div></div>
-  </div>`;
-
-  html += `<div class="abas-plano">
-    <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL')">🏋️ PRESENCIAL</button>
-    <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE')">💻 ONLINE</button>
-  </div>`;
-
-  html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
-  html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-
-  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
-
-  planosParaMostrar.forEach(plano=>{
-    if(idLogado === 'ktp1') html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0;border-bottom:1px solid var(--borda);padding-bottom:8px">🌐 ${plano} 🌐</div>`;
-
-    HORARIOS_ORDEM.forEach(horario=>{
-      if(plano === 'ONLINE' &&!horario.includes('14h00')) return;
-      if(plano === 'PRESENCIAL' && horario.includes('14h00')) return;
-
-      const alunosDoHorario = idLogado === 'ktp1'
-  ? alunos.filter(a => a.plano === plano && a.horario === horario)
-        : alunos.filter(a => a.plano === plano && a.horario === horario && a.id === idLogado);
-
-      if(alunosDoHorario.length === 0) return;
-
-      html += `<div class="grupo-horario">🕒 ${horario}</div>`;
-
-      const ativos = alunosDoHorario.filter(a=>a.status.toLowerCase()==='ativo');
-      const desativados = alunosDoHorario.filter(a=>a.status.toLowerCase()==='desativado');
-
-      if(ativos.length > 0){
-        html += `<div class="grupo-status">✅ ATIVOS</div>`;
-        html += gerarTabela(ativos, idLogado);
-      }
-      if(desativados.length > 0){
-        html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
-        html += gerarTabela(desativados, idLogado);
-      }
+async function carregarCronograma(){
+  try{
+    const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${ARQ}?t=${Date.now()}`);
+    const ALUNOS_DB = await res.json();
+    
+    const corpo = document.getElementById('corpoTabela');
+    corpo.innerHTML = '';
+    
+    // Ordena pelo número do ID
+    const ids = Object.keys(ALUNOS_DB).sort((a,b)=>{
+      return parseInt(a.replace(/\D/g,'')) - parseInt(b.replace(/\D/g,''))
     });
-  });
-
-  document.getElementById('tela-cronograma').innerHTML = html;
-  document.getElementById('tela-cronograma').classList.add('ativo');
-  document.getElementById('tela-aluno').classList.remove('ativo');
-  document.getElementById('barra-busca').style.display = 'none';
+    
+    ids.forEach(id=>{
+      const a = ALUNOS_DB[id];
+      const statusClass = a.status === 'Ativo' ? 'status-ativo' : 'status-desativado';
+      corpo.innerHTML += `
+        <tr>
+          <td>${id}</td>
+          <td>${a.nome || '-'}</td>
+          <td>${a.plano || '-'}</td>
+          <td>${a.horario || '-'}</td>
+          <td>${a.dias || '-'}</td>
+          <td>${a.freq || '-'}</td>
+          <td>${a.objetivo || '-'}</td>
+          <td>R$ ${a.valor || '-'}</td>
+          <td>${a.venc || '-'}</td>
+          <td class="${statusClass}">${a.status || '-'}</td>
+        </tr>
+      `;
+    });
+    
+    document.getElementById('loading').style.display='none';
+    document.getElementById('tabela').style.display='table';
+    
+  }catch(e){
+    document.getElementById('loading').innerText = 'ERRO: Crie o arquivo cronograma.json primeiro';
+  }
 }
 
-function gerarTabela(lista, idDestaque){
-  let html = `<div class="tabela-wrapper"><table class="tabela-crono">
-    <thead><tr>
-      <th>Nº</th><th>ALUNO</th><th>DIAS</th><th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th><th>ID</th>
-    </tr></thead><tbody>`;
-
-  lista.forEach((a, i)=>{
-    let classe = (a.id === idDestaque && idDestaque!== 'ktp1')? 'destaque' : '';
-    html += `<tr class="${classe}">
-      <td>${i+1}</td>
-      <td class="col-nome">${a.nome}</td>
-      <td>${a.dias}</td>
-      <td>${a.freq}</td>
-      <td>${a.objetivo}</td>
-      <td>R$ ${a.valor}</td>
-      <td>${a.venc}</td>
-      <td class="${a.status.toLowerCase()==='ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
-      <td class="col-id">${a.id}</td>
-    </tr>`;
-  });
-  html += `</tbody></table></div>`;
-  return html;
-}
-
-function buscarAluno(){
-  const id = document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  idLogado = id;
-
-  if(id === ''){
-    alert('Digite um ID');
-    return;
-  }
-
-  if(id === 'ktp1'){
-    planoAtivo = 'PRESENCIAL';
-    mostrarTelaCronograma();
-    return;
-  }
-
-  const aluno = ALUNOS_DB[id];
-  if(!aluno){
-    alert('ID não encontrado');
-    return;
-  }
-
-  planoAtivo = aluno.plano;
-  mostrarTelaCronograma();
-
-  document.getElementById('tela-aluno').innerHTML = `
-    <div class="card">
-      <button class="btn-fechar" onclick="mostrarBusca()">X</button>
-      <div class="titulo-secao">MEUS DADOS</div>
-      <div class="dado-aluno"><b>ID:</b> ${id}</div>
-      <div class="dado-aluno"><b>Nome:</b> ${aluno.nome}</div>
-      <div class="dado-aluno"><b>Plano:</b> ${aluno.plano}</div>
-      <div class="dado-aluno"><b>Horário:</b> ${aluno.horario}</div>
-      <div class="dado-aluno"><b>Dias:</b> ${aluno.dias}</div>
-      <div class="dado-aluno"><b>Frequência:</b> ${aluno.freq}</div>
-      <div class="dado-aluno"><b>Objetivo:</b> ${aluno.objetivo}</div>
-      <div class="dado-aluno"><b>Mensalidade:</b> R$ ${aluno.valor}</div>
-      <div class="dado-aluno"><b>Vencimento:</b> ${aluno.venc}</div>
-      <div class="dado-aluno"><b>Status:</b> <span class="${aluno.status.toLowerCase()==='ativo'?'status-ativo':'status-desativado'}">${aluno.status}</span></div>
-    </div>
-  `;
-  document.getElementById('tela-aluno').classList.add('ativo');
-}
-
-window.onload = function(){
-  mostrarBusca();
-};
+carregarCronograma();
+// Atualiza sozinho a cada 10 segundos
+setInterval(carregarCronograma, 10000);
 </script>
 </body>
 </html>
