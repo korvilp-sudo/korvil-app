@@ -1,195 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MÓDULO 1 | K-TP OFF SEASON</title>
+<title>K-TP | KORVIL Treinamento 2026</title>
 <style>
-:root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --err:#ff3366; --borda:#1a1a1a;}
+:root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --borda:#1a1a1a;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text)}
-header{padding:14px 16px;border-bottom:2px solid var(--c);background:#050505;position:sticky;top:0}
-.logo{color:var(--c);font-weight:900;font-size:16px}
-.aulas{padding:10px}
-.aula{padding:12px;margin:8px 0;background:#111;border-radius:8px;border:1px solid var(--borda);cursor:pointer}
-.aula h3{font-size:13px;color:var(--c)}
-.aula p{font-size:10px;color:var(--text2)}
-.aula.completed{border-left:4px solid var(--ok)}
-#tela-aula{display:none;padding:16px}
-.video-wrap{position:relative;padding-top:56.25%;background:#000;border-radius:8px;margin-bottom:12px}
-.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.tema-nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-.tema-btn{padding:6px 10px;border:1px solid var(--borda);background:#0a0a0a;color:var(--text2);font-size:9px;border-radius:6px;cursor:pointer}
-.tema-btn.active{border-color:var(--c);color:var(--c)}
-.pagina-nav{display:flex;gap:6px;margin:10px 0}
-.p-btn{padding:5px 8px;border:1px solid var(--borda);background:#0a0a0a;color:var(--text2);font-size:9px;border-radius:6px;cursor:pointer}
-.p-btn.active{border-color:var(--c);color:var(--c)}
-.pagina{padding:12px;border:1px solid var(--borda);border-radius:8px;background:#0a0a0a;margin-top:10px;font-size:11px;line-height:1.6}
-.pagina h4{color:var(--c);margin-bottom:8px;font-size:12px}
-.avaliacao{margin-top:16px;padding:16px;border:2px solid var(--c);border-radius:8px}
-.questao{margin:12px 0;padding:10px;border:1px solid var(--borda);border-radius:6px;background:#0a0a0a;font-size:10px}
-.opcao{padding:6px;margin:4px 0;border:1px solid var(--borda);border-radius:4px;cursor:pointer;font-size:10px}
-.opcao.selecionada{border-color:var(--c)}
-.resultado{padding:10px;border-radius:6px;text-align:center;font-weight:800;font-size:11px;margin-top:10px}
-.resultado.aprovado{background:#00220f;color:var(--ok)}
-.resultado.reprovado{background:#220005;color:var(--err)}
-.btn{padding:10px 16px;border-radius:8px;border:0;background:var(--c);color:#001012;font-weight:900;cursor:pointer;font-size:11px;margin-top:10px}
+body{background:var(--bg);color:var(--text);padding-bottom:40px}
+header{padding:16px;border-bottom:2px solid var(--c);background:#050505;text-align:center;position:sticky;top:0;z-index:10}
+.logo{color:var(--c);font-weight:900;font-size:18px;letter-spacing:1px}
+.sub{font-size:10px;color:var(--text2);margin-top:4px}
+.fase{margin:12px;border:1px solid var(--borda);border-radius:10px;background:#0a0a0a;overflow:hidden}
+.fase-head{padding:14px;background:#050505;border-bottom:1px solid var(--borda)}
+.meses{font-size:10px;color:var(--c);font-weight:800;letter-spacing:1px}
+.titulo{font-size:14px;margin-top:4px;color:var(--text)}
+.desc{font-size:10px;color:var(--text2);margin-top:6px;line-height:1.4}
+.modulos{padding:8px}
+.modulo{padding:12px;margin:6px 0;background:#111;border-radius:8px;border:1px solid var(--borda);cursor:pointer;transition:.2s}
+.modulo:hover{background:#151515}
+.modulo h3{font-size:12px;color:var(--c)}
+.modulo p{font-size:10px;color:var(--text2);margin-top:4px}
+.modulo.locked{opacity:.3;pointer-events:none}
+.modulo.completed{border-left:4px solid var(--ok)}
 </style>
 </head>
 <body>
 
-<header><div class="logo">MÓDULO 1: OFF SEASON 1 - ADAPTAÇÃO | 20 AULAS</div></header>
+<header>
+  <div class="logo">K-TP 2026</div>
+  <div class="sub">PROJETO TRANSFORMAÇÃO 11° ANO | 11 MÓDULOS | JAN A NOV</div>
+</header>
 
-<div id="tela-aulas" class="aulas"></div>
-
-<div id="tela-aula" style="display:none">
-  <div class="video-wrap"><iframe id="video" src="https://www.youtube.com/embed/j3PdVh1j7e0" allowfullscreen></iframe></div>
-  <div id="conteudo-aula"></div>
-  <button class="btn" onclick="voltarAulas()" style="margin-top:20px">← VOLTAR PARA AULAS</button>
-</div>
+<div id="fases"></div>
 
 <script>
-const MODULO1 = {
-  nome:"MÓDULO 1: OFF SEASON 1 - ADAPTAÇÃO",
-  objetivo:"Regeneração | Adaptações | Aprendizados",
-  aulas:[]
-};
-
-// GERA 20 AULAS DO MODULO 1
-for(let a=1;a<=20;a++){
-  const semana = Math.ceil(a/5);
-  const dia = ["Segunda","Terça","Quarta","Quinta","Sexta"][(a-1)%5];
-  const tipo = ["MANUTENÇÃO","RESISTÊNCIA","FORÇA","HIPERTROFIA"][(a-1)%4];
-
-  MODULO1.aulas.push({
-    id:`M1A${a}`,
-    nome:`Aula ${a}: Semana ${semana} - ${dia} | ${tipo}`,
-    temas:[
-      {nome:`Tema 1: Conceito ${tipo}`, paginas:[
-        `PÁGINA 1 - OBJETIVO: Entender o que é ${tipo} no OFF SEASON. Foco: ${MODULO1.objetivo}.`,
-        `PÁGINA 2 - MATERIAIS: Carga leve 40-50%, elástico, rolo. Prioridade técnica.`,
-        `PÁGINA 3 - EXECUÇÃO: 3x15 reps. Pausa 90s. Movimento controlado 3s negativa.`,
-        `PÁGINA 4 - TREINO: Fullbody A. Agacho, Supino, Remada, OHP, Rosca. ${tipo}.`,
-        `PÁGINA 5 - ALIMENTAÇÃO: Calorias de manutenção. Proteína 2g/kg. Carbo moderado.`
-      ]},
-      {nome:`Tema 2: Técnica ${tipo}`, paginas:[
-        `PÁGINA 1 - OBJETIVO: Aprender execução perfeita para base do ano todo.`,
-        `PÁGINA 2 - MATERIAIS: Espelho, vídeo, professor para corrigir.`,
-        `PÁGINA 3 - EXECUÇÃO: Amplitude total. Travar escápula. Core ativado.`,
-        `PÁGINA 4 - TREINO: 1 exercício por grupo. Foco em sentir o músculo.`,
-        `PÁGINA 5 - ALIMENTAÇÃO: Hidratação 40ml/kg. Creatina 3g.`
-      ]},
-      {nome:`Tema 3: Nutrição OFF SEASON`, paginas:[
-        `PÁGINA 1 - OBJETIVO: Preparar metabolismo para Bulking que vem em Março.`,
-        `PÁGINA 2 - MATERIAIS: Balança, app MyFitnessPal, marmitas.`,
-        `PÁGINA 3 - EXECUÇÃO: 5 refeições. Não pular café da manhã.`,
-        `PÁGINA 4 - TREINO: Comer 1h antes do treino. Carbo + Proteína.`,
-        `PÁGINA 5 - ALIMENTAÇÃO: Arroz, feijão, frango, batata, ovo. Comida de verdade.`
-      ]},
-      {nome:`Tema 4: Recuperação`, paginas:[
-        `PÁGINA 1 - OBJETIVO: Recuperar para suportar carga maior nas próximas fases.`,
-        `PÁGINA 2 - MATERIAIS: Sono 8h, alongamento, rolo.`,
-        `PÁGINA 3 - EXECUÇÃO: 10min alongamento pós treino. Mobilidade diária.`,
-        `PÁGINA 4 - TREINO: Deixar 2 reps na reserva. Não ir até falha.`,
-        `PÁGINA 5 - ALIMENTAÇÃO: Ômega 3, Magnésio, Vitamina D. Anti-inflamatório natural.`
-      ]},
-      {nome:`Tema 5: Revisão Semana`, paginas:[
-        `PÁGINA 1 - OBJETIVO: Avaliar se adaptou ao ${tipo}.`,
-        `PÁGINA 2 - MATERIAIS: Caderno de treino, fotos.`,
-        `PÁGINA 3 - EXECUÇÃO: Anotar cargas, sensações, dores.`,
-        `PÁGINA 4 - TREINO: Teste: fazer 15 reps com 50% 1RM.`,
-        `PÁGINA 5 - ALIMENTAÇÃO: Ajustar +200kcal se energia estiver baixa.`
-      ]}
+const FASES = [
+  {
+    id:1, nome:"FASE 1: OFF SEASON - ADAPTAÇÃO GERAL",
+    meses:"JANEIRO A FEVEREIRO",
+    desc:"Fase de adaptação total de corpo e mente. Aumentar ingestão calórica de forma estratégica para elevar energia, disposição e preparar o metabolismo para o bulking.",
+    modulos:[
+      {id:1, nome:"MÓDULO 1: JANEIRO", aulas:20},
+      {id:2, nome:"MÓDULO 2: FEVEREIRO", aulas:20}
     ]
-  })
-}
-
-// 20 QUESTOES DO MODULO 1
-const QUESTOES_M1 = [];
-for(let q=1;q<=20;q++){
-  QUESTOES_M1.push({
-    q:`${q}. Qual o principal objetivo do OFF SEASON?`,
-    o:["Ganhar massa rápido","Regeneração e Adaptação","Secar e definir","Parar de treinar"],
-    r:1
-  })
-}
-
-let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('m1_concluidas')||'[]')};
-
-// RENDER AULAS
-function renderAulas(){
-  let html='';
-  MODULO1.aulas.forEach(a=>{
-    const ok=estado.concluidas.includes(a.id);
-    html+=`<div class="aula ${ok?'completed':''}" onclick="abrirAula('${a.id}')"><h3>${a.nome}</h3><p>5 Temas • 25 Páginas ${ok?'✓ Concluída':''}</p></div>`;
-  });
-  document.getElementById('tela-aulas').innerHTML=html;
-}
-
-// ABRIR AULA
-function abrirAula(aulaId){
-  estado.aula=aulaId;estado.tema=1;estado.pagina=1;estado.respostas={};
-  document.getElementById('tela-aulas').style.display='none';
-  document.getElementById('tela-aula').style.display='block';
-
-  const aula=MODULO1.aulas.find(x=>x.id===aulaId);
-  let nav='';aula.temas.forEach((t,i)=>nav+=`<button class="tema-btn ${i===0?'active':''}" onclick="trocarTema(${i+1})">${t.nome}</button>`);
-
-  document.getElementById('conteudo-aula').innerHTML=`
-    <div style="font-size:10px;color:var(--text2)">MÓDULO 1 > ${aula.nome}</div>
-    <h2 style="color:var(--c);font-size:14px;margin:8px 0">${aula.nome}</h2>
-    <div style="font-size:10px;color:var(--c);margin-bottom:10px">OBJETIVO DA FASE: ${MODULO1.objetivo}</div>
-    <div class="tema-nav">${nav}</div>
-    <div id="paginaArea"></div>
-  `;
-  renderPagina();
-}
-
-function trocarTema(t){estado.tema=t;estado.pagina=1;document.querySelectorAll('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));renderPagina()}
-function trocarPagina(p){estado.pagina=p;document.querySelectorAll('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));renderPagina()}
-
-function renderPagina(){
-  const aula=MODULO1.aulas.find(x=>x.id===estado.aula);
-  const tema=aula.temas[estado.tema-1];
-  let html=`<div class="pagina"><h4>Página ${estado.pagina} – ${['Objetivo','Materiais','Execução','Treino','Alimentação'][estado.pagina-1]}</h4><p>${tema.paginas[estado.pagina-1]}</p>`;
-
-  if(estado.pagina===5){
-    html+=`<div class="avaliacao"><h3>📝 AVALIAÇÃO FINAL MÓDULO 1 - 20 QUESTÕES</h3><p>Precisa 70% = 14 acertos para concluir</p><div id="q"></div><button class="btn" id="env">Enviar Avaliação</button><div id="res"></div></div>`;
+  },
+  {
+    id:2, nome:"FASE 2: BULKING - HIPERTROFIA MÁXIMA",
+    meses:"MARÇO A MAIO",
+    desc:"Fase prioritária de construção. Objetivo: hipertrofia muscular, ganho de força. Regra básica: comer mais do que gasta. Dieta limpa e protocolar.",
+    modulos:[
+      {id:3, nome:"MÓDULO 3: MARÇO", aulas:20},
+      {id:4, nome:"MÓDULO 4: ABRIL", aulas:20},
+      {id:5, nome:"MÓDULO 5: MAIO", aulas:20}
+    ]
+  },
+  {
+    id:3, nome:"FASE 3: MAINTENANCE - CONSOLIDAÇÃO",
+    meses:"JUNHO A AGOSTO",
+    desc:"Fase de manutenção e consolidação dos ganhos. Manter massa magra, reduzir gordura e densificar musculatura. Preparação para o cutting.",
+    modulos:[
+      {id:6, nome:"MÓDULO 6: JUNHO", aulas:20},
+      {id:7, nome:"MÓDULO 7: JULHO", aulas:20},
+      {id:8, nome:"MÓDULO 8: AGOSTO", aulas:20}
+    ]
+  },
+  {
+    id:4, nome:"FASE 4: CUTTING - DEFINIÇÃO TOTAL",
+    meses:"SETEMBRO A NOVEMBRO",
+    desc:"Fase de finalização. Eliminar máximo de gordura preservando 100% da massa muscular. Dieta rigorosa com déficit calórico. Resultado aparece aqui.",
+    modulos:[
+      {id:9, nome:"MÓDULO 9: SETEMBRO", aulas:20},
+      {id:10, nome:"MÓDULO 10: OUTUBRO", aulas:20},
+      {id:11, nome:"MÓDULO 11: NOVEMBRO", aulas:20}
+    ]
   }
-  html+=`</div>`;
-  let btns='<div class="pagina-nav">';for(let p=1;p<=5;p++)btns+=`<button class="p-btn ${p===estado.pagina?'active':''}" onclick="trocarPagina(${p})">${p}</button>`;btns+='</div>';
-  document.getElementById('paginaArea').innerHTML=btns+html;
-  if(document.getElementById('env'))carregarQuestoes();
+];
+
+const concluidas = JSON.parse(localStorage.getItem('ktp_modulos')||'[]');
+
+function getMesLibera(m){
+  if(m<=2)return 1; if(m<=5)return 3; if(m<=8)return 6; return 9;
 }
 
-function carregarQuestoes(){
-  let h='';
-  QUESTOES_M1.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});
-  document.getElementById('q').innerHTML=h;
-  document.querySelectorAll('.opcao').forEach(o=>o.onclick=()=>{estado.respostas[+o.dataset.q]=+o.dataset.o;document.querySelectorAll('.opcao[data-q="'+o.dataset.q+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});
-  document.getElementById('env').onclick=corrigir;
-}
+let html='';
+FASES.forEach(f=>{
+  html+=`<div class="fase"><div class="fase-head"><div class="meses">${f.meses}</div><div class="titulo">${f.nome}</div><div class="desc">${f.desc}</div></div><div class="modulos">`;
 
-function corrigir(){
-  let ac=0;QUESTOES_M1.forEach((q,i)=>{if(estado.respostas[i]===q.r)ac++});
-  const pct=Math.round(ac/QUESTOES_M1.length*100);const ok=pct>=70;
-  document.getElementById('res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO':'REPROVADO'}: ${ac}/20 = ${pct}%</div>${ok?'<button class="btn" onclick="concluirModulo()">Concluir Módulo 1</button>':'<button class="btn" onclick="location.reload()">Refazer</button>'}`;
-  if(ok){if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('m1_concluidas',JSON.stringify(estado.concluidas));}
-}
+  f.modulos.forEach(m=>{
+    const mesLibera = getMesLibera(m.id);
+    const mesAtual = new Date().getMonth()+1;
+    const locked = mesAtual < mesLibera;
+    const ok = concluidas.includes(m.id);
+    html+=`<div class="modulo ${locked?'locked':''} ${ok?'completed':''}" onclick="abrirModulo(${m.id})">
+      <h3>${m.nome}</h3>
+      <p>${m.aulas} Aulas • 5 Temas • 5 Páginas por Tema ${ok?'✓ Concluído':''} ${locked?'🔒 Libera em '+mesLibera+'/2026':''}</p>
+    </div>`;
+  });
 
-function concluirModulo(){
-  alert('MÓDULO 1 CONCLUÍDO! Agora você pode ir para o Módulo 2');
-  voltarAulas();
-}
+  html+=`</div></div>`;
+});
 
-function voltarAulas(){
-  document.getElementById('tela-aulas').style.display='block';
-  document.getElementById('tela-aula').style.display='none';
-  renderAulas();
-}
+document.getElementById('fases').innerHTML=html;
 
-renderAulas();
+function abrirModulo(m){
+  window.location=`modulo-${m}.html`;
+}
 </script>
 </body>
 </html>
