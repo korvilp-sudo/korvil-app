@@ -187,6 +187,44 @@ function mostrarTelaCronograma(){
   html += `<div class="titulo-secao">📋 CRONOGRAMA ${planoAtivo}</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
+  // SE FOR KTP1 MOSTRA OS 2 PLANOS. SE NÃO MOSTRA SÓ 1 ALUNO
+  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+
+  planosParaMostrar.forEach(plano=>{
+    if(idLogado === 'ktp1') html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0;border-bottom:1px solid var(--borda);padding-bottom:8px">🌐 ${plano} 🌐</div>`;
+
+    HORARIOS_ORDEM.forEach(horario=>{
+      if(plano === 'ONLINE' &&!horario.includes('14h00')) return;
+      if(plano === 'PRESENCIAL' && horario.includes('14h00')) return;
+
+      // FILTRO: ktp1 = todos do plano. Aluno = só ele
+      const alunosDoHorario = idLogado === 'ktp1'
+    ? alunos.filter(a => a.plano === plano && a.horario === horario)
+        : alunos.filter(a => a.plano === plano && a.horario === horario && a.id === idLogado);
+
+      if(alunosDoHorario.length === 0) return;
+
+      html += `<div class="grupo-horario">🕒 ${horario}</div>`;
+
+      const ativos = alunosDoHorario.filter(a=>a.status.toLowerCase()==='ativo');
+      const desativados = alunosDoHorario.filter(a=>a.status.toLowerCase()==='desativado');
+
+      if(ativos.length > 0){
+        html += `<div class="grupo-status">✅ ATIVOS</div>`;
+        html += gerarTabela(ativos, idLogado);
+      }
+      if(desativados.length > 0){
+        html += `<div class="grupo-status">❌ DESATIVADOS</div>`;
+        html += gerarTabela(desativados, idLogado);
+      }
+    });
+  });
+
+  document.getElementById('tela-cronograma').innerHTML = html;
+  document.getElementById('tela-cronograma').classList.add('ativo');
+  document.getElementById('tela-aluno').classList.remove('ativo');
+  document.getElementById('barra-busca').style.display = 'none';
+}
   const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
 
   planosParaMostrar.forEach(plano=>{
