@@ -1,80 +1,191 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<head><meta charset="UTF-8">
-<title>Cronograma Alunos - KTP</title>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
+<title>K-TP PROJETO TRANSFORMAÇÃO 2026</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-body{background:#000;color:#00f5ff;font-family:'Orbitron',sans-serif;padding:20px}
-h1{text-align:center;text-shadow:0 0 10px #00f5ff}
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{border:1px solid #00f5ff;padding:10px;text-align:left;font-size:12px}
-th{background:#001a33}
-tr:hover{background:#001a33}
-.status-ativo{color:#00ff88} .status-desativado{color:#ff0066}
-#loading{text-align:center;padding:20px}
+:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444; --aviso:#ffaa00;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
+.header{padding:12px 16px 12px 56px;text-align:left;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
+h1{font-size:14px;font-weight:900;color:var(--c);}
+.menu-btn{position:fixed;top:10px;left:12px;z-index:101;background:var(--c);color:#000;border:0;border-radius:6px;padding:6px 8px;font-weight:900;font-size:16px;cursor:pointer;}
+.btn-aluno{padding:6px 10px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;font-size:10px;cursor:pointer;}
+#menu-lateral{position:fixed;left:-280px;top:0;width:260px;height:100%;background:#0a0a0a;border-right:1px solid var(--c);z-index:200;transition:.3s;overflow-y:auto;padding:60px 0 20px;}
+#menu-lateral.ativo{left:0;}
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:199;display:none;}
+#overlay.ativo{display:block;}
+.container{padding:12px;max-width:100%;margin:auto;overflow-x:auto;}
+.card-aluno{background:#001a1a;border:2px solid var(--c);border-radius:10px;padding:12px;margin-bottom:12px;position:relative;}
+.card-aluno h2{font-size:12px;color:var(--c);margin-bottom:6px;}
+.card-aluno p{font-size:11px;color:var(--text2);line-height:1.6;}
+.btn-fechar-resultado{position:absolute;top:8px;right:8px;background:var(--erro);color:#fff;border:0;border-radius:50%;width:22px;height:22px;font-weight:900;font-size:12px;cursor:pointer;line-height:22px;text-align:center;}
+.obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
+.titulo-crono{font-size:16px;font-weight:900;text-align:center;color:var(--c);margin-bottom:10px;}
+.msg-inicial{text-align:center;color:var(--text2);font-size:12px;margin-top:40px;}
+.abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
+.aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
+.aba-plano.ativa{background:var(--c);color:#000;}
+.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
+.tabela-crono{width:100%;border-collapse:collapse;font-size:9px;}
+.tabela-crono th{background:#111;color:var(--c);padding:6px 4px;text-align:left;font-size:8px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);white-space:nowrap;}
+.tabela-crono td{padding:6px 4px;border-bottom:1px solid #1a1a1a;white-space:nowrap;}
+.tabela-crono tbody tr.destaque{background:#001a1a;box-shadow:0 0 0 2px var(--c) inset;}
+.grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
+.grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
+.status-ativo{color:var(--ok);font-weight:900;}
+.status-desativado{color:var(--erro);font-weight:900;}
+#modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+#modal-aluno.ativo{display:flex;}
+.modal-card{background:var(--card);border:2px solid var(--c);border-radius:10px;padding:16px;width:100%;max-width:400px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.btn-fechar{background:var(--erro);color:#fff;border:0;border-radius:4px;padding:4px 8px;font-weight:900;cursor:pointer;}
+.busca-id{display:flex;gap:6px;}
+.busca-id input{flex:1;padding:8px;background:#000;border:1px solid var(--borda);border-radius:4px;color:#fff;font-size:12px;}
+.busca-id button{padding:8px 10px;background:var(--c);color:#000;border:0;border-radius:4px;font-weight:900;cursor:pointer;}
 </style>
 </head>
 <body>
 
-<h1>CRONOGRAMA ALUNOS - PROJETO TRANSFORMAÇÃO 2026</h1>
-<div id="loading">CARREGANDO DADOS...</div>
-<table id="tabela" style="display:none">
-  <thead>
-    <tr>
-      <th>ID</th><th>NOME</th><th>PLANO</th><th>HORARIO</th><th>DIAS</th>
-      <th>FREQ</th><th>OBJETIVO</th><th>VALOR</th><th>VENC</th><th>STATUS</th>
-    </tr>
-  </thead>
-  <tbody id="corpoTabela"></tbody>
-</table>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="header">
+  <h1>K-TP PROJETO TRANSFORMAÇÃO 2026</h1>
+  <button class="btn-aluno" onclick="abrirBuscaAluno()">👤 COLAR ID</button>
+</div>
+<div id="overlay" onclick="toggleMenu()"></div>
+<div id="menu-lateral"></div>
+
+<div class="container">
+  <div id="info-aluno-container"></div>
+  <div id="cronograma-container"><div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div></div>
+</div>
+
+<div id="modal-aluno">
+  <div class="modal-card">
+    <div class="modal-header"><div style="font-weight:900;color:var(--c)">BUSCAR ALUNO</div><button class="btn-fechar" onclick="fecharBuscaAluno()">X</button></div>
+    <div class="busca-id"><input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()"><button onclick="buscarAluno()">BUSCAR</button></div>
+    <div id="resultado-aluno" style="margin-top:10px;font-size:11px;"></div>
+  </div>
+</div>
 
 <script>
-const REPO = "korvilp-sudo/korvil-app";
-const ARQ = "sections/ktp/projetotransformacao/projetos/2026/cronograma.json";
+const ALUNOS_DB = {
+  "ktp1": {nome:"SAY KORVIL", tipo:"ADMIN"},
+  "mag0": {nome:"Magda Gomes dos Santos", tipo:"ADMIN"}
+};
 
-async function carregarCronograma(){
-  try{
-    const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${ARQ}?t=${Date.now()}`);
-    const ALUNOS_DB = await res.json();
-    
-    const corpo = document.getElementById('corpoTabela');
-    corpo.innerHTML = '';
-    
-    // Ordena pelo número do ID
-    const ids = Object.keys(ALUNOS_DB).sort((a,b)=>{
-      return parseInt(a.replace(/\D/g,'')) - parseInt(b.replace(/\D/g,''))
-    });
-    
-    ids.forEach(id=>{
-      const a = ALUNOS_DB[id];
-      const statusClass = a.status === 'Ativo' ? 'status-ativo' : 'status-desativado';
-      corpo.innerHTML += `
-        <tr>
-          <td>${id}</td>
-          <td>${a.nome || '-'}</td>
-          <td>${a.plano || '-'}</td>
-          <td>${a.horario || '-'}</td>
-          <td>${a.dias || '-'}</td>
-          <td>${a.freq || '-'}</td>
-          <td>${a.objetivo || '-'}</td>
-          <td>R$ ${a.valor || '-'}</td>
-          <td>${a.venc || '-'}</td>
-          <td class="${statusClass}">${a.status || '-'}</td>
-        </tr>
-      `;
-    });
-    
-    document.getElementById('loading').style.display='none';
-    document.getElementById('tabela').style.display='table';
-    
-  }catch(e){
-    document.getElementById('loading').innerText = 'ERRO: Crie o arquivo cronograma.json primeiro';
+const CRONOGRAMA_DB = {
+  "PRESENCIAL": [
+    {hora:"06h00 🐦", alunos:[{n:1, aluno:"Adriana", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"adriana20"}]},
+    {hora:"07h00 🌙", alunos:[{n:2, aluno:"Angélica", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"angel02"}]},
+    {hora:"08h00 🐢", alunos:[
+      {n:1, aluno:"Maria Carla Carvalho Santos", cpf:"417.344.068-52", nascimento:"1996-04-22", idade:"30", genero:"Feminino", whatsapp:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", plano:"Presencial 3x", dias:"Terça, Quinta, Sexta", horario:"08:00", mensalidade:"R$100,00", matricula:"R$50,00", total:"R$150,00", valor:100, venc:"06/08/26", status:"Ativo", id:"carla38"},
+      {n:2, aluno:"Hellem Vitória Carvalho dos Santos", cpf:"417.344.078-24", nascimento:"1999-01-11", idade:"27", genero:"Feminino", whatsapp:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum.", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", plano:"Presencial 3x", dias:"Terça, Quinta, Sexta", horario:"08:00", mensalidade:"R$100,00", matricula:"R$50,00", total:"R$150,00", valor:100, venc:"06/08/26", status:"Ativo", id:"vhellem39"}
+    ]},
+    {hora:"09h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"10h00 🐙", alunos:[{n:3, aluno:"Paula Cristine", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"paula06"}]},
+    {hora:"16h00 🕊️", alunos:[{n:4, aluno:"Laura Jesus Aragão", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"lau08"}]},
+    {hora:"17h00 🐼", alunos:[{n:6, aluno:"Kátia Paoli", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"katiap11"}]},
+    {hora:"18h00 🐸", alunos:[{aluno:"Jucilene", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"juci29"}]},
+    {hora:"19h00 🌑", alunos:[
+      {n:9, aluno:"Nicoli da Silga Guedes", cpf:"397.764.168-96", nascimento:"2001-10-21", idade:"25", genero:"Feminino", whatsapp:"(13) 99657-4924", email:"nicolisgdss@gmail.com", nivel:"Iniciante", q1:"Apenas na epoca de escola", q2:"Nao me alimento corretamente", q3:"7/8h", q4:"Nao", q5:"Resistencia de braco e pernas, pois nao tenho forca", q6:"Nao", q7:"Sim", q8:"Sim", q9:"Nao", objetivo:"Definição Muscular | Condicionamento Físico | Reabilitação Física | Saúde", plano:"Presencial 3x", dias:"Segunda, Quarta, Sexta", horario:"19:00", mensalidade:"R$100,00", matricula:"R$50,00", total:"R$150,00", valor:100, venc:"--", status:"Ativo", id:"nicoli25"}
+    ]},
+    {hora:"20h00 ⭐", alunos:[{n:10, aluno:"José Gonzaga", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"Hipertrofia", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:100, venc:"08/10/25", status:"Ativo", id:"gon19"}]},
+    {hora:"21h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"22h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"23h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"00h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"01h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"02h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"03h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"04h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+    {hora:"05h00", alunos:[{aluno:"--", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"--", id:"--"}]},
+  ],
+  "ONLINE": [
+    {hora:"14h00", alunos:[
+      {n:11, aluno:"Tchuco", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"tchu37"},
+      {aluno:"Daniele Vieira Leite", cpf:"--", nascimento:"--", idade:"--", genero:"--", whatsapp:"--", email:"--", nivel:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", objetivo:"--", plano:"--", dias:"--", horario:"--", mensalidade:"--", matricula:"--", total:"--", valor:"--", venc:"--", status:"Desativado", id:"dani36"}
+    ]}
+  ]
+};
+
+let planoAtivo = 'PRESENCIAL';
+let idLogado = '';
+
+function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
+function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
+function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
+function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
+
+function buscarAluno(){
+  const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
+  let encontrado = ALUNOS_DB[id] || Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
+  if(!encontrado){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';return;}
+  idLogado = id;
+  fecharBuscaAluno();
+  mostrarDadosAluno(id);
+  mostrarCronograma();
+}
+
+function mostrarDadosAluno(id){
+  const aluno = ALUNOS_DB[id];
+  const container = document.getElementById('info-aluno-container');
+  if(aluno?.tipo === 'ADMIN'){
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
+  } else {
+    const dadosCrono = Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${dadosCrono.aluno}<br><b>Plano:</b> ${dadosCrono.plano}<br><b>Horário:</b> ${dadosCrono.dias} - ${dadosCrono.horario}<br><b>Objetivo:</b> ${dadosCrono.objetivo}</p></div>`;
   }
 }
 
-carregarCronograma();
-// Atualiza sozinho a cada 10 segundos
-setInterval(carregarCronograma, 10000);
+function trocarAba(plano, el){
+  planoAtivo = plano;
+  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
+  el.classList.add('ativa');
+  mostrarCronograma();
+}
+
+function mostrarCronograma(){
+  const container = document.getElementById('cronograma-container');
+  let html = '';
+  const ehAdmin = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
+  const planoDoAluno = ehAdmin? planoAtivo : 'PRESENCIAL';
+
+  html += `<div class="titulo-crono">📋 CRONOGRAMA K-TP 2026</div>`;
+  if(ehAdmin){
+    html += `<div class="obs-pix">MODO ADMIN: Visualizando todos os alunos<br><b>Pix: korvilloja@gmail.com</b></div>`;
+    html += `<div class="abas-plano"><button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button><button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button></div>`;
+  }
+
+  const planosParaRenderizar = ehAdmin? [planoAtivo] : ['PRESENCIAL'];
+  planosParaRenderizar.forEach(plano=>{
+    html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+    CRONOGRAMA_DB[plano].forEach(bloco=>{
+      html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
+      let alunosParaMostrar = ehAdmin? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+
+      if(alunosParaMostrar.length > 0){
+        html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>
+          <th>Nº</th><th>Aluno</th><th>Status</th><th>CPF</th><th>Nasc</th><th>Idade</th><th>Genero</th><th>WhatsApp</th><th>Email</th>
+          <th>Nivel</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th>
+          <th>Objetivo</th><th>Plano</th><th>Dias</th><th>Horario</th><th>Mensal</th><th>Matricula</th><th>Total</th><th>Venc</th><th>ID</th>
+        </tr></thead><tbody>`;
+        alunosParaMostrar.forEach(a=>{
+          html += `<tr ${a.id===idLogado?'class="destaque"':''}>
+            <td>${a.n||''}</td><td>${a.aluno}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td>
+            <td>${a.cpf}</td><td>${a.nascimento}</td><td>${a.idade}</td><td>${a.genero}</td><td>${a.whatsapp}</td><td>${a.email}</td>
+            <td>${a.nivel}</td><td>${a.q1}</td><td>${a.q2}</td><td>${a.q3}</td><td>${a.q4}</td><td>${a.q5}</td><td>${a.q6}</td><td>${a.q7}</td><td>${a.q8}</td><td>${a.q9}</td>
+            <td>${a.objetivo}</td><td>${a.plano}</td><td>${a.dias}</td><td>${a.horario}</td><td>${a.mensalidade}</td><td>${a.matricula}</td><td>${a.total}</td><td>${a.venc}</td><td style="font-weight:900;color:var(--c)">${a.id}</td>
+          </tr>`;
+        });
+        html += `</tbody></table></div>`;
+      }
+    });
+  });
+  container.innerHTML = html;
+}
 </script>
 </body>
 </html>
