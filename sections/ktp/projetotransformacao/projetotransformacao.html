@@ -212,30 +212,8 @@ const FASES_MENU = {
 };
 
 const CRONOGRAMA_DB = {
-  "PRESENCIAL": [
-    {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[{aluno:"Adriana", dias:"Ter Qua", objetivo:"Emagrecimento", valor:80, venc:"24/03/26", status:"Desativado", id:"adriana20"},{aluno:"Jossiane Alves", dias:"Seg a Sex", objetivo:"Definição", valor:150, venc:"24/10/25", status:"Desativado", id:"joss21"},{aluno:"amigaadrum", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrum"},{aluno:"amigaadrdois", dias:"–", objetivo:"Saúde", valor:"–", venc:"–", status:"Desativado", id:"amigaadrdois"}]},
-    {hora:"07h00 🌙", status:"DESATIVADOS", alunos:[{aluno:"Angélica", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"30/05/25", status:"Desativado", id:"angel02"},{aluno:"Ana Paula", dias:"Seg Qua Sex", objetivo:"Definição", valor:50, venc:"05/07/25", status:"Desativado", id:"anapaula22"},{aluno:"Gustavo Geraldino", dias:"Seg Qua Sex", objetivo:"Cond. Físico", valor:50, venc:"05/07/25", status:"Desativado", id:"gusta23"},{aluno:"Sueli", dias:"Ter Qui Sex", objetivo:"Definição", valor:100, venc:"09/02/26", status:"Desativado", id:"sueli24"},{aluno:"Fabiana", dias:"Ter Qui", objetivo:"Emagrecimento", valor:80, venc:"27/01/26", status:"Desativado", id:"fabi03"}]},
-    {hora:"08h00 🐢", status:"DESATIVADOS", alunos:[{aluno:"Alexandra", dias:"Ter Qui", objetivo:"Hipertrofia", valor:80, venc:"15/07/25", status:"Desativado", id:"alexandra25"},{aluno:"Michele B", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"22/10/25", status:"Desativado", id:"michele26"},{aluno:"Aline", dias:"Seg Qui", objetivo:"Definição", valor:80, venc:"10/02/26", status:"Desativado", id:"aline27"}]},
-    {hora:"10h00 🐙", status:"DESATIVADOS", alunos:[{aluno:"Paula Cristine", dias:"Ter a Sex", objetivo:"Condicionamento físico", valor:130, venc:"15/03/26", status:"Desativado", id:"paula06"},{aluno:"Natan Osvath Paoli", dias:"Seg Qua Sex", objetivo:"Saúde", valor:100, venc:"07/08/25", status:"Desativado", id:"nop07"},{aluno:"Bianca", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"19/11/25", status:"Desativado", id:"bianca28"}]},
-    {hora:"16h00 🕊️", status:"DESATIVADOS", alunos:[{aluno:"Laura Jesus Aragão", dias:"Seg Qui", objetivo:"Emagrecimento", valor:80, venc:"05/01/26", status:"Desativado", id:"lau08"},{aluno:"Cassandra Jesus", dias:"Seg Ter Qui", objetivo:"Hipertrofia", valor:100, venc:"07/01/26", status:"Desativado", id:"cass09"}]},
-    {hora:"17h00 🐼", status:"DESATIVADOS", alunos:[{aluno:"Kátia Paoli", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"26/03/26", status:"Desativado", id:"katiap11"},{aluno:"Lucimara", dias:"Ter Qui Sex", objetivo:"Emagrecimento", valor:100, venc:"10/11/25", status:"Desativado", id:"mara13"},{aluno:"Edna", dias:"Ter Qui Sex", objetivo:"Saúde", valor:100, venc:"10/11/25", status:"Desativado", id:"edn14"},{aluno:"Luciane Paoli", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"11/11/25", status:"Desativado", id:"banip12"},{aluno:"Marly", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"29/07/25", status:"Desativado", id:"marly18"},{aluno:"Maria Cristina", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"30/07/25", status:"Desativado", id:"mcris10"}]},
-    {hora:"18h00 🐸", status:"DESATIVADOS", alunos:[{aluno:"Jucilene", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"23/07/25", status:"Desativado", id:"juci29"},{aluno:"Jocélia", dias:"Seg Qua", objetivo:"Emagrecimento", valor:80, venc:"12/06/25", status:"Desativado", id:"joce30"},{aluno:"Marcos França", dias:"Sex", objetivo:"Saúde", valor:60, venc:"14/08/25", status:"Desativado", id:"marcosf31"},{aluno:"Lucas", dias:"Ter Qua Qui", objetivo:"Emagrecimento", valor:100, venc:"12/08/25", status:"Desativado", id:"lucas32"},{aluno:"Celidalva", dias:"Qua", objetivo:"Emagrecimento", valor:60, venc:"25/10/25", status:"Desativado", id:"celi33"},{aluno:"Jaqueline", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"jaque15"},{aluno:"Elisangela", dias:"Qua Sex", objetivo:"Emagrecimento", valor:80, venc:"16/01/26", status:"Desativado", id:"elisa16"}]},
-    {hora:"19h00 🌑", status:"DESATIVADOS", alunos:[{aluno:"Gicelia", dias:"Seg Qua", objetivo:"Saúde", valor:80, venc:"09/02/26", status:"Desativado", id:"gice01"},{aluno:"Patrícia", dias:"Seg Qua Sex", objetivo:"Definição", valor:100, venc:"–", status:"Desativado", id:"pati34"},{aluno:"Melissa", dias:"Seg Qua Sex", objetivo:"Hipertrofia", valor:100, venc:"–", status:"Desativado", id:"mel35"},{aluno:"Natália Melo", dias:"Seg Qua Sex", objetivo:"Emagrecimento", valor:100, venc:"17/07/25", status:"Desativado", id:"naty17"}]},
-    {hora:"19h00 ⭐", status:"ATIVOS", alunos:[{n:1, aluno:"José Gonzaga", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:100, venc:"13/05/26", status:"Ativo", id:"gon19"}]},
-  ],
-  "ONLINE": [
-    {hora:"14h00", status:"ATIVOS", alunos:[{n:1, aluno:"Daniele Vieira Leite", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:60, venc:"13/05/26", status:"Ativo", id:"dani36"}]},
-    {hora:"", status:"DESATIVADOS", alunos:[{aluno:"Tchuco", dias:"Online", objetivo:"Condicionamento físico", valor:"–", venc:"06/04/26", status:"Desativado", id:"tchu37"}]}
-  ]
-};
+  
 
-const ALUNOS_DB = {
-  "carla38": {nome:"Maria Carla", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", objetivo:"Definição muscular"},
-  "vhellem39": {nome:"Hellem Vitoria", plano:"PRESENCIAL", horario:"08h00 🐢", dias:"Seg • Qua • Sex", objetivo:"Definição muscular"},
-  "gon19": {nome:"José Gonzaga", plano:"PRESENCIAL", horario:"19h00 ⭐", dias:"Seg • Qua • Sex", objetivo:"Hipertrofia"},
-  "dani36": {nome:"Daniele Vieira Leite", plano:"ONLINE", horario:"14h00", dias:"Seg a Sex", objetivo:"Definição"},
-  "ktp1": {nome:"SAY KORVIL", plano:"ADMIN", horario:"--", dias:"--", objetivo:"ADMIN"}
-};
 
 let planoAtivo = 'PRESENCIAL';
 let idLogado = '';
@@ -243,7 +221,7 @@ let idLogado = '';
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
+function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em Buscar ID" e digite seu ID para mostrar seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
 function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 
 function carregarMenu(){
