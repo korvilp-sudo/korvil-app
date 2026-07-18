@@ -16,11 +16,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - run: |
+      - name: Baixar repo
+        uses: actions/checkout@v4
+        
+      - name: Criar arquivo JSON
+        run: |
           mkdir -p sections/ktp/projetotransformacao/projetos/2026
           printf '%s' '${{ inputs.dados }}' > sections/ktp/projetotransformacao/projetos/2026/${{ inputs.id }}.json
-      - run: |
+          
+      - name: Commit e Push
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add.
