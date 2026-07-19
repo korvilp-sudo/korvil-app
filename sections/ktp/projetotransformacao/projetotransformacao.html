@@ -129,7 +129,9 @@ function mostrarDadosAluno(id){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${dadosCrono.aluno}<br><b>Plano:</b> ${dadosCrono.plano}<br><b>Horário:</b> ${dadosCrono.dias} - ${dadosCrono.horario}</p></div>`;
   }
 }
-
+  
+await carregarScript(BASE_URL + 'cronograma-de-alunos.js');
+  
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
