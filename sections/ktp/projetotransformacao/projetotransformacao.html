@@ -312,12 +312,14 @@ function carregarMenu(){
 function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
   const infoCompleta = MENU[data];
+  if(!infoCompleta) return;
+  
   const linhas = infoCompleta.split('\n');
   const titulo = linhas[0];
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
 
-  // PEGA A IMAGEM CERTA PELA PALAVRA DA SEMANA
+  // PEGA A IMAGEM CERTA PELA PALAVRA DA SEMANA - IGUAL DA IMAGEM
   const imagens = {
     'MANUTENÇÃO': 'semana-de-manutencao',
     'RESISTÊNCIA': 'semana-de-resistencia',
@@ -335,31 +337,41 @@ function mostrarInfoSemana(data){
   let html = `
     <div class="card-semana">
       <h3>${titulo}</h3>
-      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'">
-      <p><b>${subtitulo}</b></p>
+      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.style.display='none'">
+      <p style="color:var(--c);font-weight:900;margin-bottom:10px">${subtitulo}</p>
       <div class="mensagem-semana">${mensagem}</div>
       <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
     </div>
   `;
-  container.innerHTML = html;
+  
+  // SE JA TIVER CRONOGRAMA, ADICIONA EM CIMA. SE NAO, SUBSTITUI
+  if(container.querySelector('.titulo-crono')){
+    container.insertAdjacentHTML('afterbegin', html);
+  } else {
+    container.innerHTML = html;
+  }
+  
   if(window.innerWidth<768)toggleMenu();
 }
 
 window.onload=function(){
   carregarMenu();
 
-  // PEGA SEMPRE A SEGUNDA-FEIRA ATUAL
+  // PEGA SEMPRE A SEGUNDA-FEIRA ATUAL - CORRIGIDO FUSO HORARIO BR
   const hoje = new Date();
   const diaSemana = hoje.getDay(); // 0=Dom, 1=Seg...
   const diff = hoje.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
   const segundaAtual = new Date(hoje.setDate(diff));
-  const dataISO = segundaAtual.toISOString().split('T')[0]; // 2026-04-20
+  
+  const ano = segundaAtual.getFullYear();
+  const mes = String(segundaAtual.getMonth() + 1).padStart(2, '0');
+  const dia = String(segundaAtual.getDate()).padStart(2, '0');
+  const dataISO = `${ano}-${mes}-${dia}`; // 2026-08-03
 
   // SE EXISTIR MENSAGEM PRA ESSA DATA, JÁ MOSTRA
   if(MENSAGENS_SEMANA[dataISO]){
     mostrarInfoSemana(dataISO);
   } else {
-    // Se não tiver, mostra a primeira semana do ano
     mostrarInfoSemana("2026-01-05");
   }
 
