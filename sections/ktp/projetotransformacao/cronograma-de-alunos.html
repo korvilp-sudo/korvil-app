@@ -64,24 +64,13 @@ tr:hover{background:#0a0a0a;}
   </div>
 </div>
 
-<script>
-let ALUNOS_DB = {
-  "mag0": {nome:"Magda Gomes dos Santos", tipo:"ADMIN"},
-  "mcarla38": {nome:"Maria Carla Carvalho Santos", tipo:"ALUNO"},
-  "hvitoria39": {nome:"Hellem Vitória Carvalho dos Santos", tipo:"ALUNO"},
-  "gon19": {nome:"José Gonzaga", tipo:"ALUNO"},
-  "nicol42": {nome:"Nicoli da Silga Guedes", tipo:"ALUNO"},
-  "ktp1": {nome:"SAY KORVIL", tipo:"ADMIN"}
-};
-
-let CRONOGRAMA_DB = {
-  "PRESENCIAL": [
+"PRESENCIAL": [
     {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[]},
     {hora:"07h00 🌙", status:"DESATIVADOS", alunos:[]},
     {hora:"08h00 🐢", status:"ATIVOS", alunos:[
       {n:1, id:"mag0", aluno:"Magda Gomes dos Santos", dias:"Segunda, Terça, Quarta, Quinta, Sexta", freq:"5x", objetivo:"Definição Muscular", valor:"R$150,00", matricula:"R$50,00", total:"R$200,00", venc:"13/05/26", status:"Ativo", cpf:"112.505.24", nasc:"2026-07-27", idade:"0 anos", genero:"Feminino", whats:"(13) 99636-4009", email:"magdagomes998@gmail.com", nivel_atividade:"Intermediário", q1:"Sim", q2:"Irregular", q3:"9 horas", q4:"Não", q5:"Abdômen", q6:"Não", q7:"Sim", q8:"Sim", q9:"Anti depressivo", plano:"Presencial 5x"},
-      {n:2, id:"mcarla38", aluno:"Maria Carla Carvalho Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/03/26", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
-      {n:3, id:"hvitoria39", aluno:"Hellem Vitória Carvalho dos Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/03/26", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"}
+      {n:2, id:"mcarla38", aluno:"Maria Carla Carvalho Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
+      {n:3, id:"hvitoria39", aluno:"Hellem Vitória Carvalho dos Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"}
     ]},
     {hora:"09h00", status:"DESATIVADOS", alunos:[]},
     {hora:"10h00 🐙", status:"DESATIVADOS", alunos:[]},
@@ -104,11 +93,9 @@ let CRONOGRAMA_DB = {
     {hora:"04h00", status:"DESATIVADOS", alunos:[]},
     {hora:"05h00", status:"DESATIVADOS", alunos:[]},
   ],
-  "ONLINE": [
-    {hora:"14h00", status:"DESATIVADOS", alunos:[]}
-  ]
-};
 
+
+  
 let planoAtivo = 'PRESENCIAL';
 let idLogado = '';
 
