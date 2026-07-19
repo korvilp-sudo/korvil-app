@@ -355,6 +355,51 @@ window.onload=function(){
   // SE EXISTIR MENSAGEM PRA ESSA DATA, JÁ MOSTRA
   if(MENSAGENS_SEMANA[dataISO]){
     mostrarInfoSemana(dataISO);
+  } else {
+    // Se não tiver, mostra a primeira semana do ano
+    mostrarInfoSemana("2026-01-05");
+  }
+
+  if(idLogado && ALUNOS_DB[idLogado]){
+    mostrarDadosAluno(idLogado);
+    mostrarCronograma();
+  }
+};
+  
+  let pastaImagem = 'semana-de-manutencao';
+  for(let key in imagens){
+    if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
+  }
+
+  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
+  const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
+
+  let html = `
+    <div class="card-semana">
+      <h3>${titulo}</h3>
+      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'">
+      <p><b>${subtitulo}</b></p>
+      <div class="mensagem-semana">${mensagem}</div>
+      <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
+    </div>
+  `;
+  container.innerHTML = html;
+  if(window.innerWidth<768)toggleMenu();
+}
+
+window.onload=function(){
+  carregarMenu();
+
+  // PEGA SEMPRE A SEGUNDA-FEIRA ATUAL
+  const hoje = new Date();
+  const diaSemana = hoje.getDay(); // 0=Dom, 1=Seg...
+  const diff = hoje.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
+  const segundaAtual = new Date(hoje.setDate(diff));
+  const dataISO = segundaAtual.toISOString().split('T')[0]; // 2026-04-20
+
+  // SE EXISTIR MENSAGEM PRA ESSA DATA, JÁ MOSTRA
+  if(MENSAGENS_SEMANA[dataISO]){
+    mostrarInfoSemana(dataISO);
   }
 
   if(idLogado && ALUNOS_DB[idLogado]){
