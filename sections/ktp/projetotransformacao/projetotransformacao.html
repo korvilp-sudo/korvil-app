@@ -341,12 +341,12 @@ let CRONOGRAMA_DB = {
 };
 
 let planoAtivo = 'PRESENCIAL';
-let idLogado = '';
+let idLogado = localStorage.getItem('idLogado') || ''; // 1. CORRIGIDO: Pega do localStorage
 
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
+function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML=''; idLogado=''; localStorage.removeItem('idLogado');} // 2. CORRIGIDO: Limpa login ao sair
 function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 
 function carregarMenu(){
@@ -371,7 +371,6 @@ function mostrarInfoSemana(data){
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
 
-  // As 4 imagens se repetem em todas as fases
   const imagens = {
     'MANUTENÇÃO': 'semana-de-manutencao',
     'RESISTÊNCIA': 'semana-de-resistencia',
@@ -382,8 +381,7 @@ function mostrarInfoSemana(data){
   for(let key in imagens){
     if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
   }
-  
-  // CAMINHO CORRIGIDO PEGANDO DO SEU PRINT
+
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
 
@@ -410,40 +408,43 @@ function trocarAba(plano, el){
 function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
-  if(id === 'ktp1'){
+  if(!aluno) return;
+  if(aluno.tipo === 'ADMIN'){ // 3. CORRIGIDO: Agora verifica por tipo ADMIN
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
-    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`; // 4. CORRIGIDO: Removi plano/horario que não existe mais no ALUNOS_DB
   }
 }
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
+  if(!idLogado){ container.innerHTML = '<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; return; } // 5. CORRIGIDO: Se não tiver login não mostra nada
+
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
   html += `<div class="abas-plano">
     <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
     <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
   </div>`;
-  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+  const planosParaMostrar = ALUNOS_DB[idLogado]?.tipo === 'ADMIN'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo]; // 6. CORRIGIDO: Verifica por tipo ADMIN
   planosParaMostrar.forEach(plano=>{
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+      let alunosDoBloco = ALUNOS_DB[idLogado]?.tipo === 'ADMIN'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado); // 7. CORRIGIDO
       if(alunosDoBloco.length === 0) return;
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
       html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n) html += `<th>Nº</th>`;
+      if(bloco.alunos[0]?.n!== undefined) html += `<th>Nº</th>`; // 8. CORRIGIDO:?.
       html += `<th>Aluno</th><th>Dias</th>`;
-      if(bloco.alunos[0].freq) html += `<th>Freq</th>`;
+      if(bloco.alunos[0]?.freq) html += `<th>Freq</th>`; // 9. CORRIGIDO:?.
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
       alunosDoBloco.forEach(a=>{
         html += `<tr class="destaque">`;
-        if(a.n) html += `<td>${a.n}</td>`;
+        if(a.n!== undefined) html += `<td>${a.n}</td>`; // 10. CORRIGIDO
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+        html += `<td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`; // 11. CORRIGIDO: Tirei o R$ extra
       });
       html += `</tbody></table></div>`;
     });
@@ -457,7 +458,6 @@ function buscarAluno(){
   if(ALUNOS_DB[id]){
     idLogado = id;
     localStorage.setItem('idLogado', id);
-    if(id!== 'ktp1') planoAtivo = ALUNOS_DB[id].plano;
     fecharBuscaAluno();
     mostrarDadosAluno(id);
     mostrarCronograma();
@@ -470,7 +470,11 @@ function buscarAluno(){
 
 window.onload=function(){
   carregarMenu();
+  if(idLogado && ALUNOS_DB[idLogado]){ // 12. CORRIGIDO: Auto-login se tiver no localStorage
+    mostrarDadosAluno(idLogado);
+    mostrarCronograma();
+  }
 };
 </script>
 </body>
-</html>
+</html>  
