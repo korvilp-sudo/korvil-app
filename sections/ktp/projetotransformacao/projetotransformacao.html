@@ -362,12 +362,12 @@ function buscarAluno(){
 }
 
 window.onload=function(){
-  carregarMenu(); // CORRIGIDO: AGORA CARREGA O MENU
+  carregarMenu();
   if(idLogado && ALUNOS_DB[idLogado]){
     mostrarDadosAluno(idLogado);
     mostrarCronograma();
   }
 };
-</script>
+</script> <!-- FALTAVA FECHAR AQUI -->
 </body>
 </html>
