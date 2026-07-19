@@ -312,7 +312,7 @@ function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
   const infoCompleta = MENU[data];
   if(!infoCompleta) return;
-  
+
   const linhas = infoCompleta.split('\n');
   const titulo = linhas[0];
   const subtitulo = linhas[1];
@@ -342,7 +342,17 @@ function mostrarInfoSemana(data){
       <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
     </div>
   `;
-  
+
+  // SE JA TIVER CRONOGRAMA, ADICIONA EM CIMA. SE NAO, SUBSTITUI
+  if(container.querySelector('.titulo-crono')){
+    container.insertAdjacentHTML('afterbegin', html);
+  } else {
+    container.innerHTML = html;
+  }
+
+  if(window.innerWidth<768)toggleMenu();
+} // <- FECHOU A FUNÇÃO AQUI
+
 // FUNÇÃO NOVA: PEGA A SEGUNDA DA SEMANA E RESPEITA 01:00
 function getSegundaDaSemana(){
   const agora = new Date();
