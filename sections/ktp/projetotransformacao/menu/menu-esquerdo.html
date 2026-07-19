@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>MENU</title>
+<title>MENU K-TP 2026</title>
 <style>
 :root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --borda:#1a1a1a;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
@@ -21,7 +20,7 @@ body{background:var(--bg);color:var(--text);width:100%;padding-bottom:40px;}
 <div id="menu-conteudo"></div>
 
 <script>
-// BANCO DE DADOS OFICIAL DO MENU
+// BANCO DE DADOS OFICIAL DO MENU - IGUAL AO QUE VC MANDOU
 const MENSAGENS_2026_MENU = {
   "2026-01-05": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE MANUTENÇÃO`,
   "2026-01-12": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA`,
@@ -31,7 +30,6 @@ const MENSAGENS_2026_MENU = {
   "2026-02-09": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE RESISTÊNCIA`,
   "2026-02-16": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE FORÇA`,
   "2026-02-23": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 1: OFF SEASON\nSEMANA DE HIPERTROFIA`,
-
   "2026-03-02": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE MANUTENÇÃO`,
   "2026-03-09": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE RESISTÊNCIA`,
   "2026-03-16": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE FORÇA`,
@@ -45,7 +43,6 @@ const MENSAGENS_2026_MENU = {
   "2026-05-11": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE RESISTÊNCIA`,
   "2026-05-18": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE FORÇA`,
   "2026-05-25": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 2: BULKING\nSEMANA DE HIPERTROFIA`,
-
   "2026-06-01": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE MANUTENÇÃO`,
   "2026-06-08": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE RESISTÊNCIA`,
   "2026-06-15": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE FORÇA`,
@@ -60,7 +57,6 @@ const MENSAGENS_2026_MENU = {
   "2026-08-17": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE FORÇA`,
   "2026-08-24": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA`,
   "2026-08-31": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 3: MAINTENANCE\nSEMANA DE HIPERTROFIA`,
-
   "2026-09-07": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE RESISTÊNCIA`,
   "2026-09-14": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA`,
   "2026-09-21": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA`,
@@ -74,7 +70,6 @@ const MENSAGENS_2026_MENU = {
   "2026-11-16": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE FORÇA`,
   "2026-11-23": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA`,
   "2026-11-30": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - FASE 4: CUTTING\nSEMANA DE HIPERTROFIA`,
-
   "2026-12-07": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE RESISTÊNCIA`,
   "2026-12-14": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE FORÇA`,
   "2026-12-21": `K-TP | PROJETO TRANSFORMAÇÃO 11° ANO - DEZEMBRO: FÉRIAS\nSEMANA DE HIPERTROFIA`,
@@ -98,7 +93,7 @@ function carregarMenu(){
     html+=`<div class="semanas-da-fase">`;
     FASES_MENU.forEach(data=>{
       const segundaLinha = MENSAGENS_2026_MENU[data].split('\n')[1] || 'SEMANA';
-      html+=`<div class="semana-item" onclick="parent.mostrarSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
+      html+=`<div class="semana-item" onclick="parent.mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
     html+=`</div>`;
   }
