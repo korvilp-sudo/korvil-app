@@ -55,45 +55,35 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     <div class="fase-card">
       <div class="meses">JANEIRO A FEVEREIRO - OFF SEASON: PREPARO</div>
       <div class="titulo-fase"><span class="numero">1.</span> OFF SEASON - ADAPTAÇÃO GERAL</div>
-      <div class="desc-fase">
-        Fase de adaptação total de corpo e mente às rotinas do Projeto TRANSFORMAÇÃO. Não existe dieta restritiva aqui. O objetivo é aumentar a ingestão calórica de forma estratégica para elevar energia, disposição, recuperação e preparar o metabolismo para o bulking. Para quem já fez o projeto no ano anterior, é o momento de liberdade consciente: aproveitar o que gosta sem sabotar os objetivos. Foco também na adaptação técnica: aprender execução correta dos exercícios e entender a metodologia semanal de cada fase. Essencial para ectomorfos e alunos com dificuldade de ganhar massa e peso. Se o objetivo for ganho de peso e hipertrofia, trabalhamos com superávit calórico. Se for emagrecimento e definição muscular, já iniciamos o controle calórico. Dieta mais liberal, mas sempre direcionada.
-      </div>
+      <div class="desc-fase">Fase de adaptação total de corpo e mente às rotinas do Projeto TRANSFORMAÇÃO...</div>
     </div>
 
     <!-- FASE 2: BULKING -->
     <div class="fase-card">
       <div class="meses">MARÇO A MAIO - BULKING: EVOLUÇÃO</div>
       <div class="titulo-fase"><span class="numero">2.</span> BULKING - HIPERTROFIA MÁXIMA</div>
-      <div class="desc-fase">
-        Fase prioritária de construção. Objetivo principal: hipertrofia muscular, ganho de força, regeneração tecidual, reabilitação e condicionamento físico geral com foco em saúde e performance. Regra básica: comer mais do que gasta. Dieta limpa e protocolar, totalmente alinhada aos objetivos escolhidos por cada aluno, com prioridade máxima em proteínas de alta qualidade, carboidratos complexos e micronutrientes. Treinos estruturados para progressão de carga e execução técnica impecável, sem erros. Zero desperdício. Essa é a fase de ganhar massa magra de verdade, volume e densidade muscular. Disciplina na dieta e no treino é obrigatória para construir a base sólida do físico.
-      </div>
+      <div class="desc-fase">Fase prioritária de construção. Objetivo principal: hipertrofia muscular...</div>
     </div>
 
     <!-- FASE 3: MAINTENANCE -->
     <div class="fase-card">
       <div class="meses">JUNHO A AGOSTO - MAINTENANCE: MANTER RESULTADOS</div>
       <div class="titulo-fase"><span class="numero">3.</span> MAINTENANCE - CONSOLIDAÇÃO</div>
-      <div class="desc-fase">
-        Fase de manutenção e consolidação de todos os ganhos conquistados no bulking. Momento de verificar, ajustar e refinar o protocolo geral do projeto. Objetivo: manter massa magra, reduzir levemente a gordura corporal e densificar a musculatura. Preparação física e mental para a fase de cutting. Foco total em disciplina, consistência e nutrição inteligente para nutrir o físico. Trabalhamos também o equilíbrio da mente, da alma e do estado de espírito. Os treinos são de intensidade mediana para evitar lesões, preservar articulações e não comprometer a energia da fase final. Esta é a ponte entre construção e definição. Fase de lapidar o que foi construído.
-      </div>
+      <div class="desc-fase">Fase de manutenção e consolidação de todos os ganhos conquistados no bulking...</div>
     </div>
 
     <!-- FASE 4: CUTTING -->
     <div class="fase-card">
       <div class="meses">SETEMBRO A NOVEMBRO - CUTTING: FINALIZAÇÃO</div>
       <div class="titulo-fase"><span class="numero">4.</span> CUTTING - DEFINIÇÃO TOTAL</div>
-      <div class="desc-fase">
-        Fase de finalização e exposição do resultado do Projeto TRANSFORMAÇÃO. Objetivo: eliminar o máximo de gordura corporal possível preservando 100% da massa muscular conquistada. Dieta rigorosa com déficit calórico controlado e estratégico. Treinos intensos, técnicos e precisos. Não pode errar e não pode se lesionar. Foco total em estética, simetria, vascularização e modelagem do físico. É aqui que o trabalho do ano inteiro aparece. Fase de definição muscular geral, performance máxima e resultado visível. Execução perfeita em dieta e treino. Sem falhas.
-      </div>
+      <div class="desc-fase">Fase de finalização e exposição do resultado do Projeto TRANSFORMAÇÃO...</div>
     </div>
 
     <!-- FASE 5: DEZEMBRO -->
     <div class="fase-card">
       <div class="meses">DEZEMBRO - FÉRIAS: APROVEITAR OS RESULTADOS</div>
       <div class="titulo-fase"><span class="numero">5.</span> DEZEMBRO - FÉRIAS ESTRATÉGICAS</div>
-      <div class="desc-fase">
-        Período oficial de férias e recarga. Treinos leves com exercícios de rotina, mobilidade e manutenção. Objetivo: aproveitar os resultados conquistados, descansar corpo e articulações e manter o corpo ativo sem pressão. Momento para avaliar o ano, celebrar a evolução e repensar as escolhas de objetivos para o próximo ciclo do projeto. É a fase de transição: manter a constância sem estresse. Para voltar no ano seguinte com mais foco, mais energia e mais estratégia para atingir um novo nível.
-      </div>
+      <div class="desc-fase">Período oficial de férias e recarga. Treinos leves com exercícios de rotina...</div>
     </div>
 
     <button class="btn" onclick="window.location.href='inscricao-do-projeto.html'">COMEÇAR INSCRIÇÃO</button>
@@ -102,7 +92,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 </div>
 
 <script>
-// MESMOS IDS DO projetotransformacao.html ALUNOS_DB
+// MESMOS IDS DO projetotransformacao.html ALUNOS_DB - 42 ALUNOS
 const idsPermitidos = [
   "kpt0", "mag1", "mcarla2", "hvitoria3", "alexandra4", "michele5", "aline6", 
   "adriana7", "joss8", "amigaadrum9", "amigaadrdois10", "angel11", "anapaula12", 
@@ -117,10 +107,20 @@ function acessarProjeto(){
   if(!senha){return;}
   const senhaNormalizada = senha.trim().toLowerCase();
   if(idsPermitidos.includes(senhaNormalizada)){
-    localStorage.setItem('idLogado', senhaNormalizada); // SALVA O ID PRA USAR LA
-    window.location.href = "projetotransformacao.html"; // DIRECIONA PRA PAGINA
+    localStorage.setItem('idLogado', senhaNormalizada); // SALVA O ID
+    window.location.href = "projetotransformacao.html"; // DIRECIONA
   } else {
     alert("Acesso negado. ID não encontrado no cronograma do projeto.");
   }
 }
+
+// Auto-login: se já tiver ID salvo, já joga direto pra dentro
+window.onload = function(){
+  const idSalvo = localStorage.getItem('idLogado');
+  if(idSalvo && idsPermitidos.includes(idSalvo)){
+    window.location.href = "projetotransformacao.html";
+  }
+}
 </script>
+</body>
+</html>
