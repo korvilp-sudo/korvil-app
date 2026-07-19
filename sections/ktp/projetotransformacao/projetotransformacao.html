@@ -296,6 +296,7 @@ return `${dia}/${mes}/${ano}`; // Evita bug de fuso horario
 }
   
 function carregarMenu(){
+function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div><div class="semanas-da-fase">`;
@@ -318,7 +319,6 @@ function mostrarInfoSemana(data){
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
 
-  // PEGA A IMAGEM CERTA PELA PALAVRA DA SEMANA - IGUAL DA IMAGEM
   const imagens = {
     'MANUTENÇÃO': 'semana-de-manutencao',
     'RESISTÊNCIA': 'semana-de-resistencia',
@@ -326,14 +326,13 @@ function mostrarInfoSemana(data){
     'HIPERTROFIA': 'semana-de-hipertrofia'
   };
   let pastaImagem = 'semana-de-manutencao';
-  for(let key in imagens){
-    if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
-  }
+  for(let key in imagens){ if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; } }
 
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
 
-  let html = `
+  // SEMPRE SUBSTITUI. NUNCA EMPILHA
+  container.innerHTML = `
     <div class="card-semana">
       <h3>${titulo}</h3>
       <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.style.display='none'">
@@ -343,31 +342,17 @@ function mostrarInfoSemana(data){
     </div>
   `;
 
-  // SE JA TIVER CRONOGRAMA, ADICIONA EM CIMA. SE NAO, SUBSTITUI
-  if(container.querySelector('.titulo-crono')){
-    container.insertAdjacentHTML('afterbegin', html);
-  } else {
-    container.innerHTML = html;
-  }
-
   if(window.innerWidth<768)toggleMenu();
-} // <- FECHOU A FUNÇÃO AQUI
+}
 
-// FUNÇÃO NOVA: PEGA A SEGUNDA DA SEMANA E RESPEITA 01:00
 function getSegundaDaSemana(){
   const agora = new Date();
   let dataBase = new Date(agora);
-
-  // Se for segunda e antes de 01:00, volta 1 semana
-  if(agora.getDay() === 1 && agora.getHours() < 1){
-    dataBase.setDate(agora.getDate() - 7);
-  }
-
-  // Pega a segunda da semana da dataBase
+  // Se for segunda antes de 01:00, pega a semana passada
+  if(agora.getDay() === 1 && agora.getHours() < 1){ dataBase.setDate(agora.getDate() - 7); }
   const diaSemana = dataBase.getDay(); // 0=Dom
   const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
   const segunda = new Date(dataBase.setDate(diff));
-
   const ano = segunda.getFullYear();
   const mes = String(segunda.getMonth() + 1).padStart(2, '0');
   const dia = String(segunda.getDate()).padStart(2, '0');
@@ -377,14 +362,10 @@ function getSegundaDaSemana(){
 window.onload=function(){
   carregarMenu();
 
-  const dataISO = getSegundaDaSemana(); // Hoje 19/07/2026 vai retornar 2026-07-13
+  const dataISO = getSegundaDaSemana(); // Hoje 19/07/2026 = 2026-07-13
 
-  // SE EXISTIR MENSAGEM PRA ESSA DATA, JÁ MOSTRA
-  if(MENSAGENS_SEMANA[dataISO]){
-    mostrarInfoSemana(dataISO); // Vai mostrar SEMANA DE FORÇA
-  } else {
-    mostrarInfoSemana("2026-01-05"); // Fallback
-  }
+  // TELA INICIAL: MOSTRA APENAS 1 SEMANA
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
 
   if(idLogado && ALUNOS_DB[idLogado]){
     mostrarDadosAluno(idLogado);
