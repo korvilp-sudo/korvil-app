@@ -287,15 +287,10 @@ let planoAtivo = 'PRESENCIAL';
 let idLogado = localStorage.getItem('idLogado') || '';
 
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
-function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML=''; idLogado=''; localStorage.removeItem('idLogado');}
-function formatarData(d){ 
-const [ano, mes, dia] = d.split('-');
-return `${dia}/${mes}/${ano}`; // Evita bug de fuso horario
-}
-  
-function carregarMenu(){
+function formatarData(d){ const [ano, mes, dia] = d.split('-'); return `${dia}/${mes}/${ano}`; }
+
 function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
@@ -331,7 +326,7 @@ function mostrarInfoSemana(data){
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
 
-  // SEMPRE SUBSTITUI. NUNCA EMPILHA
+  // SEMPRE SUBSTITUI. SÓ 1 SEMANA
   container.innerHTML = `
     <div class="card-semana">
       <h3>${titulo}</h3>
@@ -341,16 +336,14 @@ function mostrarInfoSemana(data){
       <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
     </div>
   `;
-
   if(window.innerWidth<768)toggleMenu();
 }
 
 function getSegundaDaSemana(){
   const agora = new Date();
   let dataBase = new Date(agora);
-  // Se for segunda antes de 01:00, pega a semana passada
   if(agora.getDay() === 1 && agora.getHours() < 1){ dataBase.setDate(agora.getDate() - 7); }
-  const diaSemana = dataBase.getDay(); // 0=Dom
+  const diaSemana = dataBase.getDay();
   const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
   const segunda = new Date(dataBase.setDate(diff));
   const ano = segunda.getFullYear();
@@ -361,23 +354,39 @@ function getSegundaDaSemana(){
 
 window.onload=function(){
   carregarMenu();
-
-  const dataISO = getSegundaDaSemana(); // Hoje 19/07/2026 = 2026-07-13
-
-  // TELA INICIAL: MOSTRA APENAS 1 SEMANA
+  const dataISO = getSegundaDaSemana();
+  // TELA INICIAL: SÓ A SEMANA. SEM CRONOGRAMA
   mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
-
-  if(idLogado && ALUNOS_DB[idLogado]){
-    mostrarDadosAluno(idLogado);
-    mostrarCronograma();
-  }
 };
 
-function trocarAba(plano, el){
-  planoAtivo = plano;
-  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
-  el.classList.add('ativa');
-  mostrarCronograma();
+function abrirBuscaAluno(){
+  document.getElementById('modal-aluno').classList.add('ativo');
+  carregarListaIds();
+}
+
+function carregarListaIds(){
+  let html = '';
+  Object.keys(ALUNOS_DB).sort().forEach(id=>{
+    html += `<div onclick="selecionarId('${id}')" style="padding:8px; border-bottom:1px solid #1f1f1f; cursor:pointer; font-size:11px;">${id} - ${ALUNOS_DB[id].nome}</div>`;
+  });
+  document.getElementById('lista-ids').innerHTML = html;
+}
+
+function selecionarId(id){
+  document.getElementById('input-id-aluno').value = id;
+  buscarAluno();
+}
+
+function buscarAluno(){
+  const id = document.getElementById('input-id-aluno').value.trim().toLowerCase();
+  if(!ALUNOS_DB[id]){ alert('ID não encontrado'); return; }
+
+  idLogado = id;
+  localStorage.setItem('idLogado', id);
+  fecharBuscaAluno();
+
+  mostrarDadosAluno(id);
+  mostrarCronograma(); // SÓ CHAMA AQUI
 }
 
 function mostrarDadosAluno(id){
@@ -389,6 +398,48 @@ function mostrarDadosAluno(id){
   } else {
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
+}
+
+function trocarAba(plano, el){
+  planoAtivo = plano;
+  document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa'));
+  el.classList.add('ativa');
+  mostrarCronograma();
+}
+
+function mostrarCronograma(){
+  const container = document.getElementById('cronograma-container');
+  if(!idLogado){ container.innerHTML = '<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; return; }
+
+  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
+  html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}, mensalidade em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
+
+  const ehAdmin = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
+  if(ehAdmin){
+    html += `<div class="abas-plano"><button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button><button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button></div>`;
+  }
+
+  const planosParaMostrar = ehAdmin? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+  planosParaMostrar.forEach(plano=>{
+    if(ehAdmin) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+    CRONOGRAMA_DB[plano].forEach(bloco=>{
+      // REGRA: ADMIN VÊ TUDO. ALUNO VÊ SÓ ELE
+      let alunosDoBloco = (ehAdmin || idLogado === 'ktp0' || idLogado === 'mag1')
+       ? bloco.alunos
+        : bloco.alunos.filter(a => a.id === idLogado);
+
+      if(alunosDoBloco.length === 0) return;
+      if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
+      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
+        html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+    });
+  });
+  container.innerHTML = html;
+}
 }
 
 function mostrarCronograma(){
