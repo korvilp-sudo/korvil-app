@@ -76,9 +76,10 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
       <button class="btn-fechar" onclick="fecharBuscaAluno()">X</button>
     </div>
     <div class="busca-id">
-      <input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()">
-      <button onclick="buscarAluno()">BUSCAR</button>
-    </div>
+  <input type="text" id="input-id-aluno" placeholder="DIGITE O ID" onkeypress="if(event.key==='Enter') buscarAluno()">
+  <button onclick="buscarAluno()">BUSCAR</button>
+</div>
+<div id="lista-ids" style="margin-top:10px; max-height:300px; overflow-y:auto;"></div>
   </div>
 </div>
 
