@@ -299,9 +299,16 @@ function carregarMenu(){
 function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
-  let html = `<div class="card-semana"><h3>${MENU[data]}</h3><div class="mensagem-semana">${mensagem}</div><p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p></div>`;
+
+  let html = `
+    <div class="card-semana">
+      <h3>${MENU[data]}</h3>
+      <div class="mensagem-semana">${mensagem}</div>
+      <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
+    </div>
+  `;
   container.innerHTML = html;
-  if(window.innerWidth<768)toggleMenu();
+  if(window.innerWidth<768)toggleMenu(); // fecha menu no celular
 }
 
 function trocarAba(plano, el){
