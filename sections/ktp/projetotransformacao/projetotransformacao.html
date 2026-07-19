@@ -354,18 +354,6 @@ function mostrarInfoSemana(data){
   if(window.innerWidth<768)toggleMenu();
 }
 
-window.onload=function(){
-  carregarMenu();
-  // SE JA TIVER CRONOGRAMA, ADICIONA EM CIMA. SE NAO, SUBSTITUI
-  if(container.querySelector('.titulo-crono')){
-    container.insertAdjacentHTML('afterbegin', html);
-  } else {
-    container.innerHTML = html;
-  }
-
-  if(window.innerWidth<768)toggleMenu();
-}
-
 // FUNÇÃO NOVA: PEGA A SEGUNDA DA SEMANA E RESPEITA 01:00
 function getSegundaDaSemana(){
   const agora = new Date();
