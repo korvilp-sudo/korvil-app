@@ -356,23 +356,47 @@ function mostrarInfoSemana(data){
 
 window.onload=function(){
   carregarMenu();
+  // SE JA TIVER CRONOGRAMA, ADICIONA EM CIMA. SE NAO, SUBSTITUI
+  if(container.querySelector('.titulo-crono')){
+    container.insertAdjacentHTML('afterbegin', html);
+  } else {
+    container.innerHTML = html;
+  }
 
-  // PEGA SEMPRE A SEGUNDA-FEIRA ATUAL - CORRIGIDO FUSO HORARIO BR
-  const hoje = new Date();
-  const diaSemana = hoje.getDay(); // 0=Dom, 1=Seg...
-  const diff = hoje.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
-  const segundaAtual = new Date(hoje.setDate(diff));
-  
-  const ano = segundaAtual.getFullYear();
-  const mes = String(segundaAtual.getMonth() + 1).padStart(2, '0');
-  const dia = String(segundaAtual.getDate()).padStart(2, '0');
-  const dataISO = `${ano}-${mes}-${dia}`; // 2026-08-03
+  if(window.innerWidth<768)toggleMenu();
+}
+
+// FUNÇÃO NOVA: PEGA A SEGUNDA DA SEMANA E RESPEITA 01:00
+function getSegundaDaSemana(){
+  const agora = new Date();
+  let dataBase = new Date(agora);
+
+  // Se for segunda e antes de 01:00, volta 1 semana
+  if(agora.getDay() === 1 && agora.getHours() < 1){
+    dataBase.setDate(agora.getDate() - 7);
+  }
+
+  // Pega a segunda da semana da dataBase
+  const diaSemana = dataBase.getDay(); // 0=Dom
+  const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
+  const segunda = new Date(dataBase.setDate(diff));
+
+  const ano = segunda.getFullYear();
+  const mes = String(segunda.getMonth() + 1).padStart(2, '0');
+  const dia = String(segunda.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+window.onload=function(){
+  carregarMenu();
+
+  const dataISO = getSegundaDaSemana(); // Hoje 19/07/2026 vai retornar 2026-07-13
 
   // SE EXISTIR MENSAGEM PRA ESSA DATA, JÁ MOSTRA
   if(MENSAGENS_SEMANA[dataISO]){
-    mostrarInfoSemana(dataISO);
+    mostrarInfoSemana(dataISO); // Vai mostrar SEMANA DE FORÇA
   } else {
-    mostrarInfoSemana("2026-01-05");
+    mostrarInfoSemana("2026-01-05"); // Fallback
   }
 
   if(idLogado && ALUNOS_DB[idLogado]){
