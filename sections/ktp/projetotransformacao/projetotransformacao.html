@@ -291,8 +291,11 @@ function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML=''; idLogado=''; localStorage.removeItem('idLogado');}
-function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
-
+function formatarData(d){ 
+const [ano, mes, dia] = d.split('-');
+return `${dia}/${mes}/${ano}`; // Evita bug de fuso horario
+}
+  
 function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
