@@ -212,6 +212,7 @@ const FASES_MENU = {
   "DEZEMBRO: FÉRIAS": ["2026-12-07","2026-12-14","2026-12-21","2026-12-28"]
 }; 
 
+<script>
 let ALUNOS_DB = {
   "ktp0": {nome:"SAY KORVIL", tipo:"ADMIN"},
   "mag1": {nome:"Magda Gomes dos Santos", tipo:"ADMIN"},
@@ -326,7 +327,6 @@ function mostrarInfoSemana(data){
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
 
-  // SEMPRE SUBSTITUI. SÓ 1 SEMANA
   container.innerHTML = `
     <div class="card-semana">
       <h3>${titulo}</h3>
@@ -355,7 +355,6 @@ function getSegundaDaSemana(){
 window.onload=function(){
   carregarMenu();
   const dataISO = getSegundaDaSemana();
-  // TELA INICIAL: SÓ A SEMANA. SEM CRONOGRAMA
   mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
 };
 
@@ -380,13 +379,11 @@ function selecionarId(id){
 function buscarAluno(){
   const id = document.getElementById('input-id-aluno').value.trim().toLowerCase();
   if(!ALUNOS_DB[id]){ alert('ID não encontrado'); return; }
-
   idLogado = id;
   localStorage.setItem('idLogado', id);
   fecharBuscaAluno();
-
   mostrarDadosAluno(id);
-  mostrarCronograma(); // SÓ CHAMA AQUI
+  mostrarCronograma();
 }
 
 function mostrarDadosAluno(id){
@@ -423,9 +420,9 @@ function mostrarCronograma(){
   planosParaMostrar.forEach(plano=>{
     if(ehAdmin) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // REGRA: ADMIN VÊ TUDO. ALUNO VÊ SÓ ELE
-      let alunosDoBloco = (ehAdmin || idLogado === 'ktp0' || idLogado === 'mag1')
-       ? bloco.alunos
+      // REGRA FINAL: SÓ ADMIN ktp0 e mag1 VÊ TUDO
+      let alunosDoBloco = (idLogado === 'ktp0' || idLogado === 'mag1')
+      ? bloco.alunos
         : bloco.alunos.filter(a => a.id === idLogado);
 
       if(alunosDoBloco.length === 0) return;
@@ -440,54 +437,6 @@ function mostrarCronograma(){
   });
   container.innerHTML = html;
 }
-}
-
-function mostrarCronograma(){
-  const container = document.getElementById('cronograma-container');
-  if(!idLogado){ container.innerHTML = '<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; return; }
-  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
-  html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}, mensalidade em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-
-  const ehAdmin = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
-  if(ehAdmin){
-    html += `<div class="abas-plano"><button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button><button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button></div>`;
-  }
-
-  const planosParaMostrar = ehAdmin? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
-  planosParaMostrar.forEach(plano=>{
-    if(ehAdmin) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
-    CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = ehAdmin? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
-      if(alunosDoBloco.length === 0) return;
-      if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
-      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-      alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
-        html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
-      });
-      html += `</tbody></table></div>`;
-    });
-  });
-  container.innerHTML = html;
-}
-
-function abrirBuscaAluno(){
-  document.getElementById('modal-aluno').classList.add('ativo');
-  carregarListaIds(); // CHAMA A LISTA QUANDO ABRIR
-}
-
-function carregarListaIds(){
-  let html = '';
-  Object.keys(ALUNOS_DB).sort().forEach(id=>{
-    html += `<div onclick="selecionarId('${id}')" style="padding:8px; border-bottom:1px solid #1f1f1f; cursor:pointer; font-size:11px;">${id} - ${ALUNOS_DB[id].nome}</div>`;
-  });
-  document.getElementById('lista-ids').innerHTML = html;
-}
-
-function selecionarId(id){
-  document.getElementById('input-id-aluno').value = id;
-  buscarAluno();
-}
-</script> <!-- FALTAVA FECHAR AQUI -->
+</script>-->
 </body>
 </html>
