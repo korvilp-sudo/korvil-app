@@ -116,12 +116,13 @@ const idsPermitidos = [
 function acessarProjeto(){
   const senha = prompt("Digite sua senha/ID de aluno do Projeto Transformação:");
   if(!senha){return;}
-  const senhaNormalizada = senha.trim().toLowerCase();
+  const senhaNormalizada = senha.trim().toLowerCase().replace(/\s+/g, ''); // CORRIGIDO: TIRA ESPAÇO
+  
   if(idsPermitidos.includes(senhaNormalizada)){
-    localStorage.setItem('idLogado', senhaNormalizada); // SALVA O ID PRA USAR LA
-    window.location.href = "projetotransformacao.html"; // DIRECIONA PRA PAGINA
+    localStorage.setItem('idLogado', senhaNormalizada);
+    window.location.href = "projetotransformacao.html"; 
   } else {
-    alert("Acesso negado. ID não encontrado no cronograma do projeto.");
+    alert("Acesso negado. ID: " + senha + " não encontrado.");
   }
 }
 </script>
