@@ -97,67 +97,69 @@ const BASE_URL = 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/projeto
 let MENSAGENS_SEMANA = {};
 let MENU = {};
 let FASES_MENU = {};
-let ALUNOS_DB = {};
 let CRONOGRAMA_DB = {};
-let planoAtivo = 'PRESENCIAL';
-let idLogado = '';
+let ALUNOS_DB = {};
 
-// PUXA OS 2 ARQUIVOS EXTERNOS
+let planoAtivo = 'PRESENCIAL';
+let idLogado = localStorage.getItem('idLogado') || '';
+
+// CARREGA OS 2 ARQUIVOS EXTERNOS
 async function carregarTudo(){
-  await carregarScript(BASE_URL + 'dados-cronograma.js');
   await carregarScript(BASE_URL + 'menu.js');
+  await carregarScript(BASE_URL + 'cronograma-de-alunos.js');
   carregarMenu();
+  if(idLogado){ mostrarDadosAluno(idLogado); mostrarCronograma(); }
 }
 function carregarScript(src){ return new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = src; s.onload = resolve; s.onerror = reject; document.head.appendChild(s); }); }
 
+// FUNÇÕES DOS BOTÕES FICAM AQUI PRA FUNCIONAR
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
+function fecharResultado(){idLogado='';localStorage.removeItem('idLogado');document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
 function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 
-// AS 3 FUNCOES DO CRONOGRAMA FICAM AQUI
+// FUNÇÕES DO MENU.JS
+function carregarMenu(){ /* vem de fora */ }
+function mostrarInfoSemana(data){ /* vem de fora */ }
+
+// FUNÇÕES DO CRONOGRAMA
 function trocarAba(plano, el){ planoAtivo = plano; document.querySelectorAll('.aba-plano').forEach(b=>b.classList.remove('ativa')); el.classList.add('ativa'); mostrarCronograma(); }
 
 function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
-  if(aluno?.tipo === 'ADMIN'){
+  if(!aluno) return;
+  if(id === 'ktp1'){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
-    const dadosCrono = Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
-    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${dadosCrono.aluno}<br><b>Plano:</b> ${dadosCrono.plano}<br><b>Horário:</b> ${dadosCrono.dias} - ${dadosCrono.horario}</p></div>`;
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
   }
 }
-  
-await carregarScript(BASE_URL + 'cronograma-de-alunos.js');
-  
+
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
-  const ehAdmin = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
-
   html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-
-  if(ehAdmin){
-    html += `<div class="abas-plano"><button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button><button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button></div>`;
-  }
-
-  const planosParaMostrar = ehAdmin? [planoAtivo] : [planoAtivo];
+  html += `<div class="abas-plano">
+    <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
+    <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
+  </div>`;
+  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
   planosParaMostrar.forEach(plano=>{
     html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = ehAdmin? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
       if(alunosDoBloco.length === 0) return;
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
       html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n) html += `<th>Nº</th>`;
+      if(bloco.alunos[0]?.n) html += `<th>Nº</th>`;
       html += `<th>Aluno</th><th>Dias</th>`;
-      if(bloco.alunos[0].freq) html += `<th>Freq</th>`;
+      if(bloco.alunos[0]?.freq) html += `<th>Freq</th>`;
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
       alunosDoBloco.forEach(a=>{
-        html += `<tr ${!ehAdmin && a.id===idLogado?'class="destaque"':''}>`;
+        html += `<tr ${idLogado!== 'ktp1'? 'class="destaque"' : ''}>`;
         if(a.n) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq) html += `<td>${a.freq}</td>`;
@@ -171,16 +173,19 @@ function mostrarCronograma(){
 
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  let encontrado = ALUNOS_DB[id] || Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
-  if(!encontrado){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';return;}
-
-  idLogado = id;
-  const alunoPres = Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id);
-  if(id!== 'ktp1' && id!== 'mag0'){ planoAtivo = alunoPres? 'PRESENCIAL' : 'ONLINE'; }
-
-  fecharBuscaAluno();
-  mostrarDadosAluno(id);
-  mostrarCronograma();
+  if(!id){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--aviso)">Digite um ID</div>';return;}
+  if(ALUNOS_DB[id]){
+    idLogado = id;
+    localStorage.setItem('idLogado', id);
+    if(id!== 'ktp1') planoAtivo = ALUNOS_DB[id].plano;
+    fecharBuscaAluno();
+    mostrarDadosAluno(id);
+    mostrarCronograma();
+    document.getElementById('resultado-aluno').innerHTML='';
+    document.getElementById('input-id-aluno').value='';
+  } else {
+    document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';
+  }
 }
 
 carregarTudo();
