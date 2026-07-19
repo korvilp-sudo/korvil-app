@@ -430,13 +430,6 @@ function selecionarId(id){
   document.getElementById('input-id-aluno').value = id;
   buscarAluno();
 }
-  
-window.onload=function(){
-  carregarMenu();
-  if(idLogado && ALUNOS_DB[idLogado]){
-    mostrarDadosAluno(idLogado);
-    mostrarCronograma();
-  }
 };
 </script> <!-- FALTAVA FECHAR AQUI -->
 </body>
