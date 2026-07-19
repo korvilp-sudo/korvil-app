@@ -351,17 +351,24 @@ function mostrarCronograma(){
   container.innerHTML = html;
 }
 
-function buscarAluno(){
-  const id=document.getElementById('input-id-aluno').value.toLowerCase().trim().replace(/\s+/g, '');
-  if(!ALUNOS_DB[id]){alert('ID não encontrado');return;}
-  idLogado = id;
-  localStorage.setItem('idLogado', id);
-  fecharBuscaAluno();
-  mostrarDadosAluno(id);
-  mostrarCronograma();
-  document.getElementById('input-id-aluno').value='';
+function abrirBuscaAluno(){
+  document.getElementById('modal-aluno').classList.add('ativo');
+  carregarListaIds(); // CHAMA A LISTA QUANDO ABRIR
 }
 
+function carregarListaIds(){
+  let html = '';
+  Object.keys(ALUNOS_DB).sort().forEach(id=>{
+    html += `<div onclick="selecionarId('${id}')" style="padding:8px; border-bottom:1px solid #1f1f1f; cursor:pointer; font-size:11px;">${id} - ${ALUNOS_DB[id].nome}</div>`;
+  });
+  document.getElementById('lista-ids').innerHTML = html;
+}
+
+function selecionarId(id){
+  document.getElementById('input-id-aluno').value = id;
+  buscarAluno();
+}
+  
 window.onload=function(){
   carregarMenu();
   if(idLogado && ALUNOS_DB[idLogado]){
