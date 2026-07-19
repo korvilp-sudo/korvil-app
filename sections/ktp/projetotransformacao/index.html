@@ -116,8 +116,9 @@ const idsPermitidos = [
 function acessarProjeto(){
   const senha = prompt("Digite sua senha/ID de aluno do Projeto Transformação:");
   if(!senha){return;}
-  const senhaNormalizada = senha.trim().toLowerCase().replace(/\s+/g, ''); // CORRIGIDO: TIRA ESPAÇO
-  
+  const senhaNormalizada = senha.trim().toLowerCase().replace(/\s+/g, ''); // TIRA ESPAÇO E MINÚSCULO
+  console.log("Tentando logar com:", senhaNormalizada); // PRA VER NO CONSOLE
+
   if(idsPermitidos.includes(senhaNormalizada)){
     localStorage.setItem('idLogado', senhaNormalizada);
     window.location.href = "projetotransformacao.html"; 
