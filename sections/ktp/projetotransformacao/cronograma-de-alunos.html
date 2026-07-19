@@ -4,34 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#000">
-<title>K-TP CRONOGRAMA</title>
+<title>K-TP CRONOGRAMA 2026</title>
 <style>
 :root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444; --aviso:#ffaa00;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);margin:0;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);margin:0;}
 .header{padding:12px 16px 12px 56px;text-align:left;border-bottom:1px solid var(--borda);background:#0a0a0a;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;}
 h1{font-size:14px;font-weight:900;color:var(--c);}
 .btn-aluno{padding:6px 10px;background:var(--c);color:#000;border:0;border-radius:6px;font-weight:900;font-size:10px;cursor:pointer;}
-.container{padding:12px;max-width:1200px;margin:auto;}
-.card-aluno{background:#001a1a;border:2px solid var(--c);border-radius:10px;padding:12px;margin-bottom:12px;position:relative;}
-.card-aluno h2{font-size:12px;color:var(--c);margin-bottom:6px;}
-.card-aluno p{font-size:11px;color:var(--text2);line-height:1.6;}
-.btn-fechar-resultado{position:absolute;top:8px;right:8px;background:var(--erro);color:#fff;border:0;border-radius:50%;width:22px;height:22px;font-weight:900;font-size:12px;cursor:pointer;line-height:22px;text-align:center;}
+.container{padding:12px;max-width:100%;overflow-x:auto;}
 .obs-pix{padding:14px;background:#0a0a0a;border:1px dashed var(--c);border-radius:8px;font-size:11px;color:var(--text2);margin:15px 0;text-align:center;line-height:1.6;}
 .titulo-crono{font-size:16px;font-weight:900;text-align:center;color:var(--c);margin-bottom:10px;}
 .msg-inicial{text-align:center;color:var(--text2);font-size:12px;margin-top:40px;}
 .abas-plano{display:flex;gap:8px;margin-bottom:12px;border-bottom:2px solid var(--borda);}
 .aba-plano{padding:10px 16px;background:#111;border:0;color:var(--text2);font-weight:800;font-size:12px;cursor:pointer;border-radius:6px 6px 0 0;}
 .aba-plano.ativa{background:var(--c);color:#000;}
-.tabela-wrapper{overflow-x:auto;margin-bottom:20px;border:1px solid var(--borda);border-radius:8px;}
-.tabela-crono{width:100%;border-collapse:collapse;font-size:9px;}
-.tabela-crono th{background:#111;color:var(--c);padding:8px 6px;text-align:left;font-size:8px;font-weight:900;text-transform:uppercase;border-bottom:2px solid var(--c);white-space:nowrap;}
-.tabela-crono td{padding:8px 6px;border-bottom:1px solid #1a1a1a;white-space:nowrap;}
-.tabela-crono tbody tr.destaque{background:#001a1a;box-shadow:0 0 0 2px var(--c) inset;}
 .grupo-horario{margin-top:20px;margin-bottom:8px;color:var(--c);font-weight:900;font-size:13px;padding:8px;background:#0a0a0a;border-left:3px solid var(--c);}
 .grupo-status{margin:8px 0;color:var(--aviso);font-weight:800;font-size:11px;padding-left:8px;}
 .status-ativo{color:var(--ok);font-weight:900;}
 .status-desativado{color:var(--erro);font-weight:900;}
+.tabela-wrapper{overflow-x:auto;border:1px solid var(--borda);border-radius:8px;margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;font-size:10px;min-width:1600px;}
+th{background:#111;color:var(--c);padding:8px 4px;text-align:left;font-weight:900;border-bottom:2px solid var(--c);position:sticky;top:0;white-space:nowrap;}
+td{padding:6px 4px;border-bottom:1px solid var(--borda);color:var(--text);vertical-align:top;white-space:nowrap;}
+tr:hover{background:#0a0a0a;}
 #modal-aluno{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
 #modal-aluno.ativo{display:flex;}
 .modal-card{background:var(--card);border:2px solid var(--c);border-radius:10px;padding:16px;width:100%;max-width:400px;}
@@ -50,7 +46,6 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
 </div>
 
 <div class="container">
-  <div id="info-aluno-container"></div>
   <div id="cronograma-container">
     <div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>
   </div>
@@ -66,27 +61,59 @@ h1{font-size:14px;font-weight:900;color:var(--c);}
       <input type="text" id="input-id-aluno" placeholder="COLAR ID" onkeypress="if(event.key==='Enter') buscarAluno()">
       <button onclick="buscarAluno()">BUSCAR</button>
     </div>
-    <div id="resultado-aluno" style="margin-top:10px;font-size:11px;"></div>
   </div>
 </div>
 
 <script>
-const BASE_URL = 'https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/';
+let ALUNOS_DB = {
+  "mag0": {nome:"Magda Gomes dos Santos", tipo:"ADMIN"},
+  "mcarla38": {nome:"Maria Carla Carvalho Santos", tipo:"ALUNO"},
+  "hvitoria39": {nome:"Hellem Vitória Carvalho dos Santos", tipo:"ALUNO"},
+  "gon19": {nome:"José Gonzaga", tipo:"ALUNO"},
+  "nicol42": {nome:"Nicoli da Silga Guedes", tipo:"ALUNO"},
+  "ktp1": {nome:"SAY KORVIL", tipo:"ADMIN"}
+};
 
-let ALUNOS_DB = {};
-let CRONOGRAMA_DB = {};
+let CRONOGRAMA_DB = {
+  "PRESENCIAL": [
+    {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[]},
+    {hora:"07h00 🌙", status:"DESATIVADOS", alunos:[]},
+    {hora:"08h00 🐢", status:"ATIVOS", alunos:[
+      {n:1, id:"mag0", aluno:"Magda Gomes dos Santos", dias:"Segunda, Terça, Quarta, Quinta, Sexta", freq:"5x", objetivo:"Definição Muscular", valor:"R$150,00", matricula:"R$50,00", total:"R$200,00", venc:"13/05/26", status:"Ativo", cpf:"112.505.24", nasc:"2026-07-27", idade:"0 anos", genero:"Feminino", whats:"(13) 99636-4009", email:"magdagomes998@gmail.com", nivel_atividade:"Intermediário", q1:"Sim", q2:"Irregular", q3:"9 horas", q4:"Não", q5:"Abdômen", q6:"Não", q7:"Sim", q8:"Sim", q9:"Anti depressivo", plano:"Presencial 5x"},
+      {n:2, id:"mcarla38", aluno:"Maria Carla Carvalho Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/03/26", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
+      {n:3, id:"hvitoria39", aluno:"Hellem Vitória Carvalho dos Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/03/26", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"}
+    ]},
+    {hora:"09h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"10h00 🐙", status:"DESATIVADOS", alunos:[]},
+    {hora:"16h00 🕊️", status:"DESATIVADOS", alunos:[]},
+    {hora:"17h00 🐼", status:"DESATIVADOS", alunos:[]},
+    {hora:"18h00 🐸", status:"DESATIVADOS", alunos:[]},
+    {hora:"19h00 🌑", status:"DESATIVADOS", alunos:[]},
+    {hora:"19h00 ⭐", status:"ATIVOS", alunos:[
+      {n:1, id:"gon19", aluno:"José Gonzaga", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:"R$100,00", matricula:"R$0,00", total:"R$100,00", venc:"13/05/26", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Presencial 3x"},
+      {n:2, id:"nicol42", aluno:"Nicoli da Silga Guedes", dias:"Segunda, Quarta, Sexta", freq:"3x", objetivo:"Definição Muscular | Condicionamento Físico | Reabilitação Física | Saúde", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/04/26", status:"Ativo", cpf:"397.764.168-96", nasc:"2001-10-21", idade:"25 anos", genero:"Feminino", whats:"(13) 99657-4924", email:"nicolisgdss@gmail.com", nivel_atividade:"Iniciante", q1:"Apenas na epoca de escola", q2:"Nao me alimento corretamente", q3:"7/8h", q4:"Nao", q5:"Resistencia de braco e pernas, pois nao tenho forca", q6:"Nao", q7:"Sim", q8:"Sim", q9:"Nao", plano:"Presencial 3x"}
+    ]},
+    {hora:"20h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"21h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"22h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"23h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"00h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"01h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"02h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"03h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"04h00", status:"DESATIVADOS", alunos:[]},
+    {hora:"05h00", status:"DESATIVADOS", alunos:[]},
+  ],
+  "ONLINE": [
+    {hora:"14h00", status:"DESATIVADOS", alunos:[]}
+  ]
+};
+
 let planoAtivo = 'PRESENCIAL';
 let idLogado = '';
 
-// PUXA OS DADOS DE FORA
-async function carregarTudo(){
-  await carregarScript(BASE_URL + 'dados-cronograma.js');
-}
-function carregarScript(src){ return new Promise((resolve, reject) => { const s = document.createElement('script'); s.src = src; s.onload = resolve; s.onerror = reject; document.head.appendChild(s); }); }
-
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
 
 function trocarAba(plano, el){
   planoAtivo = plano;
@@ -95,17 +122,23 @@ function trocarAba(plano, el){
   mostrarCronograma();
 }
 
-function mostrarDadosAluno(id){
-  const aluno = ALUNOS_DB[id];
-  const container = document.getElementById('info-aluno-container');
-  const ehAdmin = aluno?.tipo === 'ADMIN';
+function tabelaAlunos(lista){
+  let thead = `<thead><tr>
+    <th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Matrícula</th><th>Total</th><th>Vencimento</th><th>Status</th><th>ID</th>
+    <th>CPF</th><th>Data Nasc</th><th>Idade</th><th>Gênero</th><th>WhatsApp</th><th>Email</th>
+    <th>Nível de Atividade Física</th><th>1. Já praticou atividade física antes?</th><th>2. Como você descreve sua ALIMENTAÇÃO atual?</th><th>3. Quantas horas você DORME por noite?</th><th>4. Possui alguma RESTRIÇÃO alimentar?</th><th>5. Qual parte do corpo quer MELHORAR mais?</th><th>6. Possui alguma DEFICIENCIA ou LIMITAÇÃO fisica?</th><th>7. Está passando ou JÁ TEVE acompanhamento profissional PSICOLÓGICO?</th><th>8. Está fazendo ALGUM TRATAMENTO fisico ou psicológico?</th><th>9. Está fazendo USO DE MEDICAMENTOS? Quais?</th><th>Plano</th>
+  </tr></thead>`;
 
-  if(ehAdmin){
-    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
-  } else {
-    const dadosCrono = Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
-    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${dadosCrono.aluno}<br><b>Plano:</b> ${dadosCrono.plano}<br><b>Horário:</b> ${dadosCrono.dias} - ${dadosCrono.horario}<br><b>Objetivo:</b> ${dadosCrono.objetivo}</p></div>`;
-  }
+  let tbody = '<tbody>';
+  lista.forEach(a=>{
+    tbody += `<tr>
+      <td>${a.n || '-'}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.matricula}</td><td>${a.total}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td>${a.id}</td>
+      <td>${a.cpf}</td><td>${a.nasc}</td><td>${a.idade}</td><td>${a.genero}</td><td>${a.whats}</td><td>${a.email}</td>
+      <td>${a.nivel_atividade}</td><td>${a.q1}</td><td>${a.q2}</td><td>${a.q3}</td><td>${a.q4}</td><td>${a.q5}</td><td>${a.q6}</td><td>${a.q7}</td><td>${a.q8}</td><td>${a.q9}</td><td>${a.plano}</td>
+    </tr>`;
+  });
+  tbody += '</tbody>';
+  return `<div class="tabela-wrapper"><table>${thead}${tbody}</table></div>`;
 }
 
 function mostrarCronograma(){
@@ -119,45 +152,28 @@ function mostrarCronograma(){
     html += `<div class="abas-plano"><button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button><button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button></div>`;
   }
 
-  const planosParaMostrar = ehAdmin? [planoAtivo] : [planoAtivo];
-  planosParaMostrar.forEach(plano=>{
-    html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
-    CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = ehAdmin? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
-      if(alunosDoBloco.length === 0) return;
-      if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
-      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n) html += `<th>Nº</th>`;
-      html += `<th>Aluno</th><th>CPF</th><th>Nasc</th><th>Idade</th><th>Whats</th><th>Email</th><th>Objetivo</th><th>Plano</th><th>Dias</th><th>Horario</th><th>Total</th><th>Venc</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-      alunosDoBloco.forEach(a=>{
-        html += `<tr ${!ehAdmin && a.id===idLogado?'class="destaque"':''}>`;
-        if(a.n) html += `<td>${a.n}</td>`;
-        html += `<td>${a.aluno}</td><td>${a.cpf}</td><td>${a.nascimento}</td><td>${a.idade}</td><td>${a.whatsapp}</td><td>${a.email}</td><td>${a.objetivo}</td><td>${a.plano}</td><td>${a.dias}</td><td>${a.horario}</td><td>${a.total}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
-      });
-      html += `</tbody></table></div>`;
-    });
+  CRONOGRAMA_DB[planoAtivo].forEach(bloco=>{
+    let alunosDoBloco = ehAdmin? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+    if(alunosDoBloco.length === 0) return;
+
+    html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
+    html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+    html += tabelaAlunos(alunosDoBloco);
   });
-  container.innerHTML = html;
+
+  container.innerHTML = html || '<div class="msg-inicial">Nenhum aluno encontrado para este ID</div>';
 }
 
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  let encontrado = ALUNOS_DB[id] || Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id) || Object.values(CRONOGRAMA_DB.ONLINE).flatMap(h=>h.alunos).find(a=>a.id===id);
-  if(!encontrado){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';return;}
+  let encontrado = ALUNOS_DB[id] || CRONOGRAMA_DB.PRESENCIAL.flatMap(h=>h.alunos).find(a=>a.id===id) || CRONOGRAMA_DB.ONLINE.flatMap(h=>h.alunos).find(a=>a.id===id);
+  if(!encontrado){alert('ID não encontrado');return;}
 
   idLogado = id;
-  const alunoPres = Object.values(CRONOGRAMA_DB.PRESENCIAL).flatMap(h=>h.alunos).find(a=>a.id===id);
-  if(id!== 'ktp1' && id!== 'mag0'){ planoAtivo = alunoPres? 'PRESENCIAL' : 'ONLINE'; }
-
   fecharBuscaAluno();
-  mostrarDadosAluno(id);
   mostrarCronograma();
-  document.getElementById('resultado-aluno').innerHTML='';
   document.getElementById('input-id-aluno').value='';
 }
-
-carregarTudo();
 </script>
 </body>
 </html>
