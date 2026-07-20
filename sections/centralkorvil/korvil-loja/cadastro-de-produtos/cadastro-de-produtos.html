@@ -2,110 +2,133 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CADASTRO KORVIL LOJA</title>
+<title>CADASTRO DE PRODUTOS</title>
 <style>
 :root{--v:#00ff88} 
-body{background:#000;color:#fff;font-family:Arial;padding:4%;max-width:600px;margin:auto}
+body{background:#000;color:#fff;font-family:Arial;padding:4%;max-width:700px;margin:auto}
 h1{color:var(--v);text-align:center}
-label{font-size:12px;color:#aaa}
-input,select,textarea,button{width:100%;padding:12px;margin:6px 0 15px 0;border-radius:8px;border:1px solid #333;background:#111;color:#fff;box-sizing:border-box}
+label{font-size:12px;color:#aaa;margin-top:10px;display:block}
+input,select,textarea,button{width:100%;padding:12px;margin:6px 0 10px 0;border-radius:8px;border:1px solid #333;background:#111;color:#fff;box-sizing:border-box}
 button{background:var(--v);color:#000;font-weight:800;font-size:16px;cursor:pointer;border:none}
-button:active{opacity:0.8}
+.campos-extra{display:none}
 #status{padding:10px;border-radius:8px;margin-top:10px;text-align:center;font-size:13px}
-.ok{background:#00ff881a;color:var(--v)}
-.erro{background:#ff00001a;color:#ff5555}
+.ok{background:#00ff881a;color:var(--v)}.erro{background:#ff00001a;color:#ff5555}
 </style>
 </head>
 <body>
 
-<h1>CADASTRO KORVIL LOJA</h1>
+<h1>SISTEMA K - CADASTRO</h1>
 
-<label>1. Setor</label>
-<select id="setor">
-  <option value="suplementos">Suplementos</option>
-  <option value="roupas">Roupas</option>
-  <option value="acessorios">Acessórios</option>
-  <option value="eletronicos">Eletrônicos</option>
-  <option value="casa">Casa</option>
+<label>1. SISTEMA</label>
+<select id="sistema" onchange="atualizarAreas()">
+  <option value="">Selecione</option>
+  <option value="K">K - Serviços Gerais</option>
+  <option value="K-TP">K-TP - Fitness</option>
+  <option value="K-AFORTUNADO">K-AFORTUNADO - Empreendedorismo</option>
+  <option value="K-ALMA">K-ALMA - Saúde e Beleza</option>
 </select>
 
-<label>2. Marca / Categoria</label>
-<input id="marca" placeholder="Ex: profit, nike, samsung" value="profit">
+<label>2. ÁREA / NICHO</label>
+<select id="area" onchange="atualizarCampos()"></select>
 
-<label>3. Pasta do Produto</label>
-<input id="produto" placeholder="Ex: wheyprotein, camiseta-preta" value="wheyprotein">
+<label>3. MARCA / PROFISSIONAL</label>
+<input id="marca" placeholder="Ex: profit, growth, Dr.João">
 
-<label>4. Título do Produto</label>
-<input id="titulo" placeholder="Ex: Whey Protein 2kg Chocolate" value="Whey Protein 2kg">
+<label>4. PASTA DO PRODUTO/SERVIÇO</label>
+<input id="produto" placeholder="Ex: wheyprotein, livro, massoterapia">
 
-<label>5. Descrição</label>
-<textarea id="descricao" rows="3">Descrição do produto aqui</textarea>
+<label>5. TÍTULO</label>
+<input id="titulo" placeholder="Nome que aparece no site">
 
-<label>6. Preço</label>
-<input id="preco" placeholder="129.90" value="129.90">
+<label>6. DESCRIÇÃO</label>
+<textarea id="descricao" rows="3"></textarea>
 
-<button onclick="cadastrar()">CADASTRAR PRODUTO</button>
+<label>7. PREÇO</label>
+<input id="preco" placeholder="129.90">
+
+<!-- CAMPOS EXTRAS QUE APARECEM SOZINHOS -->
+<div id="campos-suplemento" class="campos-extra">
+  <label>Sabor</label><input id="sabor" placeholder="Chocolate">
+  <label>Peso</label><input id="peso" placeholder="2kg">
+  <label>Tipo</label><input id="tipo" placeholder="Whey Concentrado">
+</div>
+
+<button onclick="cadastrar()">CADASTRAR</button>
 <div id="status"></div>
 
 <script>
-// ====== CONFIGURA SÓ 3 LINHAS AQUI ======
-const TOKEN = "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" 
-const USUARIO = "korvil-sudo" 
-const REPO = "korvil-app" 
+const TOKEN = "COLA_SEU_TOKEN" 
+const USUARIO = "korvilp-sudo" 
+const REPO = "korvil-app"
 const BRANCH = "main"
-// =========================================
+const BASE_PATH = "sections/centralkorvil/korvil-loja"
 
-const BASE_PATH = "sections/centralkorvil/korvil-loja" // <- Já aponta pra pasta certa
+const AREAS = {
+  "K": ["Profissionais", "Tecnologias", "Servicos Gerais"],
+  "K-TP": ["Suplementos", "Acessorios Esportivos", "Alimentos"],
+  "K-AFORTUNADO": ["Livros", "Empreendedorismo", "Financas"],
+  "K-ALMA": ["Saude", "Beleza", "Terapias"]
+}
+
+function atualizarAreas(){
+  const sistema = document.getElementById('sistema').value
+  const areaSelect = document.getElementById('area')
+  areaSelect.innerHTML = '<option value="">Selecione</option>'
+  AREAS[sistema]?.forEach(a => {
+    areaSelect.innerHTML += `<option value="${a}">${a}</option>`
+  })
+}
+
+function atualizarCampos(){
+  document.getElementById('campos-suplemento').style.display = 'none'
+  if(document.getElementById('area').value === "Suplementos"){
+    document.getElementById('campos-suplemento').style.display = 'block'
+  }
+}
 
 async function cadastrar(){
   const status = document.getElementById('status')
-  status.className = ''
-  status.innerText = 'Enviando pro GitHub...'
+  status.innerText = 'Enviando...'
 
-  const setor = document.getElementById('setor').value
+  const sistema = document.getElementById('sistema').value
+  const area = document.getElementById('area').value.toLowerCase().replace(/ /g,'-')
   const marca = document.getElementById('marca').value.toLowerCase().replace(/ /g,'-')
   const produto = document.getElementById('produto').value.toLowerCase().replace(/ /g,'-')
   const titulo = document.getElementById('titulo').value
   const descricao = document.getElementById('descricao').value
   const preco = document.getElementById('preco').value
+  const sabor = document.getElementById('sabor').value
+  const peso = document.getElementById('peso').value
+  const tipo = document.getElementById('tipo').value
 
-  // CAMINHO: korvil-loja / setor / marcas / marca / produtos / produto
-  const path = `${BASE_PATH}/${setor}/marcas/${marca}/produtos/${produto}/index.html`
+  // CAMINHO INTELIGENTE: sistema/area/marca/produto
+  const path = `${BASE_PATH}/${sistema}/${area}/marcas/${marca}/produtos/${produto}/index.html`
   
-  const html = `<!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><title>${titulo}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>body{background:#000;color:#fff;font-family:Arial;padding:5%} h1{color:#00ff88} .btn{background:#00ff88;color:#000;padding:15px;border-radius:12px;text-decoration:none;display:block;text-align:center;font-weight:800;margin-top:20px}</style>
-</head><body>
-<a href="../../../../index.html" style="color:#aaa">← Voltar</a>
-<h1>${titulo}</h1>
-<p style="color:#aaa">${descricao}</p>
-<h2>R$ ${preco}</h2>
-<a href="https://wa.me/55SEUNUMERO?text=Quero ${titulo}" class="btn">COMPRAR NO WHATSAPP</a>
-</body></html>`
+  // SE FOR SUPLEMENTO JÁ CRIA AS PASTAS SABOR E PESO
+  let htmlExtra = ''
+  if(document.getElementById('campos-suplemento').style.display === 'block'){
+    htmlExtra = `<p>Sabor: ${sabor}</p><p>Peso: ${peso}</p><p>Tipo: ${tipo}</p>`
+  }
 
-  try {
-    const res = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${path}`,{
-      method:"PUT",
-      headers:{"Authorization":`token ${TOKEN}`,"Content-Type":"application/json"},
-      body:JSON.stringify({
-        message:`[CADASTRO] ${titulo}`,
-        content:btoa(unescape(encodeURIComponent(html))),
-        branch:BRANCH
-      })
-    })
-    
-    const data = await res.json()
-    if(res.ok){
-      status.className = 'ok'
-      status.innerHTML = `✅ Criado com sucesso!<br><small>${path}</small>`
-    } else {
-      status.className = 'erro'
-      status.innerText = 'Erro: ' + (data.message || 'Verifique o Token')
-    }
-  } catch(e){
+  const html = `<!DOCTYPE html><html><head><title>${titulo}</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>body{background:#000;color:#fff;font-family:Arial;padding:5%} h1{color:#00ff88}.btn{background:#00ff88;color:#000;padding:15px;border-radius:12px;text-decoration:none;display:block;text-align:center;font-weight:800}</style>
+  </head><body>
+  <a href="../../../../index.html" style="color:#aaa">← Voltar</a>
+  <h1>${titulo}</h1><p>${descricao}</p>${htmlExtra}<h2>R$ ${preco}</h2>
+  <a href="https://wa.me/55SEUNUMERO" class="btn">COMPRAR</a></body></html>`
+
+  const res = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${path}`,{
+    method:"PUT",
+    headers:{"Authorization":`token ${TOKEN}`,"Content-Type":"application/json"},
+    body:JSON.stringify({message:`Add: ${titulo}`, content:btoa(unescape(encodeURIComponent(html))), branch:BRANCH})
+  })
+  
+  if(res.ok){
+    status.className = 'ok'
+    status.innerHTML = `✅ Criado!<br><small>${path}</small>`
+  } else {
     status.className = 'erro'
-    status.innerText = 'Erro de conexão'
+    status.innerText = 'Erro: ' + await res.text()
   }
 }
 </script>
