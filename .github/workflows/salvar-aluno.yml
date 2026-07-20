@@ -2,29 +2,21 @@ name: Salvar Aluno
 on:
   workflow_dispatch:
     inputs:
-      id:
-        description: 'ID do Aluno'
-        required: true
-        type: string
       dados:
-        description: 'Dados JSON do Aluno'
+        description: 'JSON do aluno'
         required: true
-        type: string
 jobs:
   salvar:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: { contents: write }
     steps:
       - uses: actions/checkout@v4
-      - name: Criar JSON
-        run: |
-          mkdir -p sections/ktp/projetotransformacao/projetos/2026
-          echo '${{ inputs.dados }}' > sections/ktp/projetotransformacao/projetos/2026/${{ inputs.id }}.json
-      - name: Commit
-        run: |
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: node.github/scripts/atualiza.js '${{ github.event.inputs.dados }}'
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add.
-          git commit -m "feat: adicionar aluno ${{ inputs.id }}" || echo "nada pra commitar"
+          git add cronograma-de-alunos.json
+          git commit -m "Update aluno" || exit 0
           git push
