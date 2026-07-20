@@ -386,7 +386,6 @@ function mostrarDadosAluno(id){
   } else {
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
-}
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   if(!idLogado){
@@ -407,6 +406,43 @@ function mostrarCronograma(){
     </div>`;
   }
 
+  const planosParaMostrar = ['PRESENCIAL', 'ONLINE'];
+  let achouAlgum = false;
+
+  planosParaMostrar.forEach(plano=>{
+    if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+
+    CRONOGRAMA_DB[plano].forEach(bloco=>{
+      // REGRA NOVA: ADM VÊ TUDO. ALUNO SÓ VÊ ELE E SÓ SE FOR ATIVO
+      let alunosDoBloco;
+      if(ehAdm){
+        alunosDoBloco = bloco.alunos; // ADM vê todos
+      } else {
+        alunosDoBloco = bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo'); // ALUNO só se for ele e Ativo
+      }
+
+      if(alunosDoBloco.length === 0) return;
+      achouAlgum = true;
+
+      if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
+      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+
+      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+
+      alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
+        html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+    });
+  });
+
+  // Se aluno desativado não achou nada
+  if(!ehAdm &&!achouAlgum){
+    html += `<div class="card-semana"><p style="color:var(--erro);text-align:center;font-weight:900">SEU CADASTRO ESTÁ DESATIVADO<br>Entre em contato para regularizar.</p></div>`;
+  }
+
+  container.innerHTML = html;
+}
   const planosParaMostrar = ehAdm? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
 
   planosParaMostrar.forEach(plano=>{
