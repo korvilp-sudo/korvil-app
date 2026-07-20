@@ -2,100 +2,137 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
 <title>KORVIL MARKET - Todos os Setores</title>
 <style>
-:root{
-  --korvil:#00f5ff;
-  --korvil2:#00ff88;
-  --bg:#050505;
-  --card:#0a0a0a;
-  --text:#fff;
-  --muted:#888;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{background:var(--bg);color:var(--text)}
+:root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --card2:#111; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(circle at 50% -20%,rgba(0,245,255,.08),transparent 60%), var(--bg);color:var(--text);overflow-x:hidden;}
 
-/* HEADER */
-header{background:linear-gradient(90deg,var(--korvil),var(--korvil2));padding:12px 5%;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,245,255,.3)}
-.top-bar{display:flex;justify-content:space-between;align-items:center;gap:15px}
-.logo{font-size:28px;font-weight:900;color:#000;text-shadow:0 0 10px #fff}
-.search-box{flex:1;display:flex}
-.search-box input{flex:1;padding:12px;border:0;border-radius:8px 0 0 8px;background:#fff;color:#000;font-size:14px}
-.search-box button{padding:12px 20px;border:0;border-radius:0 8px 8px 0;background:#000;color:var(--korvil);font-weight:800;cursor:pointer}
-.icons{display:flex;gap:20px;color:#000;font-weight:800;cursor:pointer}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px var(--c)30}50%{box-shadow:0 0 35px var(--c)60}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-.banner{padding:30px 5%;text-align:center}
-.banner h1{font-size:32px;background:linear-gradient(90deg,var(--korvil),var(--korvil2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.banner p{color:var(--muted);margin-top:8px}
+/* HEADER ESTILO MERCADO LIVRE + 3D */
+.topbar{position:sticky;top:0;left:0;right:0;background:rgba(0,0,0,.95);backdrop-filter:blur(16px);border-bottom:2px solid var(--c);z-index:100;padding:12px 5%;animation:fadeIn.4s;box-shadow:0 4px 30px rgba(0,245,255,.15)}
+.top-content{display:flex;align-items:center;gap:15px}
+.menu-btn{background:linear-gradient(145deg,#111,#000);border:1.5px solid var(--c);color:var(--c);padding:10px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;transition:.25s;box-shadow:0 4px 15px rgba(0,245,255,.1)}
+.menu-btn:active{transform:scale(.95);background:var(--c);color:#000;}
+.logo{color:var(--c);font-weight:900;font-size:24px;letter-spacing:2px;text-shadow:0 0 15px var(--c);flex:1;animation:glow 3s infinite}
+.search-box{flex:3;display:flex}
+.search-box input{flex:1;padding:14px;border:2px solid var(--c);border-right:0;border-radius:10px 0 0 10px;background:#0a0a0a;color:#fff;font-size:15px;transition:.3s}
+.search-box input:focus{outline:none;box-shadow:0 0 20px var(--c)40}
+.search-box button{padding:14px 22px;border:2px solid var(--c);border-radius:0 10px 10px 0;background:linear-gradient(90deg,var(--c),var(--c2));color:#000;font-weight:900;cursor:pointer;transition:.2s}
+.search-box button:active{transform:scale(.96)}
 
-/* ABAS DOS SETORES ESTILO SHOPEE */
-.abas-setores{display:flex;gap:15px;padding:20px 5%;overflow-x:auto;border-bottom:1px solid #222}
-.aba-item{min-width:140px;text-align:center;cursor:pointer;padding:12px;border-radius:12px;background:var(--card);border:2px solid #222;transition:0.3s}
-.aba-item.ativo{border-color:var(--korvil);box-shadow:0 0 20px var(--korvil)40;background:#111}
-.aba-item div{font-size:32px;margin-bottom:6px}
-.aba-item span{font-size:13px;font-weight:700}
+/* MENU LATERAL 4D */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);display:none;z-index:100;backdrop-filter:blur(6px);}
+.overlay.ativo{display:block;animation:fadeIn.3s}
+.menu-lateral{position:fixed;top:0;left:-320px;width:290px;height:100%;background:linear-gradient(180deg,#080808,#000);border-right:2px solid var(--c);z-index:101;transition:left.35s cubic-bezier(.4,0,.2,1);padding-top:75px;overflow-y:auto;box-shadow:10px 0 40px rgba(0,245,255,.2)}
+.menu-lateral.ativo{left:0;}
+.menu-lateral h3{color:var(--c);padding:16px 20px;font-size:14px;border-bottom:1px solid #222;text-shadow:0 0 10px var(--c)}
+.menu-lateral a{display:block;color:var(--text);padding:16px 20px;text-decoration:none;border-bottom:1px solid #111;font-size:15px;font-weight:600;cursor:pointer;transition:.25s;}
+.menu-lateral a:active{background:linear-gradient(90deg,rgba(0,245,255,.1),transparent);color:var(--c);padding-left:26px;transform:translateX(4px);}
 
-/* CONTEÚDO DO SETOR */
-.setor-conteudo{display:none;padding:20px 5%}
-.setor-conteudo.ativo{display:block;animation:fade.3s}
-@keyframes fade{from{opacity:0}to{opacity:1}}
+/* ABAS DOS SETORES 8K */
+.abas-setores{display:flex;gap:14px;padding:18px 5%;overflow-x:auto;background:linear-gradient(180deg,#050505,#000);border-bottom:1px solid var(--borda);position:sticky;top:72px;z-index:99;scrollbar-width:none}
+.abas-setores::-webkit-scrollbar{display:none}
+.aba-item{min-width:125px;text-align:center;cursor:pointer;padding:12px;border-radius:14px;background:linear-gradient(145deg,#0a0a0a,#000);border:1.5px solid var(--borda);transition:0.35s;box-shadow:0 4px 15px rgba(0,0,0,.4)}
+.aba-item:hover{border-color:var(--c);transform:translateY(-3px);box-shadow:0 8px 25px var(--c)30}
+.aba-item:active{transform:scale(.96)}
+.aba-item div{font-size:30px;margin-bottom:5px;filter:drop-shadow(0 0 8px var(--c))}
+.aba-item span{font-size:12px;font-weight:700;color:var(--text2)}
 
-.area-card{background:var(--card);border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:15px;border-left:4px solid var(--korvil)}
-.area-card h3{color:var(--korvil);font-size:16px;margin-bottom:8px}
-.area-card h4{font-size:13px;color:var(--muted);margin-bottom:6px}
-.area-card p{font-size:14px;line-height:1.6}
+.banner{padding:30px 5%;text-align:center;animation:fadeIn.5s}
+.banner h1{font-size:32px;color:var(--c);text-shadow:0 0 20px var(--c);animation:float 4s ease-in-out infinite}
+.banner p{color:var(--text2);margin-top:10px;font-size:15px}
 
-/* GRID DE PRODUTOS */
-.grid{padding:0 5% 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
-.card{background:var(--card);border:1px solid #222;border-radius:12px;overflow:hidden;transition:0.3s;cursor:pointer}
-.card:hover{transform:translateY(-5px);border-color:var(--korvil);box-shadow:0 0 25px rgba(0,245,255,.2)}
-.card img{width:100%;height:220px;object-fit:cover;background:#111}
-.card-body{padding:12px}
-.card-title{font-size:14px;height:40px;overflow:hidden;margin-bottom:8px}
-.card-price{color:var(--korvil2);font-size:22px;font-weight:900}
+/* FEED MISTURADO HD */
+.feed-titulo{padding:24px 5% 12px;font-size:19px;font-weight:800;color:var(--c);text-shadow:0 0 10px var(--c)}
+.grid{padding:0 5% 50px;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px;perspective:1000px}
+.card{background:linear-gradient(145deg,#0a0a0a,#050505);border:1.5px solid var(--borda);border-radius:16px;overflow:hidden;transition:0.4s cubic-bezier(.4,0,.2,1);cursor:pointer;transform-style:preserve-3d;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+.card:hover{transform:translateY(-8px) rotateX(3deg);border-color:var(--c);box-shadow:0 15px 40px var(--c)25;}
+.card:active{transform:scale(.97) translateY(-4px)}
+.card img{width:100%;height:190px;object-fit:cover;background:#111;transition:.4s}
+.card:hover img{transform:scale(1.05)}
+.card-body{padding:14px;background:linear-gradient(180deg,transparent,rgba(0,245,255,.03))}
+.card-setor{font-size:10px;color:var(--c);font-weight:800;margin-bottom:5px;letter-spacing:.5px}
+.card-title{font-size:14px;height:38px;overflow:hidden;margin-bottom:8px;line-height:1.4}
+.card-price{color:var(--c2);font-size:20px;font-weight:900;text-shadow:0 0 8px var(--c2)50}
 
-footer{background:#000;padding:30px 5%;text-align:center;color:var(--muted);margin-top:40px;border-top:1px solid #222}
-@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+/* PÁGINA DO SETOR */
+.setor-page{display:none;padding:20px 5%;animation:fadeIn.4s}
+.setor-page.ativo{display:block;}
+
+.btn-voltar{padding:12px 18px;background:linear-gradient(145deg,#0a0a0a,#000);border:1.5px solid var(--c);border-radius:10px;color:var(--c);cursor:pointer;margin-bottom:22px;font-weight:700;transition:.25s;box-shadow:0 4px 15px rgba(0,245,255,.1)}
+.btn-voltar:active{transform:scale(.96)}
+
+.area-card{background:linear-gradient(145deg,#0a0a0a,#050505);border:1.5px solid var(--borda);border-radius:16px;padding:20px;margin-bottom:22px;border-left:4px solid var(--c);box-shadow:0 8px 25px rgba(0,0,0,.4);transition:.3s}
+.area-card:hover{border-color:var(--c);box-shadow:0 0 30px var(--c)20}
+.area-card h3{color:var(--c);font-size:17px;margin-bottom:10px;text-shadow:0 0 8px var(--c)}
+.area-card h4{font-size:13px;color:var(--text2);margin-bottom:8px}
+.area-card p{font-size:14px;line-height:1.8}
+
+footer{background:#000;padding:35px 5%;text-align:center;color:var(--text2);margin-top:40px;border-top:1px solid var(--borda);box-shadow:inset 0 1px 0 var(--c)20}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.search-box{display:none}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="top-bar">
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="top-content">
+    <button class="menu-btn" onclick="toggleMenu()">☰ MENU</button>
     <div class="logo">KORVIL MARKET</div>
     <div class="search-box">
-      <input id="search" placeholder="Buscar em todos os setores KORVIL...">
+      <input id="search" placeholder="Buscar em KORVIL MARKET...">
       <button onclick="buscar()">BUSCAR</button>
     </div>
-    <div class="icons" onclick="alert('Carrinho em breve')">🛒</div>
   </div>
-</header>
-
-<div class="banner">
-  <h1>KORVIL MARKET</h1>
-  <p>Todos os setores em um só lugar. Aprenda as extensões e ache tudo mais rápido.</p>
 </div>
+
+<!-- MENU LATERAL -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<nav class="menu-lateral" id="menu">
+  <h3>NAVEGAÇÃO</h3>
+  <a onclick="voltarHome();toggleMenu()">🏠 Início</a>
+  <a onclick="abrirSetor('sistemak');toggleMenu()">⚙️ SISTEMA K</a>
+  <a onclick="abrirSetor('ktp');toggleMenu()">💪 K-TP</a>
+  <a onclick="abrirSetor('kafortunado');toggleMenu()">💰 K-AFORTUNADO</a>
+  <a onclick="abrirSetor('kalma');toggleMenu()">🧘 K-ALMA</a>
+  <h3>CONTA</h3>
+  <a onclick="toggleMenu()">👤 Minha Conta</a>
+  <a onclick="toggleMenu()">🛒 Meus Pedidos</a>
+  <a onclick="toggleMenu()">❤️ Favoritos</a>
+  <h3>AJUDA</h3>
+  <a onclick="toggleMenu()">📞 Suporte</a>
+  <a onclick="toggleMenu()">📋 Como Comprar</a>
+</nav>
 
 <!-- ABAS DOS SETORES -->
 <div class="abas-setores">
-  <div class="aba-item ativo" onclick="abrirSetor('sistemak')">
-    <div>⚙️</div><span>SISTEMA K</span>
-  </div>
-  <div class="aba-item" onclick="abrirSetor('ktp')">
-    <div>💪</div><span>K-TP</span>
-  </div>
-  <div class="aba-item" onclick="abrirSetor('kafortunado')">
-    <div>💰</div><span>K-AFORTUNADO</span>
-  </div>
-  <div class="aba-item" onclick="abrirSetor('kalma')">
-    <div>🧘</div><span>K-ALMA</span>
-  </div>
+  <div class="aba-item" onclick="abrirSetor('sistemak')"><div>⚙️</div><span>SISTEMA K</span></div>
+  <div class="aba-item" onclick="abrirSetor('ktp')"><div>💪</div><span>K-TP</span></div>
+  <div class="aba-item" onclick="abrirSetor('kafortunado')"><div>💰</div><span>K-AFORTUNADO</span></div>
+  <div class="aba-item" onclick="abrirSetor('kalma')"><div>🧘</div><span>K-ALMA</span></div>
 </div>
 
-<!-- CONTEUDO SISTEMA K -->
-<div id="sistemak" class="setor-conteudo ativo">
-  <h2 style="margin-bottom:16px;">SISTEMA K</h2>
+<!-- HOME: FEED MISTURADO -->
+<div id="home">
+  <div class="banner">
+    <h1>KORVIL MARKET</h1>
+    <p>Todos os setores em um só lugar • Experiência 8K</p>
+  </div>
+
+  <h2 class="feed-titulo">🔥 Destaques de Todos os Setores</h2>
+  <div class="grid" id="grid-home"></div>
+</div>
+
+<!-- PÁGINA SISTEMA K -->
+<div id="sistemak" class="setor-page">
+  <button class="btn-voltar" onclick="voltarHome()">← Voltar</button>
+  <h2 style="color:var(--c);margin-bottom:16px;text-shadow:0 0 10px var(--c)">SISTEMA K</h2>
   <div class="area-card">
     <h3>Áreas: Serviços Gerais, Profissionais, Tecnologias</h3>
     <h4>Nichos:</h4>
@@ -104,9 +141,10 @@ footer{background:#000;padding:30px 5%;text-align:center;color:var(--muted);marg
   <div class="grid" id="grid-sistemak"></div>
 </div>
 
-<!-- CONTEUDO K-TP -->
-<div id="ktp" class="setor-conteudo">
-  <h2 style="margin-bottom:16px;">K-TP - KORVIL TRANSFORMAÇÃO PROFISSIONAL</h2>
+<!-- PÁGINA K-TP -->
+<div id="ktp" class="setor-page">
+  <button class="btn-voltar" onclick="voltarHome()">← Voltar</button>
+  <h2 style="color:var(--c);margin-bottom:16px;text-shadow:0 0 10px var(--c)">K-TP</h2>
   <div class="area-card">
     <h3>Área: Fitness</h3>
     <h4>Nichos:</h4>
@@ -115,9 +153,10 @@ footer{background:#000;padding:30px 5%;text-align:center;color:var(--muted);marg
   <div class="grid" id="grid-ktp"></div>
 </div>
 
-<!-- CONTEUDO K-AFORTUNADO -->
-<div id="kafortunado" class="setor-conteudo">
-  <h2 style="margin-bottom:16px;">K-AFORTUNADO</h2>
+<!-- PÁGINA K-AFORTUNADO -->
+<div id="kafortunado" class="setor-page">
+  <button class="btn-voltar" onclick="voltarHome()">← Voltar</button>
+  <h2 style="color:var(--c);margin-bottom:16px;text-shadow:0 0 10px var(--c)">K-AFORTUNADO</h2>
   <div class="area-card">
     <h3>Áreas: Empreendedorismo, Finanças</h3>
     <h4>Nichos:</h4>
@@ -126,9 +165,10 @@ footer{background:#000;padding:30px 5%;text-align:center;color:var(--muted);marg
   <div class="grid" id="grid-kafortunado"></div>
 </div>
 
-<!-- CONTEUDO K-ALMA -->
-<div id="kalma" class="setor-conteudo">
-  <h2 style="margin-bottom:16px;">K-ALMA</h2>
+<!-- PÁGINA K-ALMA -->
+<div id="kalma" class="setor-page">
+  <button class="btn-voltar" onclick="voltarHome()">← Voltar</button>
+  <h2 style="color:var(--c);margin-bottom:16px;text-shadow:0 0 10px var(--c)">K-ALMA</h2>
   <div class="area-card">
     <h3>Áreas: Saúde, Beleza</h3>
     <h4>Nichos:</h4>
@@ -138,58 +178,57 @@ footer{background:#000;padding:30px 5%;text-align:center;color:var(--muted);marg
 </div>
 
 <footer>
-  <p>KORVIL MARKET © 2026 - Todos os Setores | Pague com Pix, Cartão, Boleto</p>
+  <p>KORVIL MARKET © 2026 - O Futuro é Agora</p>
 </footer>
 
 <script>
-// FUNÇÃO PARA TROCAR DE ABA
-function abrirSetor(id){
-  document.querySelectorAll('.setor-conteudo').forEach(s=>s.classList.remove('ativo'));
-  document.querySelectorAll('.aba-item').forEach(a=>a.classList.remove('ativo'));
-  document.getElementById(id).classList.add('ativo');
-  event.currentTarget.classList.add('ativo');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-// EXEMPLO DE PRODUTOS POR SETOR - TU TROCA PELOS REAIS
 const produtos = {
   sistemak: [
-    {nome:"Consultoria Tecnológica K",preco:499.90,img:"https://placehold.co/400x400/00f5ff/000?text=SISTEMA+K"},
-    {nome:"Suporte Profissional 24h",preco:199.90,img:"https://placehold.co/400x400/00ff88/000?text=SUPORTE"}
+    {nome:"Consultoria Tecnológica K",preco:499.90,img:"https://placehold.co/400x400/00f5ff/000?text=SISTEMA+K",setor:"SISTEMA K"},
+    {nome:"Suporte Profissional 24h",preco:199.90,img:"https://placehold.co/400x400/00d4ff/000?text=SUPORTE",setor:"SISTEMA K"}
   ],
   ktp: [
-    {nome:"Kit Acessórios Fitness KORVIL",preco:129.90,img:"https://placehold.co/400x400/00f5ff/000?text=FITNESS"},
-    {nome:"Whey Protein KORVIL 2kg",preco:189.90,img:"https://placehold.co/400x400/00ff88/000?text=WHEY"}
+    {nome:"Kit Acessórios Fitness KORVIL",preco:129.90,img:"https://placehold.co/400x400/00f5ff/000?text=FITNESS",setor:"K-TP"},
+    {nome:"Whey Protein KORVIL 2kg",preco:189.90,img:"https://placehold.co/400x400/00d4ff/000?text=WHEY",setor:"K-TP"}
   ],
   kafortunado: [
-    {nome:"Livro: Mente Empreendedora",preco:59.90,img:"https://placehold.co/400x400/ffaa00/000?text=LIVRO"},
-    {nome:"Curso Finanças Pessoais",preco:299.90,img:"https://placehold.co/400x400/ffaa00/000?text=FINANÇAS"}
+    {nome:"Livro: Mente Empreendedora",preco:59.90,img:"https://placehold.co/400x400/00f5ff/000?text=LIVRO",setor:"K-AFORTUNADO"},
+    {nome:"Curso Finanças Pessoais",preco:299.90,img:"https://placehold.co/400x400/00d4ff/000?text=FINANÇAS",setor:"K-AFORTUNADO"}
   ],
   kalma: [
-    {nome:"Sessão Terapia Holística",preco:150.00,img:"https://placehold.co/400x400/ff00aa/000?text=TERAPIA"},
-    {nome:"Pacote Beleza Completo",preco:220.00,img:"https://placehold.co/400x400/ff00aa/000?text=BELEZA"}
+    {nome:"Sessão Terapia Holística",preco:150.00,img:"https://placehold.co/400x400/00f5ff/000?text=TERAPIA",setor:"K-ALMA"},
+    {nome:"Pacote Beleza Completo",preco:220.00,img:"https://placehold.co/400x400/00d4ff/000?text=BELEZA",setor:"K-ALMA"}
   ]
 };
 
-function renderGrid(){
+let todosProdutos = [];
+for(let s in produtos){ todosProdutos = todosProdutos.concat(produtos[s]) }
+todosProdutos.sort(()=>Math.random()-0.5);
+
+function render(){
+  document.getElementById('grid-home').innerHTML = todosProdutos.map(p=>`
+    <div class="card">
+      <img src="${p.img}">
+      <div class="card-body">
+        <div class="card-setor">${p.setor}</div>
+        <div class="card-title">${p.nome}</div>
+        <div class="card-price">R$ ${p.preco.toFixed(2)}</div>
+      </div>
+    </div>
+  `).join('');
   for(let setor in produtos){
     document.getElementById('grid-'+setor).innerHTML = produtos[setor].map(p=>`
-      <div class="card">
-        <img src="${p.img}">
-        <div class="card-body">
-          <div class="card-title">${p.nome}</div>
-          <div class="card-price">R$ ${p.preco.toFixed(2)}</div>
-        </div>
-      </div>
+      <div class="card"><img src="${p.img}"><div class="card-body"><div class="card-title">${p.nome}</div><div class="card-price">R$ ${p.preco.toFixed(2)}</div></div></div>
     `).join('');
   }
 }
 
-function buscar(){
-  alert('Busca geral nos 4 setores. Vou conectar depois.')
-}
+function toggleMenu(){document.getElementById('menu').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo')}
+function abrirSetor(id){document.getElementById('home').style.display='none';document.querySelectorAll('.setor-page').forEach(s=>s.classList.remove('ativo'));document.getElementById(id).classList.add('ativo');window.scrollTo({top:0,behavior:'smooth'})}
+function voltarHome(){document.querySelectorAll('.setor-page').forEach(s=>s.classList.remove('ativo'));document.getElementById('home').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
+function buscar(){alert('Busca geral em todos os setores')}
 
-renderGrid();
+render();
 </script>
 </body>
 </html>
