@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><title>TESTE K-TP</title>
+<head><meta charset="UTF-8"><title>TESTE KTP</title>
 <style>
 body{background:#000;color:#00f5ff;font-family:Arial;padding:40px;text-align:center}
 input{width:90%;max-width:400px;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:20px;margin:20px 0}
@@ -9,27 +9,30 @@ button{padding:20px 40px;background:#00f5ff;color:#000;border:none;border-radius
 </style>
 </head>
 <body>
-<h1>TESTE RÁPIDO - KTP</h1>
-<input type="text" id="nome" placeholder="Digite o Nome" required>
-<button onclick="enviar()">CADASTRAR</button>
+<h1>TESTE INSCRIÇÃO</h1>
+<input type="text" id="nome" placeholder="DIGITE O NOME" required>
+<button onclick="enviar()">INSCREVER</button>
 <div id="msg"></div>
 
 <script>
+function slug(texto){
+  return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "");
+}
+
 function enviar(){
   const nome = document.getElementById('nome').value.trim();
   if(!nome) return alert('Digite o nome');
 
   const dados = {
-    nome: nome, whats:"--", email:"--", plano:"PRESENCIAL", freq:"3x", objetivo:"Teste",
-    dias:"--", valor:"R$0,00", matricula:"R$0,00", total:"R$0,00", venc:"--", status:"Ativo",
-    cpf:"--", nasc:"--", idade:"--", genero:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--",
-    plano: "PRESENCIAL 3x"
+    nome: nome,
+    whats: "--",
+    data_inscricao: new Date().toLocaleString('pt-BR')
   }
 
-  const json = btoa(JSON.stringify(dados)); // codifica em base64
-  const link = `https://github.com/korvilp-sudo/korvil-app/actions/workflows/salvar-aluno.yml?query=dados:${json}`;
+  const json = btoa(JSON.stringify(dados));
+  const link = `https://github.com/korvilp-sudo/korvil-app/actions/workflows/criar-aluno.yml?query=nome:${slug(nome)}&dados:${json}`;
 
-  document.getElementById('msg').innerHTML = `✅ CLICA AQUI PRA CADASTRAR:<br><a href="${link}" target="_blank" style="color:#00f5ff;font-size:18px">RODAR CADASTRO</a>`;
+  document.getElementById('msg').innerHTML = `✅ CLICA PRA CRIAR ARQUIVO:<br><a href="${link}" target="_blank" style="color:#00f5ff;font-size:18px">CRIAR ${slug(nome)}</a>`;
 }
 </script>
 </body>
