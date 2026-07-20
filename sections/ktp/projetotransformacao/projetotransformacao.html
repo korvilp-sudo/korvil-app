@@ -369,7 +369,7 @@ function trocarAba(plano, el){
 function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
-  if(id === 'ktp1'){
+  if(id === 'ktp0'){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
