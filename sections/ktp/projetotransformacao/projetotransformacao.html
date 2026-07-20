@@ -430,9 +430,7 @@ function mostrarCronograma(){
     if(ehAdmin) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
     CRONOGRAMA_DB[plano].forEach(bloco=>{
       // REGRA FINAL: SÓ ADMIN ktp0 e mag1 VÊ TUDO
-      let alunosDoBloco = (idLogado === 'ktp0' || idLogado === 'mag1')
-      ? bloco.alunos
-        : bloco.alunos.filter(a => a.id === idLogado);
+      let alunosDoBloco = ALUNOS_DB[idLogado]?.tipo === 'ADMIN'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
 
       if(alunosDoBloco.length === 0) return;
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
