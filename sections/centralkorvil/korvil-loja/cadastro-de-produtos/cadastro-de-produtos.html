@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CADASTRO KORVIL LOJA</title>
+<style>
+:root{--v:#00ff88} 
+body{background:#000;color:#fff;font-family:Arial;padding:4%;max-width:600px;margin:auto}
+h1{color:var(--v);text-align:center}
+label{font-size:12px;color:#aaa}
+input,select,textarea,button{width:100%;padding:12px;margin:6px 0 15px 0;border-radius:8px;border:1px solid #333;background:#111;color:#fff;box-sizing:border-box}
+button{background:var(--v);color:#000;font-weight:800;font-size:16px;cursor:pointer;border:none}
+button:active{opacity:0.8}
+#status{padding:10px;border-radius:8px;margin-top:10px;text-align:center;font-size:13px}
+.ok{background:#00ff881a;color:var(--v)}
+.erro{background:#ff00001a;color:#ff5555}
+</style>
+</head>
+<body>
+
+<h1>CADASTRO KORVIL LOJA</h1>
+
+<label>1. Setor</label>
+<select id="setor">
+  <option value="suplementos">Suplementos</option>
+  <option value="roupas">Roupas</option>
+  <option value="acessorios">Acessórios</option>
+  <option value="eletronicos">Eletrônicos</option>
+  <option value="casa">Casa</option>
+</select>
+
+<label>2. Marca / Categoria</label>
+<input id="marca" placeholder="Ex: profit, nike, samsung" value="profit">
+
+<label>3. Pasta do Produto</label>
+<input id="produto" placeholder="Ex: wheyprotein, camiseta-preta" value="wheyprotein">
+
+<label>4. Título do Produto</label>
+<input id="titulo" placeholder="Ex: Whey Protein 2kg Chocolate" value="Whey Protein 2kg">
+
+<label>5. Descrição</label>
+<textarea id="descricao" rows="3">Descrição do produto aqui</textarea>
+
+<label>6. Preço</label>
+<input id="preco" placeholder="129.90" value="129.90">
+
+<button onclick="cadastrar()">CADASTRAR PRODUTO</button>
+<div id="status"></div>
+
+<script>
+// ====== CONFIGURA SÓ 3 LINHAS AQUI ======
+const TOKEN = "COLA_SEU_TOKEN_GITHUB_AQUI" 
+const USUARIO = "SEU_USUARIO_GITHUB" 
+const REPO = "korvil-app" 
+const BRANCH = "main"
+// =========================================
+
+const BASE_PATH = "sections/centralkorvil/korvil-loja" // <- Já aponta pra pasta certa
+
+async function cadastrar(){
+  const status = document.getElementById('status')
+  status.className = ''
+  status.innerText = 'Enviando pro GitHub...'
+
+  const setor = document.getElementById('setor').value
+  const marca = document.getElementById('marca').value.toLowerCase().replace(/ /g,'-')
+  const produto = document.getElementById('produto').value.toLowerCase().replace(/ /g,'-')
+  const titulo = document.getElementById('titulo').value
+  const descricao = document.getElementById('descricao').value
+  const preco = document.getElementById('preco').value
+
+  // CAMINHO: korvil-loja / setor / marcas / marca / produtos / produto
+  const path = `${BASE_PATH}/${setor}/marcas/${marca}/produtos/${produto}/index.html`
+  
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><title>${titulo}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>body{background:#000;color:#fff;font-family:Arial;padding:5%} h1{color:#00ff88} .btn{background:#00ff88;color:#000;padding:15px;border-radius:12px;text-decoration:none;display:block;text-align:center;font-weight:800;margin-top:20px}</style>
+</head><body>
+<a href="../../../../index.html" style="color:#aaa">← Voltar</a>
+<h1>${titulo}</h1>
+<p style="color:#aaa">${descricao}</p>
+<h2>R$ ${preco}</h2>
+<a href="https://wa.me/55SEUNUMERO?text=Quero ${titulo}" class="btn">COMPRAR NO WHATSAPP</a>
+</body></html>`
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${path}`,{
+      method:"PUT",
+      headers:{"Authorization":`token ${TOKEN}`,"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:`[CADASTRO] ${titulo}`,
+        content:btoa(unescape(encodeURIComponent(html))),
+        branch:BRANCH
+      })
+    })
+    
+    const data = await res.json()
+    if(res.ok){
+      status.className = 'ok'
+      status.innerHTML = `✅ Criado com sucesso!<br><small>${path}</small>`
+    } else {
+      status.className = 'erro'
+      status.innerText = 'Erro: ' + (data.message || 'Verifique o Token')
+    }
+  } catch(e){
+    status.className = 'erro'
+    status.innerText = 'Erro de conexão'
+  }
+}
+</script>
+</body>
+</html>
