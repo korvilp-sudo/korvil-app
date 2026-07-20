@@ -294,14 +294,16 @@ function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 
-function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
-function getSegundaDaSemana(){
-  const agora = new Date();
-  let dataBase = new Date(agora);
-  if(agora.getDay() === 1 && agora.getHours() < 1){ dataBase.setDate(agora.getDate() - 7); }
-  const diaSemana = dataBase.getDay();
-  const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
-  const segunda = new Date(dataBase.setDate(diff));
+function formatarData(d){
+  const dt=new Date(d+'T12:00:00');
+  return dt.toLocaleDateString('pt-BR');
+}
+
+function getSegundaDaSemana(dataRef = new Date()){
+  const data = new Date(dataRef);
+  const diaSemana = data.getDay(); // 0=Dom, 1=Seg
+  const diff = data.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
+  const segunda = new Date(data.setDate(diff));
   const ano = segunda.getFullYear();
   const mes = String(segunda.getMonth() + 1).padStart(2, '0');
   const dia = String(segunda.getDate()).padStart(2, '0');
@@ -325,26 +327,71 @@ function carregarMenu(){
 function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
   const infoCompleta = MENU[data];
+  if(!infoCompleta) return;
   const linhas = infoCompleta.split('\n');
   const titulo = linhas[0];
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
   const imagens = {'MANUTENÇÃO': 'semana-de-manutencao','RESISTÊNCIA': 'semana-de-resistencia','FORÇA': 'semana-de-forca','HIPERTROFIA': 'semana-de-hipertrofia'};
   let pastaImagem = 'semana-de-manutencao';
-  for(let key in imagens){ if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; } }
+  for(let key in imagens){ if(subtitulo.toUpperCase().includes(key)){ pastaImagem = imagens[key]; break; } }
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
-  let html = `<div class="card-semana"><h3>${titulo}</h3><img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'"><p><b>${subtitulo}</b></p><div class="mensagem-semana">${mensagem}</div><p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p></div>`;
+  const domingo = new Date(data + 'T12:00:00'); domingo.setDate(domingo.getDate() + 6);
+  let html = `<div class="card-semana"><h3>${titulo}</h3><img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'"><p><b>${subtitulo}</b></p><div class="mensagem-semana">${mensagem}</div><p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)} e termina em: ${formatarData(domingo)}</p></div>`;
   container.innerHTML = html;
   if(window.innerWidth<768)toggleMenu();
+}
+
+function mostrarSemanaAutomatica(){
+  const hoje = new Date(); // TESTE: new Date("2026-07-20T10:00:00")
+  const dataSegunda = getSegundaDaSemana(hoje);
+
+  const infoCompleta = MENU[dataSegunda];
+  if(!infoCompleta) return;
+
+  const linhas = infoCompleta.split('\n');
+  const titulo = linhas[0];
+  const subtitulo = linhas[1];
+  const mensagem = MENSAGENS_SEMANA[dataSegunda] || "Mensagem da semana não cadastrada.";
+
+  const imagens = {'MANUTENÇÃO': 'semana-de-manutencao','RESISTÊNCIA': 'semana-de-resistencia','FORÇA': 'semana-de-forca','HIPERTROFIA': 'semana-de-hipertrofia'};
+  let pastaImagem = 'semana-de-manutencao';
+  for(let key in imagens){ if(subtitulo.toUpperCase().includes(key)){ pastaImagem = imagens[key]; break; } }
+  const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
+  const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
+
+  const domingo = new Date(dataSegunda + 'T12:00:00');
+  domingo.setDate(domingo.getDate() + 6);
+
+  document.getElementById('cronograma-container').innerHTML = `
+    <div class="card-semana">
+      <h3>${titulo}</h3>
+      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'">
+      <p><b>${subtitulo}</b></p>
+      <div class="mensagem-semana">${mensagem}</div>
+      <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(dataSegunda)} e termina em: ${formatarData(domingo)}</p>
+    </div>
+  `;
+}
+
+function agendarTrocaSegunda(){
+  const agora = new Date();
+  const proxima = new Date();
+  proxima.setDate(agora.getDate() + ((1 + 7 - agora.getDay()) % 7 || 7));
+  proxima.setHours(1, 0, 0, 0); // 1:00 da manhã
+  const tempo = proxima - agora;
+  setTimeout(() => {
+    mostrarSemanaAutomatica();
+    agendarTrocaSegunda();
+  }, tempo);
 }
 
 function fecharResultado(){
   idLogado='';
   localStorage.removeItem('idLogado');
   document.getElementById('info-aluno-container').innerHTML='';
-  const dataAtual = getSegundaDaSemana();
-  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+  mostrarSemanaAutomatica();
 }
 
 function trocarAba(plano, el){
@@ -364,57 +411,43 @@ function mostrarDadosAluno(id){
   } else {
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
-} // <-- ESSA CHAVE TAVA FALTANDO
+}
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   if(!idLogado){
-    const dataAtual = getSegundaDaSemana();
-    mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+    mostrarSemanaAutomatica();
     return;
   }
-
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
   html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}, mensalidade em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-
   const ehAdm = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
-
   if(ehAdm){
     html += `<div class="abas-plano">
       <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
       <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
     </div>`;
   }
-
-  const planosParaMostrar = ['PRESENCIAL', 'ONLINE'];
+  const planosParaMostrar = ehAdm? ['PRESENCIAL', 'ONLINE'] : ['PRESENCIAL'];
   let achouAlgum = false;
-
   planosParaMostrar.forEach(plano=>{
     if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
-
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // REGRA: ADM VÊ TUDO. ALUNO SÓ VÊ ELE E SÓ SE FOR ATIVO
       let alunosDoBloco = ehAdm? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo');
-
       if(alunosDoBloco.length === 0) return;
       achouAlgum = true;
-
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
-
       html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-
       alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
         html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
     });
   });
-
   if(!ehAdm &&!achouAlgum){
     html += `<div class="card-semana"><p style="color:var(--erro);text-align:center;font-weight:900">SEU CADASTRO ESTÁ DESATIVADO<br>Entre em contato para regularizar.</p></div>`;
   }
-
   container.innerHTML = html;
 }
 
@@ -424,17 +457,23 @@ function buscarAluno(){
   idLogado = id;
   localStorage.setItem('idLogado', id);
   fecharBuscaAluno();
-  mostrarDadosAluno(id); // <-- CORRIGIDO
-  mostrarCronograma(); // <-- CORRIGIDO
+  mostrarDadosAluno(id);
+  mostrarCronograma();
   document.getElementById('input-id-aluno').value='';
-});
+}
 
 window.onload = function(){
   carregarMenu();
-  const dataAtual = getSegundaDaSemana();
-  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+  mostrarSemanaAutomatica(); // <-- AGORA É AUTOMÁTICO
+  agendarTrocaSegunda();
+
+  const idSalvo = localStorage.getItem('idLogado');
+  if(idSalvo && ALUNOS_DB[idSalvo]){
+    idLogado = idSalvo;
+    mostrarDadosAluno(idSalvo);
+    mostrarCronograma();
+  }
 }
-})
 </script>
 </body>
 </html>
