@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8">
+<title>Teste Inscrição KTP</title>
+<style>
+body{background:#000;color:#00f5ff;font-family:Arial;padding:30px;text-align:center}
+input{width:80%;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:18px}
+select{width:80%;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:18px;margin-top:10px}
+button{padding:15px 30px;background:#00f5ff;color:#000;border:none;border-radius:10px;font-weight:900;font-size:18px;margin-top:15px;cursor:pointer}
+#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#001a33;border:2px solid #00f5ff;padding:30px;border-radius:15px;z-index:99;color:#fff}
+</style>
+</head>
+<body>
+
+<h1>INSCRIÇÃO TESTE - PROJETO TRANSFORMAÇÃO</h1>
+<input type="text" id="nome" placeholder="Digite Nome Completo">
+<br>
+<select id="plano">
+  <option value="PRESENCIAL">PRESENCIAL</option>
+  <option value="ONLINE">ONLINE</option>
+</select>
+<br>
+<button onclick="finalizar()">FINALIZAR</button>
+
+<div id="popup"></div>
+
+<script>
+const REPO = "korvilp-sudo/korvil-app";
+const PASTA = "sections/ktp/projetotransformacao/projetos/2026/";
+const TOKEN = "ghp_COLE_SEU_TOKEN_AQUI"; // CRIA EM GITHUB > SETTINGS > TOKENS COM "repo"
+
+// ESTRUTURA DO CRONOGRAMA
+let CRONOGRAMA_DB = { "PRESENCIAL": [], "ONLINE": [] };
+
+async function carregarCronograma(){
+  try{
+    const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${PASTA}cronograma.json?t=${Date.now()}`);
+    CRONOGRAMA_DB = await res.json();
+  }catch(e){
+    console.log("Criando cronograma novo");
+  }
+}
+
+async function finalizar(){
+  const nome = document.getElementById('nome').value.trim();
+  const plano = document.getElementById('plano').value;
+  if(!nome) return alert('Digite o nome');
+
+  await carregarCronograma();
+
+  // 1. VERIFICAR SE ALUNO JÁ EXISTE PELO NOME
+  let achou = false;
+  let alunoObj = null;
+  for(let p in CRONOGRAMA_DB){
+    for(let bloco of CRONOGRAMA_DB[p]){
+      const index = bloco.alunos.findIndex(a => a.aluno.toLowerCase() === nome.toLowerCase());
+      if(index!== -1){
+        // ATUALIZA
+        bloco.alunos[index].ultima_atualizacao = new Date().toLocaleString();
+        alunoObj = bloco.alunos[index];
+        achou = true;
+        break;
+      }
+    }
+    if(achou) break;
+  }
+
+  let isNovo = false;
+  if(!achou){
+    // 2. SE NÃO EXISTE: CRIAR ID NOVO = aluno40
+    const todosIds = [...CRONOGRAMA_DB.PRESENCIAL.flatMap(b=>b.alunos), ...CRONOGRAMA_DB.ONLINE.flatMap(b=>b.alunos)];
+    const ultimoN = Math.max(...todosIds.map(a=>a.n), 0);
+    const novoN = ultimoN + 1;
+    const novoId = "aluno" + novoN;
+
+    // 3. ACHA O BLOCO "ATIVOS" DO PLANO E JOGA LÁ
+    let blocoAtivos = CRONOGRAMA_DB[plano].find(b => b.status === "ATIVOS");
+    if(!blocoAtivos){
+      blocoAtivos = {hora:"SEM HORARIO", status:"ATIVOS", alunos:[]};
+      CRONOGRAMA_DB[plano].push(blocoAtivos);
+    }
+
+    alunoObj = {
+      n: novoN,
+      id: novoId,
+      aluno: nome,
+      dias: "--",
+      freq: "3x",
+      objetivo: "--",
+      valor: "R$0,00",
+      venc: "--",
+      status: "Ativo",
+      data_cadastro: new Date().toLocaleDateString()
+    };
+    blocoAtivos.alunos.push(alunoObj);
+    isNovo = true;
+  }
+
+  // 4. SALVAR CRONOGRAMA GERAL: /.../projetos/2026/cronograma.json
+  await salvarArquivo(`${PASTA}cronograma.json`, CRONOGRAMA_DB);
+
+  // 5. SALVAR ARQUIVO INDIVIDUAL: /.../projetos/2026/aluno40.json
+  await salvarArquivo(`${PASTA}${alunoObj.id}.json`, alunoObj);
+
+  mostrarPopup(`✅ FINALIZADO! <br><br> ID: ${alunoObj.id} <br> ${isNovo? 'Aluno NOVO criado no '+plano : 'Aluno ATUALIZADO'}`);
+}
+
+async function salvarArquivo(caminho, dados){
+  let sha = null;
+  try{
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`, {headers:{Authorization:`token ${TOKEN}`}});
+    if(res.ok){ const data = await res.json(); sha = data.sha; }
+  }catch(e){}
+
+  await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`,{
+    method:'PUT',
+    headers:{Authorization:`token ${TOKEN}`},
+    body:JSON.stringify({
+      message: `Update ${caminho}`,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(dados, null, 2)))),
+      sha: sha
+    })
+  });
+}
+
+function mostrarPopup(msg){
+  const p = document.getElementById('popup');
+  p.innerHTML = msg + '<br><br><button onclick="this.parentElement.style.display=\'none\'">OK</button>';
+  p.style.display = 'block';
+}
+</script>
+</body>
+</html>
