@@ -74,7 +74,7 @@ h3.sectitle{text-align:center;font-size:13px;color:var(--text2);margin:8px 0 12p
     <div class="card" onclick="abrirTela('negocios')"><h2>2. NEGOCIOS</h2><p>Parcerias com Profissionais</p></div>
     <div class="card" onclick="abrirTela('servicos')"><h2>3. SERVICOS</h2><p>Profissionais Especializados</p></div>
     <div class="card" onclick="abrirLojaHome()">
-  <h2>4. LOJA OFICIAL KORVILLOJA</h2>
+  <h2>4. KORVIL LOJA OFICIAL</h2>
   <p>Produtos Oficiais de Todos os Setores</p>
 </div>
   </section>
@@ -102,11 +102,11 @@ function abrirTela(id){
   window.scrollTo({top:0, behavior:'smooth'}); 
 }
   function abrirLojaHome(){
-  window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/kstore/index.html";
+  window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/korvil-loja/index.html";
 }
   
 function abrirLoja(setor, area){
-  window.location.href = `korvil-app/sections/kstore/index.html?setor=${setor}&area=${area}`;
+  window.location.href = `korvil-app/sections/korvil-loja/index.html?setor=${setor}&area=${area}`;
   }
   
 function toggleMenu(){ document.getElementById('menu').classList.toggle('ativo'); document.getElementById('overlay').classList.toggle('ativo'); }
