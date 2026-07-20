@@ -390,31 +390,51 @@ function mostrarDadosAluno(id){
 
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
+  if(!idLogado){
+    const dataAtual = getSegundaDaSemana();
+    mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+    return;
+  }
+
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
-  html += `<div class="obs-pix">Olá, sua mensalidade está prestes a vencer.<br>Esteja com o pagamento corretamente em dia para continuar participando.<br><b>Pix: korvilloja@gmail.com</b></div>`;
-  html += `<div class="abas-plano">
-    <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
-    <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
-  </div>`;
-  const planosParaMostrar = idLogado === 'ktp1'? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+  html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}, mensalidade em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
+
+  const ehAdm = idLogado === 'ktp0' || idLogado === 'mag1';
+
+  if(ehAdm){
+    html += `<div class="abas-plano">
+      <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL', this)">🌐 PRESENCIAL</button>
+      <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE', this)">💻 ONLINE</button>
+    </div>`;
+  }
+
+  const planosParaMostrar = ehAdm? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
+
   planosParaMostrar.forEach(plano=>{
-    html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+    if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
+
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      let alunosDoBloco = idLogado === 'ktp1'? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+      // REGRA: ADM vê tudo, ALUNO vê só ele
+      let alunosDoBloco = ehAdm? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
+
       if(alunosDoBloco.length === 0) return;
+
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
+
       html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n) html += `<th>Nº</th>`;
+      if(bloco.alunos[0].n!== undefined) html += `<th>Nº</th>`;
       html += `<th>Aluno</th><th>Dias</th>`;
       if(bloco.alunos[0].freq) html += `<th>Freq</th>`;
       html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-      alunosDoBloco.forEach(a=>{
+
+      // Ordena por Nº
+      alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
         html += `<tr class="destaque">`;
-        if(a.n) html += `<td>${a.n}</td>`;
+        if(a.n!== undefined) html += `<td>${a.n}</td>`;
         html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
         if(a.freq) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>R$ ${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+        html += `<td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
     });
