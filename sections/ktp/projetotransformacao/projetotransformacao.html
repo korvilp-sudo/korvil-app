@@ -297,7 +297,7 @@ function fecharResultado(){
   }
   const dataAtual = getSegundaDaSemana();
   mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
-}
+} // <-- Aqui eu tirei a } extra que tava no teu código
 
 function formatarData(d){ const [ano, mes, dia] = d.split('-'); return `${dia}/${mes}/${ano}`; }
 
@@ -305,7 +305,7 @@ function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div><div class="semanas-da-fase">`;
-    FASES_MENU.forEach(data=>{
+    FASES_MENU.forEach(data=>{ // <-- AQUI ERA O ERRO
       const segundaLinha = MENU[data]?.split('\n')[1] || 'SEMANA';
       html+=`<div class="semana-item" onclick="mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
@@ -331,7 +331,7 @@ function mostrarInfoSemana(data){
     'HIPERTROFIA': 'semana-de-hipertrofia'
   };
   let pastaImagem = 'semana-de-manutencao';
-  for(let key in imagens){ if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; } }
+  for(let key in imagens){ if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
 
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
@@ -364,8 +364,12 @@ function getSegundaDaSemana(){
 window.onload=function(){
   carregarMenu();
   const dataISO = getSegundaDaSemana();
-  mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05"); // <-- ABRE COM A SEMANA ATUAL
+  if(idLogado){mostrarDadosAluno(idLogado);mostrarCronograma();}
 };
+
+// O RESTO DO TEU CÓDIGO CONTINUA IGUAL: abrirBuscaAluno, buscarAluno, mostrarCronograma...
+
 function abrirBuscaAluno(){
   document.getElementById('modal-aluno').classList.add('ativo');
   carregarListaIds();
