@@ -289,10 +289,9 @@ function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 function fecharResultado(){
-  document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>';
-  document.getElementById('info-aluno-container').innerHTML='';
   idLogado='';
   localStorage.removeItem('idLogado');
+  document.getElementById('info-aluno-container').innerHTML='';
 
   // VOLTA PRA SEMANA ATUAL
   const dataAtual = getSegundaDaSemana();
