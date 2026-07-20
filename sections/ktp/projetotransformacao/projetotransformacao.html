@@ -295,6 +295,9 @@ function fecharResultado(){
     idLogado='';
     localStorage.removeItem('idLogado');
   }
+  const dataAtual = getSegundaDaSemana();
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+}
 }
 function formatarData(d){ const [ano, mes, dia] = d.split('-'); return `${dia}/${mes}/${ano}`; }
 
