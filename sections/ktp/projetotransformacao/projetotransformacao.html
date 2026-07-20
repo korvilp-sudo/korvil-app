@@ -379,7 +379,7 @@ function mostrarDadosAluno(id){
   const container = document.getElementById('info-aluno-container');
   if(!aluno) return;
 
-  const ehAdm = id === 'ktp0' || id === 'mag1';
+  const ehAdm = aluno.tipo === 'ADMIN';
 
   if(ehAdm){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
@@ -387,7 +387,6 @@ function mostrarDadosAluno(id){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
 }
-
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   if(!idLogado){
@@ -399,7 +398,7 @@ function mostrarCronograma(){
   let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP — PROJETO TRANSFORMAÇÃO</div>`;
   html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}, mensalidade em dia.<br><b>Pix: korvilloja@gmail.com</b></div>`;
 
-  const ehAdm = idLogado === 'ktp0' || idLogado === 'mag1';
+  const ehAdm = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
 
   if(ehAdm){
     html += `<div class="abas-plano">
@@ -414,7 +413,7 @@ function mostrarCronograma(){
     if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // REGRA: ADM vê tudo, ALUNO vê só ele
+      // REGRA FINAL: SÓ ADM VÊ TUDO
       let alunosDoBloco = ehAdm? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
 
       if(alunosDoBloco.length === 0) return;
@@ -422,19 +421,10 @@ function mostrarCronograma(){
       if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
       html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
 
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr>`;
-      if(bloco.alunos[0].n!== undefined) html += `<th>Nº</th>`;
-      html += `<th>Aluno</th><th>Dias</th>`;
-      if(bloco.alunos[0].freq) html += `<th>Freq</th>`;
-      html += `<th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
 
-      // Ordena por Nº
       alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
-        html += `<tr class="destaque">`;
-        if(a.n!== undefined) html += `<td>${a.n}</td>`;
-        html += `<td>${a.aluno}</td><td>${a.dias}</td>`;
-        if(a.freq) html += `<td>${a.freq}</td>`;
-        html += `<td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
+        html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
       });
       html += `</tbody></table></div>`;
     });
