@@ -3,35 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL LOJA | K-TP FITNESS</title>
+<title>Suplementos | K-TP FITNESS | KORVIL</title>
 <style>
 :root{--c:#00ff88; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:var(--bg);color:var(--text);padding-bottom:70px}
 
-/* TOPO IGUAL DA LOJA */
-.topo{background:linear-gradient(90deg,var(--c),#00d4ff);padding:10px 4%;position:sticky;top:0;z-index:100}
-.busca{display:flex;background:#fff;border-radius:8px;padding:10px;gap:8px}
-.busca input{flex:1;border:0;outline:0;color:#000}
+/* TOPO */
+.topo{background:linear-gradient(90deg,var(--c),#00d4ff);padding:12px 4%;color:#000;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px}
+.topo a{color:#000;font-size:24px;text-decoration:none}
+.topo h1{font-size:18px;font-weight:900}
 
-/* BANNER DO SETOR */
-.banner{margin:12px 4%;background:linear-gradient(135deg,var(--c),#00d4ff);padding:20px;border-radius:12px;color:#000}
-.banner h1{font-size:24px;font-weight:900}
-.banner p{font-size:13px;margin-top:4px}
+/* CUPOM */
+.cupom{background:#000;color:var(--c);padding:10px;margin:12px 4%;border-radius:8px;text-align:center;border:2px dashed var(--c);font-weight:800;cursor:pointer}
 
-/* CATEGORIAS EM CARDS GRANDES */
+/* FILTROS */
+.filtros{display:flex;gap:8px;padding:0 4% 12px;overflow-x:auto}
+.filtro{padding:8px 14px;background:var(--card);border:1px solid var(--borda);border-radius:20px;font-size:12px;white-space:nowrap;cursor:pointer}
+.filtro.ativo{background:var(--c);color:#000;border-color:var(--c);font-weight:800}
+
+/* GRID PRODUTOS */
 .titulo{padding:10px 4% 5px;font-size:18px;font-weight:800}
-.grid-categorias{padding:0 4% 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card-cat{background:var(--card);border-radius:12px;padding:15px;border:1px solid var(--borda);text-decoration:none;color:var(--text)}
-.card-cat img{width:100%;height:100px;object-fit:cover;border-radius:8px;background:#111;margin-bottom:8px}
-.card-cat h3{font-size:15px}
-
-/* PRODUTOS EM DESTAQUE */
 .grid{padding:0 4% 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--borda)}
-.card img{width:100%;height:140px;object-fit:cover;border-radius:8px;background:#111}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:8px;background:#111}
+.tag-vendas{font-size:10px;color:#00ff88;font-weight:700}
+.preco-old{text-decoration:line-through;color:var(--text2);font-size:12px}
 .preco{color:var(--c);font-size:18px;font-weight:900}
-.btn{width:100%;background:var(--c);color:#000;border:0;padding:8px;border-radius:6px;margin-top:6px;font-weight:800}
+.off{background:#00ff88;color:#000;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:800;display:inline-block;margin-top:2px}
+.btn{width:100%;background:var(--c);color:#000;border:0;padding:10px;border-radius:8px;margin-top:8px;font-weight:900;cursor:pointer}
 
 /* MENU INFERIOR */
 .menu-inf{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid var(--borda);display:flex;justify-content:space-around;padding:8px 0}
@@ -42,78 +42,74 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 </head>
 <body>
 
-  <!-- TOPO PADRÃO KORVIL LOJA -->
   <div class="topo">
-    <div class="busca"><ion-icon name="search-outline" style="color:#000"></ion-icon><input placeholder="Buscar em KORVIL LOJA"></div>
+    <a href="../index.html"><ion-icon name="arrow-back"></ion-icon></a>
+    <h1>SUPLEMENTOS</h1>
   </div>
 
-  <!-- BANNER IDENTIFICANDO QUE ESTÁ NO KTP -->
-  <div class="banner">
-    <h1>K-TP FITNESS</h1>
-    <p>KORVIL LOJA • Transformação Profissional</p>
+  <div class="cupom" onclick="navigator.clipboard.writeText('KTP15'); alert('Cupom KTP15 copiado!')">
+    CUPOM: KTP15 = 15% OFF em TODOS OS SUPLEMENTOS 🔥
   </div>
 
-  <!-- CATEGORIAS DA ÁREA FITNESS -->
-  <h3 class="titulo">Categorias</h3>
-  <div class="grid-categorias">
-    <a href="./suplementos/index.html" class="card-cat">
-      <img src="https://placehold.co/300/00ff88/000?text=SUPLEMENTOS">
-      <h3>Suplementos</h3>
-      <p style="font-size:12px;color:var(--text2)">Whey, Creatina, Pré</p>
-    </a>
-    <a href="./equipamentos/index.html" class="card-cat">
-      <img src="https://placehold.co/300/00d4ff/000?text=EQUIPAMENTOS">
-      <h3>Equipamentos</h3>
-      <p style="font-size:12px;color:var(--text2)">Halter, Esteira, Banco</p>
-    </a>
-    <a href="./acessorios/index.html" class="card-cat">
-      <img src="https://placehold.co/300/00ff88/000?text=ACESSORIOS">
-      <h3>Acessórios</h3>
-      <p style="font-size:12px;color:var(--text2)">Luvas, Cinto, Squeeze</p>
-    </a>
-    <a href="./produtos-alimentares/index.html" class="card-cat">
-      <img src="https://placehold.co/300/00d4ff/000?text=ALIMENTARES">
-      <h3>Produtos Alimentares</h3>
-      <p style="font-size:12px;color:var(--text2)">Barra, Shake, Pasta</p>
-    </a>
-    <a href="./artigos-esportivos/index.html" class="card-cat">
-      <img src="https://placehold.co/300/00ff88/000?text=ARTIGOS">
-      <h3>Artigos Esportivos</h3>
-      <p style="font-size:12px;color:var(--text2)">Bola, Raquete, Kimono</p>
-    </a>
+  <!-- FILTROS RÁPIDOS -->
+  <div class="filtros">
+    <div class="filtro ativo" onclick="filtrar('todos', this)">Todos</div>
+    <div class="filtro" onclick="filtrar('whey', this)">Whey Protein</div>
+    <div class="filtro" onclick="filtrar('creatina', this)">Creatina</div>
+    <div class="filtro" onclick="filtrar('pre', this)">Pré-Treino</div>
+    <div class="filtro" onclick="filtrar('bcaa', this)">BCAA</div>
+    <div class="filtro" onclick="filtrar('vitamina', this)">Vitaminas</div>
   </div>
 
-  <!-- PRODUTOS MAIS VENDIDOS DA ÁREA -->
-  <h3 class="titulo">Mais Vendidos do K-TP 🔥</h3>
-  <div class="grid" id="gridDestaques"></div>
+  <h3 class="titulo">Mais Vendidos</h3>
+  <div class="grid" id="gridSuplementos"></div>
 
-  <!-- MENU INFERIOR -->
   <div class="menu-inf">
-    <a href="../../index.html" class="item-menu"><ion-icon name="home"></ion-icon><div>Inicio</div></a>
-    <a href="#" class="item-menu ativo"><ion-icon name="fitness"></ion-icon><div>K-TP</div></a>
-    <a href="#" class="item-menu"><ion-icon name="cart"></ion-icon><div>Carrinho</div></a>
+    <a href="../../../index.html" class="item-menu"><ion-icon name="home"></ion-icon><div>Inicio</div></a>
+    <a href="../index.html" class="item-menu"><ion-icon name="fitness"></ion-icon><div>K-TP</div></a>
+    <a href="#" class="item-menu ativo"><ion-icon name="cart"></ion-icon><div>Carrinho</div></a>
     <a href="#" class="item-menu"><ion-icon name="menu"></ion-icon><div>Mais</div></a>
   </div>
 
 <script>
-// PRODUTOS DESTAQUES DE TODAS AS CATEGORIAS DO KTP
-const destaques = [
-  {nome:"Whey Protein 2kg", preco:129.90, img:"https://placehold.co/400/00ff88/000?text=WHEY", link:"./suplementos/index.html"},
-  {nome:"Halter Ajustável 20kg", preco:249.90, img:"https://placehold.co/400/00d4ff/000?text=HALTER", link:"./equipamentos/index.html"},
-  {nome:"Kit Luvas + Cinturão", preco:99.90, img:"https://placehold.co/400/00ff88/000?text=LUVAS", link:"./acessorios/index.html"},
-  {nome:"Barra de Proteína Cx12", preco:45.90, img:"https://placehold.co/400/00d4ff/000?text=BARRA", link:"./produtos-alimentares/index.html"}
+const produtos = [
+  {nome:"Whey Protein KORVIL 2kg Chocolate", preco:129.90, precoOld:189.90, img:"https://placehold.co/400/00ff88/000?text=WHEY+2KG", vendas:"1.2k vendidos", off:31, cat:"whey"},
+  {nome:"Whey Protein Isolado 900g", preco:149.90, precoOld:219.90, img:"https://placehold.co/400/00d4ff/000?text=ISO", vendas:"890 vendidos", off:32, cat:"whey"},
+  {nome:"Creatina KORVIL 300g", preco:59.90, precoOld:89.90, img:"https://placehold.co/400/00ff88/000?text=CREATINA", vendas:"2.5k vendidos", off:33, cat:"creatina"},
+  {nome:"Creatina Monohidratada 1kg", preco:99.90, precoOld:149.90, img:"https://placehold.co/400/00d4ff/000?text=CREA+1KG", vendas:"1.1k vendidos", off:33, cat:"creatina"},
+  {nome:"Pré-Treino KORVIL Pump", preco:79.90, precoOld:119.90, img:"https://placehold.co/400/00ff88/000?text=PRE+TREINO", vendas:"2k vendidos", off:33, cat:"pre"},
+  {nome:"Pré-Treino Hornet 300g", preco:89.90, precoOld:129.90, img:"https://placehold.co/400/00d4ff/000?text=HORNET", vendas:"750 vendidos", off:30, cat:"pre"},
+  {nome:"BCAA 2:1:1 200 caps", preco:69.90, precoOld:99.90, img:"https://placehold.co/400/00ff88/000?text=BCAA", vendas:"650 vendidos", off:30, cat:"bcaa"},
+  {nome:"BCAA 4:1:1 120 caps", preco:59.90, precoOld:89.90, img:"https://placehold.co/400/00d4ff/000?text=BCAA+4", vendas:"420 vendidos", off:33, cat:"bcaa"},
+  {nome:"Albumina 1kg", preco:49.90, precoOld:79.90, img:"https://placehold.co/400/00ff88/000?text=ALBUMINA", vendas:"980 vendidos", off:37, cat:"whey"},
+  {nome:"Multivitamínico 120 caps", preco:39.90, precoOld:59.90, img:"https://placehold.co/400/00d4ff/000?text=MULTI", vendas:"1.5k vendidos", off:33, cat:"vitamina"},
+  {nome:"Ômega 3 1000mg 120 caps", preco:44.90, precoOld:69.90, img:"https://placehold.co/400/00ff88/000?text=OMEGA", vendas:"800 vendidos", off:35, cat:"vitamina"},
+  {nome:"Glutamina 300g", preco:54.90, precoOld:79.90, img:"https://placehold.co/400/00d4ff/000?text=GLUTAMINA", vendas:"600 vendidos", off:31, cat:"bcaa"}
 ];
 
-document.getElementById('gridDestaques').innerHTML = destaques.map(p=>`
-  <a href="${p.link}" style="text-decoration:none;color:var(--text)">
+function renderizar(lista){
+  document.getElementById('gridSuplementos').innerHTML = lista.map(p=>`
     <div class="card">
       <img src="${p.img}">
-      <div style="font-size:14px;margin:6px 0;height:36px">${p.nome}</div>
+      <div class="tag-vendas">${p.vendas}</div>
+      <div style="font-size:14px;margin:4px 0;height:38px">${p.nome}</div>
+      <div class="preco-old">R$ ${p.precoOld.toFixed(2)}</div>
       <div class="preco">R$ ${p.preco.toFixed(2)}</div>
-      <button class="btn">VER PRODUTO</button>
+      <div class="off">${p.off}% OFF</div>
+      <button class="btn">COMPRAR AGORA</button>
     </div>
-  </a>
-`).join('');
+  `).join('');
+}
+
+function filtrar(categoria, el){
+  document.querySelectorAll('.filtro').forEach(f=>f.classList.remove('ativo'));
+  el.classList.add('ativo');
+  const filtrados = categoria === 'todos' ? produtos : produtos.filter(p => p.cat === categoria);
+  renderizar(filtrados);
+}
+
+// Carrega todos ao iniciar
+renderizar(produtos);
 </script>
 </body>
 </html>
