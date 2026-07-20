@@ -377,10 +377,14 @@ function trocarAba(plano, el){
 function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
-  if(id === 'ktp0'){
+  if(!aluno) return;
+
+  const ehAdm = id === 'ktp0' || id === 'mag1';
+
+  if(ehAdm){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
-    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>Plano:</b> ${aluno.plano}<br><b>Horário:</b> ${aluno.horario}<br><b>Dias:</b> ${aluno.dias}<br><b>Objetivo:</b> ${aluno.objetivo}</p></div>`;
+    container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
 }
 
