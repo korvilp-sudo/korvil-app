@@ -290,7 +290,24 @@ function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add(
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
 function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
 function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
+function getSegundaDaSemana(){
+  const agora = new Date();
+  let dataBase = new Date(agora);
 
+  // Regra: só troca pra próxima segunda depois das 01:00
+  if(agora.getDay() === 1 && agora.getHours() < 1){
+    dataBase.setDate(agora.getDate() - 7);
+  }
+
+  const diaSemana = dataBase.getDay();
+  const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
+  const segunda = new Date(dataBase.setDate(diff));
+
+  const ano = segunda.getFullYear();
+  const mes = String(segunda.getMonth() + 1).padStart(2, '0');
+  const dia = String(segunda.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
 function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
