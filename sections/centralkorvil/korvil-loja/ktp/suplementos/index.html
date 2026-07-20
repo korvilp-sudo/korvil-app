@@ -1,1 +1,100 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TP FITNESS | Suplementos e Equipamentos | KORVIL</title>
+<style>
+:root{--c:#00ff88; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:var(--bg);color:var(--text);padding-bottom:70px}
+
+/* TOPO KTP */
+.topo-ktp{background:linear-gradient(90deg,var(--c),#00d4ff);padding:12px 4%;color:#000;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px}
+.topo-ktp a{color:#000;font-size:24px;text-decoration:none}
+.topo-ktp div h1{font-size:20px;font-weight:900}
+.topo-ktp div p{font-size:12px}
+
+/* CUPOM */
+.cupom{background:#000;color:var(--c);padding:10px;margin:12px 4%;border-radius:8px;text-align:center;border:2px dashed var(--c);font-weight:800;cursor:pointer}
+
+/* ABAS CATEGORIAS */
+.abas{display:flex;gap:10px;padding:12px 4%;overflow-x:auto;background:#050505;position:sticky;top:62px;z-index:99}
+.aba{padding:10px 18px;background:var(--card);border:1px solid var(--borda);border-radius:25px;font-size:13px;white-space:nowrap;text-decoration:none;color:var(--text);font-weight:600}
+.aba.ativo{background:var(--c);color:#000;border-color:var(--c)}
+
+/* GRID PRODUTOS */
+.titulo{padding:15px 4% 5px;font-size:18px;font-weight:800}
+.grid{padding:0 4% 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--borda)}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:8px;background:#111}
+.tag-vendas{font-size:10px;color:#00ff88;font-weight:700}
+.preco-old{text-decoration:line-through;color:var(--text2);font-size:12px}
+.preco{color:var(--c);font-size:18px;font-weight:900}
+.off{background:#00ff88;color:#000;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:800;display:inline-block;margin-top:2px}
+.btn{width:100%;background:var(--c);color:#000;border:0;padding:10px;border-radius:8px;margin-top:8px;font-weight:900;cursor:pointer}
+
+/* MENU INFERIOR */
+.menu-inf{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid var(--borda);display:flex;justify-content:space-around;padding:8px 0}
+.item-menu{text-align:center;font-size:10px;color:var(--text2);text-decoration:none}
+.item-menu.ativo{color:var(--c)}
+</style>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+</head>
+<body>
+
+  <div class="topo-ktp">
+    <a href="../index.html"><ion-icon name="arrow-back"></ion-icon></a>
+    <div>
+      <h1>K-TP FITNESS</h1>
+      <p>Transformação Profissional • Suplementos • Equipamentos</p>
+    </div>
+  </div>
+
+  <div class="cupom" onclick="navigator.clipboard.writeText('KTP15'); alert('Cupom KTP15 copiado!')">
+    CUPOM: KTP15 = 15% OFF em Suplementos 🔥
+  </div>
+
+  <!-- ABAS LINKANDO PRA PASTAS - TUDO MINÚSCULO -->
+  <div class="abas">
+    <a href="./suplementos/index.html" class="aba ativo">Suplementos</a>
+    <a href="./produtos-alimentares/index.html" class="aba">Alimentares</a>
+    <a href="./acessorios/index.html" class="aba">Acessórios</a>
+    <a href="./artigos-esportivos/index.html" class="aba">Artigos</a>
+    <a href="./equipamentos/index.html" class="aba">Equipamentos</a>
+  </div>
+
+  <h3 class="titulo">MAIS VENDIDOS EM SUPLEMENTOS 🔥</h3>
+  <div class="grid" id="gridSuplementos"></div>
+
+  <div class="menu-inf">
+    <a href="../../index.html" class="item-menu ativo"><ion-icon name="home"></ion-icon><div>Inicio</div></a>
+    <a href="#" class="item-menu"><ion-icon name="cart"></ion-icon><div>Carrinho</div></a>
+    <a href="#" class="item-menu"><ion-icon name="menu"></ion-icon><div>Mais</div></a>
+  </div>
+
+<script>
+const suplementos = [
+  {nome:"Whey Protein KORVIL 2kg", preco:129.90, precoOld:189.90, img:"https://placehold.co/400/00ff88/000?text=WHEY+2KG", vendas:"1.2k vendidos", off:31},
+  {nome:"Creatina KORVIL 300g", preco:59.90, precoOld:89.90, img:"https://placehold.co/400/00d4ff/000?text=CREATINA", vendas:"850 vendidos", off:33},
+  {nome:"Pré-Treino KORVIL Pump", preco:79.90, precoOld:119.90, img:"https://placehold.co/400/00ff88/000?text=PRE+TREINO", vendas:"2k vendidos", off:33},
+  {nome:"BCAA 2:1:1 200 caps", preco:69.90, precoOld:99.90, img:"https://placehold.co/400/00d4ff/000?text=BCAA", vendas:"650 vendidos", off:30},
+  {nome:"Albumina 1kg", preco:49.90, precoOld:79.90, img:"https://placehold.co/400/00ff88/000?text=ALBUMINA", vendas:"420 vendidos", off:37},
+  {nome:"Multivitamínico 120 caps", preco:39.90, precoOld:59.90, img:"https://placehold.co/400/00d4ff/000?text=MULTI", vendas:"980 vendidos", off:33}
+];
+
+document.getElementById('gridSuplementos').innerHTML = suplementos.map(p=>`
+  <div class="card">
+    <img src="${p.img}">
+    <div class="tag-vendas">${p.vendas}</div>
+    <div style="font-size:14px;margin:4px 0;height:36px">${p.nome}</div>
+    <div class="preco-old">R$ ${p.precoOld.toFixed(2)}</div>
+    <div class="preco">R$ ${p.preco.toFixed(2)}</div>
+    <div class="off">${p.off}% OFF</div>
+    <button class="btn">COMPRAR AGORA</button>
+  </div>
+`).join('');
+</script>
+</body>
+</html>
