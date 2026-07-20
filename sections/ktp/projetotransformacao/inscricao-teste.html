@@ -15,24 +15,35 @@ button{padding:20px 40px;background:#00f5ff;color:#000;border:none;border-radius
 <div id="msg"></div>
 
 <script>
+const TOKEN = "ghp_TROCA_PELO_SEU_TOKEN_AQUI"; // Token com permissão actions:write
+
 function slug(texto){
   return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "");
 }
 
-function enviar(){
+async function enviar(){
   const nome = document.getElementById('nome').value.trim();
   if(!nome) return alert('Digite o nome');
+  document.getElementById('msg').innerHTML = 'Enviando...';
 
   const dados = {
     nome: nome,
     whats: "--",
+    pasta: "sections/ktp/projetotransformacao/projetos/2026", // manda a pasta pra action
     data_inscricao: new Date().toLocaleString('pt-BR')
   }
 
-  const json = btoa(JSON.stringify(dados));
-  const link = `https://github.com/korvilp-sudo/korvil-app/actions/workflows/criar-aluno.yml?query=nome:${slug(nome)}&dados:${json}`;
+  const res = await fetch(`https://api.github.com/repos/korvilp-sudo/korvil-app/actions/workflows/salvar-aluno.yml/dispatches`,{
+    method:'POST',
+    headers:{'Authorization':`Bearer ${TOKEN}`,'Accept':'application/vnd.github+json'},
+    body:JSON.stringify({ref:'main', inputs:{ dados: btoa(JSON.stringify(dados)) }})
+  });
 
-  document.getElementById('msg').innerHTML = `✅ CLICA PRA CRIAR ARQUIVO:<br><a href="${link}" target="_blank" style="color:#00f5ff;font-size:18px">CRIAR ${slug(nome)}</a>`;
+  if(res.status === 204) {
+    document.getElementById('msg').innerHTML = `✅ ENVIADO! Em 30s cria o arquivo na pasta 2026`;
+  } else {
+    document.getElementById('msg').innerHTML = `❌ ERRO ${res.status}. Confere o token.`;
+  }
 }
 </script>
 </body>
