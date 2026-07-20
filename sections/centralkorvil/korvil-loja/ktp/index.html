@@ -3,166 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL MARKET</title>
+<title>KORVIL LOJA | K-TP FITNESS</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
+:root{--c:#00ff88; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:var(--bg);color:var(--text);padding-bottom:70px}
 
-/* TOPO */
-.topo{background:linear-gradient(90deg,var(--c),#00d4ff);padding:10px 4%;position:sticky;top:0;z-index:100;color:#000}
+/* TOPO IGUAL DA LOJA */
+.topo{background:linear-gradient(90deg,var(--c),#00d4ff);padding:10px 4%;position:sticky;top:0;z-index:100}
 .busca{display:flex;background:#fff;border-radius:8px;padding:10px;gap:8px}
 .busca input{flex:1;border:0;outline:0;color:#000}
 
-/* ABAS INTERNAS */
-.abas-internas{display:flex;gap:10px;padding:12px 4%;background:#050505;overflow-x:auto;position:sticky;top:58px;z-index:99}
-.aba-interna{padding:10px 16px;background:var(--card);border:1px solid var(--borda);border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer}
-.aba-interna.ativo{background:var(--c);color:#000;border-color:var(--c);font-weight:800}
+/* BANNER DO SETOR */
+.banner{margin:12px 4%;background:linear-gradient(135deg,var(--c),#00d4ff);padding:20px;border-radius:12px;color:#000}
+.banner h1{font-size:24px;font-weight:900}
+.banner p{font-size:13px;margin-top:4px}
 
-/* BANNER + CARD */
-.banner-setor{padding:25px 4%;text-align:center}
-.card-area{background:var(--card);border-left:4px solid var(--c);padding:15px;margin:15px 4%;border-radius:8px}
-.card-area h3{color:var(--c);margin-bottom:6px}
+/* CATEGORIAS EM CARDS GRANDES */
+.titulo{padding:10px 4% 5px;font-size:18px;font-weight:800}
+.grid-categorias{padding:0 4% 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card-cat{background:var(--card);border-radius:12px;padding:15px;border:1px solid var(--borda);text-decoration:none;color:var(--text)}
+.card-cat img{width:100%;height:100px;object-fit:cover;border-radius:8px;background:#111;margin-bottom:8px}
+.card-cat h3{font-size:15px}
 
-/* GRID */
-.titulo{padding:15px 4% 5px;font-size:18px;font-weight:800}
+/* PRODUTOS EM DESTAQUE */
 .grid{padding:0 4% 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{background:var(--card);border-radius:10px;padding:10px;border:1px solid var(--borda)}
+.card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--borda)}
 .card img{width:100%;height:140px;object-fit:cover;border-radius:8px;background:#111}
-.card.preco{color:var(--c);font-size:18px;font-weight:900}
-.card.btn{width:100%;background:var(--c);color:#000;border:0;padding:8px;border-radius:6px;margin-top:6px;font-weight:800;cursor:pointer}
+.preco{color:var(--c);font-size:18px;font-weight:900}
+.btn{width:100%;background:var(--c);color:#000;border:0;padding:8px;border-radius:6px;margin-top:6px;font-weight:800}
 
-/* MENU */
+/* MENU INFERIOR */
 .menu-inf{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid var(--borda);display:flex;justify-content:space-around;padding:8px 0}
-.item-menu{text-align:center;font-size:10px;color:var(--text2);cursor:pointer}
+.item-menu{text-align:center;font-size:10px;color:var(--text2);text-decoration:none}
 .item-menu.ativo{color:var(--c)}
-.pagina{display:none}.pagina.ativo{display:block}
 </style>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
 <body>
 
-<!-- HOME GERAL -->
-<div id="home" class="pagina ativo">
-  <div class="topo"><div class="busca"><ion-icon name="search-outline" style="color:#000"></ion-icon><input placeholder="Buscar em KORVIL MARKET"></div></div>
-  <h3 class="titulo">Todos os Setores</h3>
-  <div class="grid">
-    <div class="card" onclick="abrirSetor('sistemak')"><img src="https://placehold.co/300/00f5ff/000?text=SISTEMA+K"><div>SISTEMA K</div></div>
-    <div class="card" onclick="abrirSetor('ktp')"><img src="https://placehold.co/300/00ff88/000?text=KTP"><div>K-TP FITNESS</div></div>
-    <div class="card" onclick="abrirSetor('kafortunado')"><img src="https://placehold.co/300/ffaa00/000?text=KAFORTUNADO"><div>K-AFORTUNADO</div></div>
-    <div class="card" onclick="abrirSetor('kalma')"><img src="https://placehold.co/300/ff00aa/000?text=KALMA"><div>K-ALMA</div></div>
-  </div>
-</div>
-
-<!-- PÁGINA DO SETOR KTP -->
-<div id="pagina-setor" class="pagina">
+  <!-- TOPO PADRÃO KORVIL LOJA -->
   <div class="topo">
-    <ion-icon name="arrow-back" style="color:#000;font-size:24px" onclick="abrirPagina('home')"></ion-icon>
-    <span id="tituloSetor" style="font-weight:800"></span>
+    <div class="busca"><ion-icon name="search-outline" style="color:#000"></ion-icon><input placeholder="Buscar em KORVIL LOJA"></div>
   </div>
 
-  <!-- ABAS INTERNAS DO KTP -->
-  <div class="abas-internas" id="abasInternas"></div>
+  <!-- BANNER IDENTIFICANDO QUE ESTÁ NO KTP -->
+  <div class="banner">
+    <h1>K-TP FITNESS</h1>
+    <p>KORVIL LOJA • Transformação Profissional</p>
+  </div>
 
-  <div class="banner-setor" id="bannerSetor"></div>
-  <div class="card-area" id="infoAreaNicho"></div>
+  <!-- CATEGORIAS DA ÁREA FITNESS -->
+  <h3 class="titulo">Categorias</h3>
+  <div class="grid-categorias">
+    <a href="./suplementos/index.html" class="card-cat">
+      <img src="https://placehold.co/300/00ff88/000?text=SUPLEMENTOS">
+      <h3>Suplementos</h3>
+      <p style="font-size:12px;color:var(--text2)">Whey, Creatina, Pré</p>
+    </a>
+    <a href="./equipamentos/index.html" class="card-cat">
+      <img src="https://placehold.co/300/00d4ff/000?text=EQUIPAMENTOS">
+      <h3>Equipamentos</h3>
+      <p style="font-size:12px;color:var(--text2)">Halter, Esteira, Banco</p>
+    </a>
+    <a href="./acessorios/index.html" class="card-cat">
+      <img src="https://placehold.co/300/00ff88/000?text=ACESSORIOS">
+      <h3>Acessórios</h3>
+      <p style="font-size:12px;color:var(--text2)">Luvas, Cinto, Squeeze</p>
+    </a>
+    <a href="./produtos-alimentares/index.html" class="card-cat">
+      <img src="https://placehold.co/300/00d4ff/000?text=ALIMENTARES">
+      <h3>Produtos Alimentares</h3>
+      <p style="font-size:12px;color:var(--text2)">Barra, Shake, Pasta</p>
+    </a>
+    <a href="./artigos-esportivos/index.html" class="card-cat">
+      <img src="https://placehold.co/300/00ff88/000?text=ARTIGOS">
+      <h3>Artigos Esportivos</h3>
+      <p style="font-size:12px;color:var(--text2)">Bola, Raquete, Kimono</p>
+    </a>
+  </div>
 
-  <h3 class="titulo">Produtos</h3>
-  <div class="grid" id="gridProdutosSetor"></div>
-</div>
+  <!-- PRODUTOS MAIS VENDIDOS DA ÁREA -->
+  <h3 class="titulo">Mais Vendidos do K-TP 🔥</h3>
+  <div class="grid" id="gridDestaques"></div>
 
-<!-- MENU INFERIOR -->
-<div class="menu-inf">
-  <div class="item-menu ativo" onclick="abrirPagina('home')"><ion-icon name="home"></ion-icon>Inicio</div>
-  <div class="item-menu"><ion-icon name="cart"></ion-icon>Carrinho</div>
-  <div class="item-menu"><ion-icon name="menu"></ion-icon>Mais</div>
-</div>
+  <!-- MENU INFERIOR -->
+  <div class="menu-inf">
+    <a href="../../index.html" class="item-menu"><ion-icon name="home"></ion-icon><div>Inicio</div></a>
+    <a href="#" class="item-menu ativo"><ion-icon name="fitness"></ion-icon><div>K-TP</div></a>
+    <a href="#" class="item-menu"><ion-icon name="cart"></ion-icon><div>Carrinho</div></a>
+    <a href="#" class="item-menu"><ion-icon name="menu"></ion-icon><div>Mais</div></a>
+  </div>
 
 <script>
-const DADOS_SETORES = {
-  sistemak: { nome: "SISTEMA K", cor: "#00f5ff", banner: "Serviços e Tecnologia", sub: "Soluções pra escalar", areas: "Áreas: Serviços Gerais, Profissionais, Tecnologias", nichos: "Nichos: Serviços gerais, Profissionais, Tecnologias", categorias: null, produtos: [{nome:"Consultoria", preco:499.90, img:"https://placehold.co/300/00f5ff/000?text=CONSULTORIA"}] },
+// PRODUTOS DESTAQUES DE TODAS AS CATEGORIAS DO KTP
+const destaques = [
+  {nome:"Whey Protein 2kg", preco:129.90, img:"https://placehold.co/400/00ff88/000?text=WHEY", link:"./suplementos/index.html"},
+  {nome:"Halter Ajustável 20kg", preco:249.90, img:"https://placehold.co/400/00d4ff/000?text=HALTER", link:"./equipamentos/index.html"},
+  {nome:"Kit Luvas + Cinturão", preco:99.90, img:"https://placehold.co/400/00ff88/000?text=LUVAS", link:"./acessorios/index.html"},
+  {nome:"Barra de Proteína Cx12", preco:45.90, img:"https://placehold.co/400/00d4ff/000?text=BARRA", link:"./produtos-alimentares/index.html"}
+];
 
-  ktp: {
-    nome: "K-TP",
-    cor: "#00ff88",
-    banner: "K-TP TRANSFORMAÇÃO PROFISSIONAL",
-    sub: "Fitness • Equipamentos • Suplementos",
-    areas: "Área: Fitness",
-    nichos: "Nichos: Acessórios e Equipamentos Esportivos, Suplementos e Produtos Alimentares",
-    categorias: [
-      {id:"acessorios", nome:"Acessórios e Equipamentos"},
-      {id:"suplementos", nome:"Suplementos e Alimentares"}
-    ],
-    produtos: [
-      // ACESSÓRIOS
-      {nome:"Kit Luvas + Cinturão", preco:99.90, img:"https://placehold.co/300/00ff88/000?text=LUVAS", cat:"acessorios"},
-      {nome:"Halter Ajustável 20kg", preco:249.90, img:"https://placehold.co/300/00ff88/000?text=HALTER", cat:"acessorios"},
-      {nome:"Colchonete Premium", preco:79.90, img:"https://placehold.co/300/00ff88/000?text=COLCHONETE", cat:"acessorios"},
-      // SUPLEMENTOS
-      {nome:"Whey Protein 2kg", preco:129.90, img:"https://placehold.co/300/00ff88/000?text=WHEY", cat:"suplementos"},
-      {nome:"Creatina 300g", preco:59.90, img:"https://placehold.co/300/00ff88/000?text=CREATINA", cat:"suplementos"},
-      {nome:"Pré Treino Pump", preco:79.90, img:"https://placehold.co/300/00ff88/000?text=PRE", cat:"suplementos"},
-      {nome:"Barra de Proteína Cx12", preco:45.90, img:"https://placehold.co/300/00ff88/000?text=BARRA", cat:"suplementos"}
-    ]
-  },
-
-  kafortunado: { nome: "K-AFORTUNADO", cor: "#ffaa00", banner: "K-AFORTUNADO", sub: "Empreendedorismo e Finanças", areas: "Áreas: Empreendedorismo, Finanças", nichos: "Nichos: Livros, Finanças", categorias: null, produtos: [{nome:"Curso Finanças", preco:299.90, img:"https://placehold.co/300/ffaa00/000?text=FINANCAS"}] },
-  kalma: { nome: "K-ALMA", cor: "#ff00aa", banner: "K-ALMA", sub: "Saúde e Beleza", areas: "Áreas: Saúde, Beleza", nichos: "Nichos: Terapia, Barbearia, Estética", categorias: null, produtos: [{nome:"Sessão Terapia", preco:150.00, img:"https://placehold.co/300/ff00aa/000?text=TERAPIA"}] }
-};
-
-let setorAtual = '';
-let categoriaAtual = 'todos';
-
-function abrirSetor(chave){
-  setorAtual = chave;
-  categoriaAtual = 'todos';
-  const setor = DADOS_SETORES[chave];
-
-  document.querySelectorAll('.pagina').forEach(p=>p.classList.remove('ativo'));
-  document.getElementById('pagina-setor').classList.add('ativo');
-
-  document.getElementById('tituloSetor').innerText = setor.nome;
-
-  // MONTAR ABAS INTERNAS SE FOR KTP
-  const divAbas = document.getElementById('abasInternas');
-  if(setor.categorias){
-    divAbas.style.display = 'flex';
-    divAbas.innerHTML = `
-      <div class="aba-interna ativo" onclick="filtrarCategoria('todos', this)">Todos</div>
-      ${setor.categorias.map(c=>`<div class="aba-interna" onclick="filtrarCategoria('${c.id}', this)">${c.nome}</div>`).join('')}
-    `;
-  } else { divAbas.style.display = 'none'; }
-
-  document.getElementById('bannerSetor').style.background = `linear-gradient(90deg, ${setor.cor}, #000)`;
-  document.getElementById('bannerSetor').innerHTML = `<h1>${setor.nome}</h1><p>${setor.sub}</p>`;
-  document.getElementById('infoAreaNicho').innerHTML = `<h3>${setor.areas}</h3><p style="font-size:13px;color:var(--text2)">${setor.nichos}</p>`;
-  renderProdutos();
-}
-
-function filtrarCategoria(cat, el){
-  categoriaAtual = cat;
-  document.querySelectorAll('.aba-interna').forEach(a=>a.classList.remove('ativo'));
-  el.classList.add('ativo');
-  renderProdutos();
-}
-
-function renderProdutos(){
-  const setor = DADOS_SETORES[setorAtual];
-  const produtosFiltrados = setor.produtos.filter(p => categoriaAtual === 'todos' || p.cat === categoriaAtual);
-  document.getElementById('gridProdutosSetor').innerHTML = produtosFiltrados.map(p=>`
+document.getElementById('gridDestaques').innerHTML = destaques.map(p=>`
+  <a href="${p.link}" style="text-decoration:none;color:var(--text)">
     <div class="card">
       <img src="${p.img}">
-      <div style="font-size:14px;margin:6px 0">${p.nome}</div>
+      <div style="font-size:14px;margin:6px 0;height:36px">${p.nome}</div>
       <div class="preco">R$ ${p.preco.toFixed(2)}</div>
-      <button class="btn">COMPRAR</button>
+      <button class="btn">VER PRODUTO</button>
     </div>
-  `).join('');
-}
-
-function abrirPagina(id){
-  document.querySelectorAll('.pagina').forEach(p=>p.classList.remove('ativo'));
-  document.getElementById(id).classList.add('ativo');
-}
+  </a>
+`).join('');
 </script>
 </body>
 </html>
