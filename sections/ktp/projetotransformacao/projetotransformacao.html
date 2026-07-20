@@ -429,6 +429,12 @@ function buscarAluno(){
 
 window.onload=function(){
   carregarMenu();
+
+  // PEGA A SEGUNDA ATUAL E JÁ MOSTRA NA TELA
+  const dataISO = getSegundaDaSemana();
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
+
+  if(idLogado){mostrarDadosAluno(idLogado);mostrarCronograma();}
 };
 </script>
 </body>
