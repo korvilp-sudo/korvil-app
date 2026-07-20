@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><title>TESTE KTP</title>
+<head><meta charset="UTF-8"><title>INSCRIÇÃO KTP 2026</title>
 <style>
 body{background:#000;color:#00f5ff;font-family:Arial;padding:40px;text-align:center}
 input{width:90%;max-width:400px;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:20px;margin:20px 0}
 button{padding:20px 40px;background:#00f5ff;color:#000;border:none;border-radius:10px;font-weight:900;font-size:20px;cursor:pointer}
-#msg{margin-top:20px;font-size:16px}
+#msg{margin-top:20px;font-size:18px}
 </style>
 </head>
 <body>
-<h1>TESTE INSCRIÇÃO</h1>
-<input type="text" id="nome" placeholder="DIGITE O NOME" required>
+<h1>INSCRIÇÃO KTP 2026</h1>
+<input type="text" id="nome" placeholder="DIGITE O NOME COMPLETO" required>
 <button onclick="enviar()">INSCREVER</button>
 <div id="msg"></div>
 
 <script>
-const TOKEN = "ghp_TROCA_PELO_SEU_TOKEN_AQUI"; // Token com permissão actions:write
-
-function slug(texto){
-  return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "");
-}
-
 async function enviar(){
   const nome = document.getElementById('nome').value.trim();
   if(!nome) return alert('Digite o nome');
@@ -28,22 +22,22 @@ async function enviar(){
 
   const dados = {
     nome: nome,
-    whats: "--",
-    pasta: "sections/ktp/projetotransformacao/projetos/2026", // manda a pasta pra action
+    pasta: "sections/ktp/projetotransformacao/projetos/2026",
     data_inscricao: new Date().toLocaleString('pt-BR')
   }
 
-  const res = await fetch(`https://api.github.com/repos/korvilp-sudo/korvil-app/actions/workflows/salvar-aluno.yml/dispatches`,{
+  const res = await fetch('https://api.github.com/repos/korvilp-sudo/korvil-app/issues', {
     method:'POST',
-    headers:{'Authorization':`Bearer ${TOKEN}`,'Accept':'application/vnd.github+json'},
-    body:JSON.stringify({ref:'main', inputs:{ dados: btoa(JSON.stringify(dados)) }})
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      title: `INSCRICAO: ${nome}`,
+      body: btoa(JSON.stringify(dados)), // manda em base64 pra não quebrar
+      labels: ["inscricao"]
+    })
   });
 
-  if(res.status === 204) {
-    document.getElementById('msg').innerHTML = `✅ ENVIADO! Em 30s cria o arquivo na pasta 2026`;
-  } else {
-    document.getElementById('msg').innerHTML = `❌ ERRO ${res.status}. Confere o token.`;
-  }
+  if(res.ok) document.getElementById('msg').innerHTML = `✅ PRONTO! <br> Arquivo será criado em até 1 minuto.`;
+  else document.getElementById('msg').innerHTML = '❌ ERRO ' + res.status;
 }
 </script>
 </body>
