@@ -1,132 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head><meta charset="UTF-8">
-<title>Teste Inscrição KTP</title>
+<title>INSCRIÇÃO K-TP</title>
 <style>
-body{background:#000;color:#00f5ff;font-family:Arial;padding:30px;text-align:center}
-input{width:80%;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:18px}
-select{width:80%;padding:15px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:10px;font-size:18px;margin-top:10px}
-button{padding:15px 30px;background:#00f5ff;color:#000;border:none;border-radius:10px;font-weight:900;font-size:18px;margin-top:15px;cursor:pointer}
-#popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#001a33;border:2px solid #00f5ff;padding:30px;border-radius:15px;z-index:99;color:#fff}
+body{background:#000;color:#00f5ff;font-family:Arial;padding:20px;text-align:center}
+input,select{width:90%;max-width:500px;padding:12px;background:#001a33;border:2px solid #00f5ff;color:#fff;border-radius:8px;font-size:16px;margin:8px auto;display:block}
+button{padding:15px 30px;background:#00f5ff;color:#000;border:none;border-radius:8px;font-weight:900;font-size:18px;margin-top:15px;cursor:pointer}
+#msg{margin-top:20px;font-size:14px}
 </style>
 </head>
 <body>
-
-<h1>INSCRIÇÃO TESTE - PROJETO TRANSFORMAÇÃO</h1>
-<input type="text" id="nome" placeholder="Digite Nome Completo">
-<br>
-<select id="plano">
-  <option value="PRESENCIAL">PRESENCIAL</option>
-  <option value="ONLINE">ONLINE</option>
-</select>
-<br>
-<button onclick="finalizar()">FINALIZAR</button>
-
-<div id="popup"></div>
-
+<h1>INSCRIÇÃO - PROJETO TRANSFORMAÇÃO 2026</h1>
+<input type="text" id="nome" placeholder="Nome Completo *" required>
+<input type="text" id="whats" placeholder="WhatsApp">
+<input type="email" id="email" placeholder="Email">
+<select id="plano"><option value="PRESENCIAL">PRESENCIAL</option><option value="ONLINE">ONLINE</option></select>
+<select id="freq"><option value="2x">2x Semana</option><option value="3x">3x Semana</option><option value="5x">5x Semana</option></select>
+<input type="text" id="objetivo" placeholder="Objetivo">
+<button onclick="enviar()">FINALIZAR INSCRIÇÃO</button>
+<div id="msg"></div>
 <script>
 const REPO = "korvilp-sudo/korvil-app";
-const PASTA = "sections/ktp/projetotransformacao/projetos/2026/";
-const TOKEN = "ghp_COLE_SEU_TOKEN_AQUI"; // CRIA EM GITHUB > SETTINGS > TOKENS COM "repo"
+const TOKEN = "ghp_TROCA_PELO_SEU_TOKEN"; // GITHUB > SETTINGS > TOKENS > repo + workflow
 
-// ESTRUTURA DO CRONOGRAMA
-let CRONOGRAMA_DB = { "PRESENCIAL": [], "ONLINE": [] };
-
-async function carregarCronograma(){
-  try{
-    const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${PASTA}cronograma.json?t=${Date.now()}`);
-    CRONOGRAMA_DB = await res.json();
-  }catch(e){
-    console.log("Criando cronograma novo");
+async function enviar(){
+  const dados = {
+    nome:document.getElementById('nome').value.trim(), whats:document.getElementById('whats').value, email:document.getElementById('email').value,
+    plano:document.getElementById('plano').value, freq:document.getElementById('freq').value, objetivo:document.getElementById('objetivo').value || '--',
+    dias:"--", valor:"R$0,00", matricula:"R$0,00", total:"R$0,00", venc:"--", status:"Ativo",
+    cpf:"--", nasc:"--", idade:"--", genero:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--",
+    plano: document.getElementById('plano').value + " + document.getElementById('freq').value
   }
-}
-
-async function finalizar(){
-  const nome = document.getElementById('nome').value.trim();
-  const plano = document.getElementById('plano').value;
-  if(!nome) return alert('Digite o nome');
-
-  await carregarCronograma();
-
-  // 1. VERIFICAR SE ALUNO JÁ EXISTE PELO NOME
-  let achou = false;
-  let alunoObj = null;
-  for(let p in CRONOGRAMA_DB){
-    for(let bloco of CRONOGRAMA_DB[p]){
-      const index = bloco.alunos.findIndex(a => a.aluno.toLowerCase() === nome.toLowerCase());
-      if(index!== -1){
-        // ATUALIZA
-        bloco.alunos[index].ultima_atualizacao = new Date().toLocaleString();
-        alunoObj = bloco.alunos[index];
-        achou = true;
-        break;
-      }
-    }
-    if(achou) break;
-  }
-
-  let isNovo = false;
-  if(!achou){
-    // 2. SE NÃO EXISTE: CRIAR ID NOVO = aluno40
-    const todosIds = [...CRONOGRAMA_DB.PRESENCIAL.flatMap(b=>b.alunos), ...CRONOGRAMA_DB.ONLINE.flatMap(b=>b.alunos)];
-    const ultimoN = Math.max(...todosIds.map(a=>a.n), 0);
-    const novoN = ultimoN + 1;
-    const novoId = "aluno" + novoN;
-
-    // 3. ACHA O BLOCO "ATIVOS" DO PLANO E JOGA LÁ
-    let blocoAtivos = CRONOGRAMA_DB[plano].find(b => b.status === "ATIVOS");
-    if(!blocoAtivos){
-      blocoAtivos = {hora:"SEM HORARIO", status:"ATIVOS", alunos:[]};
-      CRONOGRAMA_DB[plano].push(blocoAtivos);
-    }
-
-    alunoObj = {
-      n: novoN,
-      id: novoId,
-      aluno: nome,
-      dias: "--",
-      freq: "3x",
-      objetivo: "--",
-      valor: "R$0,00",
-      venc: "--",
-      status: "Ativo",
-      data_cadastro: new Date().toLocaleDateString()
-    };
-    blocoAtivos.alunos.push(alunoObj);
-    isNovo = true;
-  }
-
-  // 4. SALVAR CRONOGRAMA GERAL: /.../projetos/2026/cronograma.json
-  await salvarArquivo(`${PASTA}cronograma.json`, CRONOGRAMA_DB);
-
-  // 5. SALVAR ARQUIVO INDIVIDUAL: /.../projetos/2026/aluno40.json
-  await salvarArquivo(`${PASTA}${alunoObj.id}.json`, alunoObj);
-
-  mostrarPopup(`✅ FINALIZADO! <br><br> ID: ${alunoObj.id} <br> ${isNovo? 'Aluno NOVO criado no '+plano : 'Aluno ATUALIZADO'}`);
-}
-
-async function salvarArquivo(caminho, dados){
-  let sha = null;
-  try{
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`, {headers:{Authorization:`token ${TOKEN}`}});
-    if(res.ok){ const data = await res.json(); sha = data.sha; }
-  }catch(e){}
-
-  await fetch(`https://api.github.com/repos/${REPO}/contents/${caminho}`,{
-    method:'PUT',
-    headers:{Authorization:`token ${TOKEN}`},
-    body:JSON.stringify({
-      message: `Update ${caminho}`,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(dados, null, 2)))),
-      sha: sha
-    })
+  if(!dados.nome) return alert('Digite o nome');
+  document.getElementById('msg').innerHTML = 'Enviando...';
+  await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/salvar-aluno.yml/dispatches`,{
+    method:'POST', headers:{'Authorization':`Bearer ${TOKEN}`,'Accept':'application/vnd.github+json'},
+    body:JSON.stringify({ref:'main', inputs:{ dados: JSON.stringify(dados) }})
   });
-}
-
-function mostrarPopup(msg){
-  const p = document.getElementById('popup');
-  p.innerHTML = msg + '<br><br><button onclick="this.parentElement.style.display=\'none\'">OK</button>';
-  p.style.display = 'block';
+  document.getElementById('msg').innerHTML = '✅ ENVIADO! Atualiza em 1 minuto.';
 }
 </script>
 </body>
