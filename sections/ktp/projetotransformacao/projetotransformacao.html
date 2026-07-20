@@ -293,7 +293,7 @@ function fecharResultado(){
   localStorage.removeItem('idLogado');
   document.getElementById('info-aluno-container').innerHTML='';
 
-  // VOLTA PRA SEMANA ATUAL
+  // VOLTA PRA SEMANA ATUAL COM IMAGEM E MENSAGEM
   const dataAtual = getSegundaDaSemana();
   mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
 }
