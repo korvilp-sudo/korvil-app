@@ -305,7 +305,7 @@ function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div><div class="semanas-da-fase">`;
-    FASES_MENU.forEach(data=>{ // <-- AQUI ERA O ERRO
+    FASES_MENU.forEach(data=>{
       const segundaLinha = MENU[data]?.split('\n')[1] || 'SEMANA';
       html+=`<div class="semana-item" onclick="mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
