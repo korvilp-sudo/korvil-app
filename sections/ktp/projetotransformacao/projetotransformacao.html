@@ -468,32 +468,74 @@ function mostrarCronograma(){
   container.innerHTML = html;
 }
 
+// REGRA 2: BUSCAR
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
-  if(!id){document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--aviso)">Digite um ID</div>';return;}
-  if(ALUNOS_DB[id]){
-    idLogado = id;
-    localStorage.setItem('idLogado', id);
-    if(id!== 'ktp1') planoAtivo = ALUNOS_DB[id].plano;
-    fecharBuscaAluno();
-    mostrarDadosAluno(id);
-    mostrarCronograma();
-    document.getElementById('resultado-aluno').innerHTML='';
-    document.getElementById('input-id-aluno').value='';
-  } else {
-    document.getElementById('resultado-aluno').innerHTML='<div style="color:var(--erro)">ID não encontrado</div>';
-  }
+  if(!ALUNOS_DB[id]){alert('ID não encontrado'); return;}
+  idLogado = id;
+  localStorage.setItem('idLogado', id);
+  fecharBuscaAluno();
+  montarTela();
 }
 
-window.onload=function(){
-  carregarMenu();
+// REGRA 3: MONTAR TELA
+function montarTela(){
+  const container = document.getElementById('cronograma-container');
+  container.innerHTML = ''; // LIMPA TUDO PRIMEIRO
+  
+  const ehAdm = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
+  
+  // CABEÇALHO
+  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP</div>`;
+  html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}<br><b>Pix: korvilloja@gmail.com</b></div>`;
+  html += `<button class="btn-fechar-resultado" onclick="sair()">X</button>`;
+  
+  if(ehAdm){
+    html += `<div class="abas-plano">
+      <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL')">🌐 PRESENCIAL</button>
+      <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE')">💻 ONLINE</button>
+    </div>`;
+  }
 
-  // PEGA A SEGUNDA ATUAL E JÁ MOSTRA NA TELA
-  const dataISO = getSegundaDaSemana();
-  mostrarInfoSemana(MENSAGENS_SEMANA[dataISO]? dataISO : "2026-01-05");
+  let achou = false;
+  ['PRESENCIAL','ONLINE'].forEach(plano=>{
+    if(ehAdm) html += `<h3 style="text-align:center;color:var(--c)">${plano}</h3>`;
+    
+    CRONOGRAMA_DB[plano].forEach(bloco=>{
+      // FILTRO FINAL
+      let lista = ehAdm ? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo');
+      if(lista.length === 0) return;
+      achou = true;
 
-  if(idLogado){mostrarDadosAluno(idLogado);mostrarCronograma();}
-};
+      html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
+      html += `<table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
+      lista.sort((a,b)=>a.n-b.n).forEach(a=>{
+        html += `<tr><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.status}</td><td>${a.id}</td></tr>`;
+      });
+      html += `</tbody></table>`;
+    });
+  });
+
+  if(!ehAdm && !achou){
+    html += `<div class="card-semana"><p style="color:red;text-align:center">CADASTRO DESATIVADO</p></div>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+// REGRA 4: SAIR VOLTA PRA SEMANA
+function sair(){
+  idLogado = '';
+  localStorage.removeItem('idLogado');
+  document.getElementById('cronograma-container').innerHTML = '';
+  iniciar();
+}
+
+function trocarAba(plano){
+  planoAtivo = plano;
+  montarTela();
+}
+);
 </script>
 </body>
 </html>
