@@ -288,8 +288,17 @@ let idLogado = '';
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML='';}
-function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
+function fecharResultado(){
+  document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>';
+  document.getElementById('info-aluno-container').innerHTML='';
+  idLogado='';
+  localStorage.removeItem('idLogado');
+
+  // VOLTA PRA SEMANA ATUAL
+  const dataAtual = getSegundaDaSemana();
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
+}
+  function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 function getSegundaDaSemana(){
   const agora = new Date();
   let dataBase = new Date(agora);
