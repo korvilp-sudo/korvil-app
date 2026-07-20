@@ -102,7 +102,11 @@ function abrirTela(id){
   if(tela){ tela.classList.add('ativa'); }
   window.scrollTo({top:0, behavior:'smooth'}); 
 }
-
+  
+function abrirLoja(setor, area){
+  window.location.href = `korvil-app/sections/kstore/index.html?setor=${setor}&area=${area}`;
+  }
+  
 function toggleMenu(){ document.getElementById('menu').classList.toggle('ativo'); document.getElementById('overlay').classList.toggle('ativo'); }
 </script>
 </body>
