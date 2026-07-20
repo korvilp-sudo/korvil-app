@@ -282,40 +282,28 @@ let CRONOGRAMA_DB = {
   ]
 };
 
+<script>
 let planoAtivo = 'PRESENCIAL';
 let idLogado = '';
 
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function abrirBuscaAluno(){document.getElementById('modal-aluno').classList.add('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){
-  idLogado='';
-  localStorage.removeItem('idLogado');
-  document.getElementById('info-aluno-container').innerHTML='';
 
-  // VOLTA PRA SEMANA ATUAL COM IMAGEM E MENSAGEM
-  const dataAtual = getSegundaDaSemana();
-  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
-}
-  function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
+function formatarData(d){const dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('pt-BR');}
 function getSegundaDaSemana(){
   const agora = new Date();
   let dataBase = new Date(agora);
-
-  // Regra: só troca pra próxima segunda depois das 01:00
-  if(agora.getDay() === 1 && agora.getHours() < 1){
-    dataBase.setDate(agora.getDate() - 7);
-  }
-
+  if(agora.getDay() === 1 && agora.getHours() < 1){ dataBase.setDate(agora.getDate() - 7); }
   const diaSemana = dataBase.getDay();
   const diff = dataBase.getDate() - diaSemana + (diaSemana === 0? -6 : 1);
   const segunda = new Date(dataBase.setDate(diff));
-
   const ano = segunda.getFullYear();
   const mes = String(segunda.getMonth() + 1).padStart(2, '0');
   const dia = String(segunda.getDate()).padStart(2, '0');
   return `${ano}-${mes}-${dia}`;
 }
+
 function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
@@ -337,34 +325,22 @@ function mostrarInfoSemana(data){
   const titulo = linhas[0];
   const subtitulo = linhas[1];
   const mensagem = MENSAGENS_SEMANA[data] || "Mensagem da semana não cadastrada.";
-
-  // As 4 imagens se repetem em todas as fases
-  const imagens = {
-    'MANUTENÇÃO': 'semana-de-manutencao',
-    'RESISTÊNCIA': 'semana-de-resistencia',
-    'FORÇA': 'semana-de-forca',
-    'HIPERTROFIA': 'semana-de-hipertrofia'
-  };
+  const imagens = {'MANUTENÇÃO': 'semana-de-manutencao','RESISTÊNCIA': 'semana-de-resistencia','FORÇA': 'semana-de-forca','HIPERTROFIA': 'semana-de-hipertrofia'};
   let pastaImagem = 'semana-de-manutencao';
-  for(let key in imagens){
-    if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; }
-  }
-  
-  // CAMINHO CORRIGIDO PEGANDO DO SEU PRINT
+  for(let key in imagens){ if(subtitulo.includes(key)){ pastaImagem = imagens[key]; break; } }
   const baseURL = `https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/images/imagens/2026/imagens-dos-metodos`;
   const caminhoImagem = `${baseURL}/${pastaImagem}/${pastaImagem}.png`;
-
-  let html = `
-    <div class="card-semana">
-      <h3>${titulo}</h3>
-      <img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'">
-      <p><b>${subtitulo}</b></p>
-      <div class="mensagem-semana">${mensagem}</div>
-      <p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p>
-    </div>
-  `;
+  let html = `<div class="card-semana"><h3>${titulo}</h3><img src="${caminhoImagem}" alt="${subtitulo}" onerror="this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png'"><p><b>${subtitulo}</b></p><div class="mensagem-semana">${mensagem}</div><p style="margin-top:10px;font-size:11px;color:var(--aviso)">Semana inicia em: ${formatarData(data)}</p></div>`;
   container.innerHTML = html;
   if(window.innerWidth<768)toggleMenu();
+}
+
+function fecharResultado(){
+  idLogado='';
+  localStorage.removeItem('idLogado');
+  document.getElementById('info-aluno-container').innerHTML='';
+  const dataAtual = getSegundaDaSemana();
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
 }
 
 function trocarAba(plano, el){
@@ -378,14 +354,14 @@ function mostrarDadosAluno(id){
   const aluno = ALUNOS_DB[id];
   const container = document.getElementById('info-aluno-container');
   if(!aluno) return;
-
   const ehAdm = aluno.tipo === 'ADMIN';
-
   if(ehAdm){
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👑 MODO ADMIN</h2><p><b>Usuário:</b> ${aluno.nome}<br><b>Acesso:</b> Cronograma completo PRESENCIAL + ONLINE</p></div>`;
   } else {
     container.innerHTML = `<div class="card-aluno"><button class="btn-fechar-resultado" onclick="fecharResultado()">X</button><h2>👤 MEUS DADOS</h2><p><b>Nome:</b> ${aluno.nome}<br><b>ID:</b> ${id}</p></div>`;
   }
+} // <-- ESSA CHAVE TAVA FALTANDO
+
 function mostrarCronograma(){
   const container = document.getElementById('cronograma-container');
   if(!idLogado){
@@ -413,13 +389,8 @@ function mostrarCronograma(){
     if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
 
     CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // REGRA NOVA: ADM VÊ TUDO. ALUNO SÓ VÊ ELE E SÓ SE FOR ATIVO
-      let alunosDoBloco;
-      if(ehAdm){
-        alunosDoBloco = bloco.alunos; // ADM vê todos
-      } else {
-        alunosDoBloco = bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo'); // ALUNO só se for ele e Ativo
-      }
+      // REGRA: ADM VÊ TUDO. ALUNO SÓ VÊ ELE E SÓ SE FOR ATIVO
+      let alunosDoBloco = ehAdm? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo');
 
       if(alunosDoBloco.length === 0) return;
       achouAlgum = true;
@@ -436,106 +407,30 @@ function mostrarCronograma(){
     });
   });
 
-  // Se aluno desativado não achou nada
   if(!ehAdm &&!achouAlgum){
     html += `<div class="card-semana"><p style="color:var(--erro);text-align:center;font-weight:900">SEU CADASTRO ESTÁ DESATIVADO<br>Entre em contato para regularizar.</p></div>`;
   }
 
   container.innerHTML = html;
 }
-  const planosParaMostrar = ehAdm? ['PRESENCIAL', 'ONLINE'] : [planoAtivo];
 
-  planosParaMostrar.forEach(plano=>{
-    if(ehAdm) html += `<div style="font-size:14px;font-weight:900;color:var(--c);text-align:center;margin:20px 0">🌐 ${plano} 🌐</div>`;
-
-    CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // REGRA FINAL: SÓ ADM VÊ TUDO
-      let alunosDoBloco = ehAdm? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado);
-
-      if(alunosDoBloco.length === 0) return;
-
-      if(bloco.hora) html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
-      html += `<div class="grupo-status">${bloco.status==='ATIVOS'?'✅ ATIVOS':'❌ DESATIVADOS'}</div>`;
-
-      html += `<div class="tabela-wrapper"><table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Freq</th><th>Objetivo</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-
-      alunosDoBloco.sort((a,b)=>a.n-b.n).forEach(a=>{
-        html += `<tr class="destaque"><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.freq}</td><td>${a.objetivo}</td><td>${a.valor}</td><td>${a.venc}</td><td class="${a.status==='Ativo'?'status-ativo':'status-desativado'}">${a.status}</td><td style="font-weight:900;color:var(--c)">${a.id}</td></tr>`;
-      });
-      html += `</tbody></table></div>`;
-    });
-  });
-  container.innerHTML = html;
-}
-
-// REGRA 2: BUSCAR
 function buscarAluno(){
   const id=document.getElementById('input-id-aluno').value.toLowerCase().trim();
   if(!ALUNOS_DB[id]){alert('ID não encontrado'); return;}
   idLogado = id;
   localStorage.setItem('idLogado', id);
   fecharBuscaAluno();
-  montarTela();
+  mostrarDadosAluno(id); // <-- CORRIGIDO
+  mostrarCronograma(); // <-- CORRIGIDO
+  document.getElementById('input-id-aluno').value='';
+});
+
+window.onload = function(){
+  carregarMenu();
+  const dataAtual = getSegundaDaSemana();
+  mostrarInfoSemana(MENSAGENS_SEMANA[dataAtual]? dataAtual : "2026-01-05");
 }
-
-// REGRA 3: MONTAR TELA
-function montarTela(){
-  const container = document.getElementById('cronograma-container');
-  container.innerHTML = ''; // LIMPA TUDO PRIMEIRO
-  
-  const ehAdm = ALUNOS_DB[idLogado]?.tipo === 'ADMIN';
-  
-  // CABEÇALHO
-  let html = `<div class="titulo-crono">📋 CRONOGRAMA K-TP</div>`;
-  html += `<div class="obs-pix">Olá ${ALUNOS_DB[idLogado].nome}<br><b>Pix: korvilloja@gmail.com</b></div>`;
-  html += `<button class="btn-fechar-resultado" onclick="sair()">X</button>`;
-  
-  if(ehAdm){
-    html += `<div class="abas-plano">
-      <button class="aba-plano ${planoAtivo==='PRESENCIAL'?'ativa':''}" onclick="trocarAba('PRESENCIAL')">🌐 PRESENCIAL</button>
-      <button class="aba-plano ${planoAtivo==='ONLINE'?'ativa':''}" onclick="trocarAba('ONLINE')">💻 ONLINE</button>
-    </div>`;
-  }
-
-  let achou = false;
-  ['PRESENCIAL','ONLINE'].forEach(plano=>{
-    if(ehAdm) html += `<h3 style="text-align:center;color:var(--c)">${plano}</h3>`;
-    
-    CRONOGRAMA_DB[plano].forEach(bloco=>{
-      // FILTRO FINAL
-      let lista = ehAdm ? bloco.alunos : bloco.alunos.filter(a => a.id === idLogado && a.status === 'Ativo');
-      if(lista.length === 0) return;
-      achou = true;
-
-      html += `<div class="grupo-horario">🕒 ${bloco.hora}</div>`;
-      html += `<table class="tabela-crono"><thead><tr><th>Nº</th><th>Aluno</th><th>Dias</th><th>Status</th><th>ID</th></tr></thead><tbody>`;
-      lista.sort((a,b)=>a.n-b.n).forEach(a=>{
-        html += `<tr><td>${a.n}</td><td>${a.aluno}</td><td>${a.dias}</td><td>${a.status}</td><td>${a.id}</td></tr>`;
-      });
-      html += `</tbody></table>`;
-    });
-  });
-
-  if(!ehAdm && !achou){
-    html += `<div class="card-semana"><p style="color:red;text-align:center">CADASTRO DESATIVADO</p></div>`;
-  }
-  
-  container.innerHTML = html;
-}
-
-// REGRA 4: SAIR VOLTA PRA SEMANA
-function sair(){
-  idLogado = '';
-  localStorage.removeItem('idLogado');
-  document.getElementById('cronograma-container').innerHTML = '';
-  iniciar();
-}
-
-function trocarAba(plano){
-  planoAtivo = plano;
-  montarTela();
-}
-);
+})
 </script>
 </body>
 </html>
