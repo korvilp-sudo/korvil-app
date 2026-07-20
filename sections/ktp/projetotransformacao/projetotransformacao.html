@@ -288,22 +288,29 @@ let idLogado = localStorage.getItem('idLogado') || '';
 
 function toggleMenu(){document.getElementById('menu-lateral').classList.toggle('ativo');document.getElementById('overlay').classList.toggle('ativo');}
 function fecharBuscaAluno(){document.getElementById('modal-aluno').classList.remove('ativo');}
-function fecharResultado(){document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>'; document.getElementById('info-aluno-container').innerHTML=''; idLogado=''; localStorage.removeItem('idLogado');}
+function fecharResultado(){
+  document.getElementById('cronograma-container').innerHTML='<div class="msg-inicial">Clique em "COLAR ID" e digite seu ID para ver seu cronograma</div>';
+  document.getElementById('info-aluno-container').innerHTML='';
+  if(ALUNOS_DB[idLogado]?.tipo!== 'ADMIN'){
+    idLogado='';
+    localStorage.removeItem('idLogado');
+  }
+}
 function formatarData(d){ const [ano, mes, dia] = d.split('-'); return `${dia}/${mes}/${ano}`; }
 
 function carregarMenu(){
   let html='';
   for(let fase in FASES_MENU){
     html+=`<div class="menu-titulo">${fase}</div><div class="semanas-da-fase">`;
-    FASES_MENU[fase].forEach(data=>{
-      const segundaLinha = MENU[data].split('\n')[1] || 'SEMANA';
+    FASES_MENU.forEach(data=>{
+      const segundaLinha = MENU[data]?.split('\n')[1] || 'SEMANA';
       html+=`<div class="semana-item" onclick="mostrarInfoSemana('${data}')">${formatarData(data)} - ${segundaLinha}</div>`;
     });
     html+=`</div>`;
   }
   document.getElementById('menu-lateral').innerHTML=html;
 }
-
+  
 function mostrarInfoSemana(data){
   const container = document.getElementById('cronograma-container');
   const infoCompleta = MENU[data];
