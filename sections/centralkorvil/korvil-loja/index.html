@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000">
 <title>KORVIL MARKET</title>
 <style>
 :root{--c:#00f5ff; --c2:#00d4ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);padding-bottom:70px}
 @keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)} to{transform:translateY(0)}}
 
 /* TOPO */
 .topo{background:linear-gradient(90deg,var(--c),var(--c2));padding:10px 4%;position:sticky;top:0;z-index:100}
@@ -20,22 +22,22 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 .notif span{position:absolute;top:-4px;right:-4px;background:red;color:#fff;font-size:10px;padding:2px 5px;border-radius:50%;font-weight:800}
 .endereco{padding:8px 4%;font-size:12px;color:#000;font-weight:600;cursor:pointer}
 
+/* ABAS */
 .abas{display:flex;gap:20px;padding:10px 4%;overflow-x:auto;font-size:14px;font-weight:600}
 .abas span{color:#000;cursor:pointer;padding-bottom:4px}
-.abas .ativo{border-bottom:2px solid #000}
+.abas.ativo{border-bottom:2px solid #000}
 
 /* BANNER + ACESSOS */
 .banner{margin:12px 4%;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,#001a1a,var(--c));padding:20px}
 .acessos{display:flex;gap:20px;padding:15px 4%;overflow-x:auto}
 .acesso{text-align:center;min-width:70px;cursor:pointer}
-.acesso .icon{width:50px;height:50px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:24px;margin:auto;border:1px solid var(--borda);position:relative}
+.acesso.icon{width:50px;height:50px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:24px;margin:auto;border:1px solid var(--borda);position:relative}
 .badge{background:green;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;position:absolute;top:-5px;right:-5px;font-weight:800}
-.acesso span{font-size:11px;margin-top:6px;display:block}
 
-/* OFERTAS + CARDS */
+/* OFERTAS */
 .titulo{padding:15px 4% 5px;font-size:18px;font-weight:800}
 .ofertas{display:flex;gap:12px;padding:0 4%;overflow-x:auto}
-.card-oferta{min-width:150px;background:var(--card);border-radius:10px;padding:10px;border:1px solid var(--borda)}
+.card-oferta{min-width:150px;background:var(--card);border-radius:10px;padding:10px;border:1px solid var(--borda);cursor:pointer}
 .card-oferta img{width:100%;height:120px;object-fit:cover;border-radius:8px;background:#111}
 .preco-old{text-decoration:line-through;color:var(--text2);font-size:12px}
 .preco{color:var(--c2);font-size:18px;font-weight:900}
@@ -52,28 +54,27 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 .pagina.ativo{display:block}
 .lista{list-style:none}
 .lista li{padding:14px 0;border-bottom:1px solid var(--borda);display:flex;align-items:center;gap:12px;cursor:pointer;font-size:15px}
-.lista li .tag{background:var(--c);color:#000;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:auto}
-.lista li .noti{background:red;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px;margin-left:auto}
+.lista li.tag{background:var(--c);color:#000;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:auto}
 
 .carrinho-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--borda)}
 .carrinho-item img{width:70px;height:70px;border-radius:8px;background:#111}
-.btn-azul{width:100%;padding:14px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:16px;margin-top:15px}
+.btn-azul{width:100%;padding:14px;background:var(--c);color:#000;border:0;border-radius:8px;font-weight:900;font-size:16px;margin-top:15px;cursor:pointer}
 
-/* MODAL */
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:200;align-items:end}
-.modal.ativo{display:flex}
-.modal-conteudo{background:#111;width:100%;border-radius:20px 20px 0 0;padding:20px;max-height:80%;overflow-y:auto}
-.modal-item{padding:14px;border:1px solid var(--borda);border-radius:10px;margin-bottom:10px;cursor:pointer}
+/* POPUPS */
+.popup{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:200;align-items:end;backdrop-filter:blur(4px)}
+.popup.ativo{display:flex;animation:fade.3s}
+.popup-conteudo{background:#111;width:100%;border-radius:20px 20px 0 0;padding:20px;max-height:80%;overflow-y:auto;border-top:2px solid var(--c);animation:slideUp.3s}
+.popup-item{padding:14px;border:1px solid var(--borda);border-radius:10px;margin-bottom:10px;cursor:pointer}
 </style>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
 <body>
 
-<!-- INICIO -->
+<!-- PAGINA INICIO -->
 <div id="inicio" class="pagina ativo">
   <div class="topo">
     <div class="barra-top">
-      <div class="perfil-top" onclick="abrirPagina('perfil')">K</div>
+      <div class="perfil-top" onclick="abrirPopup('contas')">K</div>
       <div class="busca">
         <ion-icon name="search-outline" style="color:#000"></ion-icon>
         <input placeholder="Buscar no KORVIL MARKET">
@@ -84,99 +85,73 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
         <span>5</span>
       </div>
     </div>
-    <div class="endereco" onclick="abrirModal('endereco')">
+    <div class="endereco" onclick="abrirPopup('endereco')">
       <ion-icon name="location-outline"></ion-icon> Rua Marivaldo Fernandes 546 >
     </div>
   </div>
 
   <div class="abas">
-    <span class="ativo">Tudo</span><span>SISTEMA K</span><span>K-TP</span><span>K-AFORTUNADO</span><span>K-ALMA</span>
+    <span class="ativo" onclick="abrirSetor('todos')">Tudo</span>
+    <span onclick="abrirSetor('sistemak')">SISTEMA K</span>
+    <span onclick="abrirSetor('ktp')">K-TP</span>
+    <span onclick="abrirSetor('kafortunado')">K-AFORTUNADO</span>
+    <span onclick="abrirSetor('kalma')">K-ALMA</span>
   </div>
 
   <div class="banner">
     <h2 style="color:#000">8.8 KORVIL</h2>
     <p style="color:#000">CUPONS RELÂMPAGO 09h 12h 15h</p>
+    <button style="background:#000;color:var(--c);padding:8px 12px;border:0;border-radius:6px;margin-top:8px" onclick="abrirPopup('cupom')">PEGAR CUPOM</button>
   </div>
 
   <div class="acessos">
     <div class="acesso"><div class="icon">%<div class="badge">NOVO</div></div><span>Ofertaço</span></div>
     <div class="acesso"><div class="icon">🎟️</div><span>Cupons</span></div>
-    <div class="acesso"><div class="icon">🔗<div class="badge">GANHA $</div></div><span>Afiliados</span></div>
+    <div class="acesso" onclick="abrirPopup('anuncio')"><div class="icon">🔗<div class="badge">GANHA $</div></div><span>Afiliados</span></div>
     <div class="acesso"><div class="icon">🏆</div><span>Bolão 2026</span></div>
     <div class="acesso"><div class="icon">🏪<div class="badge">NOVO</div></div><span>Lojas</span></div>
   </div>
 
   <h3 class="titulo">OFERTAS RELÂMPAGO</h3>
-  <div class="ofertas">
-    <div class="card-oferta">
-      <img src="https://placehold.co/200x200/00f5ff/000?text=CREATINA">
-      <div class="preco-old">R$ 129,90</div>
-      <div class="preco">R$ 39,49</div>
-      <div class="off">69% OFF</div>
-    </div>
-    <div class="card-oferta">
-      <img src="https://placehold.co/200x200/00d4ff/000?text=PROJETOR">
-      <div class="preco-old">R$ 349,90</div>
-      <div class="preco">R$ 209,90</div>
-      <div class="off">40% OFF</div>
-    </div>
-  </div>
+  <div class="ofertas" id="gridOfertas"></div>
 </div>
 
-<!-- CATEGORIAS -->
+<!-- PAGINA CATEGORIAS -->
 <div id="categorias" class="pagina">
   <div class="topo"><h2 style="color:#000">Categorias</h2></div>
   <div style="display:flex;height:calc(100vh - 140px)">
     <div style="width:35%;background:#111;overflow-y:auto">
       <div class="lista">
-        <li style="color:var(--c)">SISTEMA K</li>
-        <li>K-TP</li>
-        <li>K-AFORTUNADO</li>
-        <li>K-ALMA</li>
-        <li>Esportes</li>
-        <li>Beleza</li>
+        <li onclick="abrirSetor('sistemak')">SISTEMA K</li>
+        <li onclick="abrirSetor('ktp')">K-TP</li>
+        <li onclick="abrirSetor('kafortunado')">K-AFORTUNADO</li>
+        <li onclick="abrirSetor('kalma')">K-ALMA</li>
       </div>
     </div>
-    <div style="width:65%;padding:10px;overflow-y:auto">
-      <h4>Áreas de SISTEMA K</h4>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
-        <div style="text-align:center"><img src="https://placehold.co/80/00f5ff/000" style="border-radius:50%;width:60px"><br><span style="font-size:11px">Serviços</span></div>
-        <div style="text-align:center"><img src="https://placehold.co/80/00d4ff/000" style="border-radius:50%;width:60px"><br><span style="font-size:11px">Tecnologia</span></div>
-      </div>
-    </div>
+    <div style="width:65%;padding:10px;overflow-y:auto" id="areaNichos"></div>
   </div>
 </div>
 
-<!-- CARRINHO -->
+<!-- PAGINA CARRINHO -->
 <div id="carrinho" class="pagina">
   <div class="topo"><h2 style="color:#000">Carrinho (2)</h2></div>
-  <div class="carrinho-item">
-    <img src="https://placehold.co/100/00f5ff/000">
-    <div style="flex:1">
-      <div>Kit Whey Protein + Creatina</div>
-      <div style="font-size:12px;color:var(--text2)">Sabor: Baunilha 900g</div>
-      <select style="margin-top:5px"><option>1 un.</option></select>
-    </div>
-    <div><div class="preco">R$ 62,50</div><div class="off">18% OFF</div></div>
-  </div>
+  <div id="listaCarrinho"></div>
   <div style="padding:15px 0">
-    <div>Frete: <span style="color:green">Grátis</span></div>
-    <h3 style="margin-top:10px">Total: R$ 415,63</h3>
-    <div style="color:green;font-size:12px">Economize R$ 157,50</div>
+    <h3>Total: R$ <span id="totalCarrinho">0.00</span></h3>
   </div>
-  <button class="btn-azul">CONTINUAR (2)</button>
+  <button class="btn-azul" onclick="alert('Finalizar via Pix')">CONTINUAR</button>
 </div>
 
-<!-- PERFIL / MAIS -->
+<!-- PAGINA PERFIL -->
 <div id="perfil" class="pagina">
   <div class="topo">
-    <div style="display:flex;align-items:center;gap:12px;color:#000" onclick="abrirModal('contas')">
+    <div style="display:flex;align-items:center;gap:12px;color:#000" onclick="abrirPopup('contas')">
       <div class="perfil-top" style="background:#fff">K</div>
       <div><h3>KORVIL Loja</h3><span>korvilloja@gmail.com</span></div>
     </div>
   </div>
   <div style="padding:15px;background:linear-gradient(90deg,#ff00aa,var(--c));margin:10px;border-radius:10px;color:#000;font-weight:800">KORVIL+ Assine a partir de R$ 9,90/mês</div>
-  
+
   <ul class="lista">
     <li><ion-icon name="home-outline"></ion-icon> Inicio</li>
     <li><ion-icon name="storefront-outline"></ion-icon> Central de vendedores <span class="tag">NOVO</span></li>
@@ -185,18 +160,12 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
   <h4 style="padding:15px 0 5px;color:var(--text2)">Minha atividade</h4>
   <ul class="lista">
     <li><ion-icon name="bag-outline"></ion-icon> Minhas compras</li>
-    <li><ion-icon name="notifications-outline"></ion-icon> Notificações <span class="noti">5</span></li>
+    <li><ion-icon name="notifications-outline"></ion-icon> Notificações <span class="tag" style="background:red">5</span></li>
     <li><ion-icon name="heart-outline"></ion-icon> Favoritos</li>
-    <li><ion-icon name="time-outline"></ion-icon> Histórico</li>
-  </ul>
-  <h4 style="padding:15px 0 5px;color:var(--text2)">Descubra</h4>
-  <ul class="lista">
-    <li><ion-icon name="shirt-outline"></ion-icon> Moda</li>
-    <li><ion-icon name="settings-outline"></ion-icon> Configurações</li>
   </ul>
 </div>
 
-<!-- NOTIFICACOES -->
+<!-- PAGINA NOTIFICACOES -->
 <div id="notificacoes" class="pagina">
   <div class="topo"><h2 style="color:#000">Notificações</h2></div>
   <div style="display:flex;border-bottom:1px solid var(--borda)">
@@ -206,35 +175,9 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
   <div style="padding:15px">
     <div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--borda)">
       <div style="width:40px;height:40px;background:yellow;border-radius:8px;display:flex;align-items:center;justify-content:center">🏷️</div>
-      <div style="flex:1"><b>Isso tem a sua cara!</b><br><span style="color:var(--text2);font-size:13px">Esse produto está bombando</span></div>
+      <div style="flex:1"><b>Isso tem a sua cara!</b><br><span style="color:var(--text2);font-size:13px">Produto bombando pra você</span></div>
       <div style="font-size:12px;color:var(--text2)">Ontem</div>
     </div>
-  </div>
-</div>
-
-<!-- MODAL TROCAR CONTA -->
-<div id="modal-contas" class="modal" onclick="fecharModal()">
-  <div class="modal-conteudo" onclick="event.stopPropagation()">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px">
-      <div class="perfil-top">K</div>
-      <div><h3>KORVIL Loja</h3><span style="color:var(--text2)">korvilloja@gmail.com</span></div>
-    </div>
-    <h4>Alterar conta</h4>
-    <div class="modal-item"><b>SAMMY DAVID</b><br><span style="color:var(--text2)">saykorvil@gmail.com</span></div>
-    <div class="modal-item" style="background:var(--card)"><b>Say Korvil</b><br><span style="color:var(--text2)">korvil.p@gmail.com</span></div>
-    <div class="modal-item"><ion-icon name="person-add-outline"></ion-icon> Adicionar conta</div>
-  </div>
-</div>
-
-<!-- MODAL ENDERECO -->
-<div id="modal-endereco" class="modal" onclick="fecharModal()">
-  <div class="modal-conteudo" onclick="event.stopPropagation()">
-    <h3>Escolha um endereço de entrega</h3>
-    <p style="color:var(--text2);font-size:13px">O frete varia conforme a localização.</p>
-    <div class="modal-item"><input type="radio" checked> Rua Marivaldo Fernandes 546<br><span style="color:var(--text2)">CEP: 11256075 - Bertioga, SP</span></div>
-    <div class="modal-item"><input type="radio"> Rua Oswaldo Cruz 2407<br><span style="color:var(--text2)">CEP: 11250524 - Bertioga, SP</span></div>
-    <button class="btn-azul">Confirmar</button>
-    <button style="width:100%;padding:14px;background:#222;color:var(--c);border:0;border-radius:8px;margin-top:10px">Adicionar novo endereço</button>
   </div>
 </div>
 
@@ -247,15 +190,114 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
   <div class="item-menu" onclick="abrirPagina('perfil')"><ion-icon name="menu"></ion-icon>Mais</div>
 </div>
 
+<!-- POPUP TROCAR CONTA -->
+<div id="popup-contas" class="popup" onclick="fecharPopup()">
+  <div class="popup-conteudo" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px">
+      <div class="perfil-top">K</div>
+      <div><h3>KORVIL Loja</h3><span style="color:var(--text2)">korvilloja@gmail.com</span></div>
+    </div>
+    <h4>Alterar conta</h4>
+    <div class="popup-item"><b>SAMMY DAVID</b><br><span style="color:var(--text2)">saykorvil@gmail.com</span></div>
+    <div class="popup-item"><b>Say Korvil</b><br><span style="color:var(--text2)">korvil.p@gmail.com</span></div>
+    <div class="popup-item"><ion-icon name="person-add-outline"></ion-icon> Adicionar conta</div>
+  </div>
+</div>
+
+<!-- POPUP ENDERECO -->
+<div id="popup-endereco" class="popup" onclick="fecharPopup()">
+  <div class="popup-conteudo" onclick="event.stopPropagation()">
+    <h3>Escolha um endereço de entrega</h3>
+    <p style="color:var(--text2);font-size:13px">O frete varia conforme a localização.</p>
+    <div class="popup-item"><input type="radio" checked> Rua Marivaldo Fernandes 546<br><span style="color:var(--text2)">CEP: 11256075 - Bertioga, SP</span></div>
+    <div class="popup-item"><input type="radio"> Rua Oswaldo Cruz 2407<br><span style="color:var(--text2)">CEP: 11250524 - Bertioga, SP</span></div>
+    <button class="btn-azul">Confirmar</button>
+  </div>
+</div>
+
+<!-- POPUP CUPOM -->
+<div id="popup-cupom" class="popup" onclick="fecharPopup()">
+  <div class="popup-conteudo" onclick="event.stopPropagation()">
+    <h3 style="color:var(--c)">🎉 CUPOM LIBERADO</h3>
+    <div style="background:var(--card); padding:15px; border-radius:10px; text-align:center; margin:15px 0">
+      <div style="font-size:24px; font-weight:900; color:var(--c)">KORVIL10</div>
+      <div style="font-size:12px">10% OFF em todo o site</div>
+    </div>
+    <button class="btn-azul" onclick="navigator.clipboard.writeText('KORVIL10');alert('Cupom Copiado!')">COPIAR CUPOM</button>
+  </div>
+</div>
+
+<!-- POPUP ANUNCIO -->
+<div id="popup-anuncio" class="popup" onclick="fecharPopup()">
+  <div class="popup-conteudo" onclick="event.stopPropagation()">
+    <h3>Anunciar produto automaticamente</h3>
+    <p style="color:var(--text2); font-size:14px">Vamos anunciar seu produto nos 4 setores: SISTEMA K, K-TP, K-AFORTUNADO, K-ALMA</p>
+    <button class="btn-azul" style="margin-top:15px" onclick="alert('Anuncio Ativado!')">ATIVAR ANÚNCIO AUTO</button>
+  </div>
+</div>
+
 <script>
+// DADOS
+const produtos = {
+  sistemak: [{id:1,nome:"Consultoria Tecnológica",preco:499.90,img:"https://placehold.co/200/00f5ff/000?text=SISTEMA+K"}],
+  ktp: [{id:2,nome:"Whey Protein KORVIL",preco:129.90,img:"https://placehold.co/200/00d4ff/000?text=WHEY"}],
+  kafortunado: [{id:3,nome:"Curso Finanças",preco:299.90,img:"https://placehold.co/200/00f5ff/000?text=CURSO"}],
+  kalma: [{id:4,nome:"Sessão Terapia",preco:150.00,img:"https://placehold.co/200/00d4ff/000?text=TERAPIA"}]
+};
+let carrinho = [{id:2,qtd:1,preco:129.90,nome:"Whey Protein KORVIL",img:"https://placehold.co/100/00d4ff/000"}];
+
+// FUNÇÕES NAVEGAÇÃO
 function abrirPagina(id){
   document.querySelectorAll('.pagina').forEach(p=>p.classList.remove('ativo'));
   document.getElementById(id).classList.add('ativo');
   document.querySelectorAll('.item-menu').forEach(i=>i.classList.remove('ativo'));
   event.currentTarget.classList.add('ativo');
+  if(id=='carrinho') renderCarrinho();
 }
-function abrirModal(id){document.getElementById('modal-'+id).classList.add('ativo')}
-function fecharModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('ativo'))}
+function abrirPopup(id){document.getElementById('popup-'+id).classList.add('ativo')}
+function fecharPopup(){document.querySelectorAll('.popup').forEach(p=>p.classList.remove('ativo'))}
+
+// FUNÇÃO SETORES
+function abrirSetor(setor){
+  abrirPagina('inicio');
+  let grid = document.getElementById('gridOfertas');
+  let lista = setor=='todos'? Object.values(produtos).flat() : produtos[setor];
+  grid.innerHTML = lista.map(p=>`
+    <div class="card-oferta" onclick="addCarrinho(${p.id})">
+      <img src="${p.img}">
+      <div class="preco">R$ ${p.preco.toFixed(2)}</div>
+    </div>
+  `).join('');
+
+  // Mostrar Áreas e Nichos
+  const areas = {
+    sistemak: "Áreas: Serviços Gerais, Profissionais, Tecnologias<br>Nichos: Serviços gerais, Profissionais, Tecnologias",
+    ktp: "Área: Fitness<br>Nichos: Acessórios e artigos esportivos, Suplementos e produtos alimentares",
+    kafortunado: "Áreas: Empreendedorismo, Finanças<br>Nichos: Livros e coisas de empreendedorismo, Coisas de finanças",
+    kalma: "Áreas: Saúde, Beleza<br>Nichos: Terapia holística, massoterapia... Barbearia, cabeleireiro..."
+  };
+  document.getElementById('areaNichos').innerHTML = `<h4>${areas[setor] || 'Selecione um setor'}</h4>`;
+}
+
+// CARRINHO
+function addCarrinho(id){
+  carrinho.push({id,qtd:1});
+  alert('Adicionado ao carrinho!');
+}
+function renderCarrinho(){
+  document.getElementById('listaCarrinho').innerHTML = carrinho.map(i=>`
+    <div class="carrinho-item">
+      <img src="${i.img}">
+      <div style="flex:1"><div>${i.nome}</div><div class="preco">R$ ${i.preco.toFixed(2)}</div></div>
+    </div>
+  `).join('');
+  let total = carrinho.reduce((a,b)=>a + b.preco*b.qtd,0);
+  document.getElementById('totalCarrinho').innerText = total.toFixed(2);
+}
+
+// INICIAR
+abrirSetor('todos');
+setTimeout(()=>abrirPopup('preco'), 4000); // Popup preço baixou automático
 </script>
 </body>
 </html>
