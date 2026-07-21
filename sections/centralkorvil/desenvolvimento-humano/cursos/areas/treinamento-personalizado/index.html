@@ -1,1 +1,214 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TP | KORVIL Treinamento 2026 - Especialista 360°</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--c:#00f5ff; --bg:#080808; --text:#fff; --text2:#aaa; --ok:#00ff88; --borda:#1a1a1a; --gold:#f59e0b;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',Arial,sans-serif;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);}
+
+/* MENU */
+nav{padding:16px;border-bottom:2px solid var(--c);background:#050505;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
+.logo{color:var(--c);font-weight:900;font-size:18px;letter-spacing:1px}
+.menu a{color:var(--text);text-decoration:none;margin-left:20px;font-weight:600;font-size:14px}
+.menu a:hover{color:var(--c)}
+
+/* HERO */
+.hero { padding: 100px 0; background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%); text-align: center; }
+.hero .badge { display: inline-block; background: var(--gold); color: #000; padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; margin-bottom: 20px; }
+.hero h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+.hero h1 span { color: var(--c); }
+.hero p { font-size: 1.2rem; color: #ccc; max-width: 700px; margin: 0 auto 40px; }
+.btn { display: inline-block; background: var(--c); color: #000; padding: 18px 45px; border-radius: 10px; font-size: 1.2rem; font-weight: 900; text-decoration: none; transition: 0.3s; border: none; cursor: pointer; }
+.btn:hover { background: #fff; transform: scale(1.05); }
+
+/* SEÇÕES */
+.section { padding: 80px 0; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.section-title { font-size: 2.2rem; font-weight: 900; text-align: center; margin-bottom: 15px; }
+.section-subtitle { font-size: 1.1rem; color: #aaa; text-align: center; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.card { background: #1a1a1a; padding: 30px; border-radius: 12px; border: 1px solid var(--borda); transition: 0.3s; }
+.card:hover { border-color: var(--c); transform: translateY(-5px); }
+.card h3 { font-size: 1.3rem; margin-bottom: 10px; color: var(--c); }
+.card p { color: #ccc; line-height: 1.6; font-size: 14px; }
+
+/* ABA CONTEÚDO DO CURSO */
+.fase{margin:12px;border:1px solid var(--borda);border-radius:10px;background:#0a0a0a;overflow:hidden}
+.fase-head{padding:14px;background:#050505;border-bottom:1px solid var(--borda)}
+.meses{font-size:10px;color:var(--c);font-weight:800;letter-spacing:1px}
+.titulo{font-size:14px;margin-top:4px;color:var(--text)}
+.desc{font-size:10px;color:var(--text2);margin-top:6px;line-height:1.4}
+.modulos{padding:8px}
+.modulo{padding:12px;margin:6px 0;background:#111;border-radius:8px;border:1px solid var(--borda);cursor:pointer;transition:.2s}
+.modulo:hover{background:#151515;border-color:var(--c)}
+.modulo h3{font-size:12px;color:var(--c)}
+.modulo p{font-size:10px;color:var(--text2);margin-top:4px}
+.modulo.locked{opacity:.3;pointer-events:none}
+.modulo.completed{border-left:4px solid var(--ok)}
+
+/* PARCERIA */
+.parceria { background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%); color: #000; padding: 80px 0; text-align: center; }
+.parceria h2 { font-size: 2.5rem; font-weight: 900; margin-bottom: 20px; }
+.parceria p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px; font-weight: 600; }
+.parceria-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; margin: 0 auto 40px; text-align: left; }
+.parceria-list li { list-style: none; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; font-weight: 700; }
+
+@media(max-width: 768px) {
+    .hero h1 { font-size: 2.2rem; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .parceria-list { grid-template-columns: 1fr; }
+    .menu { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+<nav>
+  <div class="logo">K-TP 2026</div>
+  <div class="menu">
+    <a href="#apresentacao">Apresentação</a>
+    <a href="#conteudo">Conteúdo</a>
+    <a href="#parceria">Parceria</a>
+    <a href="#inscricao">Inscrever</a>
+  </div>
+</nav>
+
+<!-- HERO / APRESENTAÇÃO -->
+<section class="hero" id="apresentacao">
+    <div class="container">
+        <div class="badge">FORMAÇÃO COMPLETA 220H + CERTIFICAÇÃO</div>
+        <h1>Torne-se um <span>Especialista em Transformação Corporal 360°</span></h1>
+        <p>O único curso do Brasil com 4 profissionais: Médico, Nutricionista, Ortopedista e Terapeuta. 11 Módulos de JAN a NOV. Do zero ao resultado real.</p>
+        <a href="#conteudo" class="btn">VER CONTEÚDO DO CURSO</a>
+    </div>
+</section>
+
+<!-- PRA QUE SERVE -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Pra que serve este curso?</h2>
+        <p class="section-subtitle">Parar de chutar. Começar a prescrever com método, segurança e resultado comprovado.</p>
+        <div class="grid-3">
+            <div class="card"><h3>Para Alunos</h3><p>Transformar seu corpo em 12 meses. Emagrecer, ganhar massa, ter saúde mental e manter o resultado.</p></div>
+            <div class="card"><h3>Para Profissionais</h3><p>Atualizar sua prescrição. Aprender a trabalhar em equipe multidisciplinar e aumentar sua autoridade.</p></div>
+            <div class="card"><h3>Benefícios</h3><p>Certificado 220h, Estágio 100h, 4 Mini-Cursos, Carta de Recomendação e Acesso Vitalício.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ABA CONTEÚDO DO CURSO -->
+<section class="section" id="conteudo" style="background: #1a1a1a;">
+    <div class="container">
+        <h2 class="section-title">Conteúdo Programático</h2>
+        <p class="section-subtitle">11 Módulos divididos em 4 Fases. Liberação mensal para máxima adesão e resultado.</p>
+        <div id="fases"></div>
+    </div>
+</section>
+
+<!-- PARCERIA DEZEMBRO -->
+<section class="parceria" id="parceria">
+    <div class="container">
+        <h2>🎁 BÔNUS DEZEMBRO: PROGRAMA DE PARCERIA KORVIL | K-TP</h2>
+        <p>Conclua 100% do curso até 31/12 e receba um convite exclusivo.</p>
+        <ul class="parceria-list">
+            <li>✅ Vire Professor do Curso</li>
+            <li>✅ Gravamos as aulas com você</li>
+            <li>✅ 50% de Comissão Vitalícia</li>
+            <li>✅ Seu Nome e Título na Plataforma</li>
+        </ul>
+        <p style="font-size: 1rem; font-weight: 400;">Só os melhores serão escolhidos. Sua jornada de Aluno pode virar sua carreira de Sócio.</p>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="section" id="inscricao" style="text-align: center;">
+    <div class="container">
+        <h2 class="section-title">Vagas Limitadas para Turma 2026</h2>
+        <p class="section-subtitle">Comece hoje e garanta seu lugar no Programa de Parceria de Dezembro.</p>
+        <button class="btn">INSCREVER-SE NO CURSO AGORA</button>
+        <p style="margin-top: 15px; color: #777; font-size: 0.9rem;">Acesso imediato + 7 dias de garantia</p>
+    </div>
+</section>
+
+<script>
+const FASES = [
+  {
+    id:1, nome:"FASE 1: OFF SEASON - ADAPTAÇÃO GERAL",
+    meses:"JANEIRO A FEVEREIRO",
+    desc:"Fase de adaptação total de corpo e mente. Aumentar ingestão calórica de forma estratégica para elevar energia, disposição e preparar o metabolismo para o bulking.",
+    modulos:[
+      {id:1, nome:"MÓDULO 1: JANEIRO", aulas:20},
+      {id:2, nome:"MÓDULO 2: FEVEREIRO", aulas:20}
+    ]
+  },
+  {
+    id:2, nome:"FASE 2: BULKING - HIPERTROFIA MÁXIMA",
+    meses:"MARÇO A MAIO",
+    desc:"Fase prioritária de construção. Objetivo: hipertrofia muscular, ganho de força. Regra básica: comer mais do que gasta. Dieta limpa e protocolar.",
+    modulos:[
+      {id:3, nome:"MÓDULO 3: MARÇO", aulas:20},
+      {id:4, nome:"MÓDULO 4: ABRIL", aulas:20},
+      {id:5, nome:"MÓDULO 5: MAIO", aulas:20}
+    ]
+  },
+  {
+    id:3, nome:"FASE 3: MAINTENANCE - CONSOLIDAÇÃO",
+    meses:"JUNHO A AGOSTO",
+    desc:"Fase de manutenção e consolidação dos ganhos. Manter massa magra, reduzir gordura e densificar musculatura. Preparação para o cutting.",
+    modulos:[
+      {id:6, nome:"MÓDULO 6: JUNHO", aulas:20},
+      {id:7, nome:"MÓDULO 7: JULHO", aulas:20},
+      {id:8, nome:"MÓDULO 8: AGOSTO", aulas:20}
+    ]
+  },
+  {
+    id:4, nome:"FASE 4: CUTTING - DEFINIÇÃO TOTAL",
+    meses:"SETEMBRO A NOVEMBRO",
+    desc:"Fase de finalização. Eliminar máximo de gordura preservando 100% da massa muscular. Dieta rigorosa com déficit calórico. Resultado aparece aqui.",
+    modulos:[
+      {id:9, nome:"MÓDULO 9: SETEMBRO", aulas:20},
+      {id:10, nome:"MÓDULO 10: OUTUBRO", aulas:20},
+      {id:11, nome:"MÓDULO 11: NOVEMBRO", aulas:20}
+    ]
+  }
+];
+
+const concluidas = JSON.parse(localStorage.getItem('ktp_modulos')||'[]');
+
+function getMesLibera(m){
+  if(m<=2)return 1; if(m<=5)return 3; if(m<=8)return 6; return 9;
+}
+
+let html='';
+FASES.forEach(f=>{
+  html+=`<div class="fase"><div class="fase-head"><div class="meses">${f.meses}</div><div class="titulo">${f.nome}</div><div class="desc">${f.desc}</div></div><div class="modulos">`;
+
+  f.modulos.forEach(m=>{
+    const mesLibera = getMesLibera(m.id);
+    const mesAtual = new Date().getMonth()+1;
+    const locked = mesAtual < mesLibera;
+    const ok = concluidas.includes(m.id);
+    html+=`<div class="modulo ${locked?'locked':''} ${ok?'completed':''}" onclick="abrirModulo(${m.id})">
+      <h3>${m.nome}</h3>
+      <p>${m.aulas} Aulas • 5 Temas • 5 Páginas por Tema ${ok?'✓ Concluído':''} ${locked?'🔒 Libera em '+mesLibera+'/2026':''}</p>
+    </div>`;
+  });
+
+  html+=`</div></div>`;
+});
+
+document.getElementById('fases').innerHTML=html;
+
+function abrirModulo(m){
+  window.location=`modulo-${m}.html`;
+}
+</script>
+
+</body>
+</html>
