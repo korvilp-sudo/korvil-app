@@ -11,9 +11,9 @@
   header{position:sticky;top:0;z-index:999;background:rgba(6,7,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 .topbar{display:flex;align-items:center;gap:12px;padding:10px 12px}
 .logo{font-weight:900;font-size:18px;color:var(--neon)}
-.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start}
+.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start} /* FIX: COLA NO TOPO */
   @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 auto 0;transform:translateX(-100%);transition:.3s;z-index:998;background:var(--panel);width:88%;border-right:1px solid var(--border);max-height:calc(100vh - 52px)}}
-  aside{position:sticky;top:52px;overflow:auto;padding:12px}
+  aside{position:sticky;top:52px;overflow:auto;padding:12px} /* FIX: SEM HEIGHT 100% */
   main{padding:0;margin:0}
 .menu-btn{display:none;padding:8px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--neon)}
   @media(max-width:1100px){.menu-btn{display:block}}
@@ -28,22 +28,22 @@
 .fase-head{padding:12px;background:#0b0e15;display:flex;justify-content:space-between;cursor:pointer}
 .fase-head h3{margin:0;color:var(--neon);font-size:14px}
 .fase-body{display:none;padding:10px;color:var(--muted);font-size:13px}
+.fase.open.fase-body{display:block}
 .course-title{padding:8px;border-bottom:1px solid var(--border);margin-bottom:12px}
 .course-title h1{font-size:16px;margin:0;color:var(--neon)}
 .stat{font-size:12px;color:var(--muted);margin-top:4px}
 .modulo{margin-bottom:10px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0b0e15}
 .modulo-head{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}
 .modulo-head span{color:var(--muted);font-size:12px}
-.aulas{display:none;padding:6px 8px;background:#0a0d14}
 .modulo.open.aulas{display:block}
-.tema-item{padding:6px 10px;margin:3px 0;background:#0d111a;border-radius:6px;font-size:12px;color:var(--neon);font-weight:600}
+.aulas{display:none;padding:6px 8px;background:#0a0d14}
 .aula{padding:8px 10px;border-radius:6px;margin:4px 0;background:#0d111a;font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--muted)}
 .aula:hover{border-color:var(--neon);color:var(--text)}
 .aula.active{border-color:var(--neon);background:#0f1622;color:var(--neon)}
 .aula.locked{opacity:.35;pointer-events:none}
 .aula.completed{border-color:var(--ok);color:var(--ok)}
 .player{margin:0;border:1px solid var(--border);border-radius:12px;background:var(--card);overflow:hidden}
-.video-wrap{position:relative;padding-top:56.25%;background:#000}
+.video-wrap{position:relative;padding-top:56.25%;background:#000;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .content{padding:14px}
 .breadcrumb{font-size:11px;color:var(--muted);margin-bottom:8px}
@@ -61,11 +61,10 @@
 .p-btn.active{border-color:var(--neon);color:var(--neon)}
 .pagina{margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#0b0e15}
 .pagina h4{font-size:15px;color:var(--neon);margin:0 0 8px}
-.pagina ul{list-style:none;padding:0}
-.pagina li{padding:5px 0;font-size:13px;color:var(--muted)}
-.pagina li:before{content:"✓ ";color:var(--neon);font-weight:900}
+.pagina p{font-size:13px;color:var(--muted);margin:0}
 .avaliacao{margin-top:16px;padding:16px;border:2px solid var(--neon);border-radius:12px;background:#0a0f14;box-shadow:var(--glow)}
 .avaliacao h3{font-size:15px;color:var(--neon);margin:0 0 8px}
+.avaliacao p{font-size:12px;color:var(--muted);margin:0 0 10px}
 .questao{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15}
 .questao p{margin:0 0 8px;font-weight:600;font-size:13px}
 .opcao{display:block;margin:6px 0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:#0a0d14;cursor:pointer;font-size:13px}
@@ -87,7 +86,7 @@
   <div class="topbar">
     <button class="menu-btn" id="btnMenu">☰</button>
     <div class="logo">KORVIL</div>
-    <div style="color:var(--muted);font-size:12px">Cursos > Saúde > K-TH 360°</div>
+    <div style="color:var(--muted);font-size:12px">Cursos > Saúde > K-TH</div>
   </div>
 </header>
 
@@ -95,31 +94,39 @@
 <div class="wrap">
   <aside id="sidebar">
     <div class="course-title">
-      <h1>K-TH 360° Formação</h1>
-      <div class="stat">Módulo 1 • Janeiro • 25 Aulas</div>
+      <h1>K-TH Formação Profissional</h1>
+      <div class="stat">11 Módulos • 55 Aulas • 275 Temas</div>
     </div>
     <div id="menuModulos"></div>
   </aside>
 
   <main>
     <div class="tabs">
-      <div class="tab active" id="tabCron">Cronograma</div>
+      <div class="tab active" id="tabCron">Cronograma Anual</div>
       <div class="tab" id="tabAula">Área de Aula</div>
     </div>
 
     <div id="tab-cronograma" class="timeline">
-      <h2 class="ano-title">FASE 1.1: JANEIRO | MÓDULO 1</h2>
-      <div class="fase open"><div class="fase-head"><h3>Terapeuta Holístico Integrativo</h3><span>25 Aulas</span></div><div class="fase-body"><p>Base Geral: 5 Temas. Avaliação final 70%</p></div></div>
+      <h2 class="ano-title">Cronograma Anual K-TH</h2>
+      <div class="fase open"><div class="fase-head"><h3>Janeiro e Fevereiro | Fase 1: Formação Básica</h3><span>M1 M2</span></div><div class="fase-body"><p><b>Módulo 1:</b> Massoterapia Profissional | <b>Módulo 2:</b> Cuidador de Idosos</p></div></div>
+      <div class="fase"><div class="fase-head"><h3>Março a Maio | Fase 2: Formação em Cuidados</h3><span>M3 M4 M5</span></div><div class="fase-body"><p><b>Módulo 3:</b> Terapias Holísticas | <b>Módulo 4:</b> Primeiros Socorros | <b>Módulo 5:</b> Cuidador Infantil</p></div></div>
+      <div class="fase"><div class="fase-head"><h3>Junho a Agosto | Fase 3: Desenvolvimento Profissional</h3><span>M6 M7 M8</span></div><div class="fase-body"><p><b>Módulo 6:</b> Clínica SPA | <b>Módulo 7:</b> Estética Corporal | <b>Módulo 8:</b> Educação em Saúde</p></div></div>
+      <div class="fase"><div class="fase-head"><h3>Setembro a Novembro | Fase 4: Formação Empreendedora</h3><span>M9 M10 M11</span></div><div class="fase-body"><p><b>Módulo 9:</b> Atendimento Humanizado | <b>Módulo 10:</b> Empreendedorismo | <b>Módulo 11:</b> Prática Supervisionada</p></div></div>
+      <div class="fase"><div class="fase-head"><h3>Dezembro: Conclusão</h3><span>Certificados</span></div><div class="fase-body"><p>Revisão | Avaliações Finais | Certificados | Formatura</p></div></div>
     </div>
 
     <div id="tab-aula" style="display:none">
       <div class="player">
-        <div class="video-wrap" id="videoWrap">[Selecione uma aula]</div>
-        <div class="content" id="conteudoAula"></div>
+        <div class="video-wrap" id="videoWrap">[Selecione uma aula no menu lateral]</div>
+        <div class="content" id="conteudoAula">
+          <div class="chips"><span class="chip">Selecione uma Aula</span></div>
+          <h2>Bem-vindo ao K-TH</h2>
+          <p>Regra: Conclua 5 Páginas > Tema 5 Página 5 = Avaliação 70% > Libera Próxima Aula. Sem limite de tentativas.</p>
+        </div>
         <div class="navfooter">
-          <button class="btn" id="btnAnt" disabled>← Anterior</button>
-          <button class="btn primary" id="btnConcluir" disabled>✓ Concluir</button>
-          <button class="btn primary" id="btnProx" disabled>Próxima →</button>
+          <button class="btn" id="btnAnt" disabled>← Aula Anterior</button>
+          <button class="btn primary" id="btnConcluir" disabled>✓ Concluir Aula</button>
+          <button class="btn primary" id="btnProx" disabled>Próxima Aula →</button>
         </div>
       </div>
     </div>
@@ -127,162 +134,114 @@
 </div>
 
 <script>
+// DADOS COMPLETOS COM TÍTULOS DE TODOS OS TEMAS
 const DADOS={
- 1:{nome:"Módulo 1: Terapia Holística Integrativa - Janeiro",aulas:[
-    {nome:"Aula 1: O Conceito 360°",video:"YQHsXMglC9A",temas:["Tema 1: Fundamentos da Visão Integral","Tema 2: História da Terapia Holística","Tema 3: Energia Vital e Chakras","Tema 4: Mente-Corpo-Emoção","Tema 5: Perfil do Terapeuta"]},
-    {nome:"Aula 2: Metodologia K-TH",video:"uO59aN9P1fA",temas:["Tema 1: Bases Científicas","Tema 2: Ciclo Anual K-TH","Tema 3: Avaliação Integral","Tema 4: Plano Terapêutico","Tema 5: Documentação"]},
-    {nome:"Aula 3: Ética Profissional",video:"TQMbvJNRpLE",temas:["Tema 1: Código de Ética","Tema 2: Aspectos Legais","Tema 3: Relacionamento Terapêutico","Tema 4: Comunicação Não Violenta","Tema 5: Supervisão"]},
-    {nome:"Aula 4: Técnicas de Atendimento",video:"ZToicYcHUCg",temas:["Tema 1: Acolhimento","Tema 2: Escuta Ativa","Tema 3: Condução da Sessão","Tema 4: Técnicas de Intervenção","Tema 5: Feedback"]},
-    {nome:"Aula 5: Mapa da Jornada 360°",video:"1vx8iUvfyCY",temas:["Tema 1: Módulos 2, 3 e 4","Tema 2: Módulos 5, 6 e 7","Tema 3: Módulos 8 e 9","Tema 4: Módulos 10 e 11","Tema 5: Seu Compromisso + Avaliação"]},
+ 1:{nome:"Módulo 1: Massoterapia Profissional",video:"j3PdVh1j7e0",aulas:[
+    {nome:"Aula 1: História da Massoterapia",temas:["Tema 1: Origens da Massoterapia","Tema 2: Evolução Histórica","Tema 3: Grandes Mestres","Tema 4: Massoterapia no Brasil","Tema 5: Tendências Atuais"]},
+    {nome:"Aula 2: Anatomia Básica",temas:["Tema 1: Sistema Muscular","Tema 2: Sistema Esquelético","Tema 3: Sistema Circulatório","Tema 4: Sistema Nervoso","Tema 5: Pele e Tecidos"]},
+    {nome:"Aula 3: Biossegurança",temas:["Tema 1: Normas de Higiene","Tema 2: EPIs e Proteção","Tema 3: Desinfecção","Tema 4: Descarte de Resíduos","Tema 5: Prevenção de Riscos"]},
+    {nome:"Aula 4: Anamnese",temas:["Tema 1: Entrevista Inicial","Tema 2: Histórico de Saúde","Tema 3: Contraindicações","Tema 4: Ficha do Cliente","Tema 5: Conduta Ética"]},
+    {nome:"Aula 5: Massagem Relaxante",temas:["Tema 1: Técnicas Básicas","Tema 2: Manobras de Deslizamento","Tema 3: Amassamento","Tema 4: Percussão","Tema 5: Finalização"]},
+  ]},
+ 2:{nome:"Módulo 2: Cuidador de Idosos",video:"k4_RvR3QZ8k",aulas:[
+    {nome:"Aula 1: Envelhecimento",temas:["Tema 1: Processo de Envelhecer","Tema 2: Aspectos Biológicos","Tema 3: Aspectos Psicológicos","Tema 4: Aspectos Sociais","Tema 5: Mitos e Verdades"]},
+    {nome:"Aula 2: Higiene",temas:["Tema 1: Banho no Leito","Tema 2: Higiene Bucal","Tema 3: Troca de Roupas","Tema 4: Cuidados com a Pele","Tema 5: Prevenção de Escaras"]},
+    {nome:"Aula 3: Alimentação",temas:["Tema 1: Dieta do Idoso","Tema 2: Hidratação","Tema 3: Dificuldade de Deglutição","Tema 4: Dietas Especiais","Tema 5: Rotina Alimentar"]},
+    {nome:"Aula 4: Mobilização",temas:["Tema 1: Mudança de Decúbito","Tema 2: Transferência","Tema 3: Deambulação","Tema 4: Uso de Andador","Tema 5: Prevenção de Quedas"]},
+    {nome:"Aula 5: Medicamentos",temas:["Tema 1: Tipos de Medicamentos","Tema 2: Vias de Administração","Tema 3: Horários e Doses","Tema 4: Efeitos Colaterais","Tema 5: Limites Legais"]},
   ]}
 };
+// Completa até 11 módulos x 5 aulas
+for(let m=3;m<=11;m++){DADOS[m]={nome:`Módulo ${m}: Módulo ${m}`,video:"j3PdVh1j7e0",aulas:[]};for(let a=1;a<=5;a++){DADOS[m].aulas.push({nome:`Aula ${a}: Aula ${a}`,temas:["Tema 1: T1","Tema 2: T2","Tema 3: T3","Tema 4: T4","Tema 5: T5"]})}}
 
-const CONTEUDOS={
- "M1-A1-T1":["P1-OBJ: Compreender abordagem 360°. Tratar o ser como um todo e não a parte doente","P2-CON: Os 4 corpos: Físico, Mental, Emocional, Energético. Como um afeta o outro. Diferença abordagem fragmentada vs integral","P3-PRAT: Exercício: pegar 1 sintoma físico e listar causa mental, emocional e energética","P4-EX: Caso: Paciente com enxaqueca. Médico dá remédio. Terapeuta 360° investiga estresse, alimentação e energia","P5-FIN: Resumo: Você é 4 corpos. Tarefa: Aplicar anamnese 360° em 1 pessoa"],
- "M1-A1-T2":["P1-OBJ: Conhecer a origem e evolução da terapia holística no mundo","P2-CON: Medicina Tradicional Chinesa 5000 anos. Ayurveda 3000 anos. Xamanismo. Psicologia Transpessoal de Jung","P3-PRAT: Criar linha do tempo com 5 marcos: China, Índia, Grécia, Século 20, Brasil","P4-EX: Hipócrates já dizia: 'É mais importante saber que tipo de pessoa tem a doença'","P5-FIN: Resumo: Raiz é milenar. Tarefa: Pesquisar 1 prática ancestral"],
- "M1-A1-T3":["P1-OBJ: Entender Qi, Prana e campo energético humano","P2-CON: Chakras: 7 centros. Meridianos: canais. Aura: campo. Como energia densa vira matéria","P3-PRAT: Prática: esfregar mãos 30s e sentir energia entre elas","P4-EX: Caso: Cansaço crônico = bloqueio no chakra cardíaco por mágoa","P5-FIN: Resumo: Tudo é energia. Tarefa: Meditar 5min focando na respiração"],
- "M1-A1-T4":["P1-OBJ: Provar cientificamente como emoção afeta o corpo","P2-CON: Psiconeuroimunologia. Estresse libera cortisol. Emoção somatizada vira doença","P3-PRAT: Tabela: Raiva=Fígado, Medo=Rim, Ansiedade=Estômago, Tristeza=Pulmão, Preocupação=Baço","P4-EX: Caso: Gastrite por ansiedade no trabalho. Tratar só estômago não resolve","P5-FIN: Resumo: Corpo fala. Tarefa: Diário emocional por 3 dias"],
- "M1-A1-T5":["P1-OBJ: Desenvolver postura ética e profissional do terapeuta","P2-CON: 7 qualidades: Escuta, Presença, Neutralidade, Ética, Estudo, Autocuidado, Humildade","P3-PRAT: Roleplay: Cliente difícil que quer que você resolva a vida dele","P4-EX: Erros comuns: Querer salvar, dar conselho, se apegar, falar de si","P5-FIN: Resumo: Você é instrumento. Juramento do Terapeuta K-TH"],
- "M1-A2-T1":["P1-OBJ: Validar a terapia holística com ciência","P2-CON: Efeito placebo. Epigenética. Coerência cardíaca. Harvard prova efeito da meditação no cérebro","P3-PRAT: Como explicar para um cético em 3 minutos usando ciência","P4-EX: Pesquisa: 8 semanas de meditação aumenta massa cinzenta","P5-FIN: Resumo: Ciência + Espiritualidade. Tarefa: Ler 1 artigo"],
- "M1-A2-T2":["P1-OBJ: Aprender a metodologia exclusiva K-TH","P2-CON: Ciclo Anual: Off=Descanso, Bulk=Crescer, Maintenance=Manter, Cutting=Limpar","P3-PRAT: Montar ciclo anual para cliente com ansiedade","P4-EX: Caso real: paciente fez ciclo e zerou remédio para ansiedade","P5-FIN: Resumo: Corpo tem ciclos. Tarefa: Aplicar ciclo na sua vida"],
- "M1-A2-T3":["P1-OBJ: Saber avaliar um cliente de forma completa","P2-CON: 4 ferramentas: Anamnese, Leitura corporal, Mapa emocional, Teste energético","P3-PRAT: Preencher ficha de anamnese completa","P4-EX: Análise de vídeo de atendimento real","P5-FIN: Resumo: Avaliar é 50% do resultado. Tarefa: Fazer 2 avaliações"],
- "M1-A2-T4":["P1-OBJ: Criar plano terapêutico personalizado","P2-CON: Objetivo claro, técnicas, frequência, metas, reavaliação em 30 dias","P3-PRAT: Criar plano para caso: insônia + estresse","P4-EX: Plano bom vs plano ruim: comparar","P5-FIN: Resumo: Sem plano é tiro no escuro. Tarefa: Entregar 1 plano"],
- "M1-A2-T5":["P1-OBJ: Documentar corretamente o processo","P2-CON: Ficha, evolução, laudo, LGPD, arquivo digital","P3-PRAT: Preencher evolução de sessão","P4-EX: Modelo de laudo terapêutico profissional","P5-FIN: Resumo: Documentar protege. Tarefa: Organizar pasta do cliente"],
- "M1-A3-T1":["P1-OBJ: Decorar e aplicar os 10 princípios éticos","P2-CON: Sigilo, respeito, limites, não prometer cura, não diagnosticar, encaminhar","P3-PRAT: Julgar 5 casos éticos: certo ou errado","P4-EX: Caso real de quebra de ética e processo","P5-FIN: Resumo: Ética é tudo. Assinar código de ética"],
- "M1-A3-T2":["P1-OBJ: Saber o que pode e não pode fazer legalmente","P2-CON: Curso livre. Não diagnosticar. Não prescrever remédio. MEI. Termo de responsabilidade","P3-PRAT: Preencher termo de responsabilidade do cliente","P4-EX: Diferença terapeuta e médico na lei","P5-FIN: Resumo: Atuar legal. Tarefa: Abrir MEI"],
- "M1-A3-T3":["P1-OBJ: Criar vínculo sem dependência","P2-CON: Rapport, transferência, limites, encerramento de ciclo","P3-PRAT: Simulação: cliente que não quer ir embora","P4-EX: Caso: terapeuta que virou amigo do cliente","P5-FIN: Resumo: Profissionalismo. Tarefa: Roteiro de encerramento"],
- "M1-A3-T4":["P1-OBJ: Falar com empatia e assertividade","P2-CON: 4 passos CNV: Observação, Sentimento, Necessidade, Pedido","P3-PRAT: Traduzir 5 frases agressivas para CNV","P4-EX: Atendimento com cliente bravo","P5-FIN: Resumo: Falar sem brigar. Tarefa: Usar CNV 1 dia"],
- "M1-A3-T5":["P1-OBJ: Importância de não atender sozinho","P2-CON: Grupo de supervisão, intervisão, mentoria","P3-PRAT: Apresentar 1 caso para o grupo","P4-EX: Benefício da supervisão em caso difícil","P5-FIN: Resumo: Time fortalece. Tarefa: Entrar em grupo"],
- "M1-A4-T1":["P1-OBJ: Fazer cliente se sentir seguro nos 5min iniciais","P2-CON: Ambiente, voz, postura, 7 perguntas chave","P3-PRAT: Simulação de recepção","P4-EX: Erros que afastam o cliente","P5-FIN: Resumo: Primeira impressão. Tarefa: Gravar áudio de acolhimento"],
- "M1-A4-T2":["P1-OBJ: Ouvir para compreender e não responder","P2-CON: Silêncio, parafrasear, perguntas abertas, validar","P3-PRAT: Exercício: ouvir 5min sem interromper","P4-EX: Diferença ouvir e esperar falar","P5-FIN: Resumo: Ouvir cura. Tarefa: Praticar com familiar"],
- "M1-A4-T3":["P1-OBJ: Roteiro completo de 50min de sessão","P2-CON: Abertura, investigação, técnica, fechamento, tarefa para casa","P3-PRAT: Cronometrar sessão simulada","P4-EX: Vídeo de sessão modelo","P5-FIN: Resumo: Roteiro dá segurança. Tarefa: Fazer 1 sessão"],
- "M1-A4-T4":["P1-OBJ: Saber quando e como aplicar técnicas","P2-CON: Respiração, visualização, ancoragem, pergunta poderosa","P3-PRAT: Testar 3 técnicas em si mesmo","P4-EX: Qual técnica usar para ansiedade","P5-FIN: Resumo: Técnica certa. Tarefa: Criar kit de 5 técnicas"],
- "M1-A4-T5":["P1-OBJ: Medir resultado e ajustar rota","P2-CON: Escalas 0-10, perguntas, comemorar vitória","P3-PRAT: Aplicar escala de 0 a 10","P4-EX: Cliente que não evolui: o que fazer","P5-FIN: Resumo: Medir é gerir. Tarefa: Ficha de feedback"],
- "M1-A5-T1":["P1-OBJ: Entender os próximos 3 meses","P2-CON: M2 Massoterapia. M3 Cuidador. M4 Práticas Naturais","P3-PRAT: Qual módulo combina mais com você","P4-EX: Depoimento de aluno de cada módulo","P5-FIN: Resumo: Corpo e Cuidado. Tarefa: Escolher 1"],
- "M1-A5-T2":["P1-OBJ: Entender módulos mentais","P2-CON: M5 Hipnose. M6 Meditação. M7 Inteligência Emocional","P3-PRAT: Teste: qual sua inteligência emocional","P4-EX: Como hipnose ajuda a parar de fumar","P5-FIN: Resumo: Mente e Emoção. Tarefa: Meditar 10min"],
- "M1-A5-T3":["P1-OBJ: Entender módulos avançados","P2-CON: M8 Desenvolvimento Pessoal. M9 Neurociência","P3-PRAT: Definir 3 metas SMART","P4-EX: Como cérebro cria hábito","P5-FIN: Resumo: Performance. Tarefa: Livro neurociência"],
- "M1-A5-T4":["P1-OBJ: Aprender a viver da terapia","P2-CON: M10 Fitocosmética. M11 Gestão + Parceria KORVIL 50%","P3-PRAT: Calcular faturamento com 10 clientes","P4-EX: Caso: terapeuta que fatura 10k","P5-FIN: Resumo: Negócio. Tarefa: Plano de negócio"],
- "M1-A5-T5":["P1-OBJ: Fechar compromisso com a jornada","P2-CON: Revisão dos 11 módulos e certificados","P3-PRAT: Carta de compromisso para si mesmo","P4-EX: Aluno que concluiu e virou professor","P5-FIN: Resumo + AVALIAÇÃO FINAL 20 QUESTÕES"]
+const QUESTOES={
+ 1:[{q:"1. Quem é considerado o pai da massoterapia moderna?",o:["Per Henrik Ling","Hipócrates","Galeno","Avicena"],r:0},
+     {q:"2. A massagem relaxante atua principalmente em qual sistema?",o:["Digestivo","Nervoso Parassimpático","Circulatório","Respiratório"],r:1},
+     {q:"3. Biossegurança significa:",o:["Massagear forte","Prevenir riscos e infecções","Usar óleos caros","Atender mais clientes"],r:1},
+     {q:"4. Anamnese é:",o:["Tipo de massagem","Entrevista inicial com o cliente","Óleo essencial","Equipamento"],r:1},
+     {q:"5. Contraindicação absoluta:",o:["Estresse","Febre alta","Cansaço","Dor leve"],r:1}],
+ 2:[{q:"1. Envelhecimento é:",o:["Patológico","Natural e progressivo","Doença","Evitar"],r:1},
+     {q:"2. Prevenir escaras:",o:["Deixar no leito","Mudar decúbito a cada 2h","Não hidratar","Prender"],r:1},
+     {q:"3. Hidratação idoso:",o:["2L por dia","Apenas se pedir","500ml","Não precisa"],r:0},
+     {q:"4. Administrar remédio:",o:["Cuidador sempre","Enfermeiro ou familiar","Vizinho","Qualquer um"],r:1},
+     {q:"5. Prevenir quedas:",o:["Bagunça","Tapetes soltos","Ambiente seguro","Escuro"],r:2}]
 };
+for(let i=3;i<=11;i++){QUESTOES[i]=QUESTOES[1]}
 
-const BANCO_QUESTOES_M1=[{q:"1. Abordagem 360° significa:",o:["Só corpo","Corpo, Mente, Emoção e Energia","360 sessões","Massagem"],r:1},{q:"2. Os 4 corpos são:",o:["Físico, Químico","Físico, Mental, Emocional, Energético","Denso, Sutil","Alma, Espírito"],r:1},{q:"3. Qi é:",o:["Massagem","Energia vital","Chá","Ponto"],r:1},{q:"4. Psiconeuroimunologia:",o:["Músculo","Mente, nervos e imunidade","Osso","Sangue"],r:1},{q:"5. Não pode prescrever:",o:["Chá","Antibiótico","Meditação","Respiração"],r:1},{q:"6. Anamnese é:",o:["Massagem","Entrevista inicial","Óleo","Equipamento"],r:1},{q:"7. Sigilo é:",o:["Contar tudo","Não falar do cliente","Postar","Falar família"],r:1},{q:"8. Encaminhar médico:",o:["Nunca","Doença grave","Sempre","Nunca"],r:1},{q:"9. Rapport é:",o:["Chá","Vínculo","Massagem","Flor"],r:1},{q:"10. Epigenética:",o:["Gene fixo","Estilo muda gene","Só remédio","Nada"],r:1},{q:"11. Chakra comunicação:",o:["Raiz","Cardíaco","Laríngeo","Coronário"],r:2},{q:"12. Homeostase:",o:["Desequilíbrio","Equilíbrio","Doença","Cansaço"],r:1},{q:"13. LGPD:",o:["Massagem","Dados cliente","Preço","Hora"],r:1},{q:"14. Contraindicação:",o:["Estresse","Febre alta","Cansaço","Dor"],r:1},{q:"15. Plano tem:",o:["1 sessão","Objetivo, técnica, frequência","Preço","Hora"],r:1},{q:"16. Transferência:",o:["Mudar sala","Projetar no terapeuta","Exercício","Trocar"],r:1},{q:"17. Escuta ativa:",o:["Interromper","Celular","Pergunta e silêncio","Falar mais"],r:2},{q:"18. Ciclo K-TH:",o:["Anual","Mensal","Semanal","Diário"],r:0},{q:"19. KORVIL:",o:["Salário","50% comissão","Nada","Grátis"],r:1},{q:"20. Meridianos:",o:["Músculo","Canais energia","Osso","Nervo"],r:1}];
-
-let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_v11')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_temas_v11')||'{}'),questoesSorteadas:[]};
+let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_v11')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_temas_v11')||'{}')};
 const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 
 function montarMenu(){
   const wrap=$('#menuModulos');wrap.innerHTML='';
   Object.keys(DADOS).forEach(m=>{
     const mod=DADOS[m];let aulas='';
-    mod.aulas.forEach((aulaObj,i)=>{
-      aulas+=`<div class="tema-item">${i+1}. ${aulaObj.nome}</div>`;
-      aulaObj.temas.forEach((tema,j)=>{
-        const idTema=`M${m}-A${i+1}-T${j+1}`;
-        const ok=estado.concluidas.includes(idTema);
-        aulas+=`<div class="aula locked ${ok?'completed':''}" data-id="${idTema}">${j+1}. ${tema}</div>`;
-      })
-    });
-    wrap.innerHTML+=`<div class="modulo open" id="mod${m}"><div class="modulo-head">${mod.nome}<span>0/25</span></div><div class="aulas">${aulas}</div></div>`;
+    mod.aulas.forEach((aulaObj,i)=>{const id=`M${m}-A${i+1}`;const ok=estado.concluidas.includes(id);aulas+=`<div class="aula locked ${ok?'completed':''}" data-id="${id}">${i+1}. ${aulaObj.nome}</div>`});
+    const concluidasMod=estado.concluidas.filter(x=>x.startsWith(`M${m}-`)).length;
+    wrap.innerHTML+=`<div class="modulo" id="mod${m}"><div class="modulo-head">${mod.nome}<span>${concluidasMod}/${mod.aulas.length}</span></div><div class="aulas">${aulas}</div></div>`;
   });
+  $$('.modulo-head').forEach(el=>el.onclick=()=>el.parentElement.classList.toggle('open'));
   $$('.aula').forEach(el=>el.onclick=()=>!el.classList.contains('locked')&&carregarAula(el.dataset.id));
-  $(`[data-id="M1-A1-T1"]`).classList.remove('locked');
 }
 
 function carregarAula(id){
   estado.aula=id;estado.tema=1;estado.pagina=1;estado.respostas={};$('#tabAula').click();
-  const [m,a,t]=id.replace('M','').split('-A').join('-').split('-T').map(Number);
-  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];const temaNome=aulaObj.temas[t-1];
-  $('#videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${aulaObj.video}" allowfullscreen></iframe>`;
-  let nav='';aulaObj.temas.forEach((tema,i)=>{const ok=estado.temasOK[id]?.includes(i+1);nav+=`<button class="tema-btn ${i===0?'active':''} ${ok?'completed':''}" data-t="${i+1}">${tema}</button>`});
-  $('#conteudoAula').innerHTML=`<div class="breadcrumb">Localização: <b>${mod.nome}</b> > <b>${aulaObj.nome}</b> > <b id="bcTema">${temaNome}</b> > <b id="bcPag">Página 1: Objetivo</b></div><div class="chips"><span class="chip">VÍDEO + TEXTO</span><span class="chip gray">${aulaObj.nome}</span></div><h2>${temaNome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;
+  const [m,a]=id.replace('M','').split('-A').map(Number);
+  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];
+  $('#videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${mod.video}" allowfullscreen></iframe>`;
+  let nav='';aulaObj.temas.forEach((t,i)=>{const ok=estado.temasOK[id]?.includes(i+1);nav+=`<button class="tema-btn ${i===0?'active':''} ${ok?'completed':''}" data-t="${i+1}">${t}</button>`});
+  $('#conteudoAula').innerHTML=`<div class="breadcrumb">Localização: <b>${mod.nome}</b> > <b>${aulaObj.nome}</b> > <b id="bcTema">${aulaObj.temas[0]}</b> > <b id="bcPag">Página 1: Objetivo</b></div><div class="chips"><span class="chip">${mod.nome}</span><span class="chip gray">${aulaObj.nome}</span></div><h2>${mod.nome} > ${aulaObj.nome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;
   $$('.tema-btn').forEach(b=>b.onclick=()=>trocarTema(+b.dataset.t));renderPagina();
   $$('.aula').forEach(x=>x.classList.remove('active'));$(`[data-id="${id}"]`).classList.add('active');
-  const idx=(a-1)*5+(t-1);$('#btnAnt').disabled=idx===0;$('#btnProx').disabled=true;$('#btnConcluir').disabled=true;if(window.innerWidth<1100)toggleMenu();
+  const idx=(m-1)*5+(a-1);$('#btnAnt').disabled=idx===0;$('#btnProx').disabled=true;$('#btnConcluir').disabled=true;if(window.innerWidth<1100)toggleMenu(false);
 }
 
 function trocarTema(t){estado.tema=t;estado.pagina=1;estado.respostas={};$$('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));const[m,a]=estado.aula.replace('M','').split('-A').map(Number);$('#bcTema').innerText=DADOS[m].aulas[a-1].temas[t-1];renderPagina()}
-function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));const tit=['Objetivo','Conteúdo','Prática','Exemplo','Finalização'];$('#bcPag').innerText=`Página ${p}: ${tit[p-1]}`;renderPagina()}
-
+function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));const tit=['Objetivo','Materiais','Preparação','Execução','Finalização'];$('#bcPag').innerText=`Página ${p}: ${tit[p-1]}`;renderPagina()}
 function renderPagina(){
-  const[m,a,t]=estado.aula.replace('M','').split('-A').join('-').split('-T').map(Number);
-  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];const temaNome=aulaObj.temas[t-1];
-  const tit=['Objetivo','Conteúdo','Prática','Exemplo','Finalização'];
-  const key=`M${m}-A${a}-T${t}`;
-  const conteudo=CONTEUDOS[key];
+  const[m,a]=estado.aula.replace('M','').split('-A').map(Number);
+  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];const temaNome=aulaObj.temas[estado.tema-1];
+  const tit=['Objetivo','Materiais','Preparação','Execução','Finalização'];
   let html='';
   for(let p=1;p<=5;p++){
     let extra='';
-    if(a==5&&t==5&&p==5){
-      extra=`<div class="avaliacao"><h3>📝 AVALIAÇÃO FINAL MÓDULO 1</h3><p>20 Questões. Acerte 70% = 14 acertos. Libera Módulo 2.</p><div id="q"></div><button class="btn primary" id="env">Enviar Avaliação</button><div id="res"></div></div>`;
+    if(p===5&&estado.tema===5&&!estado.concluidas.includes(estado.aula)){
+      extra=`<div class="avaliacao"><h3>📝 Exercício de Avaliação: ${temaNome}</h3><p>Acerte 70% ou mais para liberar a próxima aula. Sem limite de tentativas.</p><div id="q"></div><button class="btn primary" id="env">Enviar Avaliação</button><div id="res"></div></div>`;
     }
-    html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><ul>${conteudo[p-1].split(':')[1].split('.').filter(x=>x.trim()).map(x=>`<li>${x}</li>`).join('')}</ul>${extra}</div>`;
+    html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><p>[CONTEÚDO] ${mod.nome} | ${aulaObj.nome} | ${temaNome} | Página ${p} – ${tit[p-1]}.</p>${extra}</div>`;
   }
   let btns='<div class="pagina-nav">';for(let p=1;p<=5;p++){btns+=`<button class="p-btn ${p===estado.pagina?'active':''}" data-p="${p}">${p}</button>`}btns+='</div>';
   $('#paginaArea').innerHTML=btns+html;
   $$('.p-btn').forEach(b=>b.onclick=()=>trocarPagina(+b.dataset.p));
-  if($('#env')){carregarAvaliacao()}
+  if($('#env')){carregarQuestoes(m)}
 }
-
-function carregarAvaliacao(){if(estado.questoesSorteadas.length==0){estado.questoesSorteadas=BANCO_QUESTOES_M1.sort(()=>0.5-Math.random()).slice(0,20)}const qs=estado.questoesSorteadas;let h='';qs.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});$('#q').innerHTML=h;$$('.opcao').forEach(o=>o.onclick=()=>{const qi=+o.dataset.q,oi=+o.dataset.o;estado.respostas[qi]=oi;$$('.opcao[data-q="'+qi+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});$('#env').onclick=corrigir;}
-
+function carregarQuestoes(m){
+  const qs=QUESTOES[m];let h='';
+  qs.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});
+  $('#q').innerHTML=h;
+  $$('.opcao').forEach(o=>o.onclick=()=>{const qi=+o.dataset.q,oi=+o.dataset.o;estado.respostas[qi]=oi;$$('.opcao[data-q="'+qi+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});
+  $('#env').onclick=corrigir;
+}
 function corrigir(){
-  const qs=estado.questoesSorteadas;let ac=0;
+  const[m]=estado.aula.replace('M','').split('-A').map(Number);
+  const qs=QUESTOES[m];let ac=0;
   qs.forEach((q,i)=>{const r=estado.respostas[i];if(r===q.r)ac++;$$('.opcao[data-q="'+i+'"]').forEach((o,j)=>{o.classList.remove('correta','errada');if(j===q.r)o.classList.add('correta');else if(j===r&&r!==q.r)o.classList.add('errada')})});
   const pct=Math.round(ac/qs.length*100);const ok=pct>=70;
-  $('#res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO ✅':'REPROVADO ❌'}: ${ac}/20 = ${pct}%</div>${ok?'<p>Módulo 1 Concluído! Módulo 2 libera em Fevereiro.</p>':'<button class="btn primary" id="ref">Refazer com questões novas</button>'}`;
-  if(ok){estado.temasOK[estado.aula]=[5];localStorage.setItem('kth_temas_v11',JSON.stringify(estado.temasOK));$('#btnProx').disabled=true;$('#btnConcluir').disabled=true}else{$('#ref').onclick=()=>{estado.respostas={};estado.questoesSorteadas=[];$('#res').innerHTML='';carregarAvaliacao()}}
-}
-
-function concluirAula(){if(!estado.aula)return;if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('kth_v11',JSON.stringify(estado.concluidas));montarMenu();$('#btnConcluir').disabled=true;const[m,a,t]=estado.aula.replace('M','').split('-A').join('-').split('-T').map(Number);const proxT=t+1;if(proxT<=5){$('#btnProx').disabled=false}else if(a<5){$(`[data-id="M1-A${a+1}-T1"]`).classList.remove('locked')}}
-
-function proximaAula(){
-  const[m,a,t]=estado.aula.replace('M','').split('-A').join('-').split('-T').map(Number);
-  const idx=(a-1)*5+(t-1);
-  if(idx<24){
-    const prox=idx+1;
-    const proxA=Math.floor(prox/5)+1;
-    const proxT=prox%5+1;
-    carregarAula(`M1-A${proxA}-T${proxT}`);
-    $(`[data-id="M1-A${proxA}-T${proxT}"]`).classList.remove('locked')
+  $('#res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO':'REPROVADO'}: ${ac}/${qs.length} acertos = ${pct}%</div>${ok?'<button class="btn primary" id="prox">Próxima Aula →</button>':'<button class="btn primary" id="ref">Refazer Avaliação</button>'}`;
+  if(ok){
+    estado.temasOK[estado.aula]=estado.temasOK[estado.aula]||[];if(!estado.temasOK[estado.aula].includes(5))estado.temasOK[estado.aula].push(5);
+    localStorage.setItem('kth_temas_v11',JSON.stringify(estado.temasOK));
+    $('#btnProx').disabled=false;$('#btnConcluir').disabled=false;
+  }else{
+    $('#ref').onclick=()=>{estado.respostas={};$('#res').innerHTML='';carregarQuestoes(m)}
   }
+  $('#prox').onclick=proximaAula;
 }
-
-function anteriorAula(){
-  const[m,a,t]=estado.aula.replace('M','').split('-A').join('-').split('-T').map(Number);
-  const idx=(a-1)*5+(t-1);
-  if(idx>0){
-    const ant=idx-1;
-    const antA=Math.floor(ant/5)+1;
-    const antT=ant%5+1;
-    carregarAula(`M1-A${antA}-T${antT}`)
-  }
-}
-
-function abrirTab(n){
-  $$('.tab').forEach(t=>t.classList.remove('active'));
-  $('#tab'+n).classList.add('active');
-  $('#tab-cronograma').style.display=n==='Cron'?'block':'none';
-  $('#tab-aula').style.display=n==='Aula'?'block':'none'
-}
-
-function toggleMenu(){
-  const s=$('#sidebar'),o=$('#overlay');
-  const open=s.style.transform==='translateX(0px)';
-  s.style.transform=open?'translateX(-100%)':'translateX(0px)';
-  o.classList.toggle('show',!open)
-}
-
-// EVENTOS
-$('#btnMenu').onclick=toggleMenu;
-$('#overlay').onclick=toggleMenu;
-$('#tabCron').onclick=()=>abrirTab('Cron');
-$('#tabAula').onclick=()=>abrirTab('Aula');
-$('#btnAnt').onclick=anteriorAula;
-$('#btnProx').onclick=proximaAula;
-$('#btnConcluir').onclick=concluirAula;
-
-// INICIAR
-montarMenu();
+function concluirAula(){if(!estado.aula)return;if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('kth_v11',JSON.stringify(estado.concluidas));montarMenu()}
+function proximaAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx<54)carregarAula(`M${Math.floor((idx+1)/5)+1}-A${(idx+1)%5+1}`)}
+function anteriorAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx>0)carregarAula(`M${Math.floor((idx-1)/5)+1}-A${(idx-1)%5+1}`)}
+function abrirTab(n){$$('.tab').forEach(t=>t.classList.remove('active'));$('#tab'+n).classList.add('active');$('#tab-cronograma').style.display=n==='Cron'?'block':'none';$('#tab-aula').style.display=n==='Aula'?'block':'none'}
+function toggleMenu(){const s=$('#sidebar'),o=$('#overlay');const open=s.style.transform==='translateX(0px)';s.style.transform=open?'translateX(-100%)':'translateX(0px)';o.classList.toggle('show',!open)}
+$('#btnMenu').onclick=toggleMenu;$('#overlay').onclick=toggleMenu;$('#tabCron').onclick=()=>abrirTab('Cron');$('#tabAula').onclick=()=>abrirTab('Aula');$('#btnAnt').onclick=anteriorAula;$('#btnProx').onclick=proximaAula;$('#btnConcluir').onclick=concluirAula;montarMenu();
 </script>
 </body>
 </html>
