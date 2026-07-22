@@ -168,7 +168,6 @@ function renderPagina(){const[m,t,a]=estado.aula.replace('M','').split('-T').joi
 
 function carregarAvaliacao(){if(estado.questoesSorteadas.length==0){estado.questoesSorteadas=BANCO_QUESTOES_M1.sort(()=>0.5-Math.random()).slice(0,20)}const qs=estado.questoesSorteadas;let h='';qs.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});$('#q').innerHTML=h;$$('.opcao').forEach(o=>o.onclick=()=>{const qi=+o.dataset.q,oi=+o.dataset.o;estado.respostas[qi]=oi;$$('.opcao[data-q="'+qi+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});$('#env').onclick=corrigirAvaliacao;}
 
-function corrigirAvaliacao(){const qs=estado.questoesSorteadas;let ac=0;qs.forEach((q,i)=>{const r=estado.respostas[i];if(r===q.r)ac++;$$('.opcao[data-q="'+i+'"]').forEach((o,j)=>{o.classList.remove('correta','errada');if(j===q.r)o.classList.add('correta');else if(j===r&&r!==q.r)o.classList.add('errada')})});const pct=Math.round(ac/qs.length*100);const
 function corrigirAvaliacao(){
   const qs=estado.questoesSorteadas;let ac=0;
   qs.forEach((q,i)=>{
