@@ -3,295 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TH | KORVIL-Terapia Holística </title>
+<title>K-TH 360°</title>
 <style>
-  :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--ok:#00ff88;--err:#ff3366;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font:14px/1.6 Inter,Arial}
-  header{background:#000;padding:30px;text-align:center;border-bottom:1px solid var(--border)}
-  header h1{color:var(--neon);font-size:22px;margin:0;text-shadow:var(--glow)}
-  header h2{color:var(--text);font-size:16px;margin:5px 0 0}
-  header h3{color:var(--muted);font-size:13px;margin:5px 0 0}
-  
-  .tema{width:95%;max-width:1100px;margin:30px auto;background:var(--card);padding:20px;border-radius:15px;border:1px solid var(--border)}
-  .tema h2{color:var(--neon);font-size:18px;margin:0 0 5px}
-  .tema > p{color:var(--muted);margin:0 0 25px;font-size:13px}
+  :root{--bg:#101010;--card:#181818;--card2:#202020;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00e5ff;--ok:#00ff88;--border:#2b2b2b}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:white;font:13px/1.6 Arial,Helvetica,sans-serif}
 
-  .aula{margin-top:25px;background:#0b0e15;padding:20px;border-radius:12px;border:1px solid var(--border)}
-  .aula h3{color:var(--neon);font-size:16px;margin:0 0 15px}
+  /* HEADER */
+  header{position:sticky;top:0;background:#000;padding:15px;border-bottom:2px solid var(--neon);z-index:999}
+  .logo{font-size:20px;font-weight:900;color:var(--neon)}
+  .sub{margin-top:4px;font-size:12px;color:var(--muted)}
+  .progresso{margin-top:10px;height:6px;background:#2b2b2b;border-radius:30px;overflow:hidden}
+  .barra{width:18%;height:100%;background:var(--neon)}
+
+  /* MENU NAV RÁPIDA */
+  .menu{background:var(--card);padding:12px}
+  .titulo{font-size:11px;color:var(--neon);margin-bottom:6px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+  .linha{display:flex;overflow:auto;gap:6px;padding-bottom:8px}
+  .linha::-webkit-scrollbar{display:none}
+  .botao{padding:8px 14px;background:#262626;border-radius:20px;white-space:nowrap;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent}
+  .botao.ativo{background:var(--neon);color:#000;font-weight:900}
+  .botao.completed{border-color:var(--ok);color:var(--ok)}
+  .botao:disabled{opacity:.3;cursor:not-allowed}
+
+  /* CONTEUDO */
+  .conteudo{padding:15px}
+  .aula-box{display:none}
+  .aula-box.active{display:block}
+  .aula-titulo{font-size:15px;color:var(--neon);margin-bottom:12px;font-weight:700}
+  .video{position:relative;padding-top:56.25%;background:#000;border-radius:12px;overflow:hidden;margin-bottom:15px}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   
-  .video-wrap{position:relative;padding-top:56.25%;background:#000;border-radius:10px;overflow:hidden;margin-bottom:15px}
-  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  
-  .pagina{margin-top:15px;background:#0d111a;padding:15px;border-radius:10px;border:1px solid var(--border)}
-  .pagina h4{font-size:14px;color:var(--neon);margin:0 0 8px}
+  .pagina-box{display:none}
+  .pagina-box.active{display:block}
+  .pagina{background:var(--card2);padding:15px;border-radius:12px;line-height:1.7;font-size:12px}
+  .pagina h4{font-size:13px;color:var(--neon);margin:0 0 8px}
   .pagina ul{list-style:none;padding:0;margin:0}
-  .pagina li{padding:5px 0;font-size:13px;color:var(--muted)}
+  .pagina li{padding:4px 0}
   .pagina li:before{content:"✓ ";color:var(--neon);font-weight:900}
 
-  .botao{margin-top:20px;padding:15px;background:var(--neon);color:#001012;font-weight:700;text-align:center;border-radius:10px;cursor:pointer;box-shadow:var(--glow)}
-  .botao:hover{opacity:.8}
+  .navegacao{display:flex;justify-content:space-between;margin-top:15px;gap:8px}
+  .nav{flex:1;background:var(--neon);padding:10px 15px;border-radius:10px;color:#000;font-weight:700;text-align:center;cursor:pointer;font-size:12px}
+  .nav.sec{background:#262626;color:var(--text)}
+  .nav:disabled{opacity:.3;cursor:not-allowed}
 
-  .avaliacao{margin-top:40px;background:#0a0f14;padding:25px;border-radius:15px;border:2px solid var(--neon)}
-  .avaliacao h2{color:var(--neon);font-size:16px;margin:0 0 10px}
-  .avaliacao p{color:var(--muted);font-size:12px;margin:5px 0}
-  
-  .questao{margin-top:20px;background:#0d111a;padding:15px;border-radius:10px;border:1px solid var(--border)}
-  .questao h3{font-size:13px;margin:0 0 10px}
-  .questao label{display:block;margin:6px 0;padding:8px 10px;background:#0a0d14;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px}
-  .questao label:hover{border-color:var(--neon)}
+  /* AVALIAÇÃO */
+  .final{display:none;margin-top:30px;background:#181818;padding:20px;border-radius:15px;text-align:center;border:2px solid var(--neon)}
+  .final.active{display:block}
+  .final h2{color:var(--neon);margin-bottom:15px;font-size:15px}
+  .final p{font-size:12px;color:var(--muted);margin:6px 0}
+  .questao{margin-top:15px;background:#202020;padding:12px;border-radius:10px;text-align:left}
+  .questao h3{font-size:12px;margin:0 0 8px}
+  .questao label{display:block;margin:5px 0;padding:7px 9px;background:#262626;border:1px solid #333;border-radius:6px;cursor:pointer;font-size:11px}
+  .iniciar{margin-top:20px;background:var(--neon);color:#000;padding:15px;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer}
+  .iniciar.lock{background:#333;color:#777;cursor:not-allowed}
+
+  footer{height:60px}
 </style>
 </head>
 <body>
 
 <header>
-<h1>FASE 1 • JANEIRO</h1>
-<h2>MÓDULO 1: TERAPIA HOLÍSTICA INTEGRATIVA</h2>
-<h3>K-TH 360° Formação Profissional</h3>
+<div class="logo">K-TH 360°</div>
+<div class="sub">FASE 1 • JANEIRO</div>
+<div class="sub">MÓDULO 1 • TERAPIA HOLÍSTICA INTEGRATIVA</div>
+<div class="progresso"><div class="barra" id="barraProgresso"></div></div>
 </header>
 
-<div class="tema">
-<h2>TEMA 1</h2>
-<p>Base Geral: Conceito 360°, Metodologia, Ética, Atendimento e Jornada</p>
-
-<!-- AULA 1: O CONCEITO 360° -->
-<div class="aula">
-<h3>AULA 1: O Conceito 360°</h3>
-<div class="video-wrap">
-<iframe src="https://www.youtube.com/embed/YQHsXMglC9A" allowfullscreen></iframe>
+<div class="menu">
+<div class="titulo">TEMAS</div>
+<div class="linha" id="navTemas">
+  <div class="botao ativo" data-tema="1">1</div>
+  <div class="botao" data-tema="2" disabled>2</div>
+  <div class="botao" data-tema="3" disabled>3</div>
+  <div class="botao" data-tema="4" disabled>4</div>
+  <div class="botao" data-tema="5" disabled>5</div>
 </div>
 
-<div class="pagina">
-<h4>Página 1: Objetivo</h4>
-<ul><li>Compreender abordagem 360°. Tratar o ser como um todo e não a parte doente</li><li>Entender os 4 corpos: Físico, Mental, Emocional, Energético</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 2: Conteúdo</h4>
-<ul><li>Os 4 corpos: Físico, Mental, Emocional, Energético</li><li>Como um afeta o outro. Diferença abordagem fragmentada vs integral</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 3: Prática</h4>
-<ul><li>Exercício: pegar 1 sintoma físico e listar causa mental, emocional e energética</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 4: Exemplo</h4>
-<ul><li>Caso: Paciente com enxaqueca. Médico dá remédio</li><li>Terapeuta 360° investiga estresse, alimentação e energia</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 5: Finalização</h4>
-<ul><li>Resumo: Você é 4 corpos</li><li>Tarefa: Aplicar anamnese 360° em 1 pessoa</li></ul>
-</div>
-<div class="botao">Próxima Aula →</div>
+<div class="titulo">AULAS</div>
+<div class="linha" id="navAulas">
+  <div class="botao ativo" data-aula="1">1</div>
+  <div class="botao" data-aula="2">2</div>
+  <div class="botao" data-aula="3">3</div>
+  <div class="botao" data-aula="4">4</div>
+  <div class="botao" data-aula="5">5</div>
 </div>
 
-<!-- AULA 2: METODOLOGIA K-TH -->
-<div class="aula">
-<h3>AULA 2: Metodologia K-TH</h3>
-<div class="video-wrap">
-<iframe src="https://www.youtube.com/embed/uO59aN9P1fA" allowfullscreen></iframe>
-</div>
-<div class="pagina">
-<h4>Página 1: Objetivo</h4>
-<ul><li>Validar a terapia holística com ciência</li><li>Aprender a metodologia exclusiva K-TH</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 2: Conteúdo</h4>
-<ul><li>Efeito placebo. Epigenética. Coerência cardíaca</li><li>Harvard prova efeito da meditação no cérebro</li><li>Ciclo Anual: Off=Descanso, Bulk=Crescer, Maintenance=Manter, Cutting=Limpar</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 3: Prática</h4>
-<ul><li>Como explicar para um cético em 3 minutos usando ciência</li><li>Montar ciclo anual para cliente com ansiedade</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 4: Exemplo</h4>
-<ul><li>Pesquisa: 8 semanas de meditação aumenta massa cinzenta</li><li>Caso real: paciente fez ciclo e zerou remédio para ansiedade</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 5: Finalização</h4>
-<ul><li>Resumo: Ciência + Espiritualidade. Corpo tem ciclos</li><li>Tarefa: Ler 1 artigo e aplicar ciclo na sua vida</li></ul>
-</div>
-<div class="botao">Próxima Aula →</div>
-</div>
-
-<!-- AULA 3: ÉTICA PROFISSIONAL -->
-<div class="aula">
-<h3>AULA 3: Ética Profissional</h3>
-<div class="video-wrap">
-<iframe src="https://www.youtube.com/embed/TQMbvJNRpLE" allowfullscreen></iframe>
-</div>
-<div class="pagina">
-<h4>Página 1: Objetivo</h4>
-<ul><li>Decorar e aplicar os 10 princípios éticos</li><li>Saber o que pode e não pode fazer legalmente</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 2: Conteúdo</h4>
-<ul><li>Sigilo, respeito, limites, não prometer cura, não diagnosticar, encaminhar</li><li>Curso livre. Não diagnosticar. Não prescrever remédio. MEI. Termo de responsabilidade</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 3: Prática</h4>
-<ul><li>Julgar 5 casos éticos: certo ou errado</li><li>Preencher termo de responsabilidade do cliente</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 4: Exemplo</h4>
-<ul><li>Caso real de quebra de ética e processo</li><li>Diferença terapeuta e médico na lei</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 5: Finalização</h4>
-<ul><li>Resumo: Ética é tudo. Atuar legal</li><li>Tarefa: Assinar código de ética e abrir MEI</li></ul>
-</div>
-<div class="botao">Próxima Aula →</div>
-</div>
-
-<!-- AULA 4: TÉCNICAS DE ATENDIMENTO -->
-<div class="aula">
-<h3>AULA 4: Técnicas de Atendimento</h3>
-<div class="video-wrap">
-<iframe src="https://www.youtube.com/embed/ZToicYcHUCg" allowfullscreen></iframe>
-</div>
-<div class="pagina">
-<h4>Página 1: Objetivo</h4>
-<ul><li>Fazer cliente se sentir seguro nos 5min iniciais</li><li>Ouvir para compreender e não responder</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 2: Conteúdo</h4>
-<ul><li>Ambiente, voz, postura, 7 perguntas chave</li><li>Silêncio, parafrasear, perguntas abertas, validar</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 3: Prática</h4>
-<ul><li>Simulação de recepção</li><li>Exercício: ouvir 5min sem interromper</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 4: Exemplo</h4>
-<ul><li>Erros que afastam o cliente</li><li>Diferença ouvir e esperar falar</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 5: Finalização</h4>
-<ul><li>Resumo: Primeira impressão. Ouvir cura</li><li>Tarefa: Gravar áudio de acolhimento e praticar com familiar</li></ul>
-</div>
-<div class="botao">Próxima Aula →</div>
-</div>
-
-<!-- AULA 5: MAPA DA JORNADA 360° -->
-<div class="aula">
-<h3>AULA 5: Mapa da Jornada 360°</h3>
-<div class="video-wrap">
-<iframe src="https://www.youtube.com/embed/1vx8iUvfyCY" allowfullscreen></iframe>
-</div>
-<div class="pagina">
-<h4>Página 1: Objetivo</h4>
-<ul><li>Entender os próximos 3 meses: M2 Massoterapia, M3 Cuidador, M4 Práticas Naturais</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 2: Conteúdo</h4>
-<ul><li>M5 Hipnose, M6 Meditação, M7 Inteligência Emocional</li><li>M8 Desenvolvimento Pessoal, M9 Neurociência</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 3: Prática</h4>
-<ul><li>Qual módulo combina mais com você</li><li>Definir 3 metas SMART</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 4: Exemplo</h4>
-<ul><li>Depoimento de aluno de cada módulo</li><li>Como cérebro cria hábito. Caso: terapeuta que fatura 10k</li></ul>
-</div>
-<div class="pagina">
-<h4>Página 5: Finalização</h4>
-<ul><li>M10 Fitocosmética, M11 Gestão + Parceria KORVIL 50%</li><li>Revisão dos 11 módulos e certificados. Carta de compromisso</li></ul>
+<div class="titulo">PÁGINAS</div>
+<div class="linha" id="navPaginas">
+  <div class="botao" data-pagina="1">1</div>
+  <div class="botao" data-pagina="2">2</div>
+  <div class="botao ativo" data-pagina="3">3</div>
+  <div class="botao" data-pagina="4">4</div>
+  <div class="botao" data-pagina="5">5</div>
 </div>
 </div>
 
-<!-- AVALIAÇÃO -->
-<div class="avaliacao">
-<h2>EXERCÍCIO DE ENSINO - MÓDULO 1</h2>
-<p>Você concluiu todas as 5 aulas do Módulo 1.</p>
-<p>✔ 20 questões objetivas</p>
-<p>✔ Nota mínima: 70% = 14 acertos</p>
-<p>✔ Libera Módulo 2 em Fevereiro</p>
+<div class="conteudo">
+  
+  <!-- AULA 1 -->
+  <div class="aula-box active" id="aula-1">
+    <div class="aula-titulo">AULA 1: O CONCEITO 360°</div>
+    <div class="video"><iframe src="https://www.youtube.com/embed/YQHsXMglC9A" allowfullscreen></iframe></div>
+    <div class="pagina-box active" id="aula-1-pag-1"><div class="pagina"><h4>PÁG 1: OBJETIVO</h4><ul><li>Compreender abordagem 360°. Tratar o ser como um todo e não a parte doente</li><li>Entender os 4 corpos: Físico, Mental, Emocional, Energético</li></ul></div></div>
+    <div class="pagina-box" id="aula-1-pag-2"><div class="pagina"><h4>PÁG 2: CONTEÚDO</h4><ul><li>Os 4 corpos: Físico, Mental, Emocional, Energético</li><li>Como um afeta o outro. Diferença abordagem fragmentada vs integral</li></ul></div></div>
+    <div class="pagina-box" id="aula-1-pag-3"><div class="pagina"><h4>PÁG 3: PRÁTICA</h4><ul><li>Exercício: pegar 1 sintoma físico e listar causa mental, emocional e energética</li></ul></div></div>
+    <div class="pagina-box" id="aula-1-pag-4"><div class="pagina"><h4>PÁG 4: EXEMPLO</h4><ul><li>Caso: Paciente com enxaqueca. Médico dá remédio</li><li>Terapeuta 360° investiga estresse, alimentação e energia</li></ul></div></div>
+    <div class="pagina-box" id="aula-1-pag-5"><div class="pagina"><h4>PÁG 5: FINALIZAÇÃO</h4><ul><li>Resumo: Você é 4 corpos</li><li>Tarefa: Aplicar anamnese 360° em 1 pessoa</li></ul></div></div>
+  </div>
 
-<div class="questao">
-<h3>Questão 1: Abordagem 360° significa:</h3>
-<label><input type="radio" name="q1"> A) Só corpo</label>
-<label><input type="radio" name="q1"> B) Corpo, Mente, Emoção e Energia</label>
-<label><input type="radio" name="q1"> C) 360 sessões</label>
-<label><input type="radio" name="q1"> D) Massagem</label>
-</div>
+  <!-- AULA 2 -->
+  <div class="aula-box" id="aula-2">
+    <div class="aula-titulo">AULA 2: METODOLOGIA K-TH</div>
+    <div class="video"><iframe src="https://www.youtube.com/embed/uO59aN9P1fA" allowfullscreen></iframe></div>
+    <div class="pagina-box active" id="aula-2-pag-1"><div class="pagina"><h4>PÁG 1: OBJETIVO</h4><ul><li>Validar a terapia holística com ciência</li><li>Aprender a metodologia exclusiva K-TH</li></ul></div></div>
+    <div class="pagina-box" id="aula-2-pag-2"><div class="pagina"><h4>PÁG 2: CONTEÚDO</h4><ul><li>Efeito placebo. Epigenética. Coerência cardíaca</li><li>Ciclo Anual: Off=Descanso, Bulk=Crescer, Maintenance=Manter, Cutting=Limpar</li></ul></div></div>
+    <div class="pagina-box" id="aula-2-pag-3"><div class="pagina"><h4>PÁG 3: PRÁTICA</h4><ul><li>Como explicar para um cético em 3 minutos usando ciência</li></ul></div></div>
+    <div class="pagina-box" id="aula-2-pag-4"><div class="pagina"><h4>PÁG 4: EXEMPLO</h4><ul><li>Pesquisa: 8 semanas de meditação aumenta massa cinzenta</li></ul></div></div>
+    <div class="pagina-box" id="aula-2-pag-5"><div class="pagina"><h4>PÁG 5: FINALIZAÇÃO</h4><ul><li>Resumo: Ciência + Espiritualidade. Corpo tem ciclos</li></ul></div></div>
+  </div>
 
-<div class="questao">
-<h3>Questão 2: Os 4 corpos são:</h3>
-<label><input type="radio" name="q2"> A) Físico, Químico</label>
-<label><input type="radio" name="q2"> B) Físico, Mental, Emocional, Energético</label>
-<label><input type="radio" name="q2"> C) Denso, Sutil</label>
-<label><input type="radio" name="q2"> D) Alma, Espírito</label>
-</div>
+  <!-- AULA 3 -->
+  <div class="aula-box" id="aula-3">
+    <div class="aula-titulo">AULA 3: ÉTICA PROFISSIONAL</div>
+    <div class="video"><iframe src="https://www.youtube.com/embed/TQMbvJNRpLE" allowfullscreen></iframe></div>
+    <div class="pagina-box active" id="aula-3-pag-1"><div class="pagina"><h4>PÁG 1: OBJETIVO</h4><ul><li>Decorar e aplicar os 10 princípios éticos</li><li>Saber o que pode e não pode fazer legalmente</li></ul></div></div>
+    <div class="pagina-box" id="aula-3-pag-2"><div class="pagina"><h4>PÁG 2: CONTEÚDO</h4><ul><li>Sigilo, respeito, limites, não prometer cura, não diagnosticar, encaminhar</li></ul></div></div>
+    <div class="pagina-box" id="aula-3-pag-3"><div class="pagina"><h4>PÁG 3: PRÁTICA</h4><ul><li>Julgar 5 casos éticos: certo ou errado</li></ul></div></div>
+    <div class="pagina-box" id="aula-3-pag-4"><div class="pagina"><h4>PÁG 4: EXEMPLO</h4><ul><li>Caso real de quebra de ética e processo</li></ul></div></div>
+    <div class="pagina-box" id="aula-3-pag-5"><div class="pagina"><h4>PÁG 5: FINALIZAÇÃO</h4><ul><li>Resumo: Ética é tudo. Atuar legal</li></ul></div></div>
+  </div>
 
-<div class="questao">
-<h3>Questão 3: Ciclo K-TH anual é:</h3>
-<label><input type="radio" name="q3"> A) Off, Bulk, Maintenance, Cutting</label>
-<label><input type="radio" name="q3"> B) Mensal</label>
-<label><input type="radio" name="q3"> C) Semanal</label>
-<label><input type="radio" name="q3"> D) Diário</label>
-</div>
+  <!-- AULA 4 -->
+  <div class="aula-box" id="aula-4">
+    <div class="aula-titulo">AULA 4: TÉCNICAS DE ATENDIMENTO</div>
+    <div class="video"><iframe src="https://www.youtube.com/embed/ZToicYcHUCg" allowfullscreen></iframe></div>
+    <div class="pagina-box active" id="aula-4-pag-1"><div class="pagina"><h4>PÁG 1: OBJETIVO</h4><ul><li>Fazer cliente se sentir seguro nos 5min iniciais</li><li>Ouvir para compreender e não responder</li></ul></div></div>
+    <div class="pagina-box" id="aula-4-pag-2"><div class="pagina"><h4>PÁG 2: CONTEÚDO</h4><ul><li>Ambiente, voz, postura, 7 perguntas chave</li></ul></div></div>
+    <div class="pagina-box" id="aula-4-pag-3"><div class="pagina"><h4>PÁG 3: PRÁTICA</h4><ul><li>Simulação de recepção</li></ul></div></div>
+    <div class="pagina-box" id="aula-4-pag-4"><div class="pagina"><h4>PÁG 4: EXEMPLO</h4><ul><li>Erros que afastam o cliente</li></ul></div></div>
+    <div class="pagina-box" id="aula-4-pag-5"><div class="pagina"><h4>PÁG 5: FINALIZAÇÃO</h4><ul><li>Resumo: Primeira impressão. Ouvir cura</li></ul></div></div>
+  </div>
 
-<div class="questao">
-<h3>Questão 4: Não pode prescrever:</h3>
-<label><input type="radio" name="q4"> A) Chá</label>
-<label><input type="radio" name="q4"> B) Antibiótico</label>
-<label><input type="radio" name="q4"> C) Meditação</label>
-<label><input type="radio" name="q4"> D) Respiração</label>
-</div>
+  <!-- AULA 5 -->
+  <div class="aula-box" id="aula-5">
+    <div class="aula-titulo">AULA 5: MAPA DA JORNADA 360°</div>
+    <div class="video"><iframe src="https://www.youtube.com/embed/1vx8iUvfyCY" allowfullscreen></iframe></div>
+    <div class="pagina-box active" id="aula-5-pag-1"><div class="pagina"><h4>PÁG 1: OBJETIVO</h4><ul><li>Entender os próximos 3 meses: M2 Massoterapia, M3 Cuidador, M4 Práticas Naturais</li></ul></div></div>
+    <div class="pagina-box" id="aula-5-pag-2"><div class="pagina"><h4>PÁG 2: CONTEÚDO</h4><ul><li>M5 Hipnose, M6 Meditação, M7 Inteligência Emocional</li></ul></div></div>
+    <div class="pagina-box" id="aula-5-pag-3"><div class="pagina"><h4>PÁG 3: PRÁTICA</h4><ul><li>Definir 3 metas SMART</li></ul></div></div>
+    <div class="pagina-box" id="aula-5-pag-4"><div class="pagina"><h4>PÁG 4: EXEMPLO</h4><ul><li>Depoimento de aluno de cada módulo</li></ul></div></div>
+    <div class="pagina-box" id="aula-5-pag-5"><div class="pagina"><h4>PÁG 5: FINALIZAÇÃO</h4><ul><li>M10 Fitocosmética, M11 Gestão + Parceria KORVIL 50%</li></ul></div></div>
+  </div>
 
-<div class="questao">
-<h3>Questão 5: Sigilo é:</h3>
-<label><input type="radio" name="q5"> A) Contar tudo</label>
-<label><input type="radio" name="q5"> B) Não falar do cliente</label>
-<label><input type="radio" name="q5"> C) Postar</label>
-<label><input type="radio" name="q5"> D) Falar família</label>
-</div>
+  <!-- NAVEGAÇÃO -->
+  <div class="navegacao">
+    <div class="nav sec" id="btnAnt">◀ ANTERIOR</div>
+    <div class="nav" id="btnProx">PRÓXIMA ▶</div>
+  </div>
 
-<div class="questao">
-<h3>Questão 6: Anamnese é:</h3>
-<label><input type="radio" name="q6"> A) Massagem</label>
-<label><input type="radio" name="q6"> B) Entrevista inicial</label>
-<label><input type="radio" name="q6"> C) Óleo</label>
-<label><input type="radio" name="q6"> D) Equipamento</label>
-</div>
-
-<div class="questao">
-<h3>Questão 7: Rapport é:</h3>
-<label><input type="radio" name="q7"> A) Chá</label>
-<label><input type="radio" name="q7"> B) Vínculo</label>
-<label><input type="radio" name="q7"> C) Massagem</label>
-<label><input type="radio" name="q7"> D) Flor</label>
-</div>
-
-<div class="questao">
-<h3>Questão 8: Escuta ativa:</h3>
-<label><input type="radio" name="q8"> A) Interromper</label>
-<label><input type="radio" name="q8"> B) Celular</label>
-<label><input type="radio" name="q8"> C) Pergunta e silêncio</label>
-<label><input type="radio" name="q8"> D) Falar mais</label>
-</div>
-
-<div class="questao">
-<h3>Questão 9: KORVIL paga:</h3>
-<label><input type="radio" name="q9"> A) Salário</label>
-<label><input type="radio" name="q9"> B) 50% comissão</label>
-<label><input type="radio" name="q9"> C) Nada</label>
-<label><input type="radio" name="q9"> D) Grátis</label>
-</div>
-
-<div class="questao">
-<h3>Questão 10: Epigenética:</h3>
-<label><input type="radio" name="q10"> A) Gene fixo</label>
-<label><input type="radio" name="q10"> B) Estilo muda gene</label>
-<label><input type="radio" name="q10"> C) Só remédio</label>
-<label><input type="radio" name="q10"> D) Nada</label>
-</div>
-
-<!-- ... Continue até 20 questões usando o BANCO_QUESTOES do código original ... -->
-
-<div class="botao">FINALIZAR AVALIAÇÃO</div>
-</div>
+  <!-- AVALIAÇÃO -->
+  <div class="final" id="avaliacao">
+    <h2>AVALIAÇÃO FINAL DO MÓDULO</h2>
+    <p>Esta área é liberada ao concluir Aula 5 Página 5</p>
+    <p>20 questões objetivas | Nota mínima: 70% | 14 acertos</p>
+    <div class="questao"><h3>1. Abordagem 360° significa:</h3><label><input type="radio" name="q1"> A) Só corpo</label><label><input type="radio" name="q1"> B) Corpo, Mente, Emoção e Energia</label></div>
+    <div class="questao"><h3>2. Os 4 corpos são:</h3><label><input type="radio" name="q2"> A) Físico, Químico</label><label><input type="radio" name="q2"> B) Físico, Mental, Emocional, Energético</label></div>
+    <!-- ... complete até 20 -->
+    <div class="iniciar lock" id="btnFinalizar">🔒 AVALIAÇÃO BLOQUEADA</div>
+  </div>
 
 </div>
+<footer></footer>
+
+<script>
+let estado={aula:1,pagina:1,tema:1,concluiuModulo:false};
+
+function atualizarTela(){
+  // Esconde tudo
+  document.querySelectorAll('.aula-box').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.pagina-box').forEach(b=>b.classList.remove('active'));
+  
+  // Mostra aula e pagina atual
+  document.getElementById(`aula-${estado.aula}`).classList.add('active');
+  document.getElementById(`aula-${estado.aula}-pag-${estado.pagina}`).classList.add('active');
+  
+  // Marca botoes ativos
+  document.querySelectorAll('#navAulas .botao').forEach((b,i)=>b.classList.toggle('ativo',i+1===estado.aula));
+  document.querySelectorAll('#navPaginas .botao').forEach((b,i)=>b.classList.toggle('ativo',i+1===estado.pagina));
+  
+  // Libera avaliação
+  if(estado.aula===5 && estado.pagina===5){
+    document.getElementById('avaliacao').classList.add('active');
+    document.getElementById('btnFinalizar').classList.remove('lock');
+    document.getElementById('btnFinalizar').innerText='FINALIZAR AVALIAÇÃO';
+  }
+  
+  // Progresso
+  let progresso = ((estado.aula-1)*5 + estado.pagina) / 25 * 100;
+  document.getElementById('barraProgresso').style.width = progresso+'%';
+}
+
+function navAula(dir){
+  estado.aula += dir;
+  if(estado.aula<1)estado.aula=1;
+  if(estado.aula>5)estado.aula=5;
+  estado.pagina=1;
+  atualizarTela();
+}
+
+function navPagina(p){
+  estado.pagina=p;
+  atualizarTela();
+}
+
+document.querySelectorAll('#navAulas .botao').forEach(b=>b.onclick=()=>{estado.aula=+b.dataset.aula;estado.pagina=1;atualizarTela()});
+document.querySelectorAll('#navPaginas .botao').forEach(b=>b.onclick=()=>{estado.pagina=+b.dataset.pagina;atualizarTela()});
+document.getElementById('btnAnt').onclick=()=>{if(estado.pagina>1){estado.pagina--}else if(estado.aula>1){estado.aula--;estado.pagina=5}atualizarTela()};
+document.getElementById('btnProx').onclick=()=>{if(estado.pagina<5){estado.pagina++}else if(estado.aula<5){estado.aula++;estado.pagina=1}atualizarTela()};
+
+atualizarTela();
+</script>
 </body>
 </html>
