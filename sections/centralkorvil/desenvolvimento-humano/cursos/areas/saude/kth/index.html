@@ -3,245 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TH | KORVIL-Terapia Holística </title>
+<title>K-TH 360° | FASE 1 JANEIRO</title>
 <style>
-  :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--ok:#00ff88;--err:#ff3366;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font:14px/1.6 Inter,Arial}
-  header{position:sticky;top:0;z-index:999;background:rgba(6,7,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.topbar{display:flex;align-items:center;gap:12px;padding:10px 12px}
-.logo{font-weight:900;font-size:18px;color:var(--neon)}
-.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start} /* FIX: COLA NO TOPO */
-  @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 auto 0;transform:translateX(-100%);transition:.3s;z-index:998;background:var(--panel);width:88%;border-right:1px solid var(--border);max-height:calc(100vh - 52px)}}
-  aside{position:sticky;top:52px;overflow:auto;padding:12px} /* FIX: SEM HEIGHT 100% */
-  main{padding:0;margin:0}
-.menu-btn{display:none;padding:8px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--neon)}
-  @media(max-width:1100px){.menu-btn{display:block}}
-.overlay{display:none;position:fixed;inset:0;background:#0008;z-index:997}
-.overlay.show{display:block}
-.tabs{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel)}
-.tab{padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-weight:700;cursor:pointer;font-size:13px}
-.tab.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow)}
-.timeline{padding:12px}
-.ano-title{font-size:18px;color:var(--neon);margin:0 0 12px}
-.fase{border:1px solid var(--border);border-radius:10px;background:var(--card);margin-bottom:10px}
-.fase-head{padding:12px;background:#0b0e15;display:flex;justify-content:space-between;cursor:pointer}
-.fase-head h3{margin:0;color:var(--neon);font-size:14px}
-.fase-body{display:none;padding:10px;color:var(--muted);font-size:13px}
-.fase.open.fase-body{display:block}
-.course-title{padding:8px;border-bottom:1px solid var(--border);margin-bottom:12px}
-.course-title h1{font-size:16px;margin:0;color:var(--neon)}
-.stat{font-size:12px;color:var(--muted);margin-top:4px}
-.modulo{margin-bottom:10px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0b0e15}
-.modulo-head{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}
-.modulo-head span{color:var(--muted);font-size:12px}
-.modulo.open.aulas{display:block}
-.aulas{display:none;padding:6px 8px;background:#0a0d14}
-.aula{padding:8px 10px;border-radius:6px;margin:4px 0;background:#0d111a;font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--muted)}
-.aula:hover{border-color:var(--neon);color:var(--text)}
-.aula.active{border-color:var(--neon);background:#0f1622;color:var(--neon)}
-.aula.locked{opacity:.35;pointer-events:none}
-.aula.completed{border-color:var(--ok);color:var(--ok)}
-.player{margin:0;border:1px solid var(--border);border-radius:12px;background:var(--card);overflow:hidden}
-.video-wrap{position:relative;padding-top:56.25%;background:#000;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.content{padding:14px}
-.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:8px}
-.breadcrumb b{color:var(--neon)}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.chip{font-size:11px;padding:6px 10px;border:1px solid var(--neon);border-radius:999px;color:var(--neon);background:#0b0e15}
-.chip.gray{border-color:var(--border);color:var(--muted)}
-.content h2{font-size:18px;color:var(--neon);margin:0 0 10px;text-shadow:var(--glow)}
-.tema-nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
-.tema-btn{padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
-.tema-btn.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow)}
-.tema-btn.completed{border-color:var(--ok);color:var(--ok)}
-.pagina-nav{display:flex;gap:6px;margin:10px 0}
-.p-btn{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
-.p-btn.active{border-color:var(--neon);color:var(--neon)}
-.pagina{margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#0b0e15}
-.pagina h4{font-size:15px;color:var(--neon);margin:0 0 8px}
-.pagina p{font-size:13px;color:var(--muted);margin:0}
-.avaliacao{margin-top:16px;padding:16px;border:2px solid var(--neon);border-radius:12px;background:#0a0f14;box-shadow:var(--glow)}
-.avaliacao h3{font-size:15px;color:var(--neon);margin:0 0 8px}
-.avaliacao p{font-size:12px;color:var(--muted);margin:0 0 10px}
-.questao{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15}
-.questao p{margin:0 0 8px;font-weight:600;font-size:13px}
-.opcao{display:block;margin:6px 0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:#0a0d14;cursor:pointer;font-size:13px}
-.opcao:hover{border-color:var(--neon)}
-.opcao.selecionada{border-color:var(--neon)}
-.opcao.correta{border-color:var(--ok);background:#0a1a14}
-.opcao.errada{border-color:var(--err);background:#1a0a0f}
-.resultado{margin-top:10px;padding:10px;border-radius:8px;font-weight:700;text-align:center;font-size:13px}
-.resultado.aprovado{background:#0a1a14;color:var(--ok);border:1px solid var(--ok)}
-.resultado.reprovado{background:#1a0a0f;color:var(--err);border:1px solid var(--err)}
-.navfooter{display:flex;gap:8px;justify-content:space-between;padding:12px;border-top:1px solid var(--border);background:#0b0e15;position:sticky;bottom:0}
-.btn{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:#0a0d14;color:var(--text);font-weight:700;font-size:13px;cursor:pointer}
-.btn.primary{background:var(--neon);color:#001012;border:0;box-shadow:var(--glow)}
-.btn:disabled{opacity:.3;cursor:not-allowed}
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+  
+  :root{
+    --bg:#050505;--card:#0f0f0f;--card2:#181818;--text:#fff;--muted:#a0a0a0;
+    --neon:#00f5ff;--neon2:#00aaff;--ok:#00ff88;--glow:0 0 20px var(--neon);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:radial-gradient(circle at 50% 0%, #0a1a2a 0%, #050505 70%);
+    color:var(--text);font:16px/1.7 'Arial';overflow-x:hidden;
+    animation:bgPulse 10s ease-in-out infinite;
+  }
+  @keyframes bgPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.1)}}
+  
+  /* HEADER 3D */
+  header{
+    position:sticky;top:0;background:linear-gradient(180deg,#000 0%, #001122 100%);
+    padding:20px 24px;border-bottom:3px solid var(--neon);z-index:999;
+    box-shadow:0 10px 40px rgba(0,245,255,.3);backdrop-filter:blur(10px);
+    animation:slideDown .8s ease;
+  }
+  @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+  .logo{font:900 28px 'Orbitron';color:var(--neon);text-shadow:var(--glow)}
+  .sub{font-size:14px;color:var(--muted);margin-top:4px;letter-spacing:1px}
+  .progresso{height:8px;background:#111;border-radius:10px;margin-top:12px;overflow:hidden;border:1px solid #222}
+  .barra{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));width:0%;
+    box-shadow:var(--glow);transition:width 1s cubic-bezier(.4,0,.2,1)}
+  
+  /* MENU NAV 3D */
+  .menu{background:rgba(15,15,15,.9);padding:20px;border-bottom:1px solid #222;backdrop-filter:blur(10px)}
+  .titulo{font:800 18px 'Orbitron';color:var(--neon);margin:16px 0 10px;letter-spacing:2px;text-shadow:var(--glow)}
+  .linha{display:flex;gap:10px;overflow:auto;padding-bottom:12px}
+  .linha::-webkit-scrollbar{height:6px}
+  .linha::-webkit-scrollbar-thumb{background:var(--neon);border-radius:10px}
+  .botao{
+    padding:14px 20px;background:linear-gradient(145deg,#1a1a1a,#222);border-radius:25px;
+    font:700 14px 'Orbitron';cursor:pointer;white-space:nowrap;border:2px solid #333;
+    transition:all .4s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.5)
+  }
+  .botao:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 8px 25px rgba(0,245,255,.4);border-color:var(--neon)}
+  .botao.ativo{background:linear-gradient(145deg,var(--neon),var(--neon2));color:#000;border-color:var(--neon);box-shadow:var(--glow);transform:scale(1.1)}
+  
+  /* CONTEUDO */
+  .conteudo{padding:24px;animation:fadeIn 1s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .info-topo{
+    font:800 22px 'Orbitron';color:var(--neon);margin-bottom:20px;text-align:center;
+    text-shadow:var(--glow);animation:glowText 2s ease-in-out infinite
+  }
+  @keyframes glowText{0%,100%{text-shadow:0 0 10px var(--neon)}50%{text-shadow:0 0 30px var(--neon)}}
+  
+  /* VIDEO BOX HOLOGRÁFICA */
+  .video-box{
+    background:linear-gradient(145deg,#111,#1a1a1a);padding:20px;border-radius:20px;margin-bottom:24px;
+    border:2px solid var(--neon);box-shadow:0 0 40px rgba(0,245,255,.2), inset 0 0 20px rgba(0,245,255,.1);
+    transform:perspective(1000px) rotateX(2deg);transition:transform .5s
+  }
+  .video-box:hover{transform:perspective(1000px) rotateX(0deg) scale(1.02)}
+  .video-titulo{font:900 20px 'Orbitron';color:var(--neon);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  .video{position:relative;padding-top:56.25%;background:#000;border-radius:15px;overflow:hidden;box-shadow:inset 0 0 30px rgba(0,245,255,.3)}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  
+  /* TEXTO BOX */
+  .texto-box{
+    background:linear-gradient(145deg,#151515,#1f1f1f);padding:28px;border-radius:20px;
+    border:1px solid #2a2a2a;box-shadow:0 10px 40px rgba(0,0,0,.6)
+  }
+  .texto-titulo{font:900 24px 'Orbitron';color:var(--neon);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .pagina h3{font:800 20px 'Orbitron';color:var(--neon2);margin:20px 0 12px;text-shadow:0 0 10px var(--neon2)}
+  .pagina p{font-size:17px;line-height:1.9;color:#ddd;margin-bottom:12px}
+  .pagina ul{list-style:none}
+  .pagina li{
+    padding:12px 0 12px 30px;font-size:16px;color:#ccc;position:relative;
+    animation:slideInLeft .6s ease both
+  }
+  .pagina li:nth-child(1){animation-delay:.1s}
+  .pagina li:nth-child(2){animation-delay:.2s}
+  .pagina li:nth-child(3){animation-delay:.3s}
+  @keyframes slideInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+  .pagina li:before{content:"✦";color:var(--neon);font-weight:900;position:absolute;left:0;font-size:18px}
+  
+  /* NAV BOTOES */
+  .navegacao{display:flex;gap:12px;margin-top:24px}
+  .nav{
+    flex:1;padding:18px;background:linear-gradient(145deg,var(--neon),var(--neon2));color:#000;
+    border-radius:15px;font:900 16px 'Orbitron';text-align:center;cursor:pointer;
+    transition:all .3s;box-shadow:0 5px 20px rgba(0,245,255,.4)
+  }
+  .nav:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 10px 30px rgba(0,245,255,.6)}
+  .nav.sec{background:linear-gradient(145deg,#2a2a2a,#333);color:var(--text)}
+  
+  /* AVALIAÇÃO */
+  .avaliacao{display:none;margin-top:30px;background:#0a0a0a;border:3px solid var(--neon);padding:30px;border-radius:20px;box-shadow:var(--glow)}
+  .avaliacao.show{display:block;animation:popIn .6s ease}
+  @keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  
+  /* K-AI CUBO HOLOGRÁFICO */
+  #k-ai{
+    position:fixed;bottom:20px;right:20px;width:100px;height:100px;z-index:9999;cursor:pointer;
+    animation:float 3s ease-in-out infinite
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+  .cubo{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:rotate 8s linear infinite}
+  @keyframes rotate{from{transform:rotateX(0) rotateY(0)}to{transform:rotateX(360deg) rotateY(360deg)}}
+  .face{position:absolute;width:100px;height:100px;background:linear-gradient(45deg,rgba(0,245,255,.3),rgba(0,170,255,.3));
+    border:2px solid var(--neon);box-shadow:inset 0 0 30px rgba(0,245,255,.5), 0 0 30px rgba(0,245,255,.8)}
+  .front{transform:translateZ(50px)}
+  .back{transform:rotateY(180deg) translateZ(50px)}
+  .right{transform:rotateY(90deg) translateZ(50px)}
+  .left{transform:rotateY(-90deg) translateZ(50px)}
+  .top{transform:rotateX(90deg) translateZ(50px)}
+  .bottom{transform:rotateX(-90deg) translateZ(50px)}
+  .k-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 20px 'Orbitron';color:var(--neon);text-shadow:var(--glow)}
+  #k-ai:hover .cubo{animation:rotateFast .5s linear infinite}
+  @keyframes rotateFast{from{transform:rotateX(0) rotateY(0)}to{transform:rotateX(720deg) rotateY(720deg)}}
+  
+  /* TUTORIAL POPUP */
+  .tutorial{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;padding:30px;
+    border-radius:20px;border:2px solid var(--neon);box-shadow:0 0 60px rgba(0,245,255,.8);z-index:10000;
+    max-width:500px;display:none;animation:popIn .5s
+  }
+  .tutorial.show{display:block}
+  .tutorial h2{font:900 24px 'Orbitron';color:var(--neon);margin-bottom:15px}
+  .tutorial p{font-size:15px;color:#ccc;margin:10px 0}
+  .tutorial button{margin-top:15px;padding:12px 24px;background:var(--neon);color:#000;border:0;border-radius:10px;font:800 14px 'Orbitron';cursor:pointer}
 </style>
 </head>
 <body>
+
 <header>
-  <div class="topbar">
-    <button class="menu-btn" id="btnMenu">☰</button>
-    <div class="logo">KORVIL</div>
-    <div style="color:var(--muted);font-size:12px">Cursos > Saúde > K-TH</div>
-  </div>
+  <div class="logo">K-TH 360°</div>
+  <div class="sub">FASE 1 • JANEIRO</div>
+  <div class="sub">MÓDULO 1 • TERAPIA HOLÍSTICA INTEGRATIVA</div>
+  <div class="progresso"><div class="barra" id="barra"></div></div>
 </header>
 
-<div class="overlay" id="overlay"></div>
-<div class="wrap">
-  <aside id="sidebar">
-    <div class="course-title">
-      <h1>K-TH Formação Profissional</h1>
-      <div class="stat">11 Módulos • 55 Aulas • 275 Temas</div>
-    </div>
-    <div id="menuModulos"></div>
-  </aside>
+<div class="menu">
+  <div class="titulo">⚡ TEMAS</div><div class="linha" id="navTemas"></div>
+  <div class="titulo">📚 AULAS</div><div class="linha" id="navAulas"></div>
+  <div class="titulo">📄 PÁGINAS</div><div class="linha" id="navPaginas"></div>
+</div>
 
-  <main>
-    <div class="tabs">
-      <div class="tab active" id="tabCron">Cronograma Anual</div>
-      <div class="tab" id="tabAula">Área de Aula</div>
-    </div>
+<div class="conteudo">
+  <div class="info-topo" id="infoTopo"></div>
+  
+  <div class="video-box">
+    <div class="video-titulo">🎥 OPÇÃO 1: ASSISTIR AULA EM VÍDEO</div>
+    <div class="video"><iframe id="video" src="https://www.youtube.com/embed/YQHsXMglC9A" allowfullscreen></iframe></div>
+  </div>
+  
+  <div class="texto-box">
+    <div class="texto-titulo">📄 OPÇÃO 2: LER CONTEÚDO COMPLETO</div>
+    <div class="pagina" id="paginaConteudo"></div>
+  </div>
+  
+  <div class="navegacao">
+    <div class="nav sec" id="btnAnt">◀ ANTERIOR</div>
+    <div class="nav" id="btnProx">PRÓXIMA ▶</div>
+  </div>
+  
+  <div class="avaliacao" id="avaliacao">
+    <h2>🏆 AVALIAÇÃO FINAL DO MÓDULO 1</h2><p>20 Questões | Nota mínima: 70%</p><div id="questoes"></div>
+    <button class="btn-final" id="btnFinalizar">FINALIZAR E GERAR CERTIFICADO</button>
+  </div>
+</div>
 
-    <div id="tab-cronograma" class="timeline">
-      <h2 class="ano-title">Cronograma Anual K-TH</h2>
-      <div class="fase open"><div class="fase-head"><h3>Janeiro e Fevereiro | Fase 1: Formação Básica</h3><span>M1 M2</span></div><div class="fase-body"><p><b>Módulo 1:</b> Massoterapia Profissional | <b>Módulo 2:</b> Cuidador de Idosos</p></div></div>
-      <div class="fase"><div class="fase-head"><h3>Março a Maio | Fase 2: Formação em Cuidados</h3><span>M3 M4 M5</span></div><div class="fase-body"><p><b>Módulo 3:</b> Terapias Holísticas | <b>Módulo 4:</b> Primeiros Socorros | <b>Módulo 5:</b> Cuidador Infantil</p></div></div>
-      <div class="fase"><div class="fase-head"><h3>Junho a Agosto | Fase 3: Desenvolvimento Profissional</h3><span>M6 M7 M8</span></div><div class="fase-body"><p><b>Módulo 6:</b> Clínica SPA | <b>Módulo 7:</b> Estética Corporal | <b>Módulo 8:</b> Educação em Saúde</p></div></div>
-      <div class="fase"><div class="fase-head"><h3>Setembro a Novembro | Fase 4: Formação Empreendedora</h3><span>M9 M10 M11</span></div><div class="fase-body"><p><b>Módulo 9:</b> Atendimento Humanizado | <b>Módulo 10:</b> Empreendedorismo | <b>Módulo 11:</b> Prática Supervisionada</p></div></div>
-      <div class="fase"><div class="fase-head"><h3>Dezembro: Conclusão</h3><span>Certificados</span></div><div class="fase-body"><p>Revisão | Avaliações Finais | Certificados | Formatura</p></div></div>
-    </div>
+<!-- K-AI CUBO -->
+<div id="k-ai" onclick="abrirTutorial()">
+  <div class="cubo">
+    <div class="face front"><div class="k-text">K-AI</div></div>
+    <div class="face back"><div class="k-text">K-AI</div></div>
+    <div class="face right"><div class="k-text">K-AI</div></div>
+    <div class="face left"><div class="k-text">K-AI</div></div>
+    <div class="face top"><div class="k-text">K-AI</div></div>
+    <div class="face bottom"><div class="k-text">K-AI</div></div>
+  </div>
+</div>
 
-    <div id="tab-aula" style="display:none">
-      <div class="player">
-        <div class="video-wrap" id="videoWrap">[Selecione uma aula no menu lateral]</div>
-        <div class="content" id="conteudoAula">
-          <div class="chips"><span class="chip">Selecione uma Aula</span></div>
-          <h2>Bem-vindo ao K-TH</h2>
-          <p>Regra: Conclua 5 Páginas > Tema 5 Página 5 = Avaliação 70% > Libera Próxima Aula. Sem limite de tentativas.</p>
-        </div>
-        <div class="navfooter">
-          <button class="btn" id="btnAnt" disabled>← Aula Anterior</button>
-          <button class="btn primary" id="btnConcluir" disabled>✓ Concluir Aula</button>
-          <button class="btn primary" id="btnProx" disabled>Próxima Aula →</button>
-        </div>
-      </div>
-    </div>
-  </main>
+<!-- TUTORIAL -->
+<div class="tutorial" id="tutorial">
+  <h2>🤖 OLÁ! EU SOU O K-AI</h2>
+  <p><b>Como usar a plataforma:</b></p>
+  <p>1. <b>TEMAS:</b> São os 5 pilares do Módulo 1. Clique pra pular.</p>
+  <p>2. <b>AULAS:</b> Cada tema tem 5 aulas. Cada aula aprofunda o mesmo assunto.</p>
+  <p>3. <b>PÁGINAS:</b> 5 páginas por aula. Cada uma é um tópico diferente que se complementa.</p>
+  <p>4. <b>2 FORMAS:</b> Assista o vídeo OU leia o texto. Você escolhe.</p>
+  <p>5. <b>EU:</b> Clique em mim pra tirar dúvidas a qualquer hora!</p>
+  <button onclick="fecharTutorial()">ENTENDI!</button>
 </div>
 
 <script>
-// DADOS COMPLETOS COM TÍTULOS DE TODOS OS TEMAS
-const DADOS={
- 1:{nome:"Módulo 1: Massoterapia Profissional",video:"j3PdVh1j7e0",aulas:[
-    {nome:"Aula 1: História da Massoterapia",temas:["Tema 1: Origens da Massoterapia","Tema 2: Evolução Histórica","Tema 3: Grandes Mestres","Tema 4: Massoterapia no Brasil","Tema 5: Tendências Atuais"]},
-    {nome:"Aula 2: Anatomia Básica",temas:["Tema 1: Sistema Muscular","Tema 2: Sistema Esquelético","Tema 3: Sistema Circulatório","Tema 4: Sistema Nervoso","Tema 5: Pele e Tecidos"]},
-    {nome:"Aula 3: Biossegurança",temas:["Tema 1: Normas de Higiene","Tema 2: EPIs e Proteção","Tema 3: Desinfecção","Tema 4: Descarte de Resíduos","Tema 5: Prevenção de Riscos"]},
-    {nome:"Aula 4: Anamnese",temas:["Tema 1: Entrevista Inicial","Tema 2: Histórico de Saúde","Tema 3: Contraindicações","Tema 4: Ficha do Cliente","Tema 5: Conduta Ética"]},
-    {nome:"Aula 5: Massagem Relaxante",temas:["Tema 1: Técnicas Básicas","Tema 2: Manobras de Deslizamento","Tema 3: Amassamento","Tema 4: Percussão","Tema 5: Finalização"]},
-  ]},
- 2:{nome:"Módulo 2: Cuidador de Idosos",video:"k4_RvR3QZ8k",aulas:[
-    {nome:"Aula 1: Envelhecimento",temas:["Tema 1: Processo de Envelhecer","Tema 2: Aspectos Biológicos","Tema 3: Aspectos Psicológicos","Tema 4: Aspectos Sociais","Tema 5: Mitos e Verdades"]},
-    {nome:"Aula 2: Higiene",temas:["Tema 1: Banho no Leito","Tema 2: Higiene Bucal","Tema 3: Troca de Roupas","Tema 4: Cuidados com a Pele","Tema 5: Prevenção de Escaras"]},
-    {nome:"Aula 3: Alimentação",temas:["Tema 1: Dieta do Idoso","Tema 2: Hidratação","Tema 3: Dificuldade de Deglutição","Tema 4: Dietas Especiais","Tema 5: Rotina Alimentar"]},
-    {nome:"Aula 4: Mobilização",temas:["Tema 1: Mudança de Decúbito","Tema 2: Transferência","Tema 3: Deambulação","Tema 4: Uso de Andador","Tema 5: Prevenção de Quedas"]},
-    {nome:"Aula 5: Medicamentos",temas:["Tema 1: Tipos de Medicamentos","Tema 2: Vias de Administração","Tema 3: Horários e Doses","Tema 4: Efeitos Colaterais","Tema 5: Limites Legais"]},
-  ]}
-};
-// Completa até 11 módulos x 5 aulas
-for(let m=3;m<=11;m++){DADOS[m]={nome:`Módulo ${m}: Módulo ${m}`,video:"j3PdVh1j7e0",aulas:[]};for(let a=1;a<=5;a++){DADOS[m].aulas.push({nome:`Aula ${a}: Aula ${a}`,temas:["Tema 1: T1","Tema 2: T2","Tema 3: T3","Tema 4: T4","Tema 5: T5"]})}}
+const CURSO = {
+1:{nome:"FUNDAMENTOS 360°", video:"YQHsXMglC9A", aulas:{
+ 1:{nome:"Introdução ao Conceito 360°", paginas:[
+  ["PÁGINA 1: VISÃO GERAL","O que é Terapia Holística 360°","Tratar o ser humano como um todo integrado: Físico + Mental + Emocional + Energético","Por que o sintoma é só a ponta do iceberg"],
+  ["PÁGINA 2: OS 4 CORPOS EXPLICADOS","Corpo Físico: Dor, doença, matéria. Corpo Mental: Pensamentos e crenças","Corpo Emocional: Traumas e sentimentos. Corpo Energético: Aura, Chakras, Prana","Como cada um adoece e como curar"],
+  ["PÁGINA 3: A CONEXÃO ENTRE ELES","Exemplo real: Úlcera = estresse mental + raiva emocional + energia bloqueada no estômago","Nada acontece isolado. Tudo é causa e efeito","Ciclo: Pensamento gera Emoção > Emoção bloqueia Energia > Energia adoece o Corpo"],
+  ["PÁGINA 4: HOLÍSTICO X FRAGMENTADO","Fragmentado: Tomar remédio pra dor de cabeça","Holístico: Por que tem dor? Sono ruim? Ansiedade? Falta de propósito?","O terapeuta 360° é um investigador da raiz"],
+  ["PÁGINA 5: PRÁTICA E APLICAÇÃO","Exercício: Pegue 1 sintoma seu","Liste 1 causa possível em cada um dos 4 corpos","Missão: Começar a olhar pra você e pros clientes de forma 360°"]
+ ]},
+ 2:{nome:"Bases Científicas da Terapia", paginas:[
+  ["PÁGINA 1: CIÊNCIA E ESPIRITUALIDADE","Validar a terapia holística com pesquisas","Quebrar o preconceito de que é 'coisa mística'"],
+  ["PÁGINA 2: O PODER DO PLACEBO","Estudo: Pílula de açúcar curou pacientes porque eles acreditaram","Cérebro libera químicos de cura só pela crença"],
+  ["PÁGINA 3: EPIGENÉTICA","Bruce Lipton: Seus pensamentos ligam e desligam genes","Você não é vítima da genética. Você é o programador"],
+  ["PÁGINA 4: COERÊNCIA CARDÍACA","HeartMath: Emoções positivas aumentam imunidade em 43%","Coração manda 5000x mais sinal pro cérebro"],
+  ["PÁGINA 5: PRÁTICA E APLICAÇÃO","Pesquise 1 artigo sobre meditação e saúde","Aprenda a explicar terapia pra um médico cético"]
+ ]},
+ 3:{nome:"Ética e Legislação Profissional", paginas:[
+  ["PÁGINA 1: ATUAR COM SEGURANÇA","Os 10 princípios éticos do terapeuta","Como se proteger juridicamente"],
+  ["PÁGINA 2: O QUE É PERMITIDO","Acolher, ouvir, orientar, usar técnicas integrativas","Sempre com termo de responsabilidade"],
+  ["PÁGINA 3: O QUE É PROIBIDO","Diagnosticar CID, receitar remédio, prometer cura","Isso é crime e antiético"],
+  ["PÁGINA 4: DOCUMENTAÇÃO","MEI, Contrato, Ficha Anamnese 360°","Como cobrar e emitir recibo"],
+  ["PÁGINA 5: PRÁTICA E APLICAÇÃO","Monte sua ficha de anamnese com 10 perguntas chave"]
+ ]},
+ 4:{nome:"Técnicas de Atendimento e Rapport", paginas:[
+  ["PÁGINA 1: PRIMEIROS 5 MINUTOS","Como fazer cliente confiar em você","Ambiente vende antes da técnica"],
+  ["PÁGINA 2: AMBIENTE TERAPÊUTICO","Luz, aroma, música, temperatura","Sala organizada = mente organizada"],
+  ["PÁGINA 3: COMUNICAÇÃO EMPÁTICA","Ouvir 80% Falar 20%. Validar a dor","Perguntas abertas que curam"],
+  ["PÁGINA 4: AS 7 PERGUNTAS DE OURO","O que te trouxe? Desde quando? Piora com o que?","Sono, remédio, expectativa"],
+  ["PÁGINA 5: PRÁTICA E APLICAÇÃO","Simule atendimento de 10min e grave"]
+ ]},
+ 5:{nome:"Mapa da Jornada K-TH", paginas:[
+  ["PÁGINA 1: VISÃO DO CURSO","Mapa dos 11 módulos","Onde você vai chegar em 90 dias"],
+  ["PÁGINA 2: MÓDULOS 2 AO 5","M2 Massoterapia M3 Cuidador M4 Práticas M5 Hipnose"],
+  ["PÁGINA 3: MÓDULOS 6 AO 9","M6 Meditação M7 IE M8 Florais M9 Cristais"],
+  ["PÁGINA 4: MÓDULOS 10 E 11","M10 Fitocosmética M11 Gestão + Parceria KORVIL 50%"],
+  ["PÁGINA 5: PRÁTICA E APLICAÇÃO","Defina 3 metas SMART para o curso"]
+ ]}
+}},
 
-const QUESTOES={
- 1:[{q:"1. Quem é considerado o pai da massoterapia moderna?",o:["Per Henrik Ling","Hipócrates","Galeno","Avicena"],r:0},
-     {q:"2. A massagem relaxante atua principalmente em qual sistema?",o:["Digestivo","Nervoso Parassimpático","Circulatório","Respiratório"],r:1},
-     {q:"3. Biossegurança significa:",o:["Massagear forte","Prevenir riscos e infecções","Usar óleos caros","Atender mais clientes"],r:1},
-     {q:"4. Anamnese é:",o:["Tipo de massagem","Entrevista inicial com o cliente","Óleo essencial","Equipamento"],r:1},
-     {q:"5. Contraindicação absoluta:",o:["Estresse","Febre alta","Cansaço","Dor leve"],r:1}],
- 2:[{q:"1. Envelhecimento é:",o:["Patológico","Natural e progressivo","Doença","Evitar"],r:1},
-     {q:"2. Prevenir escaras:",o:["Deixar no leito","Mudar decúbito a cada 2h","Não hidratar","Prender"],r:1},
-     {q:"3. Hidratação idoso:",o:["2L por dia","Apenas se pedir","500ml","Não precisa"],r:0},
-     {q:"4. Administrar remédio:",o:["Cuidador sempre","Enfermeiro ou familiar","Vizinho","Qualquer um"],r:1},
-     {q:"5. Prevenir quedas:",o:["Bagunça","Tapetes soltos","Ambiente seguro","Escuro"],r:2}]
-};
-for(let i=3;i<=11;i++){QUESTOES[i]=QUESTOES[1]}
+2:{nome:"AUTOCONHECIMENTO E CURA INTERIOR", video:"uO59aN9P1fA", aulas:{
+ 1:{nome:"Quem Sou Eu: Mapa Pessoal", paginas:[["P1: RODA DA VIDA","8 áreas da vida"],["P2: ARQUÉTIPOS","Qual domina você"],["P3: FORÇAS","Seus talentos"],["P4: FRAQUEZAS","O que sabotar"],["P5: PLANO","Melhorar 1 área"]]},
+ 2:{nome:"Crenças Limitantes", paginas:[["P1: ORIGEM","Até 7 anos"],["P2: IDENTIFICAR","Frases comuns"],["P3: IMPACTO","Como sabotam"],["P4: TÉCNICA","Trocar crença"],["P5: REPROGRAMAR","Nova afirmação"]]},
+ 3:{nome:"Sombra e Luz", paginas:[["P1: CONCEITO","Lado oculto"],["P2: PROJEÇÃO","Julgar no outro"],["P3: ACEITAÇÃO","Integrar"],["P4: FORÇA","Sombra vira poder"],["P5: EXERCÍCIO","Carta sombra"]]},
+ 4:{nome:"Propósito Ikigai", paginas:[["P1: O QUE É","4 círculos"],["P2: PAIXÃO","O que ama"],["P3: MISSÃO","O que mundo precisa"],["P4: PROFISSÃO","Pelo que pagam"],["P5: FRASE","Seu propósito"]]},
+ 5:{nome:"Integração 360°", paginas:[["P1: CORPO","Cuidar físico"],["P2: MENTE","Alimentar"],["P3: EMOÇÃO","Curar"],["P4: ESPÍRITO","Conectar"],["P5: ROTINA","30min diário"]]}
+}},
 
-let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_v11')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_temas_v11')||'{}')};
-const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+3:{nome:"ENERGIA VITAL E CORPOS SUTIS", video:"TQMbvJNRpLE", aulas:{
+ 1:{nome:"Os 7 Chakras Principais", paginas:[["P1: SISTEMA","7 centros"],["P2: 1-3","Raiz Sacro Plexo"],["P3: 4-7","Cardíaco ao Coronário"],["P4: DESEQUILÍBRIO","Sinais"],["P5: ALINHAR","Técnica 10min"]]},
+ 2:{nome:"Meridianos Chineses", paginas:[["P1: QI","Energia vital"],["P2: 12 CANAIS","Pulmão ao Fígado"],["P3: BLOQUEIO","Dor e doença"],["P4: ACUPRESSURA","Pontos"],["P5: PRÁTICA","Massagear IG4"]]},
+ 3:{nome:"Aura e Campos", paginas:[["P1: 7 CORPOS","Camadas"],["P2: SENTIR","Técnica mãos"],["P3: CORES","Significado"],["P4: LIMPEZA","Sal defumação"],["P5: PROTEÇÃO","Escudo"]]},
+ 4:{nome:"Prana e Respiração", paginas:[["P1: PRANA","Energia do ar"],["P2: 4-7-8","Acalmar"],["P3: FOGO","Energizar"],["P4: ALTERNA","Equilibrar"],["P5: ROTINA","3 ciclos dia"]]},
+ 5:{nome:"Proteção Energética", paginas:[["P1: VAMPIRISMO","Sinais"],["P2: ESCUDO","Luz dourada"],["P3: CRISTAIS","Turmalina"],["P4: PLANTAS","Arruda sal"],["P5: RITUAL","Abrir fechar"]]}
+}},
 
-function montarMenu(){
-  const wrap=$('#menuModulos');wrap.innerHTML='';
-  Object.keys(DADOS).forEach(m=>{
-    const mod=DADOS[m];let aulas='';
-    mod.aulas.forEach((aulaObj,i)=>{const id=`M${m}-A${i+1}`;const ok=estado.concluidas.includes(id);aulas+=`<div class="aula locked ${ok?'completed':''}" data-id="${id}">${i+1}. ${aulaObj.nome}</div>`});
-    const concluidasMod=estado.concluidas.filter(x=>x.startsWith(`M${m}-`)).length;
-    wrap.innerHTML+=`<div class="modulo" id="mod${m}"><div class="modulo-head">${mod.nome}<span>${concluidasMod}/${mod.aulas.length}</span></div><div class="aulas">${aulas}</div></div>`;
-  });
-  $$('.modulo-head').forEach(el=>el.onclick=()=>el.parentElement.classList.toggle('open'));
-  $$('.aula').forEach(el=>el.onclick=()=>!el.classList.contains('locked')&&carregarAula(el.dataset.id));
+4:{nome:"CORPO FÍSICO E SAÚDE INTEGRATIVA", video:"ZToicYcHUCg", aulas:{
+ 1:{nome:"Anatomia para Terapeutas", paginas:[["P1: NERVOSO","Simpático"],["P2: MUSCULAR","Tensão"],["P3: ENDÓCRINO","Hormônios"],["P4: DIGESTIVO","Intestino"],["P5: MAPA","Marcar dor"]]},
+ 2:{nome:"Alimentação como Medicina", paginas:[["P1: YANG YIN","Equilíbrio"],["P2: INFLAMAÇÃO","Açúcar"],["P3: ANTIOXIDANTE","Verde"],["P4: CHÁS","Funções"],["P5: CARDÁPIO","3 dias"]]},
+ 3:{nome:"Movimento Consciente", paginas:[["P1: YOGA","Posturas"],["P2: ALONGAR","Respirar"],["P3: DANÇA","Liberar"],["P4: CAMINHADA","Presença"],["P5: SEQUÊNCIA","15min"]]},
+ 4:{nome:"Sono e Regeneração", paginas:[["P1: CICLOS","90min"],["P2: HIGIENE","Sem tela"],["P3: CHÁS","Calmantes"],["P4: ROTINA","Horário"],["P5: PROTOCOLO","30min noite"]]},
+ 5:{nome:"Desintoxicação 360°", paginas:[["P1: FÍSICA","Suco verde"],["P2: MENTAL","7 dias"],["P3: DIGITAL","Detox"],["P4: ENERGÉTICA","Banho"],["P5: PLANO","3 dias"]]}
+}},
+
+5:{nome:"MENTE, EMOÇÃO E ESPIRITUALIDADE", video:"1vx8iUvfyCY", aulas:{
+ 1:{nome:"Inteligência Emocional", paginas:[["P1: 5 COMPETÊNCIAS","Autoconsciência"],["P2: RODA","6 emoções"],["P3: NOMES","Dar nome"],["P4: STOP","Técnica"],["P5: DIÁRIO","3x dia"]]},
+ 2:{nome:"Cura de Traumas EFT", paginas:[["P1: TAPPING","Pontos"],["P2: FRASE","Ajuste"],["P3: RODADA","8 pontos"],["P4: INTENSIDADE","0 a 10"],["P5: PRÁTICA","1 medo"]]},
+ 3:{nome:"Reprogramação TCC", paginas:[["P1: TRÍADE","P>E>C"],["P2: DISTORÇÃO","Catástrofe"],["P3: ABCDE","Técnica"],["P4: EVIDÊNCIA","Provar"],["P5: TROCA","Novo pensamento"]]},
+ 4:{nome:"Gestão do Estresse", paginas:[["P1: SINAIS","Corpo"],["P2: CAUSAS","Gatilhos"],["P3: COERÊNCIA","5x5x5"],["P4: ÂNCORA","Gesto"],["P5: ÁUDIO","Gravar 3min"]]},
+ 5:{nome:"Espiritualidade e Meditação", paginas:[["P1: SENTIDO","Propósito"],["P2: GUIADA","10min"],["P3: ATIVA","Presença"],["P4: MANTRA","Repetir"],["P5: GUIAR","Ensinar 5min"]]}
+}}};
+
+let estado = {tema:1, aula:1, pagina:1};
+
+function render(){
+  $('#navTemas').innerHTML = ''; Object.keys(CURSO).forEach(t=>{$('#navTemas').innerHTML += `<div class="botao ${t==estado.tema?'ativo':''}" data-tema="${t}">TEMA ${t}</div>`});
+  $('#navAulas').innerHTML = ''; Object.keys(CURSO[estado.tema].aulas).forEach(a=>{$('#navAulas').innerHTML += `<div class="botao ${a==estado.aula?'ativo':''}" data-aula="${a}">AULA ${a}</div>`});
+  $('#navPaginas').innerHTML = ''; CURSO[estado.tema].aulas[estado.aula].paginas.forEach((p,i)=>{$('#navPaginas').innerHTML += `<div class="botao ${i+1==estado.pagina?'ativo':''}" data-pagina="${i+1}">${i+1}</div>`});
+  
+  const dados = CURSO[estado.tema].aulas[estado.aula].paginas[estado.pagina-1];
+  $('#video').src = `https://www.youtube.com/embed/${CURSO[estado.tema].video}`;
+  $('#infoTopo').innerHTML = `FASE 1 > JANEIRO > MÓDULO 1 > TEMA ${estado.tema}: ${CURSO[estado.tema].nome} > AULA ${estado.aula}: ${CURSO[estado.tema].aulas[estado.aula].nome}`;
+  
+  let html = `<h3>${dados[0]}</h3>`;
+  dados.slice(1).forEach(p=>{html += `<p>${p}</p>`});
+  $('#paginaConteudo').innerHTML = html;
+  
+  let total = 125; let atual = ((estado.tema-1)*25) + ((estado.aula-1)*5) + estado.pagina; $('#barra').style.width = (atual/total*100)+'%';
+  if(estado.tema==5 && estado.aula==5 && estado.pagina==5){$('#avaliacao').classList.add('show')}else{$('#avaliacao').classList.remove('show')}
+  addEventos();
 }
 
-function carregarAula(id){
-  estado.aula=id;estado.tema=1;estado.pagina=1;estado.respostas={};$('#tabAula').click();
-  const [m,a]=id.replace('M','').split('-A').map(Number);
-  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];
-  $('#videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${mod.video}" allowfullscreen></iframe>`;
-  let nav='';aulaObj.temas.forEach((t,i)=>{const ok=estado.temasOK[id]?.includes(i+1);nav+=`<button class="tema-btn ${i===0?'active':''} ${ok?'completed':''}" data-t="${i+1}">${t}</button>`});
-  $('#conteudoAula').innerHTML=`<div class="breadcrumb">Localização: <b>${mod.nome}</b> > <b>${aulaObj.nome}</b> > <b id="bcTema">${aulaObj.temas[0]}</b> > <b id="bcPag">Página 1: Objetivo</b></div><div class="chips"><span class="chip">${mod.nome}</span><span class="chip gray">${aulaObj.nome}</span></div><h2>${mod.nome} > ${aulaObj.nome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;
-  $$('.tema-btn').forEach(b=>b.onclick=()=>trocarTema(+b.dataset.t));renderPagina();
-  $$('.aula').forEach(x=>x.classList.remove('active'));$(`[data-id="${id}"]`).classList.add('active');
-  const idx=(m-1)*5+(a-1);$('#btnAnt').disabled=idx===0;$('#btnProx').disabled=true;$('#btnConcluir').disabled=true;if(window.innerWidth<1100)toggleMenu(false);
+function addEventos(){
+  $$('#navTemas .botao').forEach(b=>b.onclick=()=>{estado.tema=+b.dataset.tema;estado.aula=1;estado.pagina=1;render()});
+  $$('#navAulas .botao').forEach(b=>b.onclick=()=>{estado.aula=+b.dataset.aula;estado.pagina=1;render()});
+  $$('#navPaginas .botao').forEach(b=>b.onclick=()=>{estado.pagina=+b.dataset.pagina;render()});
+  $('#btnAnt').onclick=()=>{nav(-1)}; $('#btnProx').onclick=()=>{nav(1)};
 }
 
-function trocarTema(t){estado.tema=t;estado.pagina=1;estado.respostas={};$$('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));const[m,a]=estado.aula.replace('M','').split('-A').map(Number);$('#bcTema').innerText=DADOS[m].aulas[a-1].temas[t-1];renderPagina()}
-function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));const tit=['Objetivo','Materiais','Preparação','Execução','Finalização'];$('#bcPag').innerText=`Página ${p}: ${tit[p-1]}`;renderPagina()}
-function renderPagina(){
-  const[m,a]=estado.aula.replace('M','').split('-A').map(Number);
-  const mod=DADOS[m];const aulaObj=mod.aulas[a-1];const temaNome=aulaObj.temas[estado.tema-1];
-  const tit=['Objetivo','Materiais','Preparação','Execução','Finalização'];
-  let html='';
-  for(let p=1;p<=5;p++){
-    let extra='';
-    if(p===5&&estado.tema===5&&!estado.concluidas.includes(estado.aula)){
-      extra=`<div class="avaliacao"><h3>📝 Exercício de Avaliação: ${temaNome}</h3><p>Acerte 70% ou mais para liberar a próxima aula. Sem limite de tentativas.</p><div id="q"></div><button class="btn primary" id="env">Enviar Avaliação</button><div id="res"></div></div>`;
-    }
-    html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><p>[CONTEÚDO] ${mod.nome} | ${aulaObj.nome} | ${temaNome} | Página ${p} – ${tit[p-1]}.</p>${extra}</div>`;
-  }
-  let btns='<div class="pagina-nav">';for(let p=1;p<=5;p++){btns+=`<button class="p-btn ${p===estado.pagina?'active':''}" data-p="${p}">${p}</button>`}btns+='</div>';
-  $('#paginaArea').innerHTML=btns+html;
-  $$('.p-btn').forEach(b=>b.onclick=()=>trocarPagina(+b.dataset.p));
-  if($('#env')){carregarQuestoes(m)}
+function nav(dir){
+  if(dir==1){if(estado.pagina<5)estado.pagina++;else if(estado.aula<5){estado.aula++;estado.pagina=1}else if(estado.tema<5){estado.tema++;estado.aula=1;estado.pagina=1}}
+  else{if(estado.pagina>1)estado.pagina--;else if(estado.aula>1){estado.aula--;estado.pagina=5}else if(estado.tema>1){estado.tema--;estado.aula=5;estado.pagina=5}}
+  render();
 }
-function carregarQuestoes(m){
-  const qs=QUESTOES[m];let h='';
-  qs.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});
-  $('#q').innerHTML=h;
-  $$('.opcao').forEach(o=>o.onclick=()=>{const qi=+o.dataset.q,oi=+o.dataset.o;estado.respostas[qi]=oi;$$('.opcao[data-q="'+qi+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});
-  $('#env').onclick=corrigir;
-}
-function corrigir(){
-  const[m]=estado.aula.replace('M','').split('-A').map(Number);
-  const qs=QUESTOES[m];let ac=0;
-  qs.forEach((q,i)=>{const r=estado.respostas[i];if(r===q.r)ac++;$$('.opcao[data-q="'+i+'"]').forEach((o,j)=>{o.classList.remove('correta','errada');if(j===q.r)o.classList.add('correta');else if(j===r&&r!==q.r)o.classList.add('errada')})});
-  const pct=Math.round(ac/qs.length*100);const ok=pct>=70;
-  $('#res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO':'REPROVADO'}: ${ac}/${qs.length} acertos = ${pct}%</div>${ok?'<button class="btn primary" id="prox">Próxima Aula →</button>':'<button class="btn primary" id="ref">Refazer Avaliação</button>'}`;
-  if(ok){
-    estado.temasOK[estado.aula]=estado.temasOK[estado.aula]||[];if(!estado.temasOK[estado.aula].includes(5))estado.temasOK[estado.aula].push(5);
-    localStorage.setItem('kth_temas_v11',JSON.stringify(estado.temasOK));
-    $('#btnProx').disabled=false;$('#btnConcluir').disabled=false;
-  }else{
-    $('#ref').onclick=()=>{estado.respostas={};$('#res').innerHTML='';carregarQuestoes(m)}
-  }
-  $('#prox').onclick=proximaAula;
-}
-function concluirAula(){if(!estado.aula)return;if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);localStorage.setItem('kth_v11',JSON.stringify(estado.concluidas));montarMenu()}
-function proximaAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx<54)carregarAula(`M${Math.floor((idx+1)/5)+1}-A${(idx+1)%5+1}`)}
-function anteriorAula(){const[m,a]=estado.aula.replace('M','').split('-A').map(Number);const idx=(m-1)*5+(a-1);if(idx>0)carregarAula(`M${Math.floor((idx-1)/5)+1}-A${(idx-1)%5+1}`)}
-function abrirTab(n){$$('.tab').forEach(t=>t.classList.remove('active'));$('#tab'+n).classList.add('active');$('#tab-cronograma').style.display=n==='Cron'?'block':'none';$('#tab-aula').style.display=n==='Aula'?'block':'none'}
-function toggleMenu(){const s=$('#sidebar'),o=$('#overlay');const open=s.style.transform==='translateX(0px)';s.style.transform=open?'translateX(-100%)':'translateX(0px)';o.classList.toggle('show',!open)}
-$('#btnMenu').onclick=toggleMenu;$('#overlay').onclick=toggleMenu;$('#tabCron').onclick=()=>abrirTab('Cron');$('#tabAula').onclick=()=>abrirTab('Aula');$('#btnAnt').onclick=anteriorAula;$('#btnProx').onclick=proximaAula;$('#btnConcluir').onclick=concluirAula;montarMenu();
+
+function abrirTutorial(){$('#tutorial').classList.add('show')}
+function fecharTutorial(){$('#tutorial').classList.remove('show')}
+
+const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s); 
+render();
+
+// Mostra tutorial na primeira vez
+setTimeout(()=>abrirTutorial(), 1000);
 </script>
 </body>
 </html>
