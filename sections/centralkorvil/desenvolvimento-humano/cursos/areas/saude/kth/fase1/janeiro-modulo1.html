@@ -1,46 +1,270 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Módulo 1 - Janeiro | Terapia Holística Integrativa | K-TH 360°</title>
-<link rel="stylesheet" href="../../assets/css/kth.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TH 360° | Módulo 1 - Janeiro</title>
+<style>
+  :root{--bg:#06070b;--panel:#0d1017;--card:#11141d;--text:#eaf6ff;--muted:#7d8aa1;--neon:#00ffff;--ok:#00ff88;--err:#ff3366;--border:#1a2030;--glow:0 0 12px rgba(0,255,255,.35)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font:14px/1.6 Inter,Arial}
+  header{position:sticky;top:0;z-index:999;background:rgba(6,7,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 12px}
+.logo{font-weight:900;font-size:18px;color:var(--neon)}
+.wrap{display:grid;grid-template-columns:340px 1fr;align-items:start}
+  @media(max-width:1100px){.wrap{grid-template-columns:1fr} aside{position:fixed;inset:52px 0 auto 0;transform:translateX(-100%);transition:.3s;z-index:998;background:var(--panel);width:88%;border-right:1px solid var(--border);max-height:calc(100vh - 52px)}}
+  aside{position:sticky;top:52px;overflow:auto;padding:12px}
+  main{padding:0;margin:0}
+.menu-btn{display:none;padding:8px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--neon)}
+  @media(max-width:1100px){.menu-btn{display:block}}
+.overlay{display:none;position:fixed;inset:0;background:#0008;z-index:997}
+.overlay.show{display:block}
+.tabs{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel)}
+.tab{padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-weight:700;cursor:pointer;font-size:13px}
+.tab.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow)}
+.timeline{padding:12px}
+.ano-title{font-size:18px;color:var(--neon);margin:0 0 12px}
+.course-title{padding:8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.course-title h1{font-size:16px;margin:0;color:var(--neon)}
+.stat{font-size:12px;color:var(--muted);margin-top:4px}
+.modulo{margin-bottom:10px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0b0e15}
+.modulo-head{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;color:var(--neon)}
+.modulo-head span{color:var(--muted);font-size:12px}
+.modulo.open.aulas{display:block}
+.aulas{display:none;padding:6px 8px;background:#0a0d14}
+.tema-bloco{margin-bottom:8px;border:1px dashed var(--border);border-radius:8px;padding:6px}
+.tema-titulo{font-size:12px;color:var(--neon);font-weight:700;padding:6px}
+.aula{padding:8px 10px;border-radius:6px;margin:4px 0;background:#0d111a;font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--muted)}
+.aula:hover{border-color:var(--neon);color:var(--text)}
+.aula.active{border-color:var(--neon);background:#0f1622;color:var(--neon)}
+.aula.locked{opacity:.35;pointer-events:none}
+.aula.completed{border-color:var(--ok);color:var(--ok)}
+.player{margin:0;border:1px solid var(--border);border-radius:12px;background:var(--card);overflow:hidden}
+.video-wrap{position:relative;padding-top:56.25%;background:#000}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.content{padding:14px}
+.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:8px}
+.breadcrumb b{color:var(--neon)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{font-size:11px;padding:6px 10px;border:1px solid var(--neon);border-radius:999px;color:var(--neon);background:#0b0e15}
+.chip.gold{border-color:#f59e0b;color:#f59e0b}
+.content h2{font-size:18px;color:var(--neon);margin:0 0 10px}
+.tema-nav{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.tema-btn{padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+.tema-btn.active{border-color:var(--neon);color:var(--neon)}
+.tema-btn.completed{border-color:var(--ok);color:var(--ok)}
+.pagina-nav{display:flex;gap:6px;margin:10px 0}
+.p-btn{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:#0a0d14;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+.p-btn.active{border-color:var(--neon);color:var(--neon)}
+.pagina{margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#0b0e15}
+.pagina h4{font-size:15px;color:var(--neon);margin:0 0 8px}
+.conteudo-lista{list-style:none;padding:0}
+.conteudo-lista li{padding:6px 0;border-bottom:1px dashed var(--border);font-size:13px;color:var(--muted)}
+.conteudo-lista li:before{content:"✓ ";color:var(--neon);font-weight:900}
+.avaliacao{margin-top:16px;padding:16px;border:2px solid var(--neon);border-radius:12px;background:#0a0f14;box-shadow:var(--glow)}
+.avaliacao h3{font-size:15px;color:var(--neon);margin:0 0 8px}
+.questao{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:8px;background:#0b0e15}
+.opcao{display:block;margin:6px 0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:#0a0d14;cursor:pointer;font-size:13px}
+.opcao.selecionada{border-color:var(--neon)}
+.opcao.correta{border-color:var(--ok);background:#0a1a14}
+.opcao.errada{border-color:var(--err);background:#1a0a0f}
+.resultado{margin-top:10px;padding:10px;border-radius:8px;font-weight:700;text-align:center}
+.resultado.aprovado{background:#0a1a14;color:var(--ok);border:1px solid var(--ok)}
+.resultado.reprovado{background:#1a0a0f;color:var(--err);border:1px solid var(--err)}
+.navfooter{display:flex;gap:8px;justify-content:space-between;padding:12px;border-top:1px solid var(--border);background:#0b0e15;position:sticky;bottom:0}
+.btn{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:#0a0d14;color:var(--text);font-weight:700;font-size:13px;cursor:pointer}
+.btn.primary{background:var(--neon);color:#001012;border:0}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+</style>
 </head>
 <body>
-<header class="header-modulo">
-  <h1>MÓDULO 1 - JANEIRO</h1>
-  <h2>Terapia Holística Integrativa</h2>
-  <p class="titulo">Título: Terapeuta Holístico Integrativo</p>
-  <div class="progresso">Progresso: 0/25 Aulas</div>
-</header>
-
-<div class="container-modulo">
-  <aside class="menu-temas">
-    <h3>5 Temas do Módulo</h3>
-    <ul>
-      <li><a href="tema1.html">Tema 1: Visão Integral do Ser</a></li>
-      <li><a href="tema2.html">Tema 2: Fundamentos das Práticas</a></li>
-      <li><a href="tema3.html">Tema 3: Ética Profissional</a></li>
-      <li><a href="tema4.html">Tema 4: Atendimento</a></li>
-      <li><a href="tema5.html">Tema 5: Áreas Complementares</a></li>
-    </ul>
-    <button class="btn-avaliacao" disabled>Avaliação Final do Módulo - Liberar em Dezembro</button>
+<header><div class="topbar"><button class="menu-btn" id="btnMenu">☰</button><div class="logo">KORVIL</div><div style="color:var(--muted);font-size:12px">Cursos > Saúde > K-TH 360°</div></div></header>
+<div class="overlay" id="overlay"></div>
+<div class="wrap">
+  <aside id="sidebar">
+    <div class="course-title"><h1>MÓDULO 1 - JANEIRO</h1><div class="stat">Terapeuta Holístico Integrativo • 25 Aulas</div></div>
+    <div id="menuModulos"></div>
   </aside>
-
-  <main class="conteudo-principal">
-    <h3>Bem-vindo ao Módulo 1</h3>
-    <p>Base geral da formação K-TH 360°. Aqui você vai aprender:</p>
-    <ul>
-      <li>Visão integral do ser humano: Corpo, mente, emoções e energia</li>
-      <li>Fundamentos das práticas integrativas</li>
-      <li>Ética profissional e postura do terapeuta</li>
-      <li>Atendimento e anamnese</li>
-      <li>Introdução a todas as áreas complementares</li>
-    </ul>
-    <p><b>Regra:</b> Conclua as 25 aulas + Avaliação de 20 questões com 70% para liberar o Módulo 2 em Fevereiro.</p>
+  <main>
+    <div class="tabs">
+      <div class="tab active" id="tabCron">Apresentação</div>
+      <div class="tab" id="tabAula">Área de Aula</div>
+    </div>
+    <div id="tab-cronograma" class="timeline">
+      <h2 class="ano-title">FASE 1.1: JANEIRO | MÓDULO 1</h2>
+      <p><b>Título:</b> Terapeuta Holístico Integrativo</p>
+      <p><b>Objetivo:</b> Formar a base + Apresentar os 10 módulos seguintes</p>
+      <p><b>Regra:</b> 25 aulas + Avaliação 70% = Libera Módulo 2</p>
+    </div>
+    <div id="tab-aula" style="display:none">
+      <div class="player">
+        <div class="video-wrap" id="videoWrap">[Selecione uma aula]</div>
+        <div class="content" id="conteudoAula"></div>
+        <div class="navfooter">
+          <button class="btn" id="btnAnt" disabled>← Anterior</button>
+          <button class="btn primary" id="btnConcluir" disabled>✓ Concluir</button>
+          <button class="btn primary" id="btnProx" disabled>Próxima →</button>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
-<script src="../../assets/js/kth.js"></script>
+<script>
+const DADOS={
+ 1:{nome:"Módulo 1 - Janeiro: Terapia Holística Integrativa",titulo:"Terapeuta Holístico Integrativo",video:"j3PdVh1j7e0",temas:[
+    {nome:"Tema 1: Fundamentos da Visão Integral do Ser",aulas:[
+      {nome:"Aula 1: O Conceito 360° na Prática Terapêutica",conteudos:["P1-OBJ: Compreender o que é abordagem 360° e por que tratar o todo e não a parte","P2-CON: Definição de Terapia Holística. Diferença fragmentado vs integral. Os 4 corpos: Físico, Mental, Emocional, Energético","P3-PRAT: Exercício: desenhar os 4 corpos e listar 3 sintomas em cada","P4-EX: Caso: Paciente com enxaqueca. Abordagem só remédio vs 360°","P5-FIN: Resumo + Tarefa: aplicar anamnese 360° em 1 pessoa"]},
+      {nome:"Aula 2: História e Linhas da Terapia Holística",conteudos:["P1-OBJ: Conhecer a origem e evolução da terapia holística no mundo","P2-CON: Medicina Tradicional Chinesa. Ayurveda. Xamanismo. Psicologia Transpessoal","P3-PRAT: Linha do tempo: colocar 5 marcos históricos em ordem","P4-EX: Como Hipócrates já falava 'tratar o paciente e não a doença'","P5-FIN: Resumo + Tarefa: pesquisar 1 prática ancestral"]},
+      {nome:"Aula 3: Energia Vital e Sistemas Sutis",conteudos:["P1-OBJ: Entender Qi, Prana e campo energético humano","P2-CON: Chakras, Meridianos, Aura. Como energia vira matéria","P3-PRAT: Prática: escaneamento das mãos para sentir energia","P4-EX: Caso: cansaço crônico e bloqueio no chakra cardíaco","P5-FIN: Resumo + Tarefa: meditar 5min focando na respiração"]},
+      {nome:"Aula 4: Interconexão Mente-Corpo-Emoção",conteudos:["P1-OBJ: Provar cientificamente como emoção afeta o corpo","P2-CON: Psiconeuroimunologia. Estresse e doença. Emoção somatizada","P3-PRAT: Tabela: ligar 5 emoções a 5 órgãos do corpo","P4-EX: Caso: gastrite por ansiedade no trabalho","P5-FIN: Resumo + Tarefa: diário emocional por 3 dias"]},
+      {nome:"Aula 5: O Perfil do Terapeuta Holístico",conteudos:["P1-OBJ: Desenvolver postura ética e profissional do terapeuta","P2-CON: 7 qualidades: escuta, presença, neutralidade, ética, estudo, autocuidado, humildade","P3-PRAT: Roleplay: primeiro atendimento com cliente difícil","P4-EX: Erros comuns: querer salvar, dar conselho, se apegar","P5-FIN: Resumo + Juramento do Terapeuta K-TH"]},
+    ]},
+    {nome:"Tema 2: Metodologia e Ferramentas K-TH",aulas:[
+      {nome:"Aula 1: Bases Científicas das Terapias",conteudos:["P1-OBJ: Validar a terapia holística com ciência","P2-CON: Efeito placebo. Epigenética. Coerência cardíaca. Estudos sobre meditação","P3-PRAT: Como explicar para um cético em 3 minutos","P4-EX: Pesquisa de Harvard sobre meditação e cérebro","P5-FIN: Resumo + Tarefa: ler 1 artigo científico"]},
+      {nome:"Aula 2: O Ciclo Anual K-TH",conteudos:["P1-OBJ: Aprender a metodologia exclusiva K-TH","P2-CON: Off, Bulk, Maintenance, Cutting aplicado à saúde","P3-PRAT: Montar ciclo anual para cliente com ansiedade","P4-EX: Caso real: paciente que fez ciclo e teve resultado","P5-FIN: Resumo + Tarefa: aplicar ciclo na sua vida"]},
+      {nome:"Aula 3: Avaliação e Diagnóstico Integral",conteudos:["P1-OBJ: Saber avaliar um cliente de forma completa","P2-CON: Anamnese, Leitura corporal, Mapa emocional, Teste energético","P3-PRAT: Preencher ficha de anamnese completa","P4-EX: Análise de vídeo de atendimento real","P5-FIN: Resumo + Tarefa: fazer 2 avaliações"]},
+      {nome:"Aula 4: Montagem do Plano Terapêutico",conteudos:["P1-OBJ: Criar plano terapêutico personalizado","P2-CON: Objetivo, técnicas, frequência, metas, reavaliação","P3-PRAT: Criar plano para caso: insônia + estresse","P4-EX: Plano bom vs plano ruim: comparar","P5-FIN: Resumo + Tarefa: entregar 1 plano"]},
+      {nome:"Aula 5: Documentação e Acompanhamento",conteudos:["P1-OBJ: Documentar corretamente o processo","P2-CON: Ficha, evolução, laudo, LGPD, arquivo","P3-PRAT: Preencher evolução de sessão","P4-EX: Modelo de laudo terapêutico","P5-FIN: Resumo + Tarefa: organizar pasta do cliente"]},
+    ]},
+    {nome:"Tema 3: Ética, Lei e Profissionalismo",aulas:[
+      {nome:"Aula 1: Código de Ética do Terapeuta K-TH",conteudos:["P1-OBJ: Decorar e aplicar os 10 princípios éticos","P2-CON: Sigilo, respeito, limites, não prometer cura, encaminhar","P3-PRAT: Julgar 5 casos éticos: certo ou errado","P4-EX: Caso real de quebra de ética e consequência","P5-FIN: Resumo + Assinar código de ética"]},
+      {nome:"Aula 2: Aspectos Legais da Profissão",conteudos:["P1-OBJ: Saber o que pode e não pode fazer legalmente","P2-CON: Curso livre. Não diagnosticar. Não prescrever remédio. MEI","P3-PRAT: Preencher termo de responsabilidade","P4-EX: Diferença terapeuta e médico","P5-FIN: Resumo + Tarefa: abrir MEI"]},
+      {nome:"Aula 3: Relacionamento Terapêutico",conteudos:["P1-OBJ: Criar vínculo sem dependência","P2-CON: Rapport, transferência, limites, encerramento","P3-PRAT: Simulação: cliente que não quer ir embora","P4-EX: Caso: terapeuta que virou amigo do cliente","P5-FIN: Resumo + Tarefa: roteiro de encerramento"]},
+      {nome:"Aula 4: Comunicação Não Violenta",conteudos:["P1-OBJ: Falar com empatia e assertividade","P2-CON: 4 passos CNV: Observação, Sentimento, Necessidade, Pedido","P3-PRAT: Traduzir 5 frases agressivas para CNV","P4-EX: Atendimento com cliente bravo","P5-FIN: Resumo + Tarefa: usar CNV 1 dia"]},
+      {nome:"Aula 5: Supervisão e Rede de Apoio",conteudos:["P1-OBJ: Importância de não atender sozinho","P2-CON: Grupo de supervisão, intervisão, mentoria","P3-PRAT: Apresentar 1 caso para o grupo","P4-EX: Benefício da supervisão em caso difícil","P5-FIN: Resumo + Tarefa: entrar em grupo"]},
+    ]},
+    {nome:"Tema 4: Técnicas de Atendimento e Condução",aulas:[
+      {nome:"Aula 1: Acolhimento e Primeiro Contato",conteudos:["P1-OBJ: Fazer o cliente se sentir seguro nos 5min iniciais","P2-CON: Ambiente, voz, postura, 7 perguntas chave","P3-PRAT: Simulação de recepção","P4-EX: Erros que afastam o cliente","P5-FIN: Resumo + Tarefa: gravar áudio de acolhimento"]},
+      {nome:"Aula 2: Arte da Escuta Ativa",conteudos:["P1-OBJ: Ouvir para compreender e não responder","P2-CON: Silêncio, parafrasear, perguntas abertas, validar","P3-PRAT: Exercício: ouvir 5min sem interromper","P4-EX: Diferença ouvir e esperar falar","P5-FIN: Resumo + Tarefa: praticar com familiar"]},
+      {nome:"Aula 3: Condução da Sessão Passo a Passo",conteudos:["P1-OBJ: Roteiro completo de 50min de sessão","P2-CON: Abertura, investigação, técnica, fechamento, tarefa","P3-PRAT: Cronometrar sessão simulada","P4-EX: Vídeo de sessão modelo","P5-FIN: Resumo + Tarefa: fazer 1 sessão"]},
+      {nome:"Aula 4: Técnicas de Intervenção",conteudos:["P1-OBJ: Saber quando e como aplicar técnicas","P2-CON: Respiração, visualização, ancoragem, pergunta poderosa","P3-PRAT: Testar 3 técnicas em si mesmo","P4-EX: Qual técnica usar para ansiedade","P5-FIN: Resumo + Tarefa: criar kit de 5 técnicas"]},
+      {nome:"Aula 5: Feedback e Evolução do Cliente",conteudos:["P1-OBJ: Medir resultado e ajustar rota","P2-CON: Escalas, perguntas, comemorar vitória","P3-PRAT: Aplicar escala de 0 a 10","P4-EX: Cliente que não evolui: o que fazer","P5-FIN: Resumo + Tarefa: ficha de feedback"]},
+    ]},
+    {nome:"Tema 5: Mapa da Jornada K-TH 360°",aulas:[
+      {nome:"Aula 1: Módulos 2, 3 e 4 - Corpo e Cuidado",conteudos:["P1-OBJ: Entender os próximos 3 meses","P2-CON: M2 Massoterapia. M3 Cuidador. M4 Práticas Naturais","P3-PRAT: Qual módulo combina mais com você","P4-EX: Depoimento de aluno de cada módulo","P5-FIN: Resumo + Tarefa: escolher 1 para aprofundar"]},
+      {nome:"Aula 2: Módulos 5, 6 e 7 - Mente e Emoção",conteudos:["P1-OBJ: Entender módulos mentais","P2-CON: M5 Hipnose. M6 Meditação. M7 Inteligência Emocional","P3-PRAT: Teste: qual sua inteligência emocional","P4-EX: Como hipnose ajuda a parar de fumar","P5-FIN: Resumo + Tarefa: meditar 10min"]},
+      {nome:"Aula 3: Módulos 8 e 9 - Performance e Ciência",conteudos:["P1-OBJ: Entender módulos avançados","P2-CON: M8 Desenvolvimento Pessoal. M9 Neurociência","P3-PRAT: Definir 3 metas SMART","P4-EX: Como cérebro cria hábito","P5-FIN: Resumo + Tarefa: livro de neurociência"]},
+      {nome:"Aula 4: Módulos 10 e 11 - Negócio e KORVIL",conteudos:["P1-OBJ: Aprender a viver da terapia","P2-CON: M10 Fitocosmética. M11 Gestão + Parceria 50%","P3-PRAT: Calcular faturamento com 10 clientes","P4-EX: Caso: terapeuta que fatura 10k","P5-FIN: Resumo + Tarefa: plano de negócio"]},
+      {nome:"Aula 5: Seu Compromisso até Dezembro",conteudos:["P1-OBJ: Fechar compromisso com a jornada","P2-CON: Revisão dos 11 módulos e certificados","P3-PRAT: Carta de compromisso para si mesmo","P4-EX: Aluno que concluiu e virou professor","P5-FIN: Resumo + AVALIAÇÃO FINAL 20 QUESTÕES"]},
+    ]},
+ ]},
+};
+
+// BANCO DE 40 QUESTÕES PARA SORTEAR 20
+const BANCO_QUESTOES_M1=[{q:"1. Abordagem 360° significa:",o:["Só corpo","Corpo, Mente, Emoção e Energia","360 sessões","Massagem"],r:1},{q:"2. Os 4 corpos são:",o:["Físico, Químico, Biológico","Físico, Mental, Emocional, Energético","Denso, Sutil","Alma, Espírito"],r:1},{q:"3. Qi é:",o:["Massagem","Energia vital","Chá","Ponto"],r:1},{q:"4. Psiconeuroimunologia estuda:",o:["Músculo","Mente, nervos e imunidade","Osso","Sangue"],r:1},{q:"5. Não pode prescrever:",o:["Chá","Antibiótico","Meditação","Respiração"],r:1},{q:"6. Anamnese é:",o:["Massagem","Entrevista inicial","Óleo","Equipamento"],r:1},{q:"7. Sigilo é:",o:["Contar tudo","Não falar do cliente","Postar","Falar família"],r:1},{q:"8. Quando encaminhar médico:",o:["Nunca","Doença grave","Sempre","Nunca"],r:1},{q:"9. Rapport é:",o:["Chá","Vínculo","Massagem","Flor"],r:1},{q:"10. Epigenética:",o:["Gene fixo","Estilo muda gene","Só remédio","Nada"],r:1},{q:"11. Chakra da comunicação:",o:["Raiz","Cardíaco","Laríngeo","Coronário"],r:2},{q:"12. Homeostase:",o:["Desequilíbrio","Equilíbrio","Doença","Cansaço"],r:1},{q:"13. LGPD:",o:["Massagem","Dados cliente","Preço","Hora"],r:1},{q:"14. Contraindicação:",o:["Estresse","Febre alta","Cansaço","Dor"],r:1},{q:"15. Plano tem:",o:["1 sessão","Objetivo, técnica, frequência","Preço","Hora"],r:1},{q:"16. Transferência:",o:["Mudar sala","Projetar no terapeuta","Exercício","Trocar"],r:1},{q:"17. Escuta ativa:",o:["Interromper","Celular","Pergunta e silêncio","Falar mais"],r:2},{q:"18. Ciclo K-TH:",o:["Anual","Mensal","Semanal","Diário"],r:0},{q:"19. KORVIL:",o:["Salário","50% comissão","Nada","Grátis"],r:1},{q:"20. Meridianos:",o:["Músculo","Canais energia","Osso","Nervo"],r:1},{q:"21. Ficha serve:",o:["Cobrar","Conhecer cliente","Vender","Decorar"],r:1},{q:"22. Autocuidado:",o:["Gastar","Não adoecer","Foto","Fama"],r:1},{q:"23. Pergunta poderosa:",o:["Confundir","Fazer refletir","Brigar","Acelerar"],r:1},{q:"24. Encerramento:",o:["Sumir","Feedback e meta","Multa","Ignorar"],r:1},{q:"25. Multidisciplinar:",o:["Sozinho","Com outros","Noite","Grátis"],r:1},{q:"26. Mapa emocional:",o:["Casa","Emoções cliente","Produto","Dieta"],r:1},{q:"27. Juramento:",o:["Dinheiro","Ética","Fama","Viagem"],r:1},{q:"28. Avaliação inicial:",o:["Perder tempo","Definir objetivo","Cobrar","Encher"],r:1},{q:"29. Supervisão:",o:["Espionar","Discutir caso","Fofoca","Inútil"],r:1},{q:"30. Causa e efeito:",o:["Nada","Ação gera reação","Sorte","Deus"],r:1},{q:"31. Leitura corporal:",o:["Roupa","Postura","Cor","Altura"],r:1},{q:"32. Tarefa casa:",o:["Cansar","Manter evolução","Perder","Cobrar"],r:1},{q:"33. Ética proíbe:",o:["Atender","Prescrever remédio","Conversar","Ouvir"],r:1},{q:"34. Ciclo Off:",o:["Descanso","Pesado","Corte","Manutenção"],r:0},{q:"35. Aura:",o:["Futebol","Campo energético","Óleo","Música"],r:1},{q:"36. Feedback:",o:["Grito","Claro e respeitoso","Mentira","Ofensa"],r:1},{q:"37. Rede apoio:",o:["Fofoca","Encaminhar","Perder","Competir"],r:1},{q:"38. Meta curto:",o:["10 anos","1 a 3 meses","Nunca","Sempre"],r:1},{q:"39. Diferencial K-TH:",o:["Preço","Visão 360°","Rápido","Copiar"],r:1},{q:"40. M2 é:",o:["Hipnose","Massoterapia","Meditação","Gestão"],r:1}];
+
+let estado={aula:null,tema:1,pagina:1,respostas:{},concluidas:JSON.parse(localStorage.getItem('kth_mod1')||'[]'),temasOK:JSON.parse(localStorage.getItem('kth_mod1_temas')||'{}'),questoesSorteadas:[]};
+const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+
+function montarMenu(){const wrap=$('#menuModulos');wrap.innerHTML='';const mod=DADOS[1];let temasHtml='';mod.temas.forEach((tema,t)=>{let aulasHtml='';tema.aulas.forEach((aulaObj,a)=>{const id=`M1-T${t+1}-A${a+1}`;const ok=estado.concluidas.includes(id);aulasHtml+=`<div class="aula locked ${ok?'completed':''}" data-id="${id}">${a+1}. ${aulaObj.nome}</div>`});temasHtml+=`<div class="tema-bloco"><div class="tema-titulo">${tema.nome}</div>${aulasHtml}</div>`});wrap.innerHTML=`<div class="modulo open"><div class="modulo-head">${mod.nome}<span>0/25</span></div><div class="aulas">${temasHtml}</div></div>`;$$('.aula').forEach(el=>el.onclick=()=>!el.classList.contains('locked')&&carregarAula(el.dataset.id));$(`[data-id="M1-T1-A1"]`).classList.remove('locked');}
+
+function carregarAula(id){estado.aula=id;estado.tema=1;estado.pagina=1;estado.respostas={};$('#tabAula').click();const [m,t,a]=id.replace('M','').split('-T').join('-').split('-A').map(Number);const mod=DADOS[m];const temaObj=mod.temas[t-1];const aulaObj=temaObj.aulas[a-1];$('#videoWrap').innerHTML=`<iframe src="https://www.youtube.com/embed/${mod.video}" allowfullscreen></iframe>`;let nav='';mod.temas.forEach((tema,i)=>{const ok=estado.temasOK[id]?.includes(i+1);nav+=`<button class="tema-btn ${i===0?'active':''} ${ok?'completed':''}" data-t="${i+1}">${tema.nome}</button>`});$('#conteudoAula').innerHTML=`<div class="breadcrumb">Localização: <b>${mod.nome}</b> > <b>${temaObj.nome}</b> > <b>${aulaObj.nome}</b> > <b id="bcPag">Página 1: Objetivo</b></div><div class="chips"><span class="chip gold">220H</span><span class="chip">${temaObj.nome}</span></div><h2>${aulaObj.nome}</h2><div class="tema-nav">${nav}</div><div id="paginaArea"></div>`;$$('.tema-btn').forEach(b=>b.onclick=()=>trocarTema(+b.dataset.t));renderPagina();$$('.aula').forEach(x=>x.classList.remove('active'));$(`[data-id="${id}"]`).classList.add('active');const idx=(t-1)*5+(a-1);$('#btnAnt').disabled=idx===0;$('#btnProx').disabled=true;$('#btnConcluir').disabled=true;if(window.innerWidth<1100)toggleMenu();}
+
+function trocarTema(t){estado.tema=t;estado.pagina=1;estado.respostas={};$$('.tema-btn').forEach((b,i)=>b.classList.toggle('active',i+1===t));renderPagina()}
+function trocarPagina(p){estado.pagina=p;$$('.p-btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));const tit=['Objetivo','Conteúdo','Prática','Exemplo','Finalização'];$('#bcPag').innerText=`Página ${p}: ${tit[p-1]}`;renderPagina()}
+
+function renderPagina(){const[m,t,a]=estado.aula.replace('M','').split('-T').join('-').split('-A').map(Number);const mod=DADOS[m];const temaObj=mod.temas[t-1];const aulaObj=temaObj.aulas[a-1];const tit=['Objetivo','Conteúdo','Prática','Exemplo','Finalização'];let html='';for(let p=1;p<=5;p++){let extra='';if(t==5 && a==5 && p==5){extra=`<div class="avaliacao"><h3>📝 AVALIAÇÃO FINAL DO MÓDULO 1</h3><p>20 Questões. 70% para aprovar. 3 tentativas.</p><div id="q"></div><button class="btn primary" id="env">Enviar</button><div id="res"></div></div>`}const partes=aulaObj.conteudos[p-1].split(':');html+=`<div class="pagina" style="display:${p===estado.pagina?'block':'none'}"><h4>Página ${p} – ${tit[p-1]}</h4><ul class="conteudo-lista"><li><b>${partes[0]}:</b> ${partes[1]}</li><li><b>${partes[0]}:</b> ${partes[1]}</li><li><b>${partes[0]}:</b> ${partes[1]}</li><li><b>${partes[0]}:</b> ${partes[1]}</li><li><b>${partes[0]}:</b> ${partes[1]}</li></ul>${extra}</div>`}let btns='<div class="pagina-nav">';for(let p=1;p<=5;p++){btns+=`<button class="p-btn ${p===estado.pagina?'active':''}" data-p="${p}">${p}</button>`}btns+='</div>';$('#paginaArea').innerHTML=btns+html;$$('.p-btn').forEach(b=>b.onclick=()=>trocarPagina(+b.dataset.p));if($('#env')){carregarAvaliacao()}}
+
+function carregarAvaliacao(){if(estado.questoesSorteadas.length==0){estado.questoesSorteadas=BANCO_QUESTOES_M1.sort(()=>0.5-Math.random()).slice(0,20)}const qs=estado.questoesSorteadas;let h='';qs.forEach((q,i)=>{h+=`<div class="questao"><p>${q.q}</p>`;q.o.forEach((op,j)=>h+=`<div class="opcao" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}) ${op}</div>`);h+='</div>'});$('#q').innerHTML=h;$$('.opcao').forEach(o=>o.onclick=()=>{const qi=+o.dataset.q,oi=+o.dataset.o;estado.respostas[qi]=oi;$$('.opcao[data-q="'+qi+'"]').forEach(x=>x.classList.remove('selecionada'));o.classList.add('selecionada')});$('#env').onclick=corrigirAvaliacao;}
+
+function corrigirAvaliacao(){const qs=estado.questoesSorteadas;let ac=0;qs.forEach((q,i)=>{const r=estado.respostas[i];if(r===q.r)ac++;$$('.opcao[data-q="'+i+'"]').forEach((o,j)=>{o.classList.remove('correta','errada');if(j===q.r)o.classList.add('correta');else if(j===r&&r!==q.r)o.classList.add('errada')})});const pct=Math.round(ac/qs.length*100);const
+function corrigirAvaliacao(){
+  const qs=estado.questoesSorteadas;let ac=0;
+  qs.forEach((q,i)=>{
+    const r=estado.respostas[i];
+    if(r===q.r)ac++;
+    $$('.opcao[data-q="'+i+'"]').forEach((o,j)=>{
+      o.classList.remove('correta','errada');
+      if(j===q.r)o.classList.add('correta');
+      else if(j===r&&r!==q.r)o.classList.add('errada')
+    })
+  });
+  const pct=Math.round(ac/qs.length*100);
+  const ok=pct>=70;
+  $('#res').innerHTML=`<div class="resultado ${ok?'aprovado':'reprovado'}">${ok?'APROVADO ✅':'REPROVADO ❌'}: ${ac}/20 = ${pct}%</div>${
+    ok?'<p><b>Parabéns!</b> Módulo 1 concluído. Módulo 2 libera em Fevereiro.</p>':'<button class="btn primary" id="ref">Refazer com 20 questões novas</button>'
+  }`;
+
+  if(ok){
+    estado.temasOK[estado.aula]=[5];
+    localStorage.setItem('kth_mod1_temas',JSON.stringify(estado.temasOK));
+    $('#btnProx').disabled=true;
+    $('#btnConcluir').disabled=true;
+  }else{
+    $('#ref').onclick=()=>{
+      estado.respostas={};
+      estado.questoesSorteadas=[];
+      $('#res').innerHTML='';
+      carregarAvaliacao()
+    }
+  }
+}
+
+function concluirAula(){
+  if(!estado.aula)return;
+  if(!estado.concluidas.includes(estado.aula))estado.concluidas.push(estado.aula);
+  localStorage.setItem('kth_mod1',JSON.stringify(estado.concluidas));
+  montarMenu();
+  $('#btnConcluir').disabled=true;
+  const[m,t,a]=estado.aula.replace('M','').split('-T').join('-').split('-A').map(Number);
+  const proxA=a+1;
+  const proxT=t+1;
+  if(proxA<=5)$('#btnProx').disabled=false;
+  else if(proxT<=5){
+    // liberou tema, libera próxima aula do próximo tema
+    $(`[data-id="M1-T${proxT}-A1"]`).classList.remove('locked');
+  }
+}
+
+function proximaAula(){
+  const[m,t,a]=estado.aula.replace('M','').split('-T').join('-').split('-A').map(Number);
+  const idx=(t-1)*5+(a-1);
+  if(idx<24){
+    const proxIdx=idx+1;
+    const proxT=Math.floor(proxIdx/5)+1;
+    const proxA=(proxIdx%5)+1;
+    carregarAula(`M1-T${proxT}-A${proxA}`);
+    $(`[data-id="M1-T${proxT}-A${proxA}"]`).classList.remove('locked');
+  }
+}
+
+function anteriorAula(){
+  const[m,t,a]=estado.aula.replace('M','').split('-T').join('-').split('-A').map(Number);
+  const idx=(t-1)*5+(a-1);
+  if(idx>0){
+    const antIdx=idx-1;
+    const antT=Math.floor(antIdx/5)+1;
+    const antA=(antIdx%5)+1;
+    carregarAula(`M1-T${antT}-A${antA}`);
+  }
+}
+
+function abrirTab(n){
+  $$('.tab').forEach(t=>t.classList.remove('active'));
+  $('#tab'+n).classList.add('active');
+  $('#tab-cronograma').style.display=n==='Cron'?'block':'none';
+  $('#tab-aula').style.display=n==='Aula'?'block':'none'
+}
+
+function toggleMenu(){
+  const s=$('#sidebar'),o=$('#overlay');
+  const open=s.style.transform==='translateX(0px)';
+  s.style.transform=open?'translateX(-100%)':'translateX(0px)';
+  o.classList.toggle('show',!open)
+}
+
+// EVENTOS
+$('#btnMenu').onclick=toggleMenu;
+$('#overlay').onclick=toggleMenu;
+$('#tabCron').onclick=()=>abrirTab('Cron');
+$('#tabAula').onclick=()=>abrirTab('Aula');
+$('#btnAnt').onclick=anteriorAula;
+$('#btnProx').onclick=proximaAula;
+$('#btnConcluir').onclick=concluirAula;
+
+// INICIAR
+montarMenu();
+</script>
 </body>
 </html>
