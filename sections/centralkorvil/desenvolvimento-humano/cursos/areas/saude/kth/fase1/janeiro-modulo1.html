@@ -3,294 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL ACADEMY | K-TH 360°</title>
+<title>K-TH 360° | FASE 1 JANEIRO</title>
 <style>
-  :root{
-    --bg:#05060a;--bg2:#0a0d14;--card:#0f131d;--card-hover:#121826;--text:#f0f8ff;--muted:#8a9bb3;
-    --neon:#00e5ff;--neon2:#7c3aed;--ok:#00ff88;--border:#1a2233;--glow:0 0 20px rgba(0,229,255,.25);
-    --radius:16px
-  }
+  :root{--bg:#0a0a0a;--card:#151515;--card2:#1f1f1f;--text:#fff;--muted:#aaa;--neon:#00e5ff;--ok:#00ff88}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font:14px/1.6 'Inter',-apple-system,Arial;overflow-x:hidden}
+  body{background:var(--bg);color:var(--text);font:13px/1.6 Arial}
   
-  /* EFEITO 3D SUTIL FUNDO */
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 50%, rgba(0,229,255,.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(124,58,237,.08) 0%, transparent 50%);z-index:-1;animation:float 20s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-
-  /* HEADER GLASSMORPHISM */
-  header{position:sticky;top:0;z-index:1000;background:rgba(5,6,10,.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;animation:slideDown .5s}
-  @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{font-size:18px;font-weight:900;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .xp{font-size:11px;background:var(--card);padding:6px 10px;border-radius:20px;border:1px solid var(--border)}
-  .xp b{color:var(--ok)}
-
-  /* LAYOUT PRINCIPAL */
-  .app{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 62px)}
-  @media(max-width:1200px){.app{grid-template-columns:1fr}}
-
-  /* SIDEBAR MÓDULOS - ESTILO NETFLIX */
-  .sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:16px;animation:slideIn .6s}
-  @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
-  .modulo-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;cursor:pointer;transition:.3s}
-  .modulo-card:hover{background:var(--card-hover);transform:translateX(4px)}
-  .modulo-card.active{border-color:var(--neon);box-shadow:var(--glow)}
-  .modulo-tit{font-size:12px;font-weight:700;color:var(--neon);margin-bottom:4px}
-  .modulo-sub{font-size:11px;color:var(--muted)}
-  .progress-bar{height:4px;background:#1a2233;border-radius:10px;margin-top:8px;overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--ok));width:0%;transition:width 1s cubic-bezier(.4,0,.2,1)}
-
-  /* CONTEUDO PRINCIPAL */
-  .content{padding:24px;overflow-y:auto}
-  .breadcrumbs{font-size:11px;color:var(--muted);margin-bottom:16px;animation:fadeIn .4s}
-  .breadcrumbs b{color:var(--neon)}
-
-  /* PLAYER 8K */
-  .player-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;animation:fadeIn .6s}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .video-wrap{position:relative;padding-top:56.25%;background:#000;border-radius:12px;overflow:hidden;margin-bottom:16px;box-shadow:0 20px 50px rgba(0,0,0,.5);transform:perspective(1000px) rotateX(2deg);transition:.4s}
-  .video-wrap:hover{transform:perspective(1000px) rotateX(0deg)}
-  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-
-  /* NAVEGAÇÃO RÁPIDA ESTILO TABS */
-  .nav-tabs{display:flex;gap:8px;background:#0a0d14;padding:6px;border-radius:12px;margin-bottom:16px;border:1px solid var(--border)}
-  .tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--muted);transition:.3s;position:relative}
-  .tab.active{color:var(--neon);background:rgba(0,229,255,.1)}
-  .tab.active::after{content:'';position:absolute;bottom:-7px;left:20%;right:20%;height:2px;background:var(--neon);border-radius:2px}
-
-  /* NAV AULA/PAGINA ESTILO PILLS */
-  .nav-group{margin:16px 0}
-  .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;font-weight:700}
-  .pills{display:flex;gap:6px;flex-wrap:wrap}
-  .pill{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:25px;font-size:11px;font-weight:700;cursor:pointer;transition:.3s}
-  .pill:hover{transform:translateY(-2px);border-color:var(--neon)}
-  .pill.active{background:linear-gradient(135deg,var(--neon),var(--neon2));color:#000;border:0}
-  .pill.completed{border-color:var(--ok);color:var(--ok)}
-
-  /* CONTEUDO DA PAGINA */
-  .page{display:none;animation:fadeIn .4s}
-  .page.active{display:block}
-  .page-header{margin-bottom:16px}
-  .page-header h2{font-size:18px;color:var(--neon);margin-bottom:4px}
-  .page-header p{font-size:12px;color:var(--muted)}
-  .page-content{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-  .page-content h4{font-size:13px;color:var(--neon);margin-bottom:10px}
-  .page-content ul{list-style:none}
-  .page-content li{padding:6px 0;font-size:13px;display:flex;gap:8px}
-  .page-content li::before{content:'✓';color:var(--neon);font-weight:900}
-
-  /* BOTÕES NAV */
-  .nav-buttons{display:flex;gap:10px;margin-top:20px}
-  .btn{flex:1;padding:14px;border-radius:12px;border:0;font-weight:800;font-size:12px;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
-  .btn::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.2);transition:.5s;transform:translate(-50%,-50%)}
-  .btn:active::before{width:300px;height:300px}
-  .btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon2));color:#000}
-  .btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
-  .btn:hover{transform:translateY(-2px);box-shadow:var(--glow)}
-
-  /* AVALIAÇÃO GAMIFICADA */
-  .avaliacao{background:linear-gradient(135deg,rgba(0,229,255,.1),rgba(124,58,237,.1));border:2px solid var(--neon);border-radius:var(--radius);padding:24px;margin-top:24px;display:none;animation:fadeIn .6s}
+  header{position:sticky;top:0;background:#000;padding:12px 16px;border-bottom:2px solid var(--neon);z-index:999}
+  .logo{font-size:18px;font-weight:900;color:var(--neon)}
+  .sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .progresso{height:5px;background:#222;border-radius:10px;margin-top:8px;overflow:hidden}
+  .barra{height:100%;background:var(--neon);width:0%;transition:.5s}
+  
+  .menu{background:var(--card);padding:12px}
+  .titulo{font-size:10px;color:var(--neon);margin:10px 0 6px;font-weight:700;letter-spacing:1px}
+  .linha{display:flex;gap:6px;overflow:auto;padding-bottom:8px}
+  .linha::-webkit-scrollbar{display:none}
+  .botao{padding:8px 12px;background:#262626;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;border:1px solid #333}
+  .botao.ativo{background:var(--neon);color:#000;border-color:var(--neon)}
+  
+  .conteudo{padding:16px}
+  .info-topo{font-size:11px;color:var(--muted);margin-bottom:12px}
+  .info-topo b{color:var(--neon)}
+  
+  /* DISPLAY YOUTUBE */
+  .video-box{background:var(--card2);padding:12px;border-radius:12px;margin-bottom:16px}
+  .video-titulo{font-size:12px;font-weight:800;color:var(--neon);margin-bottom:8px}
+  .video{position:relative;padding-top:56.25%;background:#000;border-radius:10px;overflow:hidden}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  
+  /* CONTEUDO TEXTO */
+  .texto-box{background:var(--card2);padding:16px;border-radius:12px}
+  .texto-titulo{font-size:14px;color:var(--neon);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .texto-titulo::before{content:"📄"}
+  .pagina ul{list-style:none}
+  .pagina li{padding:5px 0;font-size:12px}
+  .pagina li:before{content:"✓ ";color:var(--neon);font-weight:900}
+  
+  .navegacao{display:flex;gap:8px;margin-top:14px}
+  .nav{flex:1;padding:12px;background:var(--neon);color:#000;border-radius:10px;font-weight:800;text-align:center;cursor:pointer;font-size:12px}
+  .nav.sec{background:#262626;color:var(--text)}
+  
+  .avaliacao{display:none;margin-top:24px;background:#111;border:2px solid var(--neon);padding:20px;border-radius:14px}
   .avaliacao.show{display:block}
-  .avaliacao h2{font-size:16px;margin-bottom:8px}
-  .questao{background:var(--card);padding:16px;border-radius:12px;margin:12px 0;border:1px solid var(--border);transition:.3s}
-  .questao:hover{border-color:var(--neon)}
-  .questao label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:pointer;transition:.2s;font-size:12px}
-  .questao label:hover{background:rgba(0,229,255,.05)}
-
-  /* CONQUISTAS POPUP */
-  .toast{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--ok);padding:14px 18px;border-radius:12px;display:flex;gap:10px;align-items:center;transform:translateX(400px);transition:.5s;z-index:9999}
-  .toast.show{transform:translateX(0)}
-  .toast-icon{font-size:20px}
+  .avaliacao h2{color:var(--neon);font-size:15px;margin-bottom:10px}
+  .questao{background:#1f1f1f;padding:12px;border-radius:10px;margin:10px 0}
+  .questao h4{font-size:12px;margin-bottom:6px}
+  .questao label{display:block;padding:6px;font-size:11px;background:#262626;margin:4px 0;border-radius:6px}
+  .btn-final{width:100%;padding:14px;margin-top:12px;background:var(--neon);color:#000;border:0;border-radius:10px;font-weight:900;cursor:pointer}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <div class="logo">KORVIL ACADEMY</div>
-    <div class="xp">NÍVEL <b>1</b> • <b id="xp">0</b> XP</div>
-  </div>
-  <div class="xp">FASE 1 • JANEIRO</div>
+  <div class="logo">K-TH 360°</div>
+  <div class="sub">FASE 1 • JANEIRO</div>
+  <div class="sub">MÓDULO 1 • TERAPIA HOLÍSTICA INTEGRATIVA</div>
+  <div class="progresso"><div class="barra" id="barra"></div></div>
 </header>
 
-<div class="app">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="modulo-card active">
-      <div class="modulo-tit">MÓDULO 1: TERAPIA HOLÍSTICA</div>
-      <div class="modulo-sub">5 Aulas • 25 Páginas</div>
-      <div class="progress-bar"><div class="progress-fill" id="progressModulo"></div></div>
-    </div>
-    <div class="modulo-card" style="opacity:.4">
-      <div class="modulo-tit">MÓDULO 2: MASSOTERAPIA</div>
-      <div class="modulo-sub">Bloqueado</div>
-    </div>
+<div class="menu">
+  <div class="titulo">TEMAS</div><div class="linha" id="navTemas"></div>
+  <div class="titulo">AULAS</div><div class="linha" id="navAulas"></div>
+  <div class="titulo">PÁGINAS</div><div class="linha" id="navPaginas"></div>
+</div>
+
+<div class="conteudo">
+  <div class="info-topo" id="infoTopo"></div>
+  
+  <!-- PARTE 1: VÍDEO -->
+  <div class="video-box">
+    <div class="video-titulo">🎥 OPÇÃO 1: ASSISTIR AULA EM VÍDEO</div>
+    <div class="video"><iframe id="video" src="https://www.youtube.com/embed/YQHsXMglC9A" allowfullscreen></iframe></div>
   </div>
-
-  <!-- CONTEUDO -->
-  <div class="content">
-    <div class="breadcrumbs">MÓDULO 1 > <b id="bcAula">AULA 1</b> > <b id="bcPagina">PÁGINA 1</b></div>
-
-    <div class="player-card">
-      <div class="video-wrap">
-        <iframe id="videoPlayer" src="https://www.youtube.com/embed/YQHsXMglC9A" allowfullscreen></iframe>
-      </div>
-
-      <!-- TABS -->
-      <div class="nav-tabs">
-        <div class="tab active" data-tab="conteudo">CONTEÚDO</div>
-        <div class="tab" data-tab="resumo">RESUMO IA</div>
-        <div class="tab" data-tab="anotacoes">ANOTAÇÕES</div>
-      </div>
-
-      <!-- NAV AULAS -->
-      <div class="nav-group">
-        <div class="nav-label">AULAS</div>
-        <div class="pills" id="navAulas"></div>
-      </div>
-
-      <!-- NAV PAGINAS -->
-      <div class="nav-group">
-        <div class="nav-label">PÁGINAS</div>
-        <div class="pills" id="navPaginas"></div>
-      </div>
-
-      <!-- CONTEUDO DINAMICO -->
-      <div id="conteudoArea"></div>
-
-      <div class="nav-buttons">
-        <button class="btn btn-secondary" id="btnAnt">◀ ANTERIOR</button>
-        <button class="btn btn-primary" id="btnProx">PRÓXIMA ▶</button>
-      </div>
-
-      <!-- AVALIAÇÃO -->
-      <div class="avaliacao" id="avaliacaoBox">
-        <h2>🏆 AVALIAÇÃO FINAL MÓDULO 1</h2>
-        <p>20 Questões • 70% para aprovar • Libera Módulo 2</p>
-        <div id="questoesArea"></div>
-        <button class="btn btn-primary" id="btnFinalizar">FINALIZAR E GANHAR CERTIFICADO</button>
-      </div>
-    </div>
+  
+  <!-- PARTE 2: TEXTO -->
+  <div class="texto-box">
+    <div class="texto-titulo">OPÇÃO 2: LER CONTEÚDO DA AULA</div>
+    <div class="pagina" id="paginaConteudo"></div>
+  </div>
+  
+  <div class="navegacao">
+    <div class="nav sec" id="btnAnt">◀ ANTERIOR</div>
+    <div class="nav" id="btnProx">PRÓXIMA ▶</div>
+  </div>
+  
+  <div class="avaliacao" id="avaliacao">
+    <h2>🏆 AVALIAÇÃO FINAL DO MÓDULO 1</h2><p>20 Questões | Nota mínima: 70%</p><div id="questoes"></div>
+    <button class="btn-final" id="btnFinalizar">FINALIZAR E GERAR CERTIFICADO</button>
   </div>
 </div>
 
-<div class="toast" id="toast"><div class="toast-icon">🎉</div><div><b>Conquista Desbloqueada!</b><br><span id="toastTxt">+50 XP</span></div></div>
-
 <script>
-const DADOS={
- 1:{nome:"O Conceito 360°",video:"YQHsXMglC9A",paginas:[
-  ["OBJETIVO","Compreender abordagem 360°. Tratar o ser como um todo","Entender os 4 corpos: Físico, Mental, Emocional, Energético"],
-  ["CONTEÚDO","Os 4 corpos: Físico, Mental, Emocional, Energético","Como um afeta o outro. Diferença abordagem fragmentada vs integral"],
-  ["PRÁTICA","Exercício: pegar 1 sintoma físico e listar causa mental, emocional e energética"],
-  ["EXEMPLO","Caso: Paciente com enxaqueca. Médico dá remédio","Terapeuta 360° investiga estresse, alimentação e energia"],
-  ["FINALIZAÇÃO","Resumo: Você é 4 corpos","Tarefa: Aplicar anamnese 360° em 1 pessoa"]
+const CURSO = {
+1:{nome:"FUNDAMENTOS 360°", video:"YQHsXMglC9A", aulas:{
+ 1:{nome:"Introdução ao Conceito 360°", paginas:[
+  ["PÁGINA 1: OBJETIVO","Entender que o ser humano é um todo integrado: Físico, Mental, Emocional e Energético","Por que tratar só o sintoma não resolve","A diferença entre médico e terapeuta holístico"],
+  ["PÁGINA 2: OS 4 CORPOS","Corpo Físico: matéria, dor, doença","Corpo Mental: pensamentos, crenças","Corpo Emocional: sentimentos, traumas","Corpo Energético: aura, chakras, meridianos"],
+  ["PÁGINA 3: COMO SE CONECTAM","Exemplo: Gastrite = estresse mental + raiva emocional + energia bloqueada","Nada acontece separado. Tudo influencia tudo","Ciclo: Pensamento > Emoção > Energia > Corpo"],
+  ["PÁGINA 4: ABORDAGEM FRAGMENTADA X INTEGRAL","Fragmentada: Remédio pra dor de cabeça","Integral: Por que tem dor? Estresse? Sono? Alma?","O terapeuta 360° investiga a raiz"],
+  ["PÁGINA 5: TAREFA PRÁTICA","Pegue 1 sintoma seu ou de alguém","Liste 1 causa possível em cada corpo","Conclusão: Você não é só corpo. Você é 4 em 1"]
  ]},
- 2:{nome:"Metodologia K-TH",video:"uO59aN9P1fA",paginas:[
-  ["OBJETIVO","Validar a terapia holística com ciência","Aprender a metodologia exclusiva K-TH"],
-  ["CONTEÚDO","Efeito placebo. Epigenética. Coerência cardíaca","Ciclo Anual: Off, Bulk, Maintenance, Cutting"],
-  ["PRÁTICA","Como explicar para um cético em 3 minutos usando ciência"],
-  ["EXEMPLO","Pesquisa: 8 semanas de meditação aumenta massa cinzenta"],
-  ["FINALIZAÇÃO","Resumo: Ciência + Espiritualidade. Corpo tem ciclos"]
+ 2:{nome:"Bases Científicas da Terapia", paginas:[
+  ["PÁGINA 1: OBJETIVO","Validar com ciência e quebrar preconceito","Mostrar que espiritualidade e ciência andam juntas"],
+  ["PÁGINA 2: EFEITO PLACEBO","A crença cura. Estudo: açúcar virou remédio","Cérebro libera dopamina e endorfina só por acreditar"],
+  ["PÁGINA 3: EPIGENÉTICA","Bruce Lipton: Ambiente liga/desliga genes","Seus pensamentos mudam sua biologia"],
+  ["PÁGINA 4: COERÊNCIA CARDÍACA","HeartMath: Gratidão aumenta imunidade 43%","Coração manda mais sinal pro cérebro que o contrário"],
+  ["PÁGINA 5: TAREFA PRÁTICA","Pesquisar 1 estudo sobre meditação e saúde","Como explicar terapia pra um cético em 3min"]
  ]},
- 3:{nome:"Ética Profissional",video:"TQMbvJNRpLE",paginas:[
-  ["OBJETIVO","Decorar e aplicar os 10 princípios éticos","Saber o que pode e não pode fazer legalmente"],
-  ["CONTEÚDO","Sigilo, respeito, limites, não prometer cura, não diagnosticar","Curso livre. MEI. Termo de responsabilidade"],
-  ["PRÁTICA","Julgar 5 casos éticos: certo ou errado"],
-  ["EXEMPLO","Caso real de quebra de ética e processo"],
-  ["FINALIZAÇÃO","Resumo: Ética é tudo. Atuar legal"]
+ 3:{nome:"Ética e Legislação Profissional", paginas:[
+  ["PÁGINA 1: OBJETIVO","Atuar legal e ético como terapeuta","Evitar processo e manter credibilidade"],
+  ["PÁGINA 2: OS 10 PRINCÍPIOS","1. Sigilo 2. Respeito 3. Não prometer cura 4. Não diagnosticar 5. Não suspender remédio"],
+  ["PÁGINA 3: O QUE PODE E NÃO PODE","PODE: Acolher, orientar, usar técnicas","NÃO PODE: Receitar, dar CID, falar que cura câncer"],
+  ["PÁGINA 4: DOCUMENTAÇÃO","MEI, Contrato, Ficha Anamnese, Termo Responsabilidade","Como se proteger juridicamente"],
+  ["PÁGINA 5: TAREFA PRÁTICA","Montar sua ficha de anamnese 360° com 10 perguntas"]
  ]},
- 4:{nome:"Técnicas de Atendimento",video:"ZToicYcHUCg",paginas:[
-  ["OBJETIVO","Fazer cliente se sentir seguro nos 5min iniciais","Ouvir para compreender e não responder"],
-  ["CONTEÚDO","Ambiente, voz, postura, 7 perguntas chave"],
-  ["PRÁTICA","Simulação de recepção"],
-  ["EXEMPLO","Erros que afastam o cliente"],
-  ["FINALIZAÇÃO","Resumo: Primeira impressão. Ouvir cura"]
+ 4:{nome:"Técnicas de Atendimento e Rapport", paginas:[
+  ["PÁGINA 1: OBJETIVO","Fazer cliente confiar em 5min","Primeira impressão define o tratamento"],
+  ["PÁGINA 2: AMBIENTE","Luz, som, cheiro, temperatura. Ambiente cura","Sala limpa = mente limpa"],
+  ["PÁGINA 3: COMUNICAÇÃO","Ouvir 80% Falar 20%. Perguntas abertas","Validar: 'Eu entendo sua dor'"],
+  ["PÁGINA 4: AS 7 PERGUNTAS","O que te trouxe? Desde quando? Piora com o que? Sono? Remédio? Expectativa?"],
+  ["PÁGINA 5: TAREFA PRÁTICA","Simular atendimento de 10min e gravar"]
  ]},
- 5:{nome:"Mapa da Jornada 360°",video:"1vx8iUvfyCY",paginas:[
-  ["OBJETIVO","Entender os próximos 3 meses: M2 Massoterapia, M3 Cuidador"],
-  ["CONTEÚDO","M5 Hipnose, M6 Meditação, M7 Inteligência Emocional"],
-  ["PRÁTICA","Definir 3 metas SMART"],
-  ["EXEMPLO","Depoimento de aluno de cada módulo"],
-  ["FINALIZAÇÃO","M10 Fitocosmética, M11 Gestão + Parceria KORVIL 50%"]
+ 5:{nome:"Mapa da Jornada K-TH", paginas:[
+  ["PÁGINA 1: OBJETIVO","Ver o mapa completo dos 11 módulos","Definir metas para 90 dias"],
+  ["PÁGINA 2: MÓDULOS 2-5","M2 Massoterapia M3 Cuidador M4 Práticas M5 Hipnose"],
+  ["PÁGINA 3: MÓDULOS 6-9","M6 Meditação M7 IE M8 Florais M9 Cristais"],
+  ["PÁGINA 4: MÓDULOS 10-11","M10 Fitocosmética M11 Gestão + Parceria KORVIL 50%"],
+  ["PÁGINA 5: TAREFA PRÁTICA","Escrever 3 metas SMART para o curso"]
  ]}
-};
+}},
 
-let estado={aula:1,pagina:1,xp:0,concluidas:[]};
-const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+2:{nome:"AUTOCONHECIMENTO E CURA INTERIOR", video:"uO59aN9P1fA", aulas:{
+ 1:{nome:"Quem Sou Eu: Mapa Pessoal", paginas:[["P1: OBJETIVO","Se conhecer"],["P2: RODA DA VIDA","8 áreas"],["P3: ARQUÉTIPOS","Herói, Sábio"],["P4: VALORES","5 valores"],["P5: TAREFA","Preencher roda"]]},
+ 2:{nome:"Crenças Limitantes", paginas:[["P1: OBJETIVO","Achar crenças"],["P2: ORIGEM","Até 7 anos"],["P3: FRASES","Não consigo"],["P4: TROCA","Trocar crença"],["P5: TAREFA","Listar 3"]]},
+ 3:{nome:"Sombra e Luz", paginas:[["P1: OBJETIVO","Integrar sombra"],["P2: O QUE É","Negamos"],["P3: PROJEÇÃO","Julgamos"],["P4: TÉCNICA","Diálogo"],["P5: TAREFA","Carta"]]},
+ 4:{nome:"Propósito Ikigai", paginas:[["P1: OBJETIVO","Achar propósito"],["P2: IKIGAI","4 círculos"],["P3: PERGUNTAS","4 perguntas"],["P4: SINAIS","Perde tempo"],["P5: TAREFA","Frase propósito"]]},
+ 5:{nome:"Integração 360°", paginas:[["P1: OBJETIVO","Unir 4 corpos"],["P2: CORPO","Cuidar"],["P3: MENTE","Estudar"],["P4: EMOÇÃO","Curar"],["P5: TAREFA","Rotina 30min"]]}
+}},
+
+3:{nome:"ENERGIA VITAL E CORPOS SUTIS", video:"TQMbvJNRpLE", aulas:{
+ 1:{nome:"Os 7 Chakras", paginas:[["P1: OBJETIVO","7 chakras"],["P2: 1-3","Raiz, Sacro, Plexo"],["P3: 4-7","Cardíaco ao Coronário"],["P4: DESEQUILÍBRIO","Sinais"],["P5: TAREFA","Alinhar 10min"]]},
+ 2:{nome:"Meridianos Chineses", paginas:[["P1: OBJETIVO","12 meridianos"],["P2: QI","Energia"],["P3: NOMES","Pulmão, Fígado"],["P4: ACUPRESSURA","Pontos"],["P5: TAREFA","Massagear IG4"]]},
+ 3:{nome:"Aura e Campos", paginas:[["P1: OBJETIVO","7 corpos"],["P2: CAMADAS","Etérico ao Espiritual"],["P3: SENTIR","Técnica mãos"],["P4: LIMPEZA","Sal, defumação"],["P5: TAREFA","Limpar aura"]]},
+ 4:{nome:"Prana e Respiração", paginas:[["P1: OBJETIVO","Aumentar prana"],["P2: FONTES","Ar, Sol, Comida"],["P3: 4-7-8","Acalmar"],["P4: FOGO","Energizar"],["P5: TAREFA","3 ciclos"]]},
+ 5:{nome:"Proteção Energética", paginas:[["P1: OBJETIVO","Não absorver"],["P2: SINAIS","Cansaço"],["P3: ESCUDO","Luz dourada"],["P4: CRISTAIS","Turmalina"],["P5: TAREFA","Ritual abertura"]]}
+}},
+
+4:{nome:"CORPO FÍSICO E SAÚDE INTEGRATIVA", video:"ZToicYcHUCg", aulas:{
+ 1:{nome:"Anatomia para Terapeutas", paginas:[["P1: OBJETIVO","Sistemas"],["P2: NERVOSO","Simpático"],["P3: MUSCULAR","12 grupos"],["P4: ENDÓCRINO","Glândulas"],["P5: TAREFA","Mapa tensão"]]},
+ 2:{nome:"Alimentação como Medicina", paginas:[["P1: OBJETIVO","Comida cura"],["P2: YANG YIN","Equilíbrio"],["P3: INFLAMAÇÃO","Açúcar"],["P4: CHÁS","Gengibre"],["P5: TAREFA","Cardápio 3 dias"]]},
+ 3:{nome:"Movimento Consciente", paginas:[["P1: OBJETIVO","Mover emoção"],["P2: YOGA","Abrir quadril"],["P3: ALONGAR","Respirar dor"],["P4: DANÇA","Liberar"],["P5: TAREFA","Sequência 15min"]]},
+ 4:{nome:"Sono e Regeneração", paginas:[["P1: OBJETIVO","Dormir bem"],["P2: CICLOS","90min"],["P3: HIGIENE","Sem tela"],["P4: ANSIEDADE","Ciclo"],["P5: TAREFA","Rotina 30min"]]},
+ 5:{nome:"Desintoxicação 360°", paginas:[["P1: OBJETIVO","Limpar"],["P2: FÍSICA","Suco verde"],["P3: MENTAL","7 dias"],["P4: ENERGÉTICA","Banho"],["P5: TAREFA","Protocolo 3 dias"]]}
+}},
+
+5:{nome:"MENTE, EMOÇÃO E ESPIRITUALIDADE", video:"1vx8iUvfyCY", aulas:{
+ 1:{nome:"Inteligência Emocional", paginas:[["P1: OBJETIVO","Gerenciar emoção"],["P2: 5 COMPETÊNCIAS","Autoconsciência"],["P3: RODA","6 emoções"],["P4: STOP","Técnica"],["P5: TAREFA","Diário"]]},
+ 2:{nome:"Cura de Traumas EFT", paginas:[["P1: OBJETIVO","Tapping"],["P2: COMO FUNCIONA","Pontos"],["P3: FRASE","Me amo"],["P4: RODADA","8 pontos"],["P5: TAREFA","Fazer 1 rodada"]]},
+ 3:{nome:"Reprogramação TCC", paginas:[["P1: OBJETIVO","Trocar pensamento"],["P2: TRÍADE","P>E>C"],["P3: DISTORÇÕES","Catástrofe"],["P4: ABCDE","Técnica"],["P5: TAREFA","Aplicar ABCDE"]]},
+ 4:{nome:"Gestão do Estresse", paginas:[["P1: OBJETIVO","Sair ansiedade"],["P2: SINAIS","Corpo"],["P3: COERÊNCIA","5x5x5"],["P4: ÂNCORA","Gesto"],["P5: TAREFA","Gravar áudio"]]},
+ 5:{nome:"Espiritualidade e Meditação", paginas:[["P1: OBJETIVO","Conectar"],["P2: O QUE É","Sentido"],["P3: GUIADA","10min"],["P4: ATIVA","Presença"],["P5: TAREFA","Guiar 5min"]]}
+}}};
+
+let estado = {tema:1, aula:1, pagina:1};
 
 function render(){
-  // Render Aulas
-  $('#navAulas').innerHTML='';
-  Object.keys(DADOS).forEach(i=>{
-    $('#navAulas').innerHTML+=`<div class="pill ${i==estado.aula?'active':''}" data-aula="${i}">${i}</div>`;
-  });
+  $('#navTemas').innerHTML = ''; Object.keys(CURSO).forEach(t=>{$('#navTemas').innerHTML += `<div class="botao ${t==estado.tema?'ativo':''}" data-tema="${t}">TEMA ${t}</div>`});
+  $('#navAulas').innerHTML = ''; Object.keys(CURSO[estado.tema].aulas).forEach(a=>{$('#navAulas').innerHTML += `<div class="botao ${a==estado.aula?'ativo':''}" data-aula="${a}">AULA ${a}</div>`});
+  $('#navPaginas').innerHTML = ''; CURSO[estado.tema].aulas[estado.aula].paginas.forEach((p,i)=>{$('#navPaginas').innerHTML += `<div class="botao ${i+1==estado.pagina?'ativo':''}" data-pagina="${i+1}">${i+1}</div>`});
   
-  // Render Paginas
-  $('#navPaginas').innerHTML='';
-  DADOS[estado.aula].paginas.forEach((p,i)=>{
-    $('#navPaginas').innerHTML+=`<div class="pill ${i+1==estado.pagina?'active':''}" data-pagina="${i+1}">${i+1}</div>`;
-  });
+  const dados = CURSO[estado.tema].aulas[estado.aula].paginas[estado.pagina-1];
+  $('#video').src = `https://www.youtube.com/embed/${CURSO[estado.tema].video}`;
+  $('#infoTopo').innerHTML = `FASE 1 > JANEIRO > MÓDULO 1 > TEMA ${estado.tema}: <b>${CURSO[estado.tema].nome}</b> > AULA ${estado.aula}: <b>${CURSO[estado.tema].aulas[estado.aula].nome}</b> > PÁGINA ${estado.pagina}`;
+  $('#paginaConteudo').innerHTML = `<ul>${dados.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   
-  // Render Conteudo
-  const aula=DADOS[estado.aula];
-  const pag=aula.paginas[estado.pagina-1];
-  $('#videoPlayer').src=`https://www.youtube.com/embed/${aula.video}`;
-  $('#bcAula').innerText=`AULA ${estado.aula}: ${aula.nome.toUpperCase()}`;
-  $('#bcPagina').innerText=`PÁGINA ${estado.pagina}: ${pag[0]}`;
-  
-  $('#conteudoArea').innerHTML=`
-    <div class="page active">
-      <div class="page-header"><h2>${pag[0]}</h2><p>Aula ${estado.aula} de 5</p></div>
-      <div class="page-content"><h4>O QUE VOCÊ VAI APRENDER</h4><ul>${pag.slice(1).map(x=>`<li>${x}</li>`).join('')}</ul></div>
-    </div>
-  `;
-  
-  // Progresso
-  let progresso = ((estado.aula-1)*5 + estado.pagina) / 25 * 100;
-  $('#progressModulo').style.width=progresso+'%';
-  $('#xp').innerText=estado.xp;
-  
-  // Libera avaliação
-  if(estado.aula==5 && estado.pagina==5){
-    $('#avaliacaoBox').classList.add('show');
-    gerarAvaliacao();
-  }
-  
+  let total = 125; let atual = ((estado.tema-1)*25) + ((estado.aula-1)*5) + estado.pagina; $('#barra').style.width = (atual/total*100)+'%';
+  if(estado.tema==5 && estado.aula==5 && estado.pagina==5){$('#avaliacao').classList.add('show');gerarQuestoes()}else{$('#avaliacao').classList.remove('show')}
   addEventos();
 }
 
 function addEventos(){
-  $$('#navAulas .pill').forEach(b=>b.onclick=()=>{estado.aula=+b.dataset.aula;estado.pagina=1;render();darXP(5)});
-  $$('#navPaginas .pill').forEach(b=>b.onclick=()=>{estado.pagina=+b.dataset.pagina;render();darXP(10)});
-  $('#btnAnt').onclick=()=>{if(estado.pagina>1){estado.pagina--}else if(estado.aula>1){estado.aula--;estado.pagina=5}render()};
-  $('#btnProx').onclick=()=>{if(estado.pagina<5){estado.pagina++}else if(estado.aula<5){estado.aula++;estado.pagina=1}render()};
+  $$('#navTemas .botao').forEach(b=>b.onclick=()=>{estado.tema=+b.dataset.tema;estado.aula=1;estado.pagina=1;render()});
+  $$('#navAulas .botao').forEach(b=>b.onclick=()=>{estado.aula=+b.dataset.aula;estado.pagina=1;render()});
+  $$('#navPaginas .botao').forEach(b=>b.onclick=()=>{estado.pagina=+b.dataset.pagina;render()});
+  $('#btnAnt').onclick=()=>{nav(-1)}; $('#btnProx').onclick=()=>{nav(1)};
 }
 
-function darXP(qtd){
-  estado.xp+=qtd;
-  mostrarToast(`+${qtd} XP`);
+function nav(dir){
+  if(dir==1){if(estado.pagina<5)estado.pagina++;else if(estado.aula<5){estado.aula++;estado.pagina=1}else if(estado.tema<5){estado.tema++;estado.aula=1;estado.pagina=1}}
+  else{if(estado.pagina>1)estado.pagina--;else if(estado.aula>1){estado.aula--;estado.pagina=5}else if(estado.tema>1){estado.tema--;estado.aula=5;estado.pagina=5}}
+  render();
 }
 
-function mostrarToast(txt){
-  $('#toastTxt').innerText=txt;
-  $('#toast').classList.add('show');
-  setTimeout(()=>$('#toast').classList.remove('show'),3000);
-}
-
-function gerarAvaliacao(){
-  $('#questoesArea').innerHTML=`
-    <div class="questao"><h3>1. Abordagem 360° significa:</h3>
-      <label><input type="radio" name="q1"> A) Só corpo</label>
-      <label><input type="radio" name="q1"> B) Corpo, Mente, Emoção e Energia</label>
-    </div>
-    <div class="questao"><h3>2. Os 4 corpos são:</h3>
-      <label><input type="radio" name="q2"> A) Físico, Químico</label>
-      <label><input type="radio" name="q2"> B) Físico, Mental, Emocional, Energético</label>
-    </div>
-  `;
-}
-
-render();
+function gerarQuestoes(){$('#questoes').innerHTML = `<div class="questao"><h4>1. Abordagem 360° trata:</h4><label><input type="radio" name="q1"> A) Só o corpo</label><label><input type="radio" name="q1"> B) Corpo, Mente, Emoção e Energia</label></div>`}
+const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s); render();
 </script>
 </body>
 </html>
