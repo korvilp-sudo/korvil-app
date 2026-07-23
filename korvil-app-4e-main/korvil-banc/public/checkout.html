@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KORVIL BANC - Checkout</title>
+  <style>
+    /* ============ Tema: preto #050505 + neon #00f5ff ============ */
+    :root {
+      --bg: #050505; --surface: #0d0d0f; --surface-2: #131318; --border: #1f1f26;
+      --neon: #00f5ff; --neon-dim: rgba(0,245,255,.15); --text: #e8e8ea; --muted: #7a7a85; --ok:#22e6a1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #0a1416, var(--bg));
+      color: var(--text); min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .checkout {
+      width: 100%; max-width: 440px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 1.75rem; box-shadow: 0 0 40px rgba(0,245,255,.06);
+    }
+    .brand { font-size: 1.3rem; font-weight: 800; letter-spacing: 2px; color: var(--neon); text-shadow: 0 0 18px var(--neon-dim); }
+    .brand small { display:block; color: var(--muted); font-size:.65rem; letter-spacing:4px; margin-top:.3rem; }
+    .resumo { margin: 1.4rem 0; padding: 1.1rem; background: var(--surface-2); border:1px solid var(--border); border-radius: 12px; }
+    .resumo .mod { font-size:.75rem; color: var(--neon); text-transform: uppercase; letter-spacing:2px; }
+    .resumo .valor { font-size: 2.1rem; font-weight: 800; margin-top:.2rem; }
+    .resumo .obs { font-size:.78rem; color: var(--muted); margin-top:.4rem; }
+    h3 { font-size:.8rem; color: var(--muted); text-transform: uppercase; letter-spacing:1px; margin:.5rem 0 .8rem; }
+    .opcoes { display: grid; gap: .8rem; }
+    .opcao {
+      display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+      width:100%; text-align:left; cursor:pointer;
+      background: var(--surface-2); border:1px solid var(--border); border-radius: 12px;
+      padding: 1rem 1.1rem; color: var(--text); font-size:.95rem; transition: all .15s ease;
+    }
+    .opcao:hover { border-color: var(--neon); box-shadow: 0 0 18px var(--neon-dim); transform: translateY(-1px); }
+    .opcao .t { font-weight: 700; }
+    .opcao .d { font-size:.75rem; color: var(--muted); margin-top:.15rem; }
+    .opcao .seta { color: var(--neon); font-weight:800; }
+    .parcelas { margin-top:.6rem; }
+    select {
+      width:100%; padding:.7rem .8rem; background: var(--surface-2); color: var(--text);
+      border:1px solid var(--border); border-radius: 10px; font-size:.9rem; outline:none;
+    }
+    select:focus { border-color: var(--neon); }
+    .msg { margin-top: 1rem; font-size:.85rem; min-height: 1.2rem; }
+    .msg.ok { color: var(--ok); }
+    .msg.err { color: #ff4d5e; }
+    .loading { opacity:.6; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <div class="checkout" id="checkout">
+    <div class="brand">KORVIL BANC<small>PAGAMENTO SEGURO</small></div>
+
+    <!-- Resumo do que sera cobrado (preenchido via querystring) -->
+    <div class="resumo">
+      <div class="mod" id="r-modulo">MODULO</div>
+      <div class="valor" id="r-valor">R$ 0,00</div>
+      <div class="obs">Cobranca dinamica - escolha como pagar na proxima etapa (Pix, cartao ou boleto).</div>
+    </div>
+
+    <h3>Escolha a forma de contratacao</h3>
+    <div class="opcoes">
+      <!-- 1) Assinatura -->
+      <button class="opcao" data-tipo="ASSINATURA">
+        <span><span class="t">Assinatura</span><span class="d">Cobranca recorrente mensal</span></span>
+        <span class="seta">&rarr;</span>
+      </button>
+
+      <!-- 2) Unico com 1-12x -->
+      <button class="opcao" data-tipo="UNICO">
+        <span><span class="t">Pagamento Unico</span><span class="d">A vista ou parcelado em ate 12x</span></span>
+        <span class="seta">&rarr;</span>
+      </button>
+      <div class="parcelas">
+        <select id="parcelas">
+          <!-- opcoes 1x..12x geradas via JS -->
+        </select>
+      </div>
+
+      <!-- 3) Inscricao -->
+      <button class="opcao" data-tipo="INSCRICAO">
+        <span><span class="t">Inscricao</span><span class="d">Taxa unica de entrada no programa</span></span>
+        <span class="seta">&rarr;</span>
+      </button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script>
+    // ============ Le parametros da URL: ?modulo=k-th&valor=150 ============
+    const params = new URLSearchParams(location.search);
+    const modulo = params.get("modulo") || "geral";
+    const valor = Number(params.get("valor") || 0);
+
+    const brl = (n) => (Number(n)||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+    // Preenche o resumo
+    document.getElementById("r-modulo").textContent = modulo.toUpperCase();
+    document.getElementById("r-valor").textContent = brl(valor);
+
+    // Popula parcelas 1x..12x (mostra valor por parcela)
+    const selParcelas = document.getElementById("parcelas");
+    for (let i = 1; i <= 12; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i === 1 ? "A vista (1x)" : `${i}x de ${brl(valor / i)}`;
+      selParcelas.appendChild(opt);
+    }
+
+    const msg = document.getElementById("msg");
+    const checkout = document.getElementById("checkout");
+
+    // ============ Ao escolher uma forma, cria a cobranca dinamica ============
+    document.querySelectorAll(".opcao").forEach((btn) => {
+      btn.addEventListener("click", () => criarCobranca(btn.dataset.tipo));
+    });
+
+    async function criarCobranca(tipo) {
+      msg.className = "msg";
+      msg.textContent = "Gerando pagamento...";
+      checkout.classList.add("loading");
+
+      // Parcelas so se aplicam ao tipo UNICO
+      const parcelas = tipo === "UNICO" ? Number(selParcelas.value) : 1;
+
+      try {
+        // Cria a cobranca dinamica no KORVIL BANC (que chama o Asaas)
+        const res = await fetch("/api/cobrancas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            modulo,
+            tipo,
+            valor,
+            parcelas,
+            // Cliente demonstrativo do checkout publico.
+            // Em producao, capture os dados reais do comprador antes desta etapa.
+            cliente: { nome: "Cliente Checkout", email: "cliente@exemplo.com" },
+            descricao: `KORVIL ${modulo} - ${tipo}`,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.erro || "Falha ao gerar cobranca");
+
+        // Redireciona para a fatura do Asaas (onde o cliente escolhe Pix/cartao/boleto)
+        if (data.invoiceUrl) {
+          msg.className = "msg ok";
+          msg.textContent = "Redirecionando para o pagamento...";
+          window.location.href = data.invoiceUrl;
+        } else {
+          msg.className = "msg ok";
+          msg.textContent = "Cobranca criada! ID: " + data.id;
+        }
+      } catch (err) {
+        msg.className = "msg err";
+        msg.textContent = err.message;
+      } finally {
+        checkout.classList.remove("loading");
+      }
+    }
+  </script>
+</body>
+</html>
