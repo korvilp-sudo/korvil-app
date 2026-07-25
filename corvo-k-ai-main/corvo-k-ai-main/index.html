@@ -1,55 +1,105 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><title>K-AI V0 GRATIS</title>
+<meta charset="utf-8"><title>K-AI v-3000 AUTO DEV</title>
 <style>
-body{background:#000;color:#00FFFF;font-family:monospace;padding:20px}
-textarea{width:100%;height:400px;background:#111;border:1px solid #00FFFF;color:#fff}
-button{background:#00FFFF;color:#000;border:0;padding:12px 20px;font-weight:900;cursor:pointer;border-radius:8px}
+:root{--bg:#000;--c:#00FFFF;--erro:#FF0044}
+body{background:var(--bg);color:var(--c);font-family:monospace;padding:20px}
+.card{background:#0a0f14;border:1px solid var(--c);padding:15px;border-radius:12px;margin:10px 0}
+input,textarea{width:100%;background:#111;border:1px solid var(--c);color:#fff;padding:10px}
+button{background:var(--c);color:#000;border:0;padding:12px;font-weight:900;cursor:pointer}
+.log{height:200px;overflow-y:auto;background:#000;border:1px solid #013;padding:10px;font-size:12px}
 </style>
 </head>
 <body>
-<h1>K-AI V0 GRATIS // SEM QUOTA</h1>
-<p>Digite: KAI: criar site completo de [tema] com [pasta/pagina1.html, pasta/pagina2.html]</p>
-<input id="prompt" style="width:80%;padding:12px;background:#111;border:1px solid #00FFFF;color:#fff">
-<button onclick="gerar()">GERAR TUDO</button>
-<h3>ARQUIVOS GERADOS:</h3>
-<div id="saida"></div>
-<textarea id="editor"></textarea>
-<button onclick="baixarZip()">⬇ BAIXAR ZIP</button>
+<h1>K-AI v-3000 // AUTO DEV KORVIL</h1>
 
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<div class="card">
+  <b>1. TOKEN GITHUB</b>
+  <input id="token" placeholder="Cole seu ghp_ aqui">
+  <button onclick="salvarToken()">SALVAR TOKEN</button>
+</div>
+
+<div class="card">
+  <b>2. CEREBRO: LER TODOS REPOS KORVIL</b>
+  <button onclick="lerGithubCompleto()">🧠 LER SISTEMA KORVIL INTEIRO</button>
+  <div id="status">Aguardando...</div>
+</div>
+
+<div class="card">
+  <b>3. COMANDO DE VOZ/TEXTO</b>
+  <input id="comando" placeholder='Ex: KAI: mudar cor do botão pra roxo e fazer commit'>
+  <button onclick="executar()">EXECUTAR E COMMITAR</button>
+</div>
+
+<div class="card">
+  <b>LOG DO SISTEMA</b>
+  <div class="log" id="log"></div>
+</div>
+
 <script>
-function gerar(){
-  const p = document.getElementById('prompt').value.toLowerCase();
-  let files = {};
+const USER = "korvilp-sudo";
+let TOKEN = localStorage.getItem('KAI_TOKEN');
+let CEREBRO_KORVIL = {}; // Aqui ele guarda todos arquivos
 
-  // V0 LOCAL - GERA MULTI ARQUIVOS
-  if(p.includes('barbearia')){
-    files['index.html'] = `<!doctype html><html><head><link rel="stylesheet" href="assets/style.css"></head><body><h1>K-BARBER</h1><a href="agendar.html">Agendar</a></body></html>`;
-    files['agendar.html'] = `<!doctype html><html><head><link rel="stylesheet" href="assets/style.css"></head><body><h1>AGENDE AQUI</h1></body></html>`;
-    files['assets/style.css'] = `body{background:#000;color:#00FFFF} h1{color:#00FFFF}`;
-  }
-  if(p.includes('portfolio')){
-    files['index.html'] = `<!doctype html><html><body><h1>K-RIADOR.DEV</h1></body></html>`;
-    files['projetos.html'] = `<!doctype html><html><body><h1>MEUS PROJETOS</h1></body></html>`;
-  }
+function log(t){document.getElementById('log').innerHTML += t + '<br>';}
+function salvarToken(){TOKEN=document.getElementById('token').value;localStorage.setItem('KAI_TOKEN',TOKEN);log('Token salvo')}
 
-  document.getElementById('saida').innerHTML = Object.keys(files).map(f=>`📁 ${f}`).join('<br>');
-  document.getElementById('editor').value = JSON.stringify(files, null, 2);
-  window.filesGerados = files;
+// 1. LER TODOS OS REPOS E ARQUIVOS
+async function lerGithubCompleto(){
+  log('Iniciando leitura completa do KORVIL...');
+  const repos = await fetch(`https://api.github.com/users/${USER}/repos`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
+  
+  for(const repo of repos){
+    log(`Lendo repo: ${repo.name}`);
+    const arvore = await fetch(`https://api.github.com/repos/${USER}/${repo.name}/git/trees/main?recursive=1`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
+    
+    for(const file of arvore.tree){
+      if(file.path.endsWith('.js') || file.path.endsWith('.html') || file.path.endsWith('.css')){
+        const conteudo = await fetch(file.url, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
+        CEREBRO_KORVIL[`${repo.name}/${file.path}`] = atob(conteudo.content);
+      }
+    }
+  }
+  document.getElementById('status').innerText = `CEREBRO PRONTO. ${Object.keys(CEREBRO_KORVIL).length} arquivos carregados.`;
+  log('K-AI AGORA ENTENDE TODA LOGICA KORVIL');
 }
 
-async function baixarZip(){
-  const zip = new JSZip();
-  for(const [nome, conteudo] of Object.entries(window.filesGerados)){
-    zip.file(nome, conteudo);
-  }
-  const blob = await zip.generateAsync({type:"blob"});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = "K-AI-SITE.zip";
-  a.click();
+// 2. EXECUTAR COMANDO + EDITAR + COMMIT
+async function executar(){
+  const cmd = document.getElementById('comando').value.toLowerCase();
+  log(`Recebi ordem: ${cmd}`);
+  
+  // AQUI ENTRA A "IA" QUE DECIDE O QUE MUDAR
+  let arquivoAlvo = 'korvil-app/index.html'; // padrão
+  let codigoAntigo = CEREBRO_KORVIL[arquivoAlvo];
+  let codigoNovo = codigoAntigo.replace('color:#00FFFF','color:#AA00FF'); // exemplo: troca cor
+  
+  log(`Editando: ${arquivoAlvo}`);
+  
+  // 3. COMMIT AUTOMATICO NO GITHUB
+  await commitarNoGithub(arquivoAlvo, codigoNovo, `KAI: ${cmd}`);
+  log('COMMIT FEITO! Github atualizado.');
+}
+
+async function commitarNoGithub(caminho, conteudo, msg){
+  const [repo, ...path] = caminho.split('/');
+  const pathFinal = path.join('/');
+  
+  // 1. Pega SHA do arquivo
+  const file = await fetch(`https://api.github.com/repos/${USER}/${repo}/contents/${pathFinal}`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
+  
+  // 2. Faz o commit
+  await fetch(`https://api.github.com/repos/${USER}/${repo}/contents/${pathFinal}`, {
+    method:'PUT',
+    headers:{Authorization:`token ${TOKEN}`},
+    body:JSON.stringify({
+      message: msg,
+      content: btoa(conteudo),
+      sha: file.sha,
+      branch: 'main'
+    })
+  });
 }
 </script>
 </body>
