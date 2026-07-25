@@ -1,0 +1,36 @@
+name: K-AI BACKEND
+on:
+  workflow_dispatch: # Ativa quando você chamar
+    inputs:
+      comando:
+        description: 'Comando do KAI'
+        required: true
+        type: string
+      arquivo:
+        description: 'Arquivo para editar'
+        required: true
+        type: string
+      codigo:
+        description: 'Código novo'
+        required: true
+        type: string
+
+jobs:
+  editar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # TOKEN SEGURO DO GITHUB
+      
+      - name: EDITAR ARQUIVO
+        run: |
+          echo "${{ inputs.codigo }}" > ${{ inputs.arquivo }}
+      
+      - name: COMMIT AUTOMATICO
+        run: |
+          git config user.name "K-AI BOT"
+          git config user.email "kai@korvil.com"
+          git add .
+          git commit -m "KAI: ${{ inputs.comando }}"
+          git push
