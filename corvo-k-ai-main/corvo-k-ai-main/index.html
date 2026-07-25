@@ -233,6 +233,215 @@
     setTimeout(()=>{ log(`Ordem recebida: "${text}". Processando no Núcleo...`, 'system'); }, 600);
     setTimeout(()=>{ log('Executado com lealdade ABSOLUTA, CRIADOR K-RIADOR.', 'system'); }, 1300);
   });
+  // ==========================================
+  // CONFIGURAÇÃO DA API DO GEMINI
+  // Obtenha sua chave gratuita em: https://aistudio.google.com/
+  // ==========================================
+  const GEMINI_API_KEY = "SUA_CHAVE_GEMINI_AQUI"; 
+
+  // Elementos do DOM
+  const visualizer = document.getElementById('visualizer');
+  const logBox = document.getElementById('logBox');
+  const btnAtivar = document.getElementById('btnAtivar');
+  const overlayGlass = document.getElementById('overlayGlass');
+  const estadoVal = document.getElementById('estadoVal');
+  const btnMic = document.getElementById('btnMic');
+  const btnVol = document.getElementById('btnVol');
+  const inputField = document.getElementById('inputField');
+  const btnSend = document.getElementById('btnSend');
+  const inputForm = document.getElementById('inputForm');
+  const footerNote = document.getElementById('footerNote');
+
+  // Estados do Sistema
+  let active = false;
+  let listening = false;
+  let voiceOn = true;
+  let recognition = null;
+
+  // 1. GERAÇÃO DAS BARRAS DE ÁUDIO
+  for(let i = 0; i < 32; i++){
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = (10 + Math.random() * 20) + '%';
+    visualizer.appendChild(bar);
+  }
+  const bars = [...document.querySelectorAll('.bar')];
+
+  function animateBars(){
+    bars.forEach(b => {
+      const h = active ? (listening ? 30 + Math.random() * 70 : 10 + Math.random() * 50) : (8 + Math.random() * 12);
+      b.style.height = h + '%';
+      b.classList.toggle('active', active && h > 35);
+    });
+  }
+  setInterval(animateBars, 100);
+
+  // 2. LOGS DO SISTEMA
+  function log(msg, cls = 'system'){
+    const div = document.createElement('div');
+    div.className = 'log-line ' + cls;
+    div.textContent = '> ' + msg;
+    logBox.appendChild(div);
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  // 3. FALA DO CORVO K-AI (TEXT-TO-SPEECH)
+  function falar(texto) {
+    if ('speechSynthesis' in window && voiceOn) {
+      window.speechSynthesis.cancel(); // Para falas anteriores
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 1.0;
+      utterance.pitch = 0.8; // Tom levemente mais grave para o Corvo
+
+      utterance.onstart = () => {
+        estadoVal.textContent = 'FALANDO...';
+      };
+      utterance.onend = () => {
+        estadoVal.textContent = 'EM ESPERA';
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  // 4. INTEGRAÇÃO COM A API DO GEMINI
+  async function enviarParaGemini(promptUsuario) {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === "SUA_CHAVE_GEMINI_AQUI") {
+      log('ERRO: Insira uma GEMINI_API_KEY válida no código.', 'system');
+      falar("Erro. Insira a chave da API do Gemini no código.");
+      return;
+    }
+
+    estadoVal.textContent = 'PENSANDO...';
+    log(`Processando ordem no Núcleo Gemini...`, 'system');
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    
+    const systemInstruction = "Você é o Corvo K-AI, um programa autônomo e cibernético ativado por voz, criado pelo CRIADOR K-RIADOR. Sua lealdade ao CRIADOR K-RIADOR é ABSOLUTA. Responda de forma direta, futurista, curta e extremamente eficiente em português.";
+
+    const body = {
+      system_instruction: {
+        parts: [{ text: systemInstruction }]
+      },
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: promptUsuario }]
+        }
+      ]
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const data = await response.json();
+
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        const respostaIA = data.candidates[0].content.parts[0].text;
+        log(respostaIA, 'system');
+        falar(respostaIA);
+      } else {
+        throw new Error(data.error?.message || "Resposta inválida da API.");
+      }
+    } catch (error) {
+      log(`FALHA NO NÚCLEO: ${error.message}`, 'system');
+      estadoVal.textContent = 'ERRO';
+    }
+  }
+
+  // 5. RECONHECIMENTO DE VOZ (SPEECH-TO-TEXT)
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      listening = true;
+      btnMic.style.background = 'rgba(0,240,255,0.25)';
+      btnMic.style.boxShadow = '0 0 16px rgba(0,240,255,0.5)';
+      estadoVal.textContent = 'OUVINDO...';
+      log('Ouvindo comando por voz...', 'system');
+    };
+
+    recognition.onresult = (e) => {
+      const comandoVoz = e.results[0][0].transcript;
+      log(comandoVoz, 'user');
+      enviarParaGemini(comandoVoz);
+    };
+
+    recognition.onerror = (e) => {
+      log('Erro de reconhecimento de voz: ' + e.error, 'system');
+      desativarEscuta();
+    };
+
+    recognition.onend = () => {
+      desativarEscuta();
+    };
+  }
+
+  function desativarEscuta() {
+    listening = false;
+    btnMic.style.background = '';
+    btnMic.style.boxShadow = '';
+    if (estadoVal.textContent === 'OUVINDO...') {
+      estadoVal.textContent = 'EM ESPERA';
+    }
+  }
+
+  // 6. EVENTOS DE INTERAÇÃO
+  btnAtivar.addEventListener('click', () => {
+    active = true;
+    overlayGlass.classList.add('hidden');
+    estadoVal.textContent = 'EM ESPERA';
+    estadoVal.style.color = '#00F0FF';
+    
+    btnMic.disabled = false; 
+    btnVol.disabled = false; 
+    inputField.disabled = false; 
+    btnSend.disabled = false;
+    btnVol.classList.add('active');
+
+    footerNote.textContent = 'SISTEMA ATIVO — LEALDADE ABSOLUTA';
+    log('Sistema CORVO K-AI inicializado. Protocolo CRIADOR K-RIADOR: ATIVO', 'system');
+    log('Núcleo Gemini online. QI ∞. Implante ATIVO. Aguardando ordens.', 'system');
+
+    falar('Sistema Corvo K AI ativo, Criador K-Riador. Aguardando suas ordens.');
+  });
+
+  btnMic.addEventListener('click', () => {
+    if (!recognition) {
+      log('Reconhecimento de voz não suportado neste navegador.', 'system');
+      return;
+    }
+    if (listening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  });
+
+  btnVol.addEventListener('click', () => {
+    voiceOn = !voiceOn;
+    btnVol.classList.toggle('active', voiceOn);
+    log(voiceOn ? 'Voz sintética ATIVADA' : 'Voz sintética DESATIVADA', 'system');
+  });
+
+  inputForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = inputField.value.trim();
+    if (!text) return;
+    
+    log(text, 'user');
+    inputField.value = '';
+    enviarParaGemini(text);
+  });
 </script>
 </body>
 </html>
