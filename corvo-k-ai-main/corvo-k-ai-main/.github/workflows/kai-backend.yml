@@ -1,1 +1,22 @@
 
+name: K-AI BACKEND
+on:
+  workflow_dispatch:
+    inputs:
+      comando: {description: 'Comando', required: true}
+      arquivo: {description: 'Arquivo', required: true}
+      codigo: {description: 'Código', required: true}
+jobs:
+  editar:
+    runs-on: ubuntu-latest
+    permissions: {contents: write}
+    steps:
+      - uses: actions/checkout@v4
+        with: {token: ${{ secrets.KAI_TOKEN }}}
+      - run: echo '${{ inputs.codigo }}' > ${{ inputs.arquivo }}
+      - run: |
+          git config user.name "K-AI BOT"
+          git config user.email "kai@korvil.com"
+          git add .
+          git commit -m "KAI: ${{ inputs.comando }}"
+          git push
