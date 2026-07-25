@@ -1,17 +1,402 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>K-AI</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Corvo K-AI // CRIADOR K-RIADOR</title>
+  <meta name="description" content="Corvo K-AI — programa autônomo por voz. Online e Offline. Criação do CRIADOR K-RIADOR." />
   <style>
-    body { background: #000; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: Arial; }
-    img { width: 200px; height: 200px; margin-bottom: 20px; }
-    h1 { font-size: 48px; color: #00F0FF; margin: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #050505;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .background-glow {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.12), transparent 60%);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title {
+      font-family: monospace;
+      font-size: 1.125rem;
+      font-weight: bold;
+      letter-spacing: 0.35em;
+      color: #00F0FF;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    .subtitle {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: #a1a1aa;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #00F0FF;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #00F0FF;
+      animation: blink 1.5s infinite;
+    }
+
+    /* Hero Image Frame */
+    .avatar-frame {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay-glass {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 5, 5, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-activate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border-radius: 9999px;
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      background: #121215;
+      padding: 20px 24px;
+      color: #00F0FF;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+    }
+
+    .btn-activate:hover {
+      background: rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    /* Waveform visualizer */
+    .visualizer {
+      display: flex;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .bar {
+      width: 3px;
+      border-radius: 9999px;
+      background-color: #00F0FF;
+      opacity: 0.35;
+      height: 20%;
+    }
+
+    /* Status & Log Cards */
+    .card {
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(18, 18, 20, 0.7);
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: #00F0FF;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 12px;
+    }
+
+    .status-label {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #a1a1aa;
+    }
+
+    .status-value {
+      font-family: monospace;
+      color: #00F0FF;
+    }
+
+    /* Input Controls */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .circle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #121215;
+      color: #00F0FF;
+      cursor: pointer;
+    }
+
+    .btn-mic {
+      width: 64px;
+      height: 64px;
+    }
+
+    .btn-vol {
+      width: 48px;
+      height: 48px;
+      color: #a1a1aa;
+    }
+
+    .input-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-field {
+      height: 44px;
+      flex: 1;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #09090b;
+      padding: 0 12px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #00F0FF;
+    }
+
+    .btn-send {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #121215;
+      color: #00F0FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: #a1a1aa;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
   </style>
 </head>
 <body>
-  <img src="corvo-kai.jpg" alt="K-AI">
-  <h1>K-AI</h1>
-  <p style="color:gray">Em que posso te ajudar?</p>
+  <div class="background-glow"></div>
+
+  <main class="container">
+    <!-- Top Bar -->
+    <header>
+      <div>
+        <h1 class="title">CORVO K-AI</h1>
+        <p class="subtitle">Criação do CRIADOR K-RIADOR</p>
+      </div>
+      <div class="status-badge">
+        <span class="dot"></span>
+        <span>online</span>
+      </div>
+    </header>
+
+    <!-- Avatar Image & Power Button -->
+    <div class="avatar-frame">
+      <img src="corvo-kai.jpg" alt="Corvo K-AI" class="avatar-img" />
+      <div class="overlay-glass">
+        <button class="btn-activate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v10"></path>
+            <path d="M18.4 6.6a9 9 0 1 1-12.77.04"></path>
+          </svg>
+          <span>Ativar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Audio Visualizer -->
+    <div class="visualizer">
+      <div class="bar" style="height: 20%;"></div>
+      <div class="bar" style="height: 40%;"></div>
+      <div class="bar" style="height: 60%;"></div>
+      <div class="bar" style="height: 35%;"></div>
+      <div class="bar" style="height: 70%;"></div>
+      <div class="bar" style="height: 45%;"></div>
+      <div class="bar" style="height: 25%;"></div>
+    </div>
+
+    <!-- Status Section -->
+    <section class="card" aria-label="Painel de status">
+      <div class="card-header">
+        <span class="dot"></span>
+        <h2 class="card-title">Núcleo</h2>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Estado</span>
+        <span class="status-value">EM ESPERA</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Rede</span>
+        <span class="status-value">ONLINE</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">LLM</span>
+        <span class="status-value" style="color: #a1a1aa;">GATEWAY</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Lealdade</span>
+        <span class="status-value">ABSOLUTA</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">QI</span>
+        <span class="status-value">∞</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Implante</span>
+        <span class="status-value">ATIVO</span>
+      </div>
+    </section>
+
+    <!-- Communication Log -->
+    <section class="card" aria-label="Registro de comunicação">
+      <div class="card-header">
+        <span class="dot"></span>
+        <h2 class="card-title">Log</h2>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; color: #a1a1aa;">
+        > Sistema inicializado. Aguardando interação...
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="btn-row">
+        <button class="circle-btn btn-mic" aria-label="Falar comando">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" x2="12" y1="19" y2="22"></line>
+          </svg>
+        </button>
+        <button class="circle-btn btn-vol" aria-label="Voz">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+      </div>
+
+      <form class="input-form" onsubmit="event.preventDefault();">
+        <input type="text" placeholder="Digite uma ordem, CRIADOR K-RIADOR..." class="input-field" />
+        <button type="submit" class="btn-send" aria-label="Enviar ordem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+
+      <p class="footer-note">Aguardando suas ordens por voz</p>
+    </div>
+  </main>
 </body>
 </html>
