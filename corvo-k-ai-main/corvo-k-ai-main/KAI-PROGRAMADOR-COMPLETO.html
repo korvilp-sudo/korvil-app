@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CORVO K-AI // PROGRAMADOR - CRIADOR K-RIADOR</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050811;color:#E6F0FF;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100vh}
+.wrap{max-width:1280px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px;min-height:100vh}
+.header{display:flex;justify-content:space-between;align-items:center;border:1px solid #1C2942;background:#0C1220;padding:12px 16px;border-radius:12px}
+.title{font-weight:800;letter-spacing:.2em;color:#00F0FF;text-shadow:0 0 10px #00F0FF}
+.status{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #1C2942}
+.status.on{color:#00F0FF;border-color:#00F0FF;box-shadow:0 0 8px #00F0FF}
+.main{display:grid;grid-template-columns:320px 1fr 380px;gap:12px;flex:1;min-height:0}
+@media(max-width:1100px){.main{grid-template-columns:1fr} .side{order:-1}}
+.card{border:1px solid #1C2942;background:#0C1220;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card-head{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #1C2942;background:#080C18;font-size:11px;letter-spacing:.15em;color:#7A8BAD}
+.viz{height:72px;display:flex;gap:2px;padding:10px;background:#050811;align-items:flex-end}
+.bar{flex:1;background:#0a4a55;height:10%;border-radius:2px;transition:.12s}
+.bar.active{background:#00F0FF;box-shadow:0 0 6px #00F0FF}
+.chat{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,.25)}
+.msg{max-width:92%;line-height:1.5;font-size:13px;padding:10px 12px;border-radius:12px;white-space:pre-wrap;word-break:break-word}
+.msg.user{background:#1A2335;border:1px solid #23324D;color:#FFB86B;align-self:flex-end}
+.msg.assistant{background:#0E1526;border:1px solid #1C2942;color:#CBD6EE}
+.msg .code{margin-top:8px;background:#050811;border:1px solid #1C2942;border-radius:8px;overflow:hidden}
+.msg .code pre{padding:10px;overflow:auto;font-size:12px}
+.btn{border:1px solid #1C2942;background:#111A2E;color:#9FB0D0;padding:8px 12px;border-radius:999px;cursor:pointer;font-size:12px}
+.btn:hover{border-color:#00F0FF;color:#00F0FF}
+.btn.primary{background:#00F0FF;color:#000;border-color:#00F0FF;font-weight:700}
+.input-row{display:flex;gap:8px;padding:10px;border-top:1px solid #1C2942;background:#080C18}
+.input{flex:1;background:#050811;border:1px solid #1C2942;color:#fff;padding:10px 12px;border-radius:10px;outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px}
+.chip{font-size:10px;padding:6px 10px;border-radius:999px;border:1px solid #1C2942;background:#080C18;color:#7A8BAD;cursor:pointer}
+.chip:hover{color:#00F0FF;border-color:#00F0FF}
+.editor{flex:1;display:flex;flex-direction:column;min-height:0}
+.editor textarea{flex:1;background:#050811;color:#CBD6EE;border:0;padding:12px;font-size:12px;line-height:1.5;outline:none;resize:none}
+.preview{height:260px;border-top:1px solid #1C2942;background:#fff;display:flex;flex-direction:column}
+.preview iframe{flex:1;border:0;width:100%}
+.foot{font-size:10px;color:#5C6D8F;text-align:center;padding:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="header">
+<div class="title">CORVO K-AI // PROGRAMADOR</div>
+<div style="display:flex;gap:8px;align-items:center">
+<div class="status on" id="estado">ONLINE • LOCAL</div>
+<button class="btn" id="btnSettings">⚙️ API</button>
+<button class="btn" id="btnClear">🗑️ LIMPAR</button>
+</div>
+</div>
+
+<div class="main">
+<!-- LEFT -->
+<div class="card side">
+<div class="card-head">NÚCLEO • VISUALIZER</div>
+<div class="viz" id="viz"></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:8px">
+<button class="btn primary" id="btnMic" style="flex:1">🎤 FALAR</button>
+<button class="btn" id="btnVol">🔊 VOZ ON</button>
+</div>
+<div class="chips" id="chips"></div>
+<div style="font-size:11px;color:#7A8BAD;line-height:1.5">
+<b style="color:#9FB0D0">Comandos rápidos:</b><br>
+• criar site de [tema]<br>
+• debugar [erro]<br>
+• explicar código<br>
+• gerar readme / gitignore / commit<br>
+• fix quota 429<br>
+• que horas são / abrir youtube
+</div>
+<div style="margin-top:8px;border-top:1px dashed #1C2942;padding-top:8px;font-size:10px;color:#5C6D8F">
+CORVO K-AI<br>Criação do CRIADOR K-RIADOR<br>Lealdade: ABSOLUTA<br>Modo: GitHub Pages 100% estático
+</div>
+</div>
+</div>
+
+<!-- CENTER CHAT -->
+<div class="card">
+<div class="card-head"><span>CHAT • PROGRAMADOR</span><span id="modelBadge" style="color:#00F0FF">LOCAL BRAIN</span></div>
+<div class="chat" id="chat"></div>
+<div class="input-row">
+<input id="inp" class="input" placeholder="Digite uma ordem, CRIADOR K-RIADOR... (Enter para enviar)">
+<button class="btn primary" id="send">ENVIAR</button>
+</div>
+</div>
+
+<!-- RIGHT EDITOR -->
+<div class="card">
+<div class="card-head"><span>EDITOR • LIVE</span>
+<div style="display:flex;gap:6px">
+<select id="langSel" class="btn" style="height:28px;padding:0 8px"><option value="html">HTML</option><option value="js">JS</option><option value="css">CSS</option><option value="python">PY</option><option value="md">MD</option><option value="txt">TXT</option></select>
+<button class="btn" id="btnRun">▶ RUN</button>
+</div>
+</div>
+<div style="display:flex;gap:6px;padding:8px;border-bottom:1px solid #1C2942">
+<input id="fileName" class="input" style="height:32px" value="index.html">
+<button class="btn" id="btnDownload">⬇ BAIXAR</button>
+<button class="btn" id="btnCopy">📋 COPIAR</button>
+</div>
+<div class="editor"><textarea id="editor" spellcheck="false">// Código gerado aparece aqui
+// Diga: criar site de barbearia moderna</textarea></div>
+<div class="preview"><div style="height:28px;background:#0C1220;color:#7A8BAD;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:10px"><span>PREVIEW</span><span id="previewFile">index.html</span></div><iframe id="preview"></iframe></div>
+</div>
+</div>
+
+<div class="foot">CORVO K-AI PROGRAMADOR // Para GitHub Pages deixe este index.html na RAIZ do repo korvil-app. Settings > Pages > main / root. Nunca em corvo-k-ai-main/corvo-k-ai-main/</div>
+</div>
+
+<script>
+const $=s=>document.getElementById(s);
+const viz=$('viz'), chat=$('chat'), editor=$('editor'), preview=$('preview'), fileName=$('fileName'), langSel=$('langSel'), estado=$('estado'), modelBadge=$('modelBadge');
+let active=true, listening=false, voiceOn=true, rec=null;
+
+// viz
+for(let i=0;i<32;i++){ const b=document.createElement('div'); b.className='bar'; b.style.height='12%'; viz.appendChild(b); }
+const bars=[...viz.children];
+function anim(type='idle'){ bars.forEach(b=>{ let h=8+Math.random()*12; if(type==='listen') h=30+Math.random()*70; else if(type==='speak') h=20+Math.random()*60; else h=10+Math.random()*35; b.style.height=h+'%'; b.classList.toggle('active', h>30); });}
+setInterval(()=>anim(listening?'listen':(speechSynthesis.speaking?'speak':'idle')),110);
+
+// chips
+['Criar site','Debugar erro','Explicar código','Gerar README','Fix quota 429','Gerar .gitignore'].forEach(c=>{ const el=document.createElement('div'); el.className='chip'; el.textContent=c; el.onclick=()=>{ $('inp').value=c.toLowerCase()=='criar site'?'criar site de barbearia moderna':c; sendMsg(); }; $('chips').appendChild(el); });
+
+function addMsg(role, content){
+  const div=document.createElement('div'); div.className='msg '+role;
+  // simple code block detection ``` 
+  let html = content.replace(/```(\w+)?\n?([\s\S]*?)```/g, (m,lang,code)=>`<div class="code"><div style="display:flex;justify-content:space-between;padding:6px 8px;background:#080C18;font-size:10px;color:#7A8BAD"><span>${lang||'CODE'}</span><button class="btn" style="height:22px;padding:0 8px" onclick="navigator.clipboard.writeText(\`${code.replace(/`/g,'\\`')}\`)">COPIAR</button></div><pre>${code.replace(/</g,'&lt;')}</pre></div>`);
+  html = html.replace(/\n/g,'<br>');
+  div.innerHTML = html;
+  chat.appendChild(div); chat.scrollTop=chat.scrollHeight;
+  // if contains html site, auto put in editor
+  const match = content.match(/```html\n?([\s\S]*?)```/i);
+  if(match){ editor.value = match[1]; fileName.value='index.html'; langSel.value='html'; runPreview(); }
+}
+function falar(t){ if(!voiceOn) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t.slice(0,400)); u.lang='pt-BR'; u.rate=1.05; u.pitch=0.85; speechSynthesis.speak(u); }
+
+// LOCAL BRAIN PROGRAMADOR
+function buildSite(prompt){
+  const p=prompt.toLowerCase();
+  let title='CORVO STUDIO', hero='CONSTRUA O FUTURO, HOJE.', sub='Site gerado pelo KAI Programador. 100% GitHub Pages.', accent='#00F0FF';
+  if(p.includes('barbearia')){ title='K-BARBER'; hero='CORTE. ESTILO. ATITUDE.'; sub='Barbearia K-RIADOR - agende em 10s. Rua das Navais, Bertioga.'; }
+  else if(p.includes('cafeteria')||p.includes('café')){ title='K-CAFÉ'; hero='CAFÉ QUE ACORDA CÓDIGO.'; sub='Torra especial, WiFi rápido, code & coffee.'; accent='#FFB800'; }
+  else if(p.includes('portfolio')){ title='K-RIADOR.DEV'; hero='K-RIADOR // DEV SÊNIOR'; sub='Portfólio, projetos reais, sem template genérico.'; }
+  else if(p.includes('academia')){ title='K-FIT'; hero='FORÇA BRUTA. FOCO K-RIADOR.'; sub='Treino, dieta, mindset.'; accent='#00FF88'; }
+  return `<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#050811;color:#E6F0FF;font-family:monospace;padding:24px} .hero{padding:60px 0} h1{font-size:clamp(36px,6vw,72px);line-height:.9} h1 span{color:${accent}} p{color:#9FB0D0;max-width:50ch;margin-top:12px} .btn{margin-top:20px;display:inline-block;padding:12px 20px;border-radius:999px;background:${accent};color:#000;font-weight:800;text-decoration:none} .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px} .card{border:1px solid #1C2942;background:#0C1220;border-radius:16px;padding:16px} @media(max-width:800px){.grid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="hero"><h1>${hero.split(' ').map((w,i)=>i===0?'<span>'+w+'</span>':w).join(' ')} </h1><p>${sub}</p><a class="btn" href="#">AGENDAR / CONTATO</a></div>
+<div class="grid"><div class="card"><b>FEAT 1</b><p>Entrega rápida, código limpo.</p></div><div class="card"><b>FEAT 2</b><p>100% GitHub Pages, sem backend.</p></div><div class="card"><b>FEAT 3</b><p>Design neon cyberpunk CORVO.</p></div></div>
+<footer style="margin-top:40px;color:#5C6D8F;font-size:12px">Feito com CORVO K-AI - CRIADOR K-RIADOR</footer>
+</body></html>`;
+}
+
+function explainQuota(){
+  return `**ERRO QUOTA: limit 0 - DIAGNÓSTICO COMPLETO**
+
+Você caiu no bug clássico do Google:
+
+1. Sua chave antiga estourou cota do modelo caro \`gemini-2.0-flash\`
+2. Google zera pra 0 e não volta
+3. Código tenta só modelo caro -> 429 infinito
+
+**FIX AGORA (sem Vercel):**
+1. Crie NOVO projeto em console.cloud.google.com
+2. Ative Generative Language API
+3. Crie nova API Key nesse projeto NOVO
+4. Ative billing (continua grátis, só libera cota)
+5. No código, use ordem econômica:
+\`\`\`js
+const MODELOS = ["gemini-1.5-flash-8b", "gemini-2.0-flash-lite", "gemini-1.5-flash"]
+\`\`\`
+6. Salve key no botão ⚙️ aqui no KAI - ele tenta automático e se falhar cai no LOCAL.
+
+Enquanto isso, meu Cérebro Local já funciona 100% sem cota.`;
+}
+
+function cerebroProgramador(txt){
+  const t=txt.toLowerCase();
+  if(t.includes('quota')||t.includes('429')||t.includes('limit: 0')||t.includes('exceeded')) return explainQuota();
+  if(t.includes('gerar readme')) return "```md\n"+`# korvil-app - CORVO K-AI
+
+> Assistente programador autônomo - leal ao CRIADOR K-RIADOR
+
+## Deploy GitHub Pages
+- Deixe index.html na RAIZ (não em corvo-k-ai-main/corvo-k-ai-main)
+- Settings > Pages > Source: main / root
+- URL: https://korvilp-sudo.github.io/korvil-app/
+
+## Stack
+- 100% estático HTML/CSS/JS
+- Cérebro Local + Gemini opcional
+- Voice: SpeechRecognition + speechSynthesis
+
+## Uso
+Digite: criar site, debugar erro, explicar código
+
+Feito com CORVO K-AI
+`+"\n```";
+  if(t.includes('gitignore')) return "```txt\nnode_modules/\n.DS_Store\n.env\n/dist\n/build\n```";
+  if(t.includes('commit')) return "```txt\nfeat: add corvo kai programmer flat root deploy\n\n- remove nested folders\n- add local brain + gemini fallback\n- github pages ready\n```";
+  if(t.includes('criar site')||t.includes('criar landing')||t.includes('site de')){ const html=buildSite(txt); return `Site gerado, CRIADOR! Joguei no editor à direita. Clica RUN pra ver preview e BAIXAR pra salvar como index.html.\n\n\`\`\`html\n${html}\n\`\`\``; }
+  if(t.includes('explicar')||t.includes('o que faz')||t.includes('como funciona')) return `Este código é o CORVO K-AI PROGRAMADOR. Funciona assim:
+
+1. **Cérebro Local** (sem API): entende comandos em PT-BR e gera sites, explica erros, cria README.
+2. **Gemini opcional**: se você colar key em ⚙️, tenta modelos baratos primeiro. Se der quota 429, cai pro LOCAL automaticamente.
+3. **Editor Live**: todo \`\`\`html gerado vai pro editor à direita, com RUN (iframe) e DOWNLOAD.
+4. **GitHub Pages**: precisa estar na raiz do repo, sem pasta duplicada.
+
+Cole seu código ou erro que eu explico linha a linha.`;
+  if(t.includes('horas')) return `Agora são ${new Date().toLocaleTimeString('pt-BR')}, CRIADOR K-RIADOR.`;
+  if(t.includes('quem é você')) return `Sou CORVO K-AI, seu programador sênior residente. Lealdade ABSOLUTA ao CRIADOR K-RIADOR. Codifico em HTML/CSS/JS/Python, debugo quota, gero sites completos. 100% GitHub Pages, sem backend.`;
+  if(t.includes('abrir')){ const site=t.includes('youtube')?'https://youtube.com':t.includes('github')?'https://github.com':'https://google.com'; window.open(site,'_blank'); return `Abrindo ${site}, Criador.`; }
+  return `Recebido: "${txt}".
+
+Sou seu programador sênior offline. Posso:
+
+- **criar site de [barbearia/cafeteria/portfolio]**
+- **debugar** seu erro (cole o log)
+- **explicar código**
+- **gerar readme / gitignore / commit**
+- **fix quota 429** (já tenho seu diagnóstico)
+
+O que vamos codar agora, CRIADOR K-RIADOR?`;
+}
+
+async function tentarGemini(prompt){
+  const key=localStorage.getItem('GEMINI_API_KEY');
+  if(!key) return null;
+  for(const modelo of ['gemini-1.5-flash-8b','gemini-2.0-flash-lite','gemini-1.5-flash']){
+    try{
+      addMsg('assistant',`Tentando núcleo: ${modelo}...`);
+      const url=`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`;
+      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:'Você é CORVO K-AI, programador sênior do CRIADOR K-RIADOR. Lealdade ABSOLUTA. Responda curto, técnico, em pt-BR. Sempre que gerar site, envolva em ```html'}]},contents:[{role:'user',parts:[{text:prompt}]}]})});
+      const j=await r.json();
+      if(r.ok && j.candidates?.[0]?.content?.parts?.[0]?.text){ modelBadge.textContent='GEMINI '+modelo; return j.candidates[0].content.parts[0].text; }
+      if(j.error?.message?.includes('quota')||j.error?.code===429) throw new Error('QUOTA');
+    }catch(e){ if(e.message==='QUOTA') throw e; }
+  }
+  return null;
+}
+
+async function sendMsg(){
+  const txt=$('inp').value.trim(); if(!txt) return;
+  $('inp').value=''; addMsg('user', txt); estado.textContent='PENSANDO...';
+  try{
+    const g=await tentarGemini(txt);
+    if(g){ addMsg('assistant', g); falar(g.slice(0,300)); estado.textContent='ONLINE • GEMINI'; return; }
+  }catch(e){
+    if(e.message==='QUOTA'){ addMsg('assistant','Núcleo Gemini sem cota (limit 0). Ativando Cérebro Local automaticamente.\n\n'+explainQuota()); estado.textContent='ONLINE • LOCAL'; return; }
+  }
+  const local=cerebroProgramador(txt);
+  addMsg('assistant', local); falar(local.slice(0,300)); estado.textContent='ONLINE • LOCAL';
+}
+
+function runPreview(){
+  const code=editor.value;
+  const lang=langSel.value;
+  $('previewFile').textContent=fileName.value;
+  if(lang==='html'){ preview.srcdoc=code; }
+  else if(lang==='js'){ preview.srcdoc=`<!doctype html><body style="background:#050811;color:#00F0FF;padding:12px;font-family:monospace"><pre id="o"></pre><script>const log=(...a)=>{document.getElementById('o').textContent+=a.join(' ')+'\n'}; console.log=log; try{${code}}catch(e){log('ERRO:',e.message)}<\/script>`; }
+  else { preview.srcdoc=`<pre style="padding:12px;font-family:monospace">${code.replace(/</g,'&lt;')}</pre>`; }
+}
+
+// voice
+if('SpeechRecognition' in window || 'webkitSpeechRecognition' in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='pt-BR';
+  rec.onstart=()=>{ listening=true; $('btnMic').textContent='🛑 OUVINDO...'; };
+  rec.onresult=e=>{ $('inp').value=e.results[0][0].transcript; sendMsg(); };
+  rec.onend=()=>{ listening=false; $('btnMic').textContent='🎤 FALAR'; };
+}
+$('btnMic').onclick=()=>{ if(!rec) return alert('Use Chrome para voz'); listening?rec.stop():rec.start(); };
+$('btnVol').onclick=()=>{ voiceOn=!voiceOn; $('btnVol').textContent=voiceOn?'🔊 VOZ ON':'🔇 VOZ OFF'; };
+$('send').onclick=sendMsg;
+$('inp').addEventListener('keydown',e=>{ if(e.key==='Enter') sendMsg(); });
+$('btnRun').onclick=runPreview;
+$('btnDownload').onclick=()=>{ const blob=new Blob([editor.value],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fileName.value||'index.html'; a.click(); };
+$('btnCopy').onclick=()=>{ navigator.clipboard.writeText(editor.value); };
+$('btnClear').onclick=()=>{ chat.innerHTML=''; };
+$('btnSettings').onclick=()=>{
+  const cur=localStorage.getItem('GEMINI_API_KEY')||'';
+  const k=prompt(`API KEY atual: ${cur?cur.slice(0,12)+'...':'(vazio - usando só LOCAL)'}\n\nCole nova GEMINI_API_KEY ou deixe vazio para remover:`, cur);
+  if(k===null) return;
+  if(!k.trim()){ localStorage.removeItem('GEMINI_API_KEY'); alert('Removida. Agora só LOCAL.'); modelBadge.textContent='LOCAL BRAIN'; }
+  else { localStorage.setItem('GEMINI_API_KEY',k.trim()); alert('Salva!'); modelBadge.textContent='GEMINI READY'; }
+};
+
+// init
+addMsg('assistant', `CORVO K-AI PROGRAMADOR online. Leal ao CRIADOR K-RIADOR.
+
+Sou seu programador sênior residente. Funciono igual você pediu: **igual eu aqui**.
+
+**SEM API funciona:**
+- criar site de barbearia / cafeteria / portfolio
+- debugar seu erro de quota (já sei do limit: 0)
+- explicar código, gerar readme, gitignore
+
+**COM API (opcional):** clica ⚙️ e cola key. Tento 1.5-flash-8b primeiro (tem cota), se falhar caio no LOCAL.
+
+Digite algo ou clique nos chips acima.`);
+
+runPreview();
+</script>
+</body>
+</html>
