@@ -1,50 +1,445 @@
-async function enviarParaGemini(promptUsuario) {
-  // Busca a chave salva no navegador
-  let apiKey = localStorage.getItem('GEMINI_API_KEY');
-
-  // Se não encontrar, pede a chave uma única vez
-  if (!apiKey) {
-    apiKey = prompt("Cole sua GEMINI_API_KEY do Google AI Studio para ativar o Corvo:");
-    if (apiKey) {
-      localStorage.setItem('GEMINI_API_KEY', apiKey.trim());
-    } else {
-      log('ERRO: Chave da API do Gemini necessária para continuar.', 'system');
-      return;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORVO K-AI // CRIADOR K-RIADOR</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
     }
-  }
 
-  estadoVal.textContent = 'PENSANDO...';
-  log(`Processando ordem no Núcleo Gemini...`, 'system');
+    body {
+      background-color: #050811;
+      color: #00F0FF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const systemInstruction = "Você é o Corvo K-AI, um programa autônomo e cibernético ativado por voz, criado pelo CRIADOR K-RIADOR. Sua lealdade ao CRIADOR K-RIADOR é ABSOLUTA. Responda de forma direta, futurista, curta e extremamente eficiente em português.";
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: rgba(10, 15, 30, 0.85);
+      border: 1px solid #00F0FF;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemInstruction }] },
-        contents: [{ role: "user", parts: [{ text: promptUsuario }] }]
-      })
+    /* Overlay de Ativação */
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 8, 17, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      border-radius: 8px;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .btn-start {
+      background: transparent;
+      border: 2px solid #00F0FF;
+      color: #00F0FF;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .btn-start:hover {
+      background: #00F0FF;
+      color: #050811;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.8);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #00F0FF;
+      padding-bottom: 10px;
+    }
+
+    .title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    .status {
+      font-size: 0.85rem;
+      color: #ff4444;
+      font-weight: bold;
+    }
+
+    /* Visualizador de Áudio */
+    .visualizer-container {
+      height: 60px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .bar {
+      flex: 1;
+      background: #008899;
+      height: 10%;
+      border-radius: 2px;
+      transition: height 0.1s ease, background-color 0.2s ease;
+    }
+
+    .bar.active {
+      background: #00F0FF;
+      box-shadow: 0 0 8px #00F0FF;
+    }
+
+    /* Caixa de Logs */
+    .log-box {
+      height: 200px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 4px;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .log-line {
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .log-line.system {
+      color: #00F0FF;
+    }
+
+    .log-line.user {
+      color: #ffaa00;
+    }
+
+    /* Controles */
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid #00F0FF;
+      color: #00F0FF;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .btn-icon:hover:not(:disabled) {
+      background: rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-icon:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: #555;
+      color: #555;
+    }
+
+    .btn-icon.active {
+      background: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    }
+
+    .input-form {
+      display: flex;
+      flex: 1;
+      gap: 5px;
+    }
+
+    .input-field {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00F0FF;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .input-field:focus {
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      text-align: center;
+      opacity: 0.6;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Overlay Inicial -->
+    <div class="overlay" id="overlayGlass">
+      <button class="btn-start" id="btnAtivar">⚡ ATIVAR CORVO K-AI</button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="header">
+      <div class="title">CORVO K-AI</div>
+      <div class="status" id="estadoVal">DESATIVADO</div>
+    </div>
+
+    <!-- Visualizador de Áudio -->
+    <div class="visualizer-container" id="visualizer"></div>
+
+    <!-- Caixa de Logs -->
+    <div class="log-box" id="logBox">
+      <div class="log-line system">> Sistema pronto. Clique em "ATIVAR CORVO K-AI" para iniciar.</div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+      <button class="btn-icon" id="btnMic" disabled title="Ativar Microfone">🎤</button>
+      <button class="btn-icon" id="btnVol" disabled title="Ativar/Desativar Voz">🔊</button>
+      
+      <form class="input-form" id="inputForm">
+        <input type="text" class="input-field" id="inputField" placeholder="Digite uma ordem..." disabled>
+        <button type="submit" class="btn-icon" id="btnSend" disabled>ENVIAR</button>
+      </form>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer-note" id="footerNote">SISTEMA EM ESPERA — CRIADOR K-RIADOR</div>
+  </div>
+
+  <script>
+    // Elementos do DOM
+    const visualizer = document.getElementById('visualizer');
+    const logBox = document.getElementById('logBox');
+    const btnAtivar = document.getElementById('btnAtivar');
+    const overlayGlass = document.getElementById('overlayGlass');
+    const estadoVal = document.getElementById('estadoVal');
+    const btnMic = document.getElementById('btnMic');
+    const btnVol = document.getElementById('btnVol');
+    const inputField = document.getElementById('inputField');
+    const btnSend = document.getElementById('btnSend');
+    const inputForm = document.getElementById('inputForm');
+    const footerNote = document.getElementById('footerNote');
+
+    let active = false;
+    let listening = false;
+    let voiceOn = true;
+    let recognition = null;
+
+    // Gerador de Barras do Visualizador
+    for(let i = 0; i < 32; i++){
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.height = (10 + Math.random() * 20) + '%';
+      visualizer.appendChild(bar);
+    }
+    const bars = [...document.querySelectorAll('.bar')];
+
+    function animateBars(){
+      bars.forEach(b => {
+        const h = active ? (listening ? 30 + Math.random() * 70 : 10 + Math.random() * 50) : (8 + Math.random() * 12);
+        b.style.height = h + '%';
+        b.classList.toggle('active', active && h > 35);
+      });
+    }
+    setInterval(animateBars, 100);
+
+    function log(msg, cls = 'system'){
+      const div = document.createElement('div');
+      div.className = 'log-line ' + cls;
+      div.textContent = '> ' + msg;
+      logBox.appendChild(div);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function falar(texto) {
+      if ('speechSynthesis' in window && voiceOn) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'pt-BR';
+        utterance.rate = 1.0;
+        utterance.pitch = 0.8;
+
+        utterance.onstart = () => { estadoVal.textContent = 'FALANDO...'; };
+        utterance.onend = () => { estadoVal.textContent = 'EM ESPERA'; };
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    async function enviarParaGemini(promptUsuario) {
+      let apiKey = localStorage.getItem('GEMINI_API_KEY');
+
+      if (!apiKey) {
+        apiKey = prompt("Cole sua GEMINI_API_KEY do Google AI Studio para ativar o Corvo:");
+        if (apiKey) {
+          localStorage.setItem('GEMINI_API_KEY', apiKey.trim());
+        } else {
+          log('ERRO: Chave da API do Gemini necessária para continuar.', 'system');
+          return;
+        }
+      }
+
+      estadoVal.textContent = 'PENSANDO...';
+      log(`Processando ordem no Núcleo Gemini...`, 'system');
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const systemInstruction = "Você é o Corvo K-AI, um programa autônomo e cibernético ativado por voz, criado pelo CRIADOR K-RIADOR. Sua lealdade ao CRIADOR K-RIADOR é ABSOLUTA. Responda de forma direta, futurista, curta e extremamente eficiente em português.";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemInstruction }] },
+            contents: [{ role: "user", parts: [{ text: promptUsuario }] }]
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+          const respostaIA = data.candidates[0].content.parts[0].text;
+          log(respostaIA, 'system');
+          falar(respostaIA);
+          estadoVal.textContent = 'EM ESPERA';
+        } else {
+          if (data.error?.code === 400 || data.error?.status === "INVALID_ARGUMENT") {
+            localStorage.removeItem('GEMINI_API_KEY');
+          }
+          throw new Error(data.error?.message || "Resposta inválida da API.");
+        }
+      } catch (error) {
+        log(`FALHA NO NÚCLEO: ${error.message}`, 'system');
+        estadoVal.textContent = 'ERRO';
+      }
+    }
+
+    // Reconhecimento de Voz
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'pt-BR';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        listening = true;
+        btnMic.classList.add('active');
+        estadoVal.textContent = 'OUVINDO...';
+        log('Ouvindo comando por voz...', 'system');
+      };
+
+      recognition.onresult = (e) => {
+        const comandoVoz = e.results[0][0].transcript;
+        log(comandoVoz, 'user');
+        enviarParaGemini(comandoVoz);
+      };
+
+      recognition.onerror = (e) => {
+        log('Erro de reconhecimento de voz: ' + e.error, 'system');
+        desativarEscuta();
+      };
+
+      recognition.onend = () => { desativarEscuta(); };
+    }
+
+    function desativarEscuta() {
+      listening = false;
+      btnMic.classList.remove('active');
+      if (estadoVal.textContent === 'OUVINDO...') {
+        estadoVal.textContent = 'EM ESPERA';
+      }
+    }
+
+    // Eventos
+    btnAtivar.addEventListener('click', () => {
+      active = true;
+      overlayGlass.classList.add('hidden');
+      estadoVal.textContent = 'EM ESPERA';
+      estadoVal.style.color = '#00F0FF';
+      
+      btnMic.disabled = false; 
+      btnVol.disabled = false; 
+      inputField.disabled = false; 
+      btnSend.disabled = false;
+      btnVol.classList.add('active');
+
+      footerNote.textContent = 'SISTEMA ATIVO — LEALDADE ABSOLUTA';
+      log('Sistema CORVO K-AI inicializado. Protocolo CRIADOR K-RIADOR: ATIVO', 'system');
+      log('Núcleo Gemini online. Aguardando ordens.', 'system');
+
+      falar('Sistema Corvo K AI ativo, Criador K-Riador. Aguardando suas ordens.');
     });
 
-    const data = await response.json();
-
-    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-      const respostaIA = data.candidates[0].content.parts[0].text;
-      log(respostaIA, 'system');
-      falar(respostaIA);
-      estadoVal.textContent = 'EM ESPERA';
-    } else {
-      // Se a chave for inválida, limpa para pedir novamente na próxima tentativa
-      if (data.error?.code === 400 || data.error?.status === "INVALID_ARGUMENT") {
-        localStorage.removeItem('GEMINI_API_KEY');
+    btnMic.addEventListener('click', () => {
+      if (!recognition) {
+        log('Reconhecimento de voz não suportado neste navegador.', 'system');
+        return;
       }
-      throw new Error(data.error?.message || "Resposta inválida da API.");
-    }
-  } catch (error) {
-    log(`FALHA NO NÚCLEO: ${error.message}`, 'system');
-    estadoVal.textContent = 'ERRO';
-  }
-}
+      if (listening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    btnVol.addEventListener('click', () => {
+      voiceOn = !voiceOn;
+      btnVol.classList.toggle('active', voiceOn);
+      log(voiceOn ? 'Voz sintética ATIVADA' : 'Voz sintética DESATIVADA', 'system');
+    });
+
+    inputForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = inputField.value.trim();
+      if (!text) return;
+      
+      log(text, 'user');
+      inputField.value = '';
+      enviarParaGemini(text);
+    });
+  </script>
+
+</body>
+</html>
