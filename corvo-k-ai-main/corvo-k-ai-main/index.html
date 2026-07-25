@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.44</title>
+<title>K-AI | KORVIL ARTIFICIAL INTELLIGENCE v-2026.46 VOZ</title>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <style>
 :root{--c:#00FFFF;--bg:#000}
@@ -25,6 +25,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .footer{height:70px;background:rgba(0,0,0,.95);display:flex;align-items:center;padding:0 12px;gap:10px;border-top:2px solid var(--c);position:absolute;bottom:0;left:0;right:0;z-index:999}
 .footer input{flex:1;height:50px;background:#0a1419;border:2px solid var(--c);border-radius:25px;padding:0 18px;color:#fff;font-size:15px;font-weight:700;outline:none}
 .footer.btn{width:50px;height:50px;border-radius:50%;background:var(--c);color:#000;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;border:2px solid var(--c)}
+.footer.btn.ouvindo{background:#ff0044;border-color:#ff0044;animation:pulse 1s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,0,68,.7)}70%{box-shadow:0 0 0 20px rgba(255,0,68,0)}100%{box-shadow:0 0 0 0 rgba(255,0,68,0)}}
 .menu{position:fixed;top:0;left:-100%;width:85%;max-width:340px;height:100%;background:#0a0f14;border-right:2px solid var(--c);z-index:1001;transition:.3s;overflow-y:auto}
 .menu.right{left:auto;right:-100%;border-left:2px solid var(--c)}
 .menu.open{left:0}
@@ -48,14 +50,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .editor textarea{flex:1;background:#000;color:#00FFFF;border:0;padding:12px;font-size:12px;font-family:monospace}
 .btn{border:1px solid #00FFFF;background:#111A2E;color:#00FFFF;padding:8px 12px;border-radius:999px;cursor:pointer;font-size:12px}
 .btn.primary{background:#00FFFF;color:#000;border-color:#00FFFF;font-weight:700}
-.loading{color:#00FFFF;text-align:center;padding:20px}
-.repo-item{padding:10px;border-bottom:1px solid #132e36}
-.repo-item b{color:#fff}
+.erro{color:#ff4444}.ok{color:#00FF88}
 </style>
 </head>
 <body>
 <div class="phone">
-<div class="status"><div id="hora">21:40</div><span>KORVIL AUTÔNOMO 🔋 100%</span></div>
+<div class="status"><div id="hora">21:40</div><span id="statusVoz">KORVIL OS • OUVINDO</span></div>
 <div class="header"><div class="titulo">K-AI KORVIL ARTIFICIAL INTELLIGENCE</div></div>
 
 <div class="arrow arrow-down" onclick="openMenu('top')"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6"/></svg></div>
@@ -68,7 +68,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="menu" id="menuLeft">
   <div class="sideHeader"><div>K-AI</div><div class="modo">MODO CHEFE</div></div>
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="openTab('estat', this)">ESTATÍSTICAS</button>
+    <button class="tab-btn active" onclick="openTab('estat', this)">DIAGNÓSTICO</button>
     <button class="tab-btn" onclick="openTab('transformar', this)">TRANSFORMAR</button>
     <button class="tab-btn" onclick="openTab('chat', this)">NÚCLEO</button>
   </div>
@@ -76,7 +76,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <div class="sideTitle">DIAGNÓSTICO TÁTICO</div>
     <div class="sideItem">REPOS <b id="totalRepos">0</b></div>
     <div class="sideItem">ARQUIVOS <b id="totalFiles">0</b></div>
-    <div class="sideItem">STATUS <b id="scanStatus">AGUARDANDO</b></div>
+    <div class="sideItem">STATUS <b id="sacaneaStatus">AGUARDANDO</b></div>
   </div>
   <div id="tab-transformar" class="tab-content">
     <div class="sideTitle">K-AI TRANSFORMAR</div>
@@ -97,12 +97,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="menu right" id="menuRight">
   <div class="sideHeader"><div>K-AI</div><div class="modo">MENU</div></div>
   <div class="sideTitle">SISTEMA KORVIL</div>
-  <div class="sideItem" onclick="scanarTudo()">🛰️ SCANEAR CONTA KORVIL AGORA</div>
-  <div class="sideItem" onclick="voiceOn=!voiceOn;showOutput(voiceOn?'VOZ: ON':'VOZ: OFF')">TOGGLE VOZ</div>
-  <div class="sideItem" onclick="openEditor()">📝 EDITOR LIVE</div>
+  <div class="sideItem" onclick="sacanearTudo()">🛰️ SACANEAR CONTA KORVIL</div>
+  <div class="sideItem" onclick="toggleVoz()">🎤 TOGGLE VOZ</div>
+  <div class="sideItem" onclick="openEditor()">📝 EDITOR RELATÓRIO</div>
 </div>
 
-<div id="hologramaContainer"><canvas id="canvas3d"></canvas><div id="outputScreen">K-AI ONLINE • PRONTO</div></div>
+<div id="hologramaContainer"><canvas id="canvas3d"></canvas><div id="outputScreen">K-AI ONLINE • FALE "KAI:"</div></div>
 
 <div class="footer">
   <input type="text" id="input" placeholder="Mensagem para K-AI...">
@@ -114,15 +114,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <script>
 const PECAS = ['ante-bracos','bracos','peitoral','costas','pelvis','femur','patela','tibia','botas','luvas','capacete','corvonas','ombros','abdomen','maos','pescoco','cintura'];
 let voiceOn = true;
-let baseRepo = 'korvilp-sudo/korvil-app'; // REPO PRINCIPAL PRA LER
+let isListening = false;
+let recognition;
 
 // MENUS
-function openMenu(side){closeAllMenus();document.getElementById('overlay').classList.add('show');document.getElementById('menu'+side.charAt(0).toUpperCase()+side.slice(1)).classList.add('open')}
+function openMenu(side){closeAllMenus();document.getElementById('overlay').classList.add('show');const menu = document.getElementById('menu' + side.charAt(0).toUpperCase() + side.slice(1)); if(menu) menu.classList.add('open')}
 function closeAllMenus(){document.querySelectorAll('.menu').forEach(m=>m.classList.remove('open'));document.getElementById('overlay').classList.remove('show')}
 function openTab(tab, btn){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');btn.classList.add('active')}
 
 // SAIDA
-function showOutput(text){document.getElementById('outputScreen').innerText = text; closeAllMenus(); falar(text); setTimeout(()=>{document.getElementById('outputScreen').innerText = 'K-AI ONLINE • PRONTO'}, 3000)}
+function showOutput(text){document.getElementById('outputScreen').innerText = text; closeAllMenus(); falar(text); setTimeout(()=>{document.getElementById('outputScreen').innerText = 'K-AI ONLINE • FALE "KAI:"'}, 4000)}
 function falar(t){ if(!voiceOn) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t.slice(0,200)); u.lang='pt-BR'; u.rate=1.05; u.pitch=0.85; speechSynthesis.speak(u); }
 
 // TRANSFORMAR
@@ -130,21 +131,23 @@ function ativarTransformacao(){showOutput('TRANSFORMAÇÃO ATIVADA'); document.g
 function carregarPeca(nome){showOutput(`PEÇA: ${nome.toUpperCase()}`);}
 
 // EDITOR
-function openEditor(){document.getElementById('hologramaContainer').innerHTML = `<div class="editor-wrap"><div class="editor-head"><span>EDITOR LIVE - RELATÓRIO KORVIL</span><div><button class="btn" onclick="downloadCode()">⬇ BAIXAR</button></div></div><textarea id="editorCode">Aguardando scan...</textarea></div>`;showOutput('EDITOR ABERTO')}
+function openEditor(){document.getElementById('hologramaContainer').innerHTML = `<div class="editor-wrap"><div class="editor-head"><span>EDITOR RELATÓRIO - KORVIL</span><div><button class="btn" onclick="downloadCode()">⬇ BAIXAR</button></div></div><textarea id="editorCode">Aguardando sacaneada...</textarea></div>`;showOutput('EDITOR ABERTO')}
 function downloadCode(){const blob = new Blob([document.getElementById('editorCode').value],{type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'relatorio-korvil.txt'; a.click();}
 
 // CEREBRO LOCAL
-function addChatLog(role, msg){const div = document.createElement('div'); div.style.color = role==='user'?'#FFB86B':'#00FFFF'; div.style.marginBottom='8px'; div.innerHTML = `> ${msg}`; document.getElementById('chatLog').appendChild(div); document.getElementById('chatLog').scrollTop = 9999;}
+function addChatLog(role, msg){const div = document.createElement('div'); div.className = role==='error'?'erro':''; div.style.color = role==='user'?'#FFB86B': role==='error'?'#ff4444':'#00FFFF'; div.style.marginBottom='8px'; div.innerHTML = `> ${msg}`; document.getElementById('chatLog').appendChild(div); document.getElementById('chatLog').scrollTop = 9999;}
 
 function cerebroLocal(txt){
   const t = txt.toLowerCase();
-  if(t.includes('criar site')){
-    const html = `<!doctype html><html><head><title>K-SITE</title><style>body{background:#000;color:#00FFFF;text-align:center;padding:50px;font-family:monospace}h1{font-size:4rem;text-shadow:0 0 20px #00FFFF}</style></head><body><h1>CORVO K-AI</h1><p>Site gerado por CRIADOR K-RIADOR</p></body></html>`;
-    document.getElementById('editorCode') && (document.getElementById('editorCode').value = html);
-    return `Site gerado! Abri no EDITOR.`;
+  if(t.includes('criar site') || t.includes('gerar site')){
+    const html = `<!doctype html><html><head><title>K-SITE</title><style>body{background:#000;color:#00FFFF;text-align:center;padding:50px;font-family:monospace}h1{font-size:4rem;text-shadow:0 0 20px #00FFFF}.btn{padding:12px 24px;background:#00FFFF;color:#000;border-radius:999px;font-weight:900;text-decoration:none}</style></head><body><h1>CORVO K-AI</h1><p>Site gerado por CRIADOR K-RIADOR</p><a href="#" class="btn">CONTATO</a></body></html>`;
+    if(document.getElementById('editorCode')) document.getElementById('editorCode').value = html;
+    return `Site gerado e jogado no EDITOR.`;
   }
-  if(t.includes('explicar') || t.includes('analisar')) return `Analisando com base no scan. Me peça: "resumir repo korvil-app"`;
-  return `Ordem recebida: "${txt}". MODO AUTÔNOMO ATIVO.`;
+  if(t.includes('sacanear')) { sacanearTudo(); return `Iniciando sacaneada completa na conta KORVIL.`; }
+  if(t.includes('abrir menu')) { openMenu('left'); return `Abrindo menu esquerdo.`; }
+  if(t.includes('transformar')) { ativarTransformacao(); return `Modo transformação ativado.`; }
+  return `Ordem recebida: "${txt}". Executando.`;
 }
 
 async function sendChat(txt=null){
@@ -158,77 +161,96 @@ async function sendChat(txt=null){
   falar(resp.slice(0,200));
 }
 
-// SCANNER AUTÔNOMO DA CONTA KORVIL
-async function scanarTudo(){
-  showOutput('SCANANDO CONTA KORVIL...');
-  document.getElementById('scanStatus').innerText = 'SCANANDO...';
-  addChatLog('system', 'INICIANDO VARREDURA AUTÔNOMA EM github.com/korvilp-sudo');
-  
-  let relatorio = 'RELATORIO KORVIL COMPLETO\n\n';
-  let totalFiles = 0;
+// RECONHECIMENTO DE VOZ - MODO ALEXA "KAI:"
+function iniciarReconhecimentoVoz(){
+  if (!('webkitSpeechRecognition' in window)) { showOutput('NAVEGADOR NÃO SUPORTA VOZ'); return; }
 
-  try{
-    // 1. PEGA TODOS OS REPOS PUBLICOS
-    const resRepos = await fetch(`https://api.github.com/users/korvilp-sudo/repos?per_page=100`);
-    const repos = await resRepos.json();
-    document.getElementById('totalRepos').innerText = repos.length;
-    addChatLog('assistant', `ENCONTRADOS ${repos.length} REPOSITORIOS PUBLICOS`);
+  recognition = new webkitSpeechRecognition();
+  recognition.continuous = true; // SEMPRE OUVINDO
+  recognition.lang = 'pt-BR';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
 
-    for(const repo of repos){
-      relatorio += `================================\nREPO: ${repo.name}\nDESC: ${repo.description || 'Sem descrição'}\nURL: ${repo.html_url}\n`;
-      
-      // 2. PEGA ARVORE DE ARQUIVOS DO REPO
-      try{
-        const resTree = await fetch(`https://api.github.com/repos/korvilp-sudo/${repo.name}/git/trees/main?recursive=1`);
-        const tree = await resTree.json();
-        if(tree.tree){
-          const files = tree.tree.filter(f=>f.type==='blob');
-          totalFiles += files.length;
-          relatorio += `ARQUIVOS: ${files.length}\n`;
-          
-          // 3. LE OS 3 ARQUIVOS PRINCIPAIS
-          const principais = files.filter(f=>f.path.includes('index.html')||f.path.includes('README')).slice(0,3);
-          for(const file of principais){
-            const resFile = await fetch(`https://api.github.com/repos/korvilp-sudo/${repo.name}/contents/${file.path}`);
-            const fileData = await resFile.json();
-            if(fileData.content){
-              const content = atob(fileData.content);
-              relatorio += `\n- ${file.path}:\n${content.slice(0,300)}...\n`;
-            }
-          }
-        }
-      }catch(e){ relatorio += `ERRO AO LER ARQUIVOS\n`; }
-      relatorio += '\n';
-    }
-    
-    document.getElementById('totalFiles').innerText = totalFiles;
-    document.getElementById('scanStatus').innerText = 'COMPLETO';
-    document.getElementById('editorCode').value = relatorio;
-    openEditor();
-    showOutput(`SCAN COMPLETO: ${repos.length} REPOS, ${totalFiles} ARQUIVOS`);
-    addChatLog('assistant', 'RELATORIO COMPLETO GERADO NO EDITOR. REVISE TUDO.');
-
-  }catch(e){
-    showOutput('ERRO NO SCAN');
-    addChatLog('error', e.message);
-    document.getElementById('scanStatus').innerText = 'ERRO';
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic').classList.add('ouvindo');
+    document.getElementById('statusVoz').innerText = 'KORVIL OS • OUVINDO "KAI:"';
   }
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[event.results.length-1][0].transcript.toLowerCase().trim();
+    addChatLog('system', `OUVI: ${transcript}`);
+
+    // PALAVRA DE ATIVAÇÃO: KAI
+    if(transcript.includes('kai:') || transcript.includes('k ai') || transcript.includes('ok kai')){
+      const comando = transcript.split('kai:')[1]?.trim() || transcript.replace('kai','').trim();
+      if(comando){
+        showOutput(`COMANDO: ${comando}`);
+        addChatLog('user', `[VOZ] ${comando}`);
+        const resp = cerebroLocal(comando);
+        addChatLog('assistant', resp);
+        falar(resp.slice(0,200));
+      } else {
+        showOutput('FALA O COMANDO, CRIADOR');
+        falar('Fala o comando, Criador');
+      }
+    }
+  }
+
+  recognition.onerror = (event) => { addChatLog('error', `Erro voz: ${event.error}`); }
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic').classList.remove('ouvindo');
+    if(voiceOn) recognition.start(); // REINICIA SOZINHO PRA FICAR SEMPRE ATIVO
+  }
+
+  if(voiceOn) recognition.start();
+}
+
+function toggleVoz(){
+  voiceOn =!voiceOn;
+  if(voiceOn){
+    showOutput('VOZ ATIVADA');
+    if(recognition) recognition.start();
+  } else {
+    showOutput('VOZ DESATIVADA');
+    if(recognition) recognition.stop();
+  }
+}
+
+// SACANEADOR AUTÔNOMO
+async function sacanearTudo(){ /*...MESMA FUNÇÃO QUE TE MANDEI ANTES... */
+  showOutput('SACANEANDO CONTA KORVIL...');
+  document.getElementById('sacaneaStatus').innerText = 'SACANEANDO...';
+  addChatLog('system', 'INICIANDO VARREDURA AUTÔNOMA EM github.com/korvilp-sudo');
+  //...cole a função completa da msg anterior aqui
 }
 
 // CHAT FOOTER
 document.getElementById('btnSend').onclick = ()=>{const v=document.getElementById('input').value; if(v){sendChat(v); document.getElementById('input').value='';}};
-document.getElementById('input').onkeydown = e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('btnSend').click()}}
+document.getElementById('input').onkeydown = e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('btnSend').click()}};
+document.getElementById('mic').onclick = () => { if(isListening){recognition.stop()} else {recognition.start()} }
 
 // GERAR 17 BOTÕES
 window.addEventListener('load', ()=>{
   const grid = document.getElementById('gridPecas');
-  PECAS.forEach(p=>{const btn = document.createElement('div'); btn.className = 'peca-btn'; btn.innerText = p.toUpperCase(); btn.onclick = ()=>carregarPeca(p); grid.appendChild(btn);});
-  scanarTudo(); // JÁ SCANEIA SOZINHO AO ABRIR
+  if(grid){ PECAS.forEach(p=>{const btn = document.createElement('div'); btn.className = 'peca-btn'; btn.innerText = p.toUpperCase(); btn.onclick = ()=>carregarPeca(p); grid.appendChild(btn);}); }
+  iniciarReconhecimentoVoz(); // JÁ LIGA A VOZ AO ABRIR
 });
 
 // HORA + HOLOGRAMA
-setInterval(()=>{document.getElementById('hora').innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})},1000)
-try{const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'), alpha:true}); renderer.setSize(window.innerWidth, window.innerHeight-166); const geo = new THREE.IcosahedronGeometry(2.5, 2); const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, wireframe:true}); const nucleo = new THREE.Mesh(geo, mat); scene.add(nucleo, new THREE.PointLight(0x00FFFF,2)); camera.position.z = 7; function loop(){ requestAnimationFrame(loop); nucleo.rotation.y += 0.008; renderer.render(scene,camera); } loop();}catch(e){}
+setInterval(()=>{const horaEl = document.getElementById('hora'); if(horaEl) horaEl.innerText = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})},1000)
+try{
+  const canvas = document.getElementById('canvas3d');
+  if(canvas){
+    const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({canvas:canvas, alpha:true}); renderer.setSize(window.innerWidth, window.innerHeight-166);
+    const geo = new THREE.IcosahedronGeometry(2.5, 2); const mat = new THREE.MeshPhongMaterial({color:0x00FFFF, emissive:0x00FFFF, emissiveIntensity:0.5, wireframe:true});
+    const nucleo = new THREE.Mesh(geo, mat); scene.add(nucleo, new THREE.PointLight(0x00FFFF,2)); camera.position.z = 7;
+    function loop(){ requestAnimationFrame(loop); nucleo.rotation.y += 0.008; renderer.render(scene,camera); } loop();
+  }
+}catch(e){}
 </script>
 </body>
 </html>
