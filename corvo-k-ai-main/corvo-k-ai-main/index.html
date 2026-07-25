@@ -439,6 +439,27 @@
       inputField.value = '';
       enviarParaGemini(text);
     });
+    // 1. Mapeia o botão no início do script
+const btnKey = document.getElementById('btnKey');
+
+// 2. Desbloqueia o botão quando clica em ATIVAR
+btnAtivar.addEventListener('click', () => {
+  // ... seus outros comandos ...
+  btnKey.disabled = false;
+});
+
+// 3. Ação para redefinir a chave ao clicar no botão de chave (🔑)
+btnKey.addEventListener('click', () => {
+  localStorage.removeItem('GEMINI_API_KEY');
+  const novaChave = prompt("Digite a sua nova GEMINI_API_KEY do Google AI Studio:");
+  
+  if (novaChave) {
+    localStorage.setItem('GEMINI_API_KEY', novaChave.trim());
+    log('Chave da API atualizada com sucesso no Núcleo!', 'system');
+  } else {
+    log('Chave removida. O sistema pedirá uma nova chave na próxima ordem.', 'system');
+  }
+});
   </script>
 
 </body>
