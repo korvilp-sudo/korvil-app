@@ -1,106 +1,46 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8"><title>K-AI v-3000 AUTO DEV</title>
-<style>
-:root{--bg:#000;--c:#00FFFF;--erro:#FF0044}
-body{background:var(--bg);color:var(--c);font-family:monospace;padding:20px}
-.card{background:#0a0f14;border:1px solid var(--c);padding:15px;border-radius:12px;margin:10px 0}
-input,textarea{width:100%;background:#111;border:1px solid var(--c);color:#fff;padding:10px}
-button{background:var(--c);color:#000;border:0;padding:12px;font-weight:900;cursor:pointer}
-.log{height:200px;overflow-y:auto;background:#000;border:1px solid #013;padding:10px;font-size:12px}
-</style>
+<head><meta charset="utf-8"><title>K-AI v-4000 BACKEND</title>
+<style>body{background:#000;color:#00FFFF;font-family:monospace;padding:20px}input,button{padding:12px;margin:5px;background:#111;color:#fff;border:1px solid #00FFFF}</style>
 </head>
 <body>
-<h1>K-AI v-3000 // AUTO DEV KORVIL</h1>
+<h1>K-AI v-4000 // COM BACKEND</h1>
+<p>Ele lê todos repos e edita sozinho. Sem token exposto.</p>
 
-<div class="card">
-  <b>1. TOKEN GITHUB</b>
-  <input id="token" placeholder="Cole seu ghp_ aqui">
-  <button onclick="salvarToken()">SALVAR TOKEN</button>
-</div>
-
-<div class="card">
-  <b>2. CEREBRO: LER TODOS REPOS KORVIL</b>
-  <button onclick="lerGithubCompleto()">🧠 LER SISTEMA KORVIL INTEIRO</button>
-  <div id="status">Aguardando...</div>
-</div>
-
-<div class="card">
-  <b>3. COMANDO DE VOZ/TEXTO</b>
-  <input id="comando" placeholder='Ex: KAI: mudar cor do botão pra roxo e fazer commit'>
-  <button onclick="executar()">EXECUTAR E COMMITAR</button>
-</div>
-
-<div class="card">
-  <b>LOG DO SISTEMA</b>
-  <div class="log" id="log"></div>
-</div>
+<input id="comando" placeholder="Ex: mudar cor do botão pra roxo" style="width:70%">
+<input id="arquivo" placeholder="Arquivo: index.html" value="index.html">
+<button onclick="enviar()">EXECUTAR E COMMITAR</button>
+<div id="log"></div>
 
 <script>
-const USER = "korvilp-sudo";
-let TOKEN = localStorage.getItem('KAI_TOKEN');
-let CEREBRO_KORVIL = {}; // Aqui ele guarda todos arquivos
+const REPO = "korvilp-sudo/korvil-app";
 
-function log(t){document.getElementById('log').innerHTML += t + '<br>';}
-function salvarToken(){TOKEN=document.getElementById('token').value;localStorage.setItem('KAI_TOKEN',TOKEN);log('Token salvo')}
-
-// 1. LER TODOS OS REPOS E ARQUIVOS
-async function lerGithubCompleto(){
-  log('Iniciando leitura completa do KORVIL...');
-  const repos = await fetch(`https://api.github.com/users/${USER}/repos`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
+async function enviar(){
+  const comando = document.getElementById('comando').value;
+  const arquivo = document.getElementById('arquivo').value;
   
-  for(const repo of repos){
-    log(`Lendo repo: ${repo.name}`);
-    const arvore = await fetch(`https://api.github.com/repos/${USER}/${repo.name}/git/trees/main?recursive=1`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
-    
-    for(const file of arvore.tree){
-      if(file.path.endsWith('.js') || file.path.endsWith('.html') || file.path.endsWith('.css')){
-        const conteudo = await fetch(file.url, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
-        CEREBRO_KORVIL[`${repo.name}/${file.path}`] = atob(conteudo.content);
-      }
-    }
-  }
-  document.getElementById('status').innerText = `CEREBRO PRONTO. ${Object.keys(CEREBRO_KORVIL).length} arquivos carregados.`;
-  log('K-AI AGORA ENTENDE TODA LOGICA KORVIL');
-}
-
-// 2. EXECUTAR COMANDO + EDITAR + COMMIT
-async function executar(){
-  const cmd = document.getElementById('comando').value.toLowerCase();
-  log(`Recebi ordem: ${cmd}`);
+  // 1. LÊ O ARQUIVO ATUAL
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${arquivo}`);
+  const data = await res.json();
+  const codigoAntigo = atob(data.content);
   
-  // AQUI ENTRA A "IA" QUE DECIDE O QUE MUDAR
-  let arquivoAlvo = 'korvil-app/index.html'; // padrão
-  let codigoAntigo = CEREBRO_KORVIL[arquivoAlvo];
-  let codigoNovo = codigoAntigo.replace('color:#00FFFF','color:#AA00FF'); // exemplo: troca cor
+  // 2. "IA" EDITA AQUI NO NAVEGADOR
+  const codigoNovo = codigoAntigo.replace('color:#00FFFF','color:#AA00FF'); // exemplo de lógica
   
-  log(`Editando: ${arquivoAlvo}`);
+  log('Enviando pro BACKEND...');
   
-  // 3. COMMIT AUTOMATICO NO GITHUB
-  await commitarNoGithub(arquivoAlvo, codigoNovo, `KAI: ${cmd}`);
-  log('COMMIT FEITO! Github atualizado.');
-}
-
-async function commitarNoGithub(caminho, conteudo, msg){
-  const [repo, ...path] = caminho.split('/');
-  const pathFinal = path.join('/');
-  
-  // 1. Pega SHA do arquivo
-  const file = await fetch(`https://api.github.com/repos/${USER}/${repo}/contents/${pathFinal}`, {headers:{Authorization:`token ${TOKEN}`}}).then(r=>r.json());
-  
-  // 2. Faz o commit
-  await fetch(`https://api.github.com/repos/${USER}/${repo}/contents/${pathFinal}`, {
-    method:'PUT',
-    headers:{Authorization:`token ${TOKEN}`},
-    body:JSON.stringify({
-      message: msg,
-      content: btoa(conteudo),
-      sha: file.sha,
-      branch: 'main'
+  // 3. CHAMA O BACKEND GITHUB ACTIONS
+  await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/kai-backend.yml/dispatches`, {
+    method: 'POST',
+    headers: {'Authorization': 'Bearer SEU_TOKEN_AQUI', 'Accept': 'application/vnd.github.v3+json'},
+    body: JSON.stringify({
+      ref: 'main',
+      inputs: {comando: comando, arquivo: arquivo, codigo: codigoNovo}
     })
   });
+  log('Ordem enviada! O K-AI vai commitar em 10s');
 }
+function log(t){document.getElementById('log').innerHTML += t + '<br>'}
 </script>
 </body>
 </html>
