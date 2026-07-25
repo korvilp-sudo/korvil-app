@@ -1,44 +1,52 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><title>K-AI v-4000 BACKEND</title>
-<style>body{background:#000;color:#00FFFF;font-family:monospace;padding:20px}input,button{padding:12px;margin:5px;background:#111;color:#fff;border:1px solid #00FFFF}</style>
+<head>
+<meta charset="utf-8"><title>K-AI v-4000 BACKEND</title>
+<style>
+body{background:#000;color:#00FFFF;font-family:monospace;padding:20px}
+.card{background:#0a0f14;border:1px solid #00FFFF;padding:15px;border-radius:12px;margin:10px 0}
+input,button{padding:12px;background:#111;color:#fff;border:1px solid #00FFFF;border-radius:8px}
+button{background:#00FFFF;color:#000;font-weight:900;cursor:pointer}
+.log{background:#010;border:1px solid #00FFFF;padding:10px;height:200px;overflow:auto}
+</style>
 </head>
 <body>
-<h1>K-AI v-4000 // COM BACKEND</h1>
-<p>Ele lê todos repos e edita sozinho. Sem token exposto.</p>
-
-<input id="comando" placeholder="Ex: mudar cor do botão pra roxo" style="width:70%">
-<input id="arquivo" placeholder="Arquivo: index.html" value="index.html">
-<button onclick="enviar()">EXECUTAR E COMMITAR</button>
-<div id="log"></div>
+<h1>K-AI v-4000 // BACKEND NA PASTA</h1>
+<div class="card">
+  <input id="comando" placeholder="KAI: mudar cor do botão pra roxo" style="width:70%">
+  <input id="arquivo" value="index.html" style="width:20%">
+  <button onclick="enviar()">EXECUTAR</button>
+</div>
+<div class="log" id="log"></div>
 
 <script>
 const REPO = "korvilp-sudo/korvil-app";
+const PATH = "corvo-k-ai-main/corvo-k-ai-main"; // SUA PASTA
 
 async function enviar(){
   const comando = document.getElementById('comando').value;
-  const arquivo = document.getElementById('arquivo').value;
+  const arquivo = PATH + "/" + document.getElementById('arquivo').value;
+  log('Lendo arquivo...');
   
-  // 1. LÊ O ARQUIVO ATUAL
   const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${arquivo}`);
   const data = await res.json();
   const codigoAntigo = atob(data.content);
   
-  // 2. "IA" EDITA AQUI NO NAVEGADOR
-  const codigoNovo = codigoAntigo.replace('color:#00FFFF','color:#AA00FF'); // exemplo de lógica
+  // IA LOCAL EDITA
+  const codigoNovo = codigoAntigo.replace('color:#00FFFF','color:#AA00FF');
   
   log('Enviando pro BACKEND...');
   
-  // 3. CHAMA O BACKEND GITHUB ACTIONS
+  // CHAMA A ACTION SEM TOKEN EXPOSTO
   await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/kai-backend.yml/dispatches`, {
     method: 'POST',
-    headers: {'Authorization': 'Bearer SEU_TOKEN_AQUI', 'Accept': 'application/vnd.github.v3+json'},
+    headers: {'Accept': 'application/vnd.github.v3+json'}, // SEM TOKEN AQUI
     body: JSON.stringify({
       ref: 'main',
       inputs: {comando: comando, arquivo: arquivo, codigo: codigoNovo}
     })
   });
-  log('Ordem enviada! O K-AI vai commitar em 10s');
+  log('✅ Ordem enviada! Vai commitar em 20s');
 }
 function log(t){document.getElementById('log').innerHTML += t + '<br>'}
 </script>
