@@ -234,15 +234,16 @@
 
     <!-- Controles -->
     <div class="controls">
-  <button class="btn-icon" id="btnMic" disabled title="Ativar Microfone">🎤</button>
-  <button class="btn-icon" id="btnVol" disabled title="Ativar/Desativar Voz">🔊</button>
-  <button class="btn-icon" id="btnKey" disabled title="Trocar Chave API">🔑</button>
+      <button class="btn-icon" id="btnMic" disabled title="Ativar Microfone">🎤</button>
+      <button class="btn-icon" id="btnVol" disabled title="Ativar/Desativar Voz">🔊</button>
+      <button class="btn-icon" id="btnKey" disabled title="Trocar Chave API">🔑</button>
 
-  <form class="input-form" id="inputForm">
-    <input type="text" class="input-field" id="inputField" placeholder="Digite uma ordem..." disabled>
-    <button type="submit" class="btn-icon" id="btnSend" disabled>ENVIAR</button>
-  </form>
-</div>
+      <form class="input-form" id="inputForm">
+        <input type="text" class="input-field" id="inputField" placeholder="Digite uma ordem..." disabled>
+        <button type="submit" class="btn-icon" id="btnSend" disabled>ENVIAR</button>
+      </form>
+    </div>
+
     <!-- Rodapé -->
     <div class="footer-note" id="footerNote">SISTEMA EM ESPERA — CRIADOR K-RIADOR</div>
   </div>
@@ -256,6 +257,7 @@
     const estadoVal = document.getElementById('estadoVal');
     const btnMic = document.getElementById('btnMic');
     const btnVol = document.getElementById('btnVol');
+    const btnKey = document.getElementById('btnKey');
     const inputField = document.getElementById('inputField');
     const btnSend = document.getElementById('btnSend');
     const inputForm = document.getElementById('inputForm');
@@ -312,8 +314,9 @@
 
       if (!apiKey) {
         apiKey = prompt("Cole sua GEMINI_API_KEY do Google AI Studio para ativar o Corvo:");
-        if (apiKey) {
-          localStorage.setItem('GEMINI_API_KEY', apiKey.trim());
+        if (apiKey && apiKey.trim()) {
+          apiKey = apiKey.trim();
+          localStorage.setItem('GEMINI_API_KEY', apiKey);
         } else {
           log('ERRO: Chave da API do Gemini necessária para continuar.', 'system');
           return;
@@ -338,16 +341,14 @@
 
         const data = await response.json();
 
-        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        if (response.ok && data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
           const respostaIA = data.candidates[0].content.parts[0].text;
           log(respostaIA, 'system');
           falar(respostaIA);
           estadoVal.textContent = 'EM ESPERA';
         } else {
-          if (data.error?.code === 400 || data.error?.status === "INVALID_ARGUMENT") {
-            localStorage.removeItem('GEMINI_API_KEY');
-          }
-          throw new Error(data.error?.message || "Resposta inválida da API.");
+          localStorage.removeItem('GEMINI_API_KEY');
+          throw new Error(data.error?.message || "Chave de API do Gemini inválida ou recusada.");
         }
       } catch (error) {
         log(`FALHA NO NÚCLEO: ${error.message}`, 'system');
@@ -401,6 +402,7 @@
       
       btnMic.disabled = false; 
       btnVol.disabled = false; 
+      btnKey.disabled = false;
       inputField.disabled = false; 
       btnSend.disabled = false;
       btnVol.classList.add('active');
@@ -430,6 +432,17 @@
       log(voiceOn ? 'Voz sintética ATIVADA' : 'Voz sintética DESATIVADA', 'system');
     });
 
+    btnKey.addEventListener('click', () => {
+      localStorage.removeItem('GEMINI_API_KEY');
+      const novaChave = prompt("Digite a sua nova GEMINI_API_KEY do Google AI Studio:");
+      if (novaChave && novaChave.trim()) {
+        localStorage.setItem('GEMINI_API_KEY', novaChave.trim());
+        log('Chave da API atualizada com sucesso no Núcleo!', 'system');
+      } else {
+        log('Chave removida. O sistema solicitará uma nova chave na próxima ordem.', 'system');
+      }
+    });
+
     inputForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = inputField.value.trim();
@@ -439,27 +452,6 @@
       inputField.value = '';
       enviarParaGemini(text);
     });
-    // 1. Mapeia o botão no início do script
-const btnKey = document.getElementById('btnKey');
-
-// 2. Desbloqueia o botão quando clica em ATIVAR
-btnAtivar.addEventListener('click', () => {
-  // ... seus outros comandos ...
-  btnKey.disabled = false;
-});
-
-// 3. Ação para redefinir a chave ao clicar no botão de chave (🔑)
-btnKey.addEventListener('click', () => {
-  localStorage.removeItem('GEMINI_API_KEY');
-  const novaChave = prompt("Digite a sua nova GEMINI_API_KEY do Google AI Studio:");
-  
-  if (novaChave) {
-    localStorage.setItem('GEMINI_API_KEY', novaChave.trim());
-    log('Chave da API atualizada com sucesso no Núcleo!', 'system');
-  } else {
-    log('Chave removida. O sistema pedirá uma nova chave na próxima ordem.', 'system');
-  }
-});
   </script>
 
 </body>
