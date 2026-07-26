@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>UNIVERSO DNA 8K ULTRA PRO MAX PRIME + SOM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+* {margin:0;padding:0;box-sizing:border-box}
+
+body {
+  background:#000;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;
+  perspective:3000px;font-family:'Orbitron',sans-serif;color:#FFF;
+}
+
+/* CONTROLE DE SOM */
+.controle-som {
+  position:absolute;top:20px;left:20px;z-index:999;display:flex;gap:10px
+}
+.btn-som {
+  padding:12px 20px;background:rgba(0,255,255,0.1);border:2px solid #00FFFF;color:#00FFFF;
+  border-radius:12px;font-weight:900;cursor:pointer;backdrop-filter:blur(10px)
+}
+
+/* UNIVERSO 8K */
+.stars {
+  position:absolute;width:400%;height:400%;
+  background:radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+             radial-gradient(2px 2px at 40px 70px, #fff, transparent);
+  background-size:200px 200px;transform:rotateX(75deg) translateZ(-1000px);
+  animation:galaxy 120s linear infinite
+}
+.nebula {
+  position:absolute;width:200%;height:200%;
+  background:radial-gradient(circle at 30% 50%, rgba(138,43,226,0.4) 0%, transparent 50%),
+             radial-gradient(circle at 70% 50%, rgba(0,191,255,0.3) 0%, transparent 50%);
+  filter:blur(80px);animation:nebulaMove 60s ease-in-out infinite
+}
+
+/* CONSOLE HOLOGRÁFICO */
+.console {
+  width:500px;height:500px;border-radius:50%;position:relative;z-index:10;
+  background:conic-gradient(from 0deg, #00FFFF, #8A2BE2, #FF00FF, #00FFFF);
+  box-shadow:0 0 600px rgba(0,255,255,0.6), inset 0 0 300px rgba(0,255,255,0.3);
+  animation:consoleSpin 20s linear infinite, consolePulse 4s ease-in-out infinite;
+  cursor:pointer;border:12px solid rgba(0,255,255,0.8)
+}
+.console-core {
+  width:280px;height:280px;border-radius:50%;background:radial-gradient(circle, rgba(0,0,0,0.8), #000);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;
+  text-shadow:0 0 40px #00FFFF;border:4px solid #00FFFF
+}
+
+/* HOLOGRAMA DNA 4D */
+.holo-dna {
+  position:absolute;top:100px;width:800px;height:800px;opacity:0;
+  transition:2s cubic-bezier(0.16,1,0.3,1);transform:scale(0.3) rotateX(60deg)
+}
+.holo-dna.ativo {opacity:1;transform:scale(1) rotateX(0)}
+.dna {
+  position:relative;width:100%;height:100%;transform-style:preserve-3d;
+  animation:dnaRotate 15s infinite linear
+}
+.dna-base {
+  position:absolute;width:30px;height:30px;border-radius:50%;
+  box-shadow:0 0 40px currentColor;animation:basePulse 2s infinite
+}
+
+/* PAINEL DE FUNÇÕES */
+.painel {
+  position:absolute;right:60px;width:420px;background:rgba(0,255,255,0.05);
+  border:3px solid #00FFFF;border-radius:30px;padding:35px;backdrop-filter:blur(40px);
+  transform:translateX(600px);transition:1.5s cubic-bezier(0.16,1,0.3,1)
+}
+.painel.ativo {transform:translateX(0)}
+.painel h2 {color:#00FFFF;text-shadow:0 0 30px #00FFFF;margin-bottom:25px;font-size:26px}
+.btn {
+  width:100%;padding:20px;margin:12px 0;background:linear-gradient(90deg, rgba(0,255,255,0.1), rgba(138,43,226,0.1));
+  border:2px solid #00FFFF;color:#00FFFF;border-radius:18px;font-weight:900;cursor:pointer;
+  transition:0.5s;font-size:16px;position:relative;overflow:hidden
+}
+.btn:hover {transform:scale(1.05);box-shadow:0 0 60px #00FFFF}
+
+/* BARRA DE ENERGIA */
+.energy-bar {
+  position:absolute;top:40px;width:700px;height:60px;background:rgba(0,0,0,0.8);
+  border:4px solid #00FFFF;border-radius:30px;overflow:hidden;box-shadow:0 0 50px #00FFFF
+}
+.energy-fill {
+  height:100%;width:0%;background:linear-gradient(90deg, #00FFFF, #8A2BE2, #FF00FF);
+  box-shadow:0 0 60px #00FFFF;transition:2s
+}
+
+/* TELA DE TRANSIÇÃO */
+.cinema {
+  position:absolute;top:0;left:0;width:100%;height:100%;background:#000;
+  display:none;justify-content:center;align-items:center;flex-direction:column;z-index:999
+}
+.cinema.ativo {display:flex}
+.cinema h1 {font-size:120px;text-shadow:0 0 120px #00FFFF}
+
+@keyframes galaxy {100%{transform:rotateX(75deg) translateZ(-1000px) rotateZ(360deg)}}
+@keyframes nebulaMove {50%{transform:scale(1.3) rotate(20deg)}}
+@keyframes consoleSpin {100%{transform:rotateZ(360deg)}}
+@keyframes consolePulse {50%{box-shadow:0 0 800px rgba(0,255,255,0.8)}}
+@keyframes dnaRotate {100%{transform:rotateY(360deg)}}
+@keyframes basePulse {50%{transform:scale(1.5)}}
+</style>
+</head>
+<body>
+
+<!-- CONTROLE SOM -->
+<div class="controle-som">
+  <button class="btn-som" onclick="toggleMusica()">🎵 TRILHA</button>
+  <button class="btn-som" onclick="toggleVoz()">🔊 VOZ K-AI</button>
+</div>
+
+<div class="stars"></div>
+<div class="nebula"></div>
+
+<!-- BARRA ENERGIA -->
+<div class="energy-bar"><div class="energy-fill" id="energyBar"></div></div>
+
+<!-- HOLOGRAMA DNA -->
+<div class="holo-dna" id="holoDNA">
+  <div class="dna" id="dna"></div>
+</div>
+
+<!-- PAINEL -->
+<div class="painel" id="painel">
+  <h2>CONTROLE GENÉTICO 8K</h2>
+  <button class="btn" onclick="ativarDNA()">ATIVAR HOLOGRAMA DNA</button>
+  <button class="btn" onclick="sequenciar()">SEQUENCIAR GENOMA</button>
+  <button class="btn" onclick="modoUniverso()">MODO UNIVERSO</button>
+  <button class="btn" onclick="teleporte()">TELETRANSPORTE QUÂNTICO</button>
+  <button class="btn" onclick="resetar()">RESETAR SISTEMA</button>
+</div>
+
+<!-- CONSOLE -->
+<div class="console" onclick="abrirPainel()">
+  <div class="console-core">K-AI</div>
+</div>
+
+<!-- TELA CINEMA -->
+<div class="cinema" id="cinema">
+  <h1 id="cinemaText">INICIANDO</h1>
+</div>
+
+<!-- AUDIOS -->
+<audio id="musicaFundo" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_d1714b1e78.mp3" type="audio/mpeg">
+</audio>
+<audio id="sfxBeep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
+<audio id="sfxHolo" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
+<audio id="sfxEnergia" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
+
+<script>
+let painelAberto = false;
+let dnaAtivo = false;
+let musicaLigada = false;
+let vozLigada = true;
+const falas = window.speechSynthesis;
+
+function tocarSom(id) {
+  document.getElementById(id).currentTime = 0;
+  document.getElementById(id).play().catch(()=>{});
+}
+
+function falar(texto, tom=1) {
+  if(!vozLigada) return;
+  falas.cancel();
+  let msg = new SpeechSynthesisUtterance(texto);
+  msg.lang = 'pt-BR'; msg.rate = 1; msg.pitch = tom;
+  falas.speak(msg);
+}
+
+function toggleMusica() {
+  musicaLigada = !musicaLigada;
+  if(musicaLigada) {
+    document.getElementById('musicaFundo').volume = 0.3;
+    document.getElementById('musicaFundo').play();
+    falar('Trilha sonora ativada');
+  } else {
+    document.getElementById('musicaFundo').pause();
+    falar('Trilha sonora desativada');
+  }
+}
+
+function toggleVoz() {
+  vozLigada = !vozLigada;
+  falar(vozLigada ? 'Voz K-AI ativada' : 'Voz K-AI desativada', 1.3);
+}
+
+function abrirPainel() {
+  painelAberto = !painelAberto;
+  document.getElementById('painel').classList.toggle('ativo');
+  tocarSom('sfxBeep');
+  falar(painelAberto ? 'Painel aberto' : 'Painel fechado', 1.2);
+}
+
+function criarDNA() {
+  const dna = document.getElementById('dna');
+  dna.innerHTML = '';
+  for(let i=0;i<40;i++){
+    let strand1 = document.createElement('div');
+    let strand2 = document.createElement('div');
+    strand1.className = 'dna-base';
+    strand2.className = 'dna-base';
+    strand1.style.background = '#00FFFF';
+    strand2.style.background = '#FF00FF';
+    strand1.style.top = i*20+'px';
+    strand2.style.top = i*20+'px';
+    strand1.style.left = 50 + Math.sin(i*0.5)*200 + 'px';
+    strand2.style.left = 50 - Math.sin(i*0.5)*200 + 'px';
+    strand1.style.animationDelay = i*0.1+'s';
+    strand2.style.animationDelay = i*0.1+'s';
+    dna.appendChild(strand1);
+    dna.appendChild(strand2);
+  }
+}
+
+function ativarDNA() {
+  tocarSom('sfxHolo');
+  falar('Ativando holograma DNA');
+  dnaAtivo = true;
+  criarDNA();
+  document.getElementById('holoDNA').classList.add('ativo');
+  carregarEnergia(100);
+  telaCinema('HOLOGRAMA DNA ATIVADO', '#00FFFF');
+}
+
+function sequenciar() {
+  tocarSom('sfxEnergia');
+  falar('Iniciando sequenciamento genético');
+  carregarEnergia(80);
+  telaCinema('SEQUENCIANDO GENOMA...', '#8A2BE2');
+  setTimeout(()=>{
+    if(dnaAtivo){
+      document.querySelectorAll('.dna-base').forEach((b,i)=>{
+        setTimeout(()=>{b.style.background = '#00FF00'}, i*50);
+      });
+      falar('Sequenciamento completo');
+    }
+  }, 3000);
+}
+
+function modoUniverso() {
+  tocarSom('sfxHolo');
+  falar('Modo universo ativado');
+  carregarEnergia(60);
+  telaCinema('MODO UNIVERSO ATIVADO', '#FF00FF');
+  document.body.style.background = 'radial-gradient(circle, #8A2BE2 0%, #000 100%)';
+  setTimeout(()=>{document.body.style.background = '#000'}, 4000);
+}
+
+function teleporte() {
+  tocarSom('sfxEnergia');
+  falar('Iniciando teletransporte quântico. Segura firme');
+  carregarEnergia(100);
+  telaCinema('TELETRANSPORTE QUÂNTICO', '#00FFFF');
+  document.querySelector('.console').style.animation = 'consoleSpin 0.5s linear infinite';
+  setTimeout(()=>{document.querySelector('.console').style.animation = 'consoleSpin 20s linear infinite'}, 2000);
+}
+
+function resetar() {
+  tocarSom('sfxBeep');
+  falar('Resetando sistema');
+  carregarEnergia(0);
+  document.getElementById('holoDNA').classList.remove('ativo');
+  dnaAtivo = false;
+  telaCinema('SISTEMA RESETADO', '#FF0000');
+}
+
+function carregarEnergia(porcentagem) {
+  document.getElementById('energyBar').style.width = porcentagem + '%';
+}
+
+function telaCinema(texto, cor) {
+  document.getElementById('cinema').classList.add('ativo');
+  document.getElementById('cinemaText').innerText = texto;
+  document.getElementById('cinemaText').style.color = cor;
+  setTimeout(()=>{document.getElementById('cinema').classList.remove('ativo')}, 3000);
+}
+
+// AUTO INICIAR
+window.onload = ()=>{
+  falar('Sistema K-AI online. Bem vindo K-Riador', 1.3);
+}
+</script>
+
+</body></html>
