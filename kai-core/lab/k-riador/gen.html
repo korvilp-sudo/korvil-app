@@ -2,238 +2,169 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>K-AI PROJETOS 10D MAX PRIME</title>
+<title>OMNITRIX 4D - K-AI</title>
 <style>
 * {margin:0;padding:0;box-sizing:border-box}
 body {
-  background:#000;color:#00FFFF;font-family:'Consolas',monospace;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  height:100vh;overflow:hidden;perspective:2000px;
+  background:radial-gradient(circle at center, #001100 0%, #000 100%);
+  display:flex;justify-content:center;align-items:center;height:100vh;
+  overflow:hidden;perspective:1500px;font-family:Arial;
 }
 
-/* FUNDO 10D */
-.bg-grid {
-  position:absolute;width:200%;height:200%;top:-50%;left:-50%;
-  background-image:linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px),
-                   linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
-  background-size:60px 60px;animation:bgMove 25s linear infinite;
-  transform:rotateX(65deg) translateZ(-600px);
-}
-@keyframes bgMove {100%{transform:rotateX(65deg) translateZ(-600px) translateY(60px)}}
+/* FUNDO 4D */
+.bg {position:absolute;width:200%;height:200%;background:repeating-linear-gradient(transparent, transparent 2px, rgba(0,255,0,0.05) 3px);
+  transform:rotateX(70deg) translateZ(-500px);animation:bg 20s linear infinite}
+@keyframes bg {100%{transform:rotateX(70deg) translateZ(-500px) translateY(100px)}}
 
-/* MENU EMBAIXO */
-.menu {
-  position:absolute;bottom:40px;display:flex;gap:15px;z-index:100;
-  transform:translateZ(100px);
+/* OMNITRIX */
+.omnitrix {
+  width:350px;height:350px;border-radius:50%;position:relative;z-index:10;
+  background:radial-gradient(circle, #00FF00 0%, #00AA00 40%, #004400 70%);
+  box-shadow:0 0 200px #00FF00, inset 0 0 100px #00FF00;
+  animation:spin 10s infinite linear;cursor:pointer;transition:0.3s;
 }
-.menu button {
-  padding:16px 28px;background:rgba(0,255,255,0.1);border:2px solid #00FFFF;
-  color:#00FFFF;cursor:pointer;font-weight:900;border-radius:15px;
-  transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
-  backdrop-filter:blur(15px);box-shadow:0 0 40px rgba(0,255,255,0.2);font-size:15px;
-}
-.menu button:hover {transform:translateZ(30px) scale(1.15)}
-.menu button.active {background:#00FFFF;color:#000;box-shadow:0 0 80px #00FFFF}
-
-/* CONTAINER */
-.holo-container {width:900px;height:900px;position:relative;transform-style:preserve-3d}
-.holo {
-  width:100%;height:100%;position:absolute;opacity:0;
-  transition:all 1s cubic-bezier(0.77,0,0.175,1);
-  transform:scale(0.3) rotateY(180deg);display:flex;justify-content:center;align-items:center;
-}
-.holo.ativo {opacity:1;transform:scale(1) rotateY(0deg)}
-
-/* 1. BEM 10 - OMNITRIX FUNCIONAL */
-#bem10 {border-radius:50%;background:radial-gradient(circle, #00FF00 0%, #00AA00 30%, transparent 60%);
-  box-shadow:0 0 300px #00FF00, inset 0 0 300px #00FF00}
-#bem10.ativo {animation:spin 8s infinite linear}
+.omnitrix:hover {transform:scale(1.05) translateZ(50px)}
 .omnitrix-core {
-  width:300px;height:300px;border-radius:50%;border:8px solid #00FF00;
-  display:flex;justify-content:center;align-items:center;cursor:pointer;
-  box-shadow:0 0 60px #00FF00;transition:0.3s
+  width:200px;height:200px;border-radius:50%;background:#00FF00;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 80px #00FF00;border:6px solid #004400;
 }
-.omnitrix-core:hover {transform:scale(1.1) translateZ(50px)}
-.omnitrix-core::after {
-  content:attr(data-alien);color:#00FF00;font-size:28px;font-weight:900;text-shadow:0 0 20px #00FF00
+.omnitrix-face {
+  width:80px;height:80px;background:#000;border-radius:50%;position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);border:4px solid #00FF00;
 }
-.alien-lista {position:absolute;bottom:120px;display:flex;gap:10px}
-.alien {padding:8px 12px;background:#003300;border:1px solid #00FF00;color:#00FF00;cursor:pointer;border-radius:8px}
 
-/* 2. REX - NANITE BUILDER FUNCIONAL */
-#rex {border:5px solid #00CCFF;background:linear-gradient(45deg, transparent, #00CCFF55, transparent);
-  box-shadow:0 0 250px #00CCFF;flex-direction:column}
-#rex.ativo .scan {animation:scanY 2s infinite}
-.rex-titulo {color:#00CCFF;font-size:50px;text-shadow:0 0 40px #00CCFF;margin-bottom:30px;transform:translateZ(80px)}
-.build-btn {padding:15px 30px;background:#00CCFF;color:#000;border:0;border-radius:12px;font-weight:900;
-  cursor:pointer;margin:8px;transition:0.3s;box-shadow:0 0 30px #00CCFF}
-.build-btn:hover {transform:scale(1.1) translateZ(20px)}
-.rex-arms {display:flex;gap:20px}
-.arm {width:150px;height:150px;border:3px solid #00CCFF;border-radius:20px;display:flex;align-items:center;justify-content:center}
-
-/* 3. MAX STEEL - TURBO MODE FUNCIONAL */
-#max {background:conic-gradient(from 0deg, #FFCC00, #FF6600, #FF0000, #FFCC00);
-  border-radius:60px;box-shadow:0 0 300px #FF6600;flex-direction:column}
-#max.ativo {animation:spinZ 5s linear infinite}
-.turbo-nivel {font-size:80px;color:#FFF;font-weight:900;text-shadow:0 0 80px #FFCC00;transform:translateZ(120px)}
-.turbo-btn {padding:20px 40px;background:#FF6600;color:#FFF;border:0;border-radius:15px;font-size:20px;
-  font-weight:900;cursor:pointer;margin-top:30px;box-shadow:0 0 50px #FF6600;transition:0.3s}
-.turbo-btn:hover {transform:scale(1.2) translateZ(40px)}
-.turbo-bar {width:400px;height:20px;background:#222;border-radius:10px;margin-top:20px;overflow:hidden}
-.turbo-fill {height:100%;width:0%;background:#FFCC00;transition:0.5s}
-
-/* 4. POWER RANGERS - MORPHER FUNCIONAL */
-#rangers {flex-direction:column}
-.rangers-grid {display:flex;gap:25px;flex-wrap:wrap;justify-content:center}
-.ranger-card {
-  width:180px;height:180px;border-radius:25px;display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:20px;color:#FFF;cursor:pointer;transition:0.4s;
+/* HOLOGRAMA EM CIMA DO RELÓGIO */
+.holo-alien {
+  position:absolute;bottom:420px;width:400px;height:400px;
+  display:flex;justify-content:center;align-items:center;opacity:0;
+  transition:1s;transform:translateY(50px) rotateX(20deg)
 }
-.ranger-card:hover {transform:scale(1.2) rotateY(20deg) translateZ(50px)}
-.red {background:#FF0000; box-shadow:0 0 80px #FF0000}
-.blue {background:#0000FF; box-shadow:0 0 80px #0000FF}
-.yellow {background:#FFFF00; box-shadow:0 0 80px #FFFF00;color:#000}
-.black {background:#222; box-shadow:0 0 80px #FFF}
-.pink {background:#FF00FF; box-shadow:0 0 80px #FF00FF}
-.morph-text {position:absolute;top:100px;font-size:40px;text-shadow:0 0 40px #FFF}
-
-/* 5. K-AI FUSÃO FINAL */
-#kai {flex-direction:column}
-.kai-core {
-  width:550px;height:550px;border-radius:50%;
-  background:conic-gradient(from 0deg, #00FF00, #00CCFF, #FFCC00, #FF0000, #0000FF, #00FF00);
-  box-shadow:0 0 400px #00FFFF;animation:coreSpin 4s linear infinite;
+.holo-alien.ativo {opacity:1;transform:translateY(0) rotateX(0)}
+.holo-alien .img {
+  font-size:120px;text-shadow:0 0 60px #00FF00;
+  animation:float 3s ease-in-out infinite
 }
-.kai-text {font-size:90px;margin-top:40px;text-shadow:0 0 80px #00FFFF;transform:translateZ(120px)}
-.kai-sub {font-size:18px;opacity:0.8;transform:translateZ(100px)}
+@keyframes float {50%{transform:translateY(-20px)}}
 
-/* ANIMAÇÕES */
+/* CORPO HUMANO 360 */
+.corpo {
+  position:absolute;bottom:50px;width:200px;height:400px;
+  transform-style:preserve-3d;animation:rotate360 8s infinite linear;
+  opacity:0;transition:1s
+}
+.corpo.ativo {opacity:1}
+.corpo .boneco {
+  width:100%;height:100%;background:linear-gradient(#FFDDBB, #FFDDBB);
+  border-radius:100px 100px 40px 40px;box-shadow:0 0 40px rgba(0,255,0,0.5)
+}
+
+/* MENU ALIENS */
+.alien-menu {
+  position:absolute;bottom:40px;display:flex;gap:15px;z-index:20
+}
+.btn-alien {
+  padding:12px 20px;background:rgba(0,255,0,0.1);border:2px solid #00FF00;color:#00FF00;
+  border-radius:12px;font-weight:900;cursor:pointer;transition:0.3s;
+  backdrop-filter:blur(10px)
+}
+.btn-alien:hover {background:#00FF00;color:#000;transform:scale(1.1) translateZ(20px)}
+
+/* TRANSFORMAÇÃO 5S */
+.transformacao {
+  position:absolute;top:0;left:0;width:100%;height:100%;z-index:50;
+  background:#000;display:none;justify-content:center;align-items:center;flex-direction:column
+}
+.transformacao.ativo {display:flex;animation:flash 5s}
+.transformacao h1 {
+  color:#00FF00;font-size:60px;text-shadow:0 0 40px #00FF00;
+  animation:texto 5s
+}
+.barras {width:600px;height:20px;background:#002200;border:2px solid #00FF00;border-radius:10px;margin-top:20px}
+.barra-fill {height:100%;width:0%;background:#00FF00;box-shadow:0 0 20px #00FF00;animation:carregar 5s forwards}
+
 @keyframes spin {100%{transform:rotateZ(360deg)}}
-@keyframes spinZ {100%{transform:rotateZ(360deg)}}
-@keyframes scanY {0%{top:0} 100%{top:100%}}
-@keyframes coreSpin {100%{transform:rotateZ(360deg)}}
-.flash {position:absolute;top:0;left:0;width:100%;height:100%;background:#FFF;opacity:0;pointer-events:none;z-index:99}
+@keyframes rotate360 {100%{transform:rotateY(360deg)}}
+@keyframes flash {0%{background:#FFF} 10%{background:#000} 100%{background:#000}}
+@keyframes texto {0%{opacity:0;transform:scale(0.5)} 20%{opacity:1;transform:scale(1.2)} 100%{opacity:1}}
+@keyframes carregar {100%{width:100%}}
 </style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="flash" id="flash"></div>
-<audio id="snd" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
+<div class="bg"></div>
 
-<div class="holo-container">
-  <!-- 1 BEM 10 PROJETO -->
-  <div id="bem10" class="holo ativo">
-    <div class="omnitrix-core" data-alien="FOGO" onclick="trocarAlien()"></div>
-    <div class="alien-lista">
-      <div class="alien" onclick="setAlien('FOGO')">Fogo</div>
-      <div class="alien" onclick="setAlien('QUATRO BRACOS')">4 Braços</div>
-      <div class="alien" onclick="setAlien('ULTRA T')">Ultra T</div>
-      <div class="alien" onclick="setAlien('XLR8')">XLR8</div>
-    </div>
-  </div>
-  
-  <!-- 2 REX PROJETO -->
-  <div id="rex" class="holo">
-    <div class="scan" style="position:absolute;top:0;width:100%;height:8px;background:#00CCFF"></div>
-    <h1 class="rex-titulo">GENERATOR REX</h1>
-    <div class="rex-arms">
-      <div class="arm" id="arm1">BRAÇO</div>
-      <div class="arm" id="arm2">CANHÃO</div>
-    </div>
-    <button class="build-btn" onclick="build('ESPADA')">CONSTRUIR ESPADA</button>
-    <button class="build-btn" onclick="build('ESCUDO')">CONSTRUIR ESCUDO</button>
-  </div>
-  
-  <!-- 3 MAX PROJETO -->
-  <div id="max" class="holo">
-    <div class="turbo-nivel" id="turboLvl">TURBO 1</div>
-    <button class="turbo-btn" onclick="aumentarTurbo()">ATIVAR TURBO ENERGY</button>
-    <div class="turbo-bar"><div class="turbo-fill" id="turboBar"></div></div>
-  </div>
-  
-  <!-- 4 RANGERS PROJETO -->
-  <div id="rangers" class="holo">
-    <div class="morph-text" id="morphText">ESCOLHA SEU RANGER</div>
-    <div class="rangers-grid">
-      <div class="ranger-card red" onclick="morphar('VERMELHO')">RED</div>
-      <div class="ranger-card blue" onclick="morphar('AZUL')">BLUE</div>
-      <div class="ranger-card yellow" onclick="morphar('AMARELO')">YELLOW</div>
-      <div class="ranger-card black" onclick="morphar('PRETO')">BLACK</div>
-      <div class="ranger-card pink" onclick="morphar('ROSA')">PINK</div>
-    </div>
-  </div>
+<!-- HOLOGRAMA -->
+<div class="holo-alien" id="holo"><div class="img" id="holoImg">🔥</div></div>
 
-  <!-- 5 K-AI FUSÃO -->
-  <div id="kai" class="holo">
-    <div class="kai-core"></div>
-    <div class="kai-text">K-AI KORVIL</div>
-    <div class="kai-sub">FUSÃO: OMNITRIX + NANITES + TURBO + RANGERS</div>
-  </div>
+<!-- CORPO 360 -->
+<div class="corpo" id="corpo"><div class="boneco"></div></div>
+
+<!-- OMNITRIX -->
+<div class="omnitrix" onclick="ativarOmnitrix()">
+  <div class="omnitrix-core"></div>
+  <div class="omnitrix-face"></div>
 </div>
 
-<!-- MENU EMBAIXO -->
-<div class="menu">
-  <button onclick="trocar('bem10')" class="active">BEM 10</button>
-  <button onclick="trocar('rex')">GENERATOR REX</button>
-  <button onclick="trocar('max')">MAX STEEL</button>
-  <button onclick="trocar('rangers')">POWER RANGERS</button>
-  <button onclick="trocar('kai')">K-AI FUSÃO</button>
+<!-- MENU 4 ALIENS ORIGINAIS -->
+<div class="alien-menu">
+  <button class="btn-alien" onclick="selecionarAlien('FOGO','🔥','QUATRO BRACOS')">FOGO</button>
+  <button class="btn-alien" onclick="selecionarAlien('QUATRO BRACOS','💪','FOGO')">QUATRO BRAÇOS</button>
+  <button class="btn-alien" onclick="selecionarAlien('ULTRA T','⚙️','XLR8')">ULTRA T</button>
+  <button class="btn-alien" onclick="selecionarAlien('XLR8','💨','ULTRA T')">XLR8</button>
 </div>
+
+<!-- TELA TRANSFORMAÇÃO 5S -->
+<div class="transformacao" id="transf">
+  <h1 id="transfText">TRANSFORMANDO EM FOGO</h1>
+  <div class="barras"><div class="barra-fill"></div></div>
+</div>
+
+<!-- SONS OMNITRIX ORIGINAIS -->
+<audio id="sndAtivar" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
+<audio id="sndSelecionar" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
+<audio id="sndTransformar" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="></audio>
 
 <script>
-let alienAtual = 'FOGO';
-let turbo = 1;
+let alienAtual = null;
 
-function tocarSom() {
-  document.getElementById('snd').play().catch(()=>{});
+function tocar(som) {
+  document.getElementById(som).currentTime = 0;
+  document.getElementById(som).play().catch(()=>{});
 }
 
-function trocar(id) {
-  tocarSom();
-  let flash = document.getElementById('flash');
-  flash.style.opacity = '1';
-  setTimeout(()=>{flash.style.opacity = '0'}, 250);
-
-  setTimeout(()=>{
-    document.querySelectorAll('.holo').forEach(h => h.classList.remove('ativo'));
-    document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('ativo');
-    event.target.classList.add('active');
-  }, 250);
+function ativarOmnitrix() {
+  tocar('sndAtivar');
+  document.querySelector('.omnitrix').style.animation = 'spin 2s infinite linear';
+  setTimeout(()=>{document.querySelector('.omnitrix').style.animation = 'spin 10s infinite linear'}, 2000);
 }
 
-// BEM 10 FUNCÕES
-function setAlien(nome) {
+function selecionarAlien(nome, emoji, prox) {
+  if(alienAtual === nome) return;
   alienAtual = nome;
-  document.querySelector('.omnitrix-core').setAttribute('data-alien', nome);
-  tocarSom();
-}
-function trocarAlien() {
-  const aliens = ['FOGO','QUATRO BRACOS','ULTRA T','XLR8'];
-  let i = aliens.indexOf(alienAtual);
-  setAlien(aliens[(i+1)%4]);
-}
-
-// REX FUNCÕES
-function build(tipo) {
-  document.getElementById('arm1').innerText = tipo;
-  document.getElementById('arm2').innerText = tipo;
-  tocarSom();
-}
-
-// MAX FUNCÕES
-function aumentarTurbo() {
-  turbo = turbo >= 5 ? 1 : turbo + 1;
-  document.getElementById('turboLvl').innerText = 'TURBO ' + turbo;
-  document.getElementById('turboBar').style.width = (turbo*20) + '%';
-  tocarSom();
-}
-
-// RANGERS FUNCÕES
-function morphar(cor) {
-  document.getElementById('morphText').innerText = 'MORPHADO: RANGER ' + cor;
-  tocarSom();
+  tocar('sndSelecionar');
+  
+  // MOSTRA HOLOGRAMA EM CIMA
+  document.getElementById('holo').classList.add('ativo');
+  document.getElementById('holoImg').innerText = emoji;
+  
+  // MOSTRA CORPO GIRANDO
+  document.getElementById('corpo').classList.add('ativo');
+  
+  // INICIA TRANSFORMAÇÃO 5S
+  document.getElementById('transf').classList.add('ativo');
+  document.getElementById('transfText').innerText = 'TRANSFORMANDO EM ' + nome;
+  tocar('sndTransformar');
+  
+  setTimeout(()=>{
+    document.getElementById('transf').classList.remove('ativo');
+    // AQUI PODERIA TROCAR A SKIN DO BONECO PRA COR DO ALIEN
+    document.querySelector('.boneco').style.background = 
+      nome==='FOGO'?'linear-gradient(red, orange)':
+      nome==='QUATRO BRACOS'?'linear-gradient(red, darkred)':
+      nome==='ULTRA T'?'linear-gradient(gray, #333)':
+      'linear-gradient(blue, cyan)';
+  }, 5000);
 }
 </script>
 
