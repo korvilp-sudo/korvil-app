@@ -13,7 +13,18 @@ height:100vh;
 canvas{
 display:block;
 }
-
+body {
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+}
+#container {
+  width: 100vw;
+  height: 100vh;
+}
+canvas {
+  display: block;
+}
 body::after{
 content:"";
 position:absolute;
