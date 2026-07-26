@@ -57,7 +57,7 @@ loader.load(
     animate();
   },
   undefined,
-  function(err){ console.error("ERRO: zordon-face.png não encontrada", err); }
+  function(err){ console.error("ERRO: file_000000004980820ead22c12031f81004.png não encontrada", err); }
 );
 
 // 4. LINHAS DE ENERGIA HORIZONTAIS
