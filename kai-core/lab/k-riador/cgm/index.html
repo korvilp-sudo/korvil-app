@@ -1,904 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>KORVIL G15 ULTRA 2.0 // ADVANCED GESTURE HUD</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      touch-action: none;
-      user-select: none;
-      font-family: 'Courier New', Courier, monospace;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KORVIL G15 ULTRA 4.0 // VOZ COACH</title>
+<style>
+* {box-sizing: border-box;margin: 0;padding: 0;touch-action: none;user-select: none;font-family: 'Courier New', Courier, monospace;}
+body {background: #030712;color: #00f0ff;overflow: hidden;width: 100vw;height: 100vh;}
+.grid-bg {position: absolute;inset: 0;background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);background-size: 30px 30px;pointer-events: none;z-index: 1;}
+.scanlines {position: absolute;inset: 0;background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);background-size: 100% 4px;pointer-events: none;z-index: 2;}
+#video {position: absolute;width: 100%;height: 100%;object-fit: cover;transform: scaleX(-1);opacity: 0.18;filter: grayscale(80%) contrast(150%);}
 
-    body {
-      background: #030712;
-      color: #00f0ff;
-      overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-    }
+#menu {position: absolute;top: 15px;left: 15px;width: 260px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);padding: 12px;border-radius: 8px;backdrop-filter: blur(8px);z-index: 10;}
+.menu-title {font-size: 12px;font-weight: bold;letter-spacing: 1px;margin-bottom: 10px;text-shadow: 0 0 8px #00f0ff;display: flex;justify-content: space-between;color:#ffe600;}
+.btn {width: 100%;padding: 10px;margin: 4px 0;background: rgba(0, 240, 255, 0.1);border: 1px solid #00f0ff;color: #00f0ff;font-size: 11px;font-weight: bold;letter-spacing: 1px;cursor: pointer;border-radius: 5px;transition: all 0.15s ease;text-align: left;}
+.btn.hover {border-color: #ffffff;box-shadow: 0 0 15px #00f0ff;background: rgba(0, 240, 255, 0.4);color: #fff;transform:translateX(5px);}
 
-    /* Fundo Tecnológico Grid & Scanlines */
-    .grid-bg {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
-      background-size: 30px 30px;
-      pointer-events: none;
-      z-index: 1;
-    }
+.cubo {position: absolute;width: 90px;height: 90px;border: 3px solid #00f0ff;background: rgba(0, 240, 255, 0.15);box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);border-radius: 8px;cursor: grab;z-index: 5;display: flex;align-items: center;justify-content: center;font-size: 11px;}
+.cubo.segurado {border-color: #ff00ea;background: rgba(255, 0, 234, 0.3);box-shadow: 0 0 35px #ff00ea;transform:scale(1.1);}
+.cubo.redimensionando {border-color: #ffe600;background: rgba(255, 230, 0, 0.3);box-shadow: 0 0 45px #ffe600;}
 
-    .scanlines {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 2;
-    }
+#lixeira {position: absolute;bottom: 20px;left: 20px;width: 70px;height: 70px;border: 3px dashed #ff3366;border-radius: 12px;background: rgba(255, 51, 102, 0.15);display: flex;align-items: center;justify-content: center;font-size: 28px;z-index: 10;transition: all 0.2s ease;}
+#lixeira.ativo {border-color: #ff0044;background: rgba(255, 0, 68, 0.4);transform: scale(1.3);box-shadow: 0 0 35px #ff0044;}
 
-    /* Vídeo da Câmera (Espelhado) */
-    #video {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1);
-      opacity: 0.18;
-      filter: grayscale(80%) contrast(150%);
-    }
+.pino {position: absolute;width: 22px;height: 22px;border-radius: 50%;pointer-events: none;z-index: 20;transform: translate(-50%, -50%);transition: all 0.1s;}
+#pino1 {background: #ff00ea;box-shadow: 0 0 20px #ff00ea;border: 3px solid #fff;}
+#pino2 {background: #00f0ff;box-shadow: 0 0 20px #00f0ff;border: 3px solid #fff;}
+#cursor {position: absolute;width: 40px;height: 40px;border: 2px dashed #00f0ff;border-radius: 50%;pointer-events: none;z-index: 19;transform: translate(-50%, -50%);animation: spin 4s linear infinite;}
+@keyframes spin {from { transform: translate(-50%, -50%) rotate(0deg); }to { transform: translate(-50%, -50%) rotate(360deg); }}
 
-    /* Menu Flutuante HUD */
-    #menu {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 200px;
-      background: rgba(5, 12, 24, 0.88);
-      border: 1px solid #00f0ff;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1);
-      padding: 10px;
-      border-radius: 6px;
-      backdrop-filter: blur(5px);
-      z-index: 10;
-    }
-
-    .menu-title {
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      text-shadow: 0 0 5px #00f0ff;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 8px;
-      margin: 3px 0;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid #00f0ff;
-      color: #00f0ff;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.15s ease;
-      text-align: left;
-    }
-
-    .btn.hover {
-      border-color: #ffffff;
-      box-shadow: 0 0 12px #00f0ff;
-      background: rgba(0, 240, 255, 0.3);
-      color: #fff;
-    }
-
-    .btn:active, .btn.click {
-      transform: scale(0.95);
-      background: #00f0ff;
-      color: #000;
-    }
-
-    /* Cubos Holográficos Interativos */
-    .cubo {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      border: 2px solid #00f0ff;
-      background: rgba(0, 240, 255, 0.12);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 15px rgba(0, 240, 255, 0.1);
-      border-radius: 6px;
-      cursor: grab;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      letter-spacing: 1px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .cubo::after {
-      content: 'K-AI';
-      opacity: 0.5;
-      font-size: 9px;
-    }
-
-    .cubo.segurado {
-      border-color: #ff00ea;
-      background: rgba(255, 0, 234, 0.25);
-      box-shadow: 0 0 25px #ff00ea, inset 0 0 15px #ff00ea;
-      z-index: 8;
-    }
-
-    .cubo.redimensionando {
-      border-color: #ffe600;
-      background: rgba(255, 230, 0, 0.25);
-      box-shadow: 0 0 35px #ffe600;
-      z-index: 9;
-    }
-
-    /* Lixeira HUD */
-    #lixeira {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 60px;
-      height: 60px;
-      border: 2px dashed #ff3366;
-      border-radius: 10px;
-      background: rgba(255, 51, 102, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      z-index: 10;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
-    }
-
-    #lixeira.ativo {
-      border-color: #ff0044;
-      background: rgba(255, 0, 68, 0.35);
-      transform: scale(1.25);
-      box-shadow: 0 0 25px #ff0044;
-    }
-
-    /* Pinus / Ponteiros das Mãos */
-    .pino {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 20;
-      transform: translate(-50%, -50%);
-      transition: background 0.1s;
-    }
-
-    #pino1 {
-      background: #ff00ea;
-      box-shadow: 0 0 14px #ff00ea;
-      border: 2px solid #fff;
-    }
-
-    #pino2 {
-      background: #00f0ff;
-      box-shadow: 0 0 14px #00f0ff;
-      border: 2px solid #fff;
-    }
-
-    #cursor {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      border: 1px dashed #00f0ff;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 19;
-      transform: translate(-50%, -50%);
-      animation: spin 6s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    /* Painel Tutorial e Status HUD */
-    #status-panel {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      width: 280px;
-      background: rgba(5, 12, 24, 0.9);
-      border: 1px solid #00f0ff;
-      padding: 10px;
-      border-radius: 6px;
-      z-index: 10;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-    }
-
-    .status-title {
-      font-size: 10px;
-      font-weight: bold;
-      color: #ffe600;
-      margin-bottom: 5px;
-      letter-spacing: 1px;
-    }
-
-    .status-item {
-      font-size: 10px;
-      margin: 3px 0;
-      color: #00f0ff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #tutorial-box {
-      margin-top: 8px;
-      padding: 6px;
-      background: rgba(0, 240, 255, 0.08);
-      border-left: 3px solid #00f0ff;
-      font-size: 9px;
-      color: #fff;
-      line-height: 1.3;
-    }
-
-    /* Barra de Progresso do Punho */
-    #fist-progress {
-      width: 0%;
-      height: 3px;
-      background: #ff00ea;
-      margin-top: 5px;
-      transition: width 0.1s linear;
-      box-shadow: 0 0 8px #ff00ea;
-    }
-  </style>
+#status-panel {position: absolute;bottom: 20px;right: 20px;width: 340px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;padding: 12px;border-radius: 8px;z-index: 10;box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);}
+.status-title {font-size: 11px;font-weight: bold;color: #ffe600;margin-bottom: 6px;}
+.status-item {font-size: 11px;margin: 4px 0;color: #00f0ff;}
+#tutorial-box {margin-top: 10px;padding: 10px;background: rgba(0, 240, 255, 0.12);border-left: 4px solid #00f0ff;font-size: 11px;color: #fff;line-height: 1.4;max-height:140px;overflow-y:auto;}
+#fist-progress {width: 0%;height: 4px;background: linear-gradient(90deg,#ff00ea,#ffe600);margin-top: 6px;transition: width 0.1s linear;}
+.calib-bar {width:100%;height:6px;background:#001122;border-radius:3px;margin-top:5px;overflow:hidden;}
+.calib-fill {height:100%;width:0%;background:linear-gradient(90deg,#00ff00,#00f0ff);transition:0.3s;}
+.erro {color:#ff3366!important;}.sucesso {color:#00ff66!important;}
+</style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="scanlines"></div>
-
+<div class="grid-bg"></div><div class="scanlines"></div>
 <div id="menu">
-  <div class="menu-title">
-    <span>> G15 ULTRA</span>
-    <span>v2.0</span>
-  </div>
+  <div class="menu-title"><span>> G15 ULTRA</span><span>v4.0 VOZ</span></div>
+  <button class="btn" id="calibrar">[CAL] CALIBRAR MÃO</button>
   <button class="btn" id="novo">[1] + NOVO CUBO</button>
   <button class="btn" id="limpar">[2] RESETAR TUDO</button>
   <button class="btn" id="cor">[3] TROCAR COR</button>
-
-  <div style="font-size: 9px; color: #888; margin-top: 8px; border-top: 1px solid #00f0ff33; padding-top: 4px;">
-    <span>20 GESTOS ATIVOS</span>
-  </div>
+  <button class="btn" id="voz">🔊 VOZ: LIGADA</button>
 </div>
 
 <div id="lixeira">🗑️</div>
 <video id="video" autoplay playsinline muted></video>
-
-<div id="pino1" class="pino"></div>
-<div id="pino2" class="pino"></div>
-<div id="cursor"></div>
+<div id="pino1" class="pino"></div><div id="pino2" class="pino"></div><div id="cursor"></div>
 
 <div id="status-panel">
-  <div class="status-title">📡 SISTEMA K-AI HUD</div>
+  <div class="status-title">📡 K-AI COACH DE VOZ</div>
   <div class="status-item">STATUS: <span id="st-text">INICIALIZANDO...</span></div>
   <div class="status-item">GESTO: <span id="st-gesto" style="color: #ff00ea;">NENHUM</span></div>
   <div class="status-item">AÇÃO: <span id="st-acao" style="color: #ffe600;">AGUARDANDO</span></div>
-  <div class="status-item">OBJETOS NA TELA: <span id="st-obj">0</span></div>
-  
+  <div class="status-item">FEEDBACK: <span id="st-feedback" class="sucesso">PRONTO</span></div>
   <div id="fist-progress"></div>
-
-  <div id="tutorial-box">
-    💡 <b>DICA DE USO:</b><br>
-    • <b>PINÇAR:</b> Junte o Dedão + qualquer outro dedo para clicar/arrastar.<br>
-    • <b>PUNHO (2s):</b> Feche a mão 2 seg pra travar. Abra a mão para soltar!
-  </div>
+  <div class="calib-bar"><div class="calib-fill" id="calibFill"></div></div>
+  <div id="tutorial-box">💡 <b>COACH ATIVO</b><br>Mostre a mão aberta para calibrar</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
 <script>
-// --- SINTETIZADOR DE ÁUDIO WEB AUDIO API ---
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
+// ===== SISTEMA DE VOZ =====
+const AudioContext = window.AudioContext || window.webkitAudioContext;let audioCtx = null;let vozLigada=true;
+function initAudio(){if(!audioCtx)audioCtx=new AudioContext();}
+function playSound(f,t='sine',d=0.1,v=0.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06),erro:()=>{playSound(200,'sawtooth',0.3,0.15);setTimeout(()=>playSound(150,'sawtooth',0.3,0.15),150)},sucesso:()=>{playSound(1200,'sine',0.1,0.1);setTimeout(()=>playSound(1500,'sine',0.1,0.08),100)}};
 
-function initAudio() {
-  if (!audioCtx) audioCtx = new AudioContext();
+const falas=window.speechSynthesis;
+function falar(texto,tipo='info'){
+  if(!vozLigada)return; falas.cancel();
+  let msg=new SpeechSynthesisUtterance(texto);
+  msg.lang='pt-BR'; msg.rate=1.1; msg.pitch=tipo==='erro'?0.8:tipo==='sucesso'?1.3:1.1;
+  falas.speak(msg);
 }
 
-function playSound(freq, type = 'sine', duration = 0.1, vol = 0.1) {
-  if (!audioCtx) return;
-  try {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-  } catch(e) {}
+// ===== ESTADO =====
+const video=document.getElementById('video'),pino1=document.getElementById('pino1'),pino2=document.getElementById('pino2'),cursor=document.getElementById('cursor');
+const stText=document.getElementById('st-text'),stGesto=document.getElementById('st-gesto'),stAcao=document.getElementById('st-acao'),stFeedback=document.getElementById('st-feedback');
+const lixeira=document.getElementById('lixeira'),fistProgress=document.getElementById('fist-progress'),tutorialBox=document.getElementById('tutorial-box'),calibFill=document.getElementById('calibFill');
+
+let cubos=[],segurado=null,redimensionando=null;
+let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'];let corAtual=0;
+let posSuave={x:-100,y:-100,cx:-100,cy:-100},sensibilidade=1.0;
+let tempoPunhoInicio=null,punhoTravado=false,cooldownGesto=0,calibrado=false,calibValues={pinca:0.06,abrir:0.32};
+let ultimoErro='',ultimoAcerto='';
+
+// ===== CALIBRAGEM COM VOZ =====
+function calibrarMao(h){
+  let pinca=dist(h[4],h[8]),abrir=dist(h[8],h[0]);
+  calibValues.pinca=pinca*0.9; calibValues.abrir=abrir*1.1;
+  calibFill.style.width='100%'; calibrado=true; SFX.sucesso();
+  falar("Calibragem concluída com sucesso. Sistema pronto para uso", 'sucesso');
+  stText.textContent="CALIBRADO"; stFeedback.textContent="CALIBRADO"; stFeedback.className="sucesso";
+  tutorialBox.innerHTML="✅ <b>CALIBRAÇÃO OK!</b><br>Agora posso te guiar nas 20 ações";
 }
 
-const SFX = {
-  click: () => { playSound(800, 'square', 0.05, 0.08); playSound(1200, 'sine', 0.08, 0.05); },
-  grab: () => { playSound(300, 'sawtooth', 0.12, 0.08); },
-  trash: () => { playSound(150, 'sawtooth', 0.25, 0.12); },
-  spawn: () => { playSound(600, 'sine', 0.1, 0.1); setTimeout(() => playSound(900, 'sine', 0.1, 0.08), 50); },
-  action: () => { playSound(1000, 'sine', 0.15, 0.06); },
-  lock: () => { playSound(400, 'square', 0.2, 0.1); setTimeout(() => playSound(800, 'square', 0.15, 0.08), 80); }
-};
+// ===== DETECÇÃO =====
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
+function isMaoFechada(h){return dist(h[8],h[5])<0.12&&dist(h[12],h[9])<0.12&&dist(h[16],h[13])<0.12&&dist(h[20],h[17])<0.12;}
+function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
 
-// --- ELEMENTOS E ESTADOS ---
-const video = document.getElementById('video');
-const pino1 = document.getElementById('pino1');
-const pino2 = document.getElementById('pino2');
-const cursor = document.getElementById('cursor');
-const stText = document.getElementById('st-text');
-const stGesto = document.getElementById('st-gesto');
-const stAcao = document.getElementById('st-acao');
-const stObj = document.getElementById('st-obj');
-const lixeira = document.getElementById('lixeira');
-const fistProgress = document.getElementById('fist-progress');
-const tutorialBox = document.getElementById('tutorial-box');
+function identificarGesto(h){
+  if(isPinca(h))return"PINÇA";
+  if(isMaoFechada(h))return"PUNHO";
+  if(isMaoAberta(h))return"ABERTO";
+  if(h[8].y<h[6].y&&h[12].y<h[10].y&&h[16].y>h[14].y)return"PAZ";
+  if(h[8].y<h[6].y&&h[12].y>h[10].y)return"APONTAR";
+  if(h[4].y<h[3].y&&h[8].y>h[6].y)return"LIKE";
+  if(h[4].y>h[2].y)return"DISLIKE";
+  if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";
+  return"NEUTRO";
+}
 
-let cubos = [];
-let segurado = null;
-let redimensionando = null;
+// ===== 20 AÇÕES COM VOZ =====
+function executarAcao(g1,g2){
+  if(Date.now()<cooldownGesto)return; cooldownGesto=Date.now()+1200;
 
-let escalaInicial = 1;
-let anguloInicial = 0;
-let distInicial = 0;
-let rotacaoAtual = 0;
+  const acoes={
+    1:["PINÇA + NEUTRO","CRIAR CUBO",()=>criarCubo(),"Junte dedão com indicador"],
+    2:["LIKE + NEUTRO","TROCAR COR",()=>document.getElementById('cor').click(),"Faça joinha"],
+    3:["DISLIKE + NEUTRO","APAGAR ÚLTIMO",()=>{if(cubos.length){cubos.pop().remove();cubos.pop();stObj.textContent=cubos.length;SFX.trash()}},"Polegar para baixo"],
+    4:["ROCK + NEUTRO","EFEITO GLITCH",()=>{document.body.style.filter="hue-rotate(180deg)";setTimeout(()=>document.body.style.filter="none",800)},"Sinal de rock"],
+    5:["ABERTO + ABERTO","LIMPAR TUDO",()=>document.getElementById('limpar').click(),"Duas mãos abertas"],
+    6:["PUNHO + PUNHO","AGRUPAR CENTRO",()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+i*15+'px';c.style.top=window.innerHeight/2-45+'px'}),"Dois punhos"],
+    7:["LIKE + LIKE","AUMENTAR TODOS",()=>cubos.forEach(c=>{let s=Math.min(3,parseFloat(c.dataset.scale||1)+0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois joinhas"],
+    8:["DISLIKE + DISLIKE","DIMINUIR TODOS",()=>cubos.forEach(c=>{let s=Math.max(0.4,parseFloat(c.dataset.scale||1)-0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois dislikes"],
+    9:["PAZ + PAZ","DUPLICAR",()=>{if(cubos.length<12)criarCubo(window.innerWidth/2+Math.random()*100,window.innerHeight/2)},"Duas paz e amor"],
+    10:["APONTAR + APONTAR","MODO MIRA",()=>{cursor.style.borderColor="#ff00ea";setTimeout(()=>cursor.style.borderColor="#00f0ff",1500)},"Dois dedos apontando"],
+    11:["ROCK + ROCK","PULSO SONORO",()=>playSound(1500,'sawtooth',0.4,0.2),"Dois sinais de rock"],
+    12:["PUNHO + LIKE","MODO MATRIX",()=>{document.body.style.background="#001a05";setTimeout(()=>document.body.style.background="#030712",2000)},"Punho e joinha"],
+    13:["ABERTO + APONTAR","SNAP GRID",()=>cubos.forEach(c=>{c.style.left=Math.round(c.offsetLeft/50)*50+'px';c.style.top=Math.round(c.offsetTop/50)*50+'px'})),"Mão aberta e apontar"],
+    14:["PAZ + APONTAR","MUTE AUDIO",()=>{audioCtx=audioCtx?null:new AudioContext();vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA'},"Paz e apontar"],
+    15:["LIKE + APONTAR","COR ALEATÓRIA",()=>{corAtual=Math.floor(Math.random()*cores.length);document.getElementById('cor').style.color=cores[corAtual]},"Like e apontar"],
+    16:["ROCK + LIKE","ROTACIONAR 45°",()=>cubos.forEach(c=>{let r=(parseFloat(c.dataset.rotate||0)+45)%360;c.dataset.rotate=r;c.style.transform=`scale(${c.dataset.scale||1}) rotate(${r}deg)`})),"Rock e like"],
+    17:["PUNHO + PAZ","ESPALHAR",()=>cubos.forEach(c=>{c.style.left=Math.random()*(window.innerWidth-100)+'px';c.style.top=Math.random()*(window.innerHeight-100)+'px'})),"Punho e paz"],
+    18:["ABERTO + ROCK","BASS BOOST",()=>playSound(80,'sine',0.6,0.15),"Mão aberta e rock"],
+    19:["DISLIKE + LIKE","INVERTER TAMANHO",()=>cubos.forEach(c=>{let s=parseFloat(c.dataset.scale||1)>1?0.6:1.8;c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dislike e like"],
+    20:["APONTAR + ROCK","AUMENTAR SENS",()=>{sensibilidade=Math.min(3,sensibilidade+0.2)},"Apontar e rock"]
+  };
 
-let posSuave = { x: -100, y: -100, cx: -100, cy: -100 };
-let cores = ['#00f0ff', '#ff00ea', '#ffe600', '#00ff66', '#ff3366'];
-let corAtual = 0;
+  let achou=false;
+  for(let i=1;i<=20;i++){
+    if(acoes[i][0]===`${g1} + ${g2}` || acoes[i][0]===`${g2} + ${g1}`){
+      achou=true;
+      if(ultimoAcerto!==i){
+        stAcao.textContent=`[AÇÃO ${i}] ${acoes[i][1]}`;
+        stFeedback.textContent="AÇÃO EXECUTADA"; stFeedback.className="sucesso";
+        tutorialBox.innerHTML=`✅ <b>AÇÃO ${i}: ${acoes[i][1]}</b><br>${acoes[i][3]}`;
+        falar(`Ação ${i} executada: ${acoes[i][1]}`, 'sucesso');
+        SFX.action(); acoes[i][2](); ultimoAcerto=i; ultimoErro='';
+      }
+      return;
+    }
+  }
 
-// Temporizador do Punho (2 segundos)
-let tempoPunhoInicio = null;
-let punhoTravado = false;
-let cooldownGesto = 0;
+  // SE ERROU O GESTO
+  if(g1!=="NEUTRO"&&ultimoErro!==g1){
+    stFeedback.textContent="GESTO INVÁLIDO"; stFeedback.className="erro";
+    tutorialBox.innerHTML=`❌ <b>GESTO NÃO RECONHECIDO</b><br>Tente: Pinça, Punho, Aberto, Paz, Like`;
+    falar("Gesto não reconhecido. Tente novamente", 'erro');
+    SFX.erro(); ultimoErro=g1;
+  }
+}
 
-// --- DEDUÇÃO DE GESTOS E MEDIAPIPE ---
-const hands = new Hands({
-  locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+// ===== LOOP PRINCIPAL =====
+const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
+
+hands.onResults(res=>{
+  const maos=res.multiHandLandmarks;
+  if(maos&&maos.length>0){
+    stText.textContent=maos.length===2?"2 MÃOS DETECTADAS":"1 MÃO DETECTADA";
+
+    const h1=maos[0];
+    let tx=(1-h1[8].x)*window.innerWidth,ty=h1[8].y*window.innerHeight;
+    posSuave.x+= (tx-posSuave.x)*0.4*sensibilidade;
+    posSuave.y+= (ty-posSuave.y)*0.4*sensibilidade;
+    pino1.style.left=posSuave.x+'px'; pino1.style.top=posSuave.y+'px';
+
+    const gesto1=identificarGesto(h1);
+    stGesto.textContent=gesto1;
+
+    // CALIBRAGEM
+    if(!calibrado){
+      if(gesto1==="ABERTO"){calibrarMao(h1);}
+      else{tutorialBox.innerHTML="⚠️ <b>PRECISA CALIBRAR</b><br>Abra a mão completamente"; falar("Abra a mão para calibrar", 'erro');}
+      return;
+    }
+
+    // PUNHO 2S
+    if(gesto1==="PUNHO"){if(!tempoPunhoInicio)tempoPunhoInicio=Date.now();else{fistProgress.style.width=Math.min(100,(Date.now()-tempoPunhoInicio)/20)+'%';if(Date.now()-tempoPunhoInicio>2000&&!punhoTravado){punhoTravado=true;falar("Objeto travado. Mova para arrastar", 'sucesso');}}}
+    else{tempoPunhoInicio=null;fistProgress.style.width='0%';if(punhoTravado){punhoTravado=false;if(segurado){segurado.classList.remove('segurado');segurado=null;falar("Objeto solto");}}}
+
+    // AGARRAR
+    if((gesto1==="PINÇA"||punhoTravado)&&!segurado){cubos.forEach(c=>{let r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;if(Math.hypot(posSuave.x-cx,posSuave.y-cy)<120){segurado=c;SFX.grab();falar("Objeto capturado");}});}
+    if(segurado){segurado.classList.add('segurado');segurado.style.left=posSuave.x-segurado.offsetWidth/2+'px';segurado.style.top=posSuave.y-segurado.offsetHeight/2+'px';}
+    if(gesto1!=="PINÇA"&&!punhoTravado&&segurado){segurado.classList.remove('segurado');segurado=null;}
+
+    // MÃO 2
+    if(maos.length>1){
+      const h2=maos[1];
+      let tx2=(1-h2[8].x)*window.innerWidth,ty2=h2[8].y*window.innerHeight;
+      posSuave.cx+=(tx2-posSuave.cx)*0.4*sensibilidade;posSuave.cy+=(ty2-posSuave.cy)*0.4*sensibilidade;
+      pino2.style.left=posSuave.cx+'px';pino2.style.top=posSuave.cy+'px';cursor.style.left=posSuave.cx+'px';cursor.style.top=posSuave.cy+'px';
+      const gesto2=identificarGesto(h2);stGesto.textContent=`${gesto1} + ${gesto2}`;
+      executarAcao(gesto1,gesto2);
+    }else{executarAcao(gesto1,"NEUTRO");}
+
+  }else{stText.textContent="AGUARDANDO MÃOS...";stGesto.textContent="NENHUM";if(!calibrado)falar("Mostre sua mão para começar");}
 });
 
-hands.setOptions({
-  maxNumHands: 2,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.6,
-  minTrackingConfidence: 0.6
-});
-
-const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-
-// 1. PINÇAR COM DEDÃO + QUALQUER OUTRO DEDO
-function isPincaQualquer(h) {
-  const thumbTip = h[4];
-  const tips = [8, 12, 16, 20]; // Indicador, Médio, Anelar, Mínimo
-  return tips.some(tipIdx => dist(thumbTip, h[tipIdx]) < 0.065);
+// ===== CUBOS E BOTÕES =====
+function criarCubo(x,y){
+  initAudio();const c=document.createElement('div');c.className='cubo';
+  c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';
+  c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';
+  document.body.appendChild(c);cubos.push(c);stObj.textContent=cubos.length;SFX.spawn();
 }
+document.getElementById('novo').onclick=()=>{criarCubo();falar("Novo cubo criado");};
+document.getElementById('limpar').onclick=()=>{SFX.trash();cubos.forEach(c=>c.remove());cubos=[];stObj.textContent=0;falar("Todos os objetos removidos");};
+document.getElementById('cor').onclick=()=>{SFX.click();corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];falar("Cor alterada");};
+document.getElementById('calibrar').onclick=()=>{calibrado=false;calibFill.style.width='0%';stText.textContent="MOSTRE MÃO ABERTA";falar("Mostre a mão aberta para calibrar");};
+document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA';falar(vozLigada?'Voz ativada':'Voz desativada');};
 
-// 2. MÃO FECHADA (PUNHO)
-function isMaoFechada(h) {
-  return dist(h[8], h[5]) < 0.13 && 
-         dist(h[12], h[9]) < 0.13 && 
-         dist(h[16], h[13]) < 0.13 && 
-         dist(h[20], h[17]) < 0.13;
-}
-
-// 3. MÃO ABERTA COMPLETA
-function isMaoAberta(h) {
-  return dist(h[8], h[0]) > 0.32 && 
-         dist(h[12], h[0]) > 0.35 && 
-         dist(h[16], h[0]) > 0.32 && 
-         dist(h[20], h[0]) > 0.28;
-}
-
-// 4. DETECTAR GESTO DA MÃO
-function identificarGestoMao(h) {
-  if (isPincaQualquer(h)) return "PINÇA (DEDÃO + QUALQUER)";
-  if (isMaoFechada(h)) return "PUNHO FECHADO";
-  if (isMaoAberta(h)) return "MÃO ABERTA";
-  
-  const indExt = h[8].y < h[6].y;
-  const medExt = h[12].y < h[10].y;
-  const aneExt = h[16].y < h[14].y;
-  const minExt = h[20].y < h[18].y;
-  const thumbUp = h[4].y < h[3].y && h[4].y < h[2].y;
-  const thumbDown = h[4].y > h[2].y && h[4].y > h[17].y;
-
-  if (indExt && medExt && !aneExt && !minExt) return "PAZ (VICTORY)";
-  if (indExt && !medExt && !aneExt && !minExt) return "APONTAR";
-  if (thumbUp && !indExt && !medExt && !aneExt) return "LIKE (JOINHA)";
-  if (thumbDown && !indExt && !medExt && !aneExt) return "DISLIKE";
-  if (indExt && minExt && !medExt && !aneExt) return "ROCK / METAL";
-  
-  return "MÃO NEUTRA";
-}
-
-hands.onResults(res => {
-  const maos = res.multiHandLandmarks;
-
-  if (maos && maos.length > 0) {
-    stText.textContent = maos.length === 2 ? "2 MÃOS DETECTADAS" : "1 MÃO DETECTADA";
-
-    // MÃO 1
-    const h1 = maos[0];
-    let targetX1 = (1 - h1[8].x) * window.innerWidth;
-    let targetY1 = h1[8].y * window.innerHeight;
-
-    posSuave.x += (targetX1 - posSuave.x) * 0.45;
-    posSuave.y += (targetY1 - posSuave.y) * 0.45;
-
-    pino1.style.left = `${posSuave.x}px`;
-    pino1.style.top = `${posSuave.y}px`;
-
-    const gestoMao1 = identificarGestoMao(h1);
-    const pinca1 = isPincaQualquer(h1);
-    const fechada1 = isMaoFechada(h1);
-    const aberta1 = isMaoAberta(h1);
-
-    stGesto.textContent = gestoMao1;
-
-    // --- LÓGICA DO PUNHO FECHADO 2 SEGUNDOS ---
-    if (fechada1) {
-      if (!tempoPunhoInicio) {
-        tempoPunhoInicio = Date.now();
-      } else {
-        const decorrido = Date.now() - tempoPunhoInicio;
-        const pct = Math.min(100, (decorrido / 2000) * 100);
-        fistProgress.style.width = `${pct}%`;
-
-        if (decorrido >= 2000 && !punhoTravado) {
-          punhoTravado = true;
-          SFX.lock();
-          stAcao.textContent = "PUNHO TRAVADO (ARRANSTANDO)";
-          tutorialBox.innerHTML = "🔒 <b>PUNHO TRAVADO!</b> Movimente a mão para arrastar. <b>ABRA A MÃO</b> para soltar.";
-
-          // Tenta agarrar o cubo mais próximo
-          cubos.forEach(c => {
-            const rect = c.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < 120) {
-              segurado = c;
-            }
-          });
-        }
-      }
-    } else {
-      tempoPunhoInicio = null;
-      fistProgress.style.width = '0%';
-    }
-
-    // --- SOLTAR AO ABRIR A MÃO ---
-    if (aberta1 && (segurado || punhoTravado)) {
-      if (segurado) {
-        segurado.classList.remove('segurado');
-        segurado = null;
-      }
-      punhoTravado = false;
-      stAcao.textContent = "OBJETO SOLTO";
-      tutorialBox.innerHTML = "💡 <b>MÃO ABERTA:</b> Objeto liberado com sucesso.";
-    }
-
-    // --- ARRASTAR POR PINÇA INSTANTÂNEA OU PUNHO TRAVADO ---
-    if ((pinca1 || punhoTravado) && !segurado && !redimensionando) {
-      cubos.forEach(c => {
-        const rect = c.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < Math.max(rect.width, rect.height) / 1.2) {
-          segurado = c;
-          SFX.grab();
-          stAcao.textContent = "CAPTURADO";
-        }
-      });
-    }
-
-    if (segurado && (pinca1 || punhoTravado) && !redimensionando) {
-      segurado.classList.add('segurado');
-      segurado.style.left = `${posSuave.x - segurado.offsetWidth / 2}px`;
-      segurado.style.top = `${posSuave.y - segurado.offsetHeight / 2}px`;
-
-      const lixRect = lixeira.getBoundingClientRect();
-      const distLixo = Math.hypot(
-        posSuave.x - (lixRect.left + lixRect.width / 2),
-        posSuave.y - (lixRect.top + lixRect.height / 2)
-      );
-      lixeira.classList.toggle('ativo', distLixo < 90);
-    }
-
-    if (!pinca1 && !punhoTravado && segurado && !redimensionando) {
-      const lixRect = lixeira.getBoundingClientRect();
-      const distLixo = Math.hypot(
-        posSuave.x - (lixRect.left + lixRect.width / 2),
-        posSuave.y - (lixRect.top + lixRect.height / 2)
-      );
-
-      if (distLixo < 90) {
-        SFX.trash();
-        segurado.style.transition = '0.2s transform, 0.2s opacity';
-        segurado.style.transform = 'scale(0)';
-        segurado.style.opacity = '0';
-        const itemRemover = segurado;
-        setTimeout(() => {
-          itemRemover.remove();
-          cubos = cubos.filter(c => c !== itemRemover);
-          stObj.textContent = cubos.length;
-        }, 200);
-      }
-
-      lixeira.classList.remove('ativo');
-      segurado.classList.remove('segurado');
-      segurado = null;
-    }
-
-    // --- MÃO 2 E AÇÕES DE 20 GESTOS ---
-    if (maos.length > 1) {
-      const h2 = maos[1];
-      let targetX2 = (1 - h2[8].x) * window.innerWidth;
-      let targetY2 = h2[8].y * window.innerHeight;
-
-      posSuave.cx += (targetX2 - posSuave.cx) * 0.45;
-      posSuave.cy += (targetY2 - posSuave.cy) * 0.45;
-
-      pino2.style.left = `${posSuave.cx}px`;
-      pino2.style.top = `${posSuave.cy}px`;
-      cursor.style.left = `${posSuave.cx}px`;
-      cursor.style.top = `${posSuave.cy}px`;
-
-      const gestoMao2 = identificarGestoMao(h2);
-      const pinca2 = isPincaQualquer(h2);
-
-      stGesto.textContent = `${gestoMao1} + ${gestoMao2}`;
-
-      // REDIMENSIONAR E ROTACIONAR COM 2 MÃOS (PINÇA DUPLA)
-      if (pinca1 && pinca2 && !redimensionando) {
-        cubos.forEach(c => {
-          const rect = c.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < 100 && Math.hypot(posSuave.cx - cx, posSuave.cy - cy) < 100) {
-            redimensionando = c;
-            escalaInicial = parseFloat(c.dataset.scale || 1);
-            rotacaoAtual = parseFloat(c.dataset.rotate || 0);
-            distInicial = Math.hypot(posSuave.x - posSuave.cx, posSuave.y - posSuave.cy);
-            anguloInicial = Math.atan2(posSuave.cy - posSuave.y, posSuave.cx - posSuave.x);
-            c.classList.add('redimensionando');
-            SFX.grab();
-            stAcao.textContent = "ESCALA + ROTAÇÃO";
-          }
-        });
-      }
-
-      if (redimensionando && pinca1 && pinca2) {
-        const distAtual = Math.hypot(posSuave.x - posSuave.cx, posSuave.y - posSuave.cy);
-        const anguloAtual = Math.atan2(posSuave.cy - posSuave.y, posSuave.cx - posSuave.x);
-
-        const novaEscala = Math.max(0.4, Math.min(3.5, escalaInicial * (distAtual / distInicial)));
-        const novoAngulo = rotacaoAtual + (anguloAtual - anguloInicial) * (180 / Math.PI);
-
-        redimensionando.dataset.scale = novaEscala;
-        redimensionando.dataset.rotate = novoAngulo;
-        redimensionando.style.transform = `scale(${novaEscala}) rotate(${novoAngulo}deg)`;
-      }
-
-      if ((!pinca1 || !pinca2) && redimensionando) {
-        redimensionando.classList.remove('redimensionando');
-        redimensionando = null;
-      }
-
-      // EXECUÇÃO DOS 20 GESTOS (COOLDOWN DE 1 SEG)
-      if (Date.now() > cooldownGesto) {
-        executarAcaoPorGesto(gestoMao1, gestoMao2);
-      }
-
-      // CLIQUE NO MENU COM PONTEIRO DA MÃO 2
-      const btns = document.querySelectorAll('.btn');
-      btns.forEach(b => {
-        const r = b.getBoundingClientRect();
-        if (posSuave.cx > r.left && posSuave.cx < r.right && posSuave.cy > r.top && posSuave.cy < r.bottom) {
-          b.classList.add('hover');
-          if (gestoMao2 === "APONTAR" || pinca2) {
-            b.classList.add('click');
-            SFX.click();
-            b.click();
-            cooldownGesto = Date.now() + 800;
-            setTimeout(() => b.classList.remove('click'), 150);
-          }
-        } else {
-          b.classList.remove('hover');
-        }
-      });
-    } else {
-      // APENAS 1 MÃO DETECTADA - AÇÕES INDIVIDUAIS
-      if (Date.now() > cooldownGesto) {
-        executarAcaoPorGesto(gestoMao1, "NENHUM");
-      }
-    }
-  } else {
-    stText.textContent = "AGUARDANDO MÃOS...";
-    stGesto.textContent = "NENHUM";
-    stAcao.textContent = "EM ESPERA";
-    pino1.style.left = '-100px';
-    pino2.style.left = '-100px';
-    cursor.style.left = '-100px';
-
-    if (segurado) { segurado.classList.remove('segurado'); segurado = null; }
-    if (redimensionando) { redimensionando.classList.remove('redimensionando'); redimensionando = null; }
-  }
-});
-
-// --- SISTEMA DE MAPEAMENTO DAS 20 AÇÕES E GESTOS ---
-function executarAcaoPorGesto(g1, g2) {
-  const parGesto = `${g1} + ${g2}`;
-
-  // Tabela de Ações
-  if (g1 === "PAZ (VICTORY)" && g2 === "NENHUM") {
-    triggerAcao("[AÇÃO 1] CRIAR CUBO", () => criarCubo(), "✌️ Gesto de Paz: Novo cubo criado!");
-  }
-  else if (g1 === "LIKE (JOINHA)" && g2 === "NENHUM") {
-    triggerAcao("[AÇÃO 2] TROCAR COR", () => document.getElementById('cor').click(), "👍 Like: Cor alterada.");
-  }
-  else if (g1 === "DISLIKE" && g2 === "NENHUM") {
-    triggerAcao("[AÇÃO 3] APAGAR ÚLTIMO", () => {
-      if (cubos.length) { cubos[cubos.length - 1].remove(); cubos.pop(); stObj.textContent = cubos.length; SFX.trash(); }
-    }, "👎 Dislike: Último cubo removido.");
-  }
-  else if (g1 === "ROCK / METAL" && g2 === "NENHUM") {
-    triggerAcao("[AÇÃO 4] EFEITO NEON GLITCH", () => {
-      document.body.style.filter = "hue-rotate(90deg) contrast(180%)";
-      setTimeout(() => document.body.style.filter = "none", 1000);
-    }, "🤘 Rock: Glitch HUD ativado!");
-  }
-  else if (g1 === "MÃO ABERTA" && g2 === "MÃO ABERTA") {
-    triggerAcao("[AÇÃO 5] LIMPAR TUDO", () => document.getElementById('limpar').click(), "🖐️🖐️ Mãos Abertas: Tela resetada.");
-  }
-  else if (g1 === "PUNHO FECHADO" && g2 === "PUNHO FECHADO") {
-    triggerAcao("[AÇÃO 6] AGROUPAR NO CENTRO", () => {
-      cubos.forEach((c, idx) => {
-        c.style.left = `${window.innerWidth / 2 - 40 + idx * 10}px`;
-        c.style.top = `${window.innerHeight / 2 - 40 + idx * 10}px`;
-      });
-    }, "✊✊ Dois Punhos: Objetos centralizados.");
-  }
-  else if (g1 === "LIKE (JOINHA)" && g2 === "LIKE (JOINHA)") {
-    triggerAcao("[AÇÃO 7] AUMENTAR ESCALA TODOS", () => {
-      cubos.forEach(c => {
-        let sc = parseFloat(c.dataset.scale || 1) + 0.2;
-        c.dataset.scale = sc;
-        c.style.transform = `scale(${sc})`;
-      });
-    }, "👍👍 Dois Likes: Todos os cubos aumentados.");
-  }
-  else if (g1 === "DISLIKE" && g2 === "DISLIKE") {
-    triggerAcao("[AÇÃO 8] DIMINUIR ESCALA TODOS", () => {
-      cubos.forEach(c => {
-        let sc = Math.max(0.4, parseFloat(c.dataset.scale || 1) - 0.2);
-        c.dataset.scale = sc;
-        c.style.transform = `scale(${sc})`;
-      });
-    }, "👎👎 Dois Dislikes: Todos os cubos reduzidos.");
-  }
-  else if (g1 === "PAZ (VICTORY)" && g2 === "PAZ (VICTORY)") {
-    triggerAcao("[AÇÃO 9] DUPLICAR CUBOS", () => {
-      if (cubos.length > 0 && cubos.length < 10) {
-        criarCubo(window.innerWidth / 2 + Math.random() * 100, window.innerHeight / 2 + Math.random() * 100);
-      }
-    }, "✌️✌️ Paz Duplo: Cubo duplicado.");
-  }
-  else if (g1 === "APONTAR" && g2 === "APONTAR") {
-    triggerAcao("[AÇÃO 10] CONECTAR CUBOS", () => {
-      SFX.action();
-    }, "👉👉 Dois Indicadores: Modo Conectar ativo.");
-  }
-  else if (g1 === "ROCK / METAL" && g2 === "ROCK / METAL") {
-    triggerAcao("[AÇÃO 11] EXPLOSÃO SONORA", () => {
-      playSound(1500, 'sawtooth', 0.4, 0.2);
-    }, "🤘🤘 Rock Duplo: Pulso cibernético emitido!");
-  }
-  else if (g1 === "PUNHO FECHADO" && g2 === "LIKE (JOINHA)") {
-    triggerAcao("[AÇÃO 12] MODO MATRIX", () => {
-      document.body.style.background = "#001a05";
-      setTimeout(() => document.body.style.background = "#030712", 2000);
-    }, "✊👍 Punho + Like: Modo Matrix temporário.");
-  }
-  else if (g1 === "MÃO ABERTA" && g2 === "APONTAR") {
-    triggerAcao("[AÇÃO 13] SNAP TO GRID", () => {
-      cubos.forEach(c => {
-        let x = Math.round(c.offsetLeft / 50) * 50;
-        let y = Math.round(c.offsetTop / 50) * 50;
-        c.style.left = `${x}px`;
-        c.style.top = `${y}px`;
-      });
-    }, "🖐️👉 Aberta + Apontar: Cubos alinhados ao Grid.");
-  }
-  else if (g1 === "PAZ (VICTORY)" && g2 === "APONTAR") {
-    triggerAcao("[AÇÃO 14] MUTE / UNMUTE SFX", () => {
-      audioCtx = audioCtx ? null : new AudioContext();
-    }, "✌️👉 Paz + Apontar: Áudio alternado.");
-  }
-  else if (g1 === "LIKE (JOINHA)" && g2 === "APONTAR") {
-    triggerAcao("[AÇÃO 15] COR ALEATÓRIA", () => {
-      corAtual = Math.floor(Math.random() * cores.length);
-      document.getElementById('cor').style.color = cores[corAtual];
-    }, "👍👉 Like + Apontar: Cor sorteada!");
-  }
-  else if (g1 === "ROCK / METAL" && g2 === "LIKE (JOINHA)") {
-    triggerAcao("[AÇÃO 16] ROTACIONAR 45 GRAUS", () => {
-      cubos.forEach(c => {
-        let rot = (parseFloat(c.dataset.rotate || 0) + 45) % 360;
-        c.dataset.rotate = rot;
-        c.style.transform = `scale(${c.dataset.scale || 1}) rotate(${rot}deg)`;
-      });
-    }, "🤘👍 Rock + Like: Gira todos em 45°.");
-  }
-  else if (g1 === "PUNHO FECHADO" && g2 === "PAZ (VICTORY)") {
-    triggerAcao("[AÇÃO 17] DISPERSAR CUBOS", () => {
-      cubos.forEach(c => {
-        c.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
-        c.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
-      });
-    }, "✊✌️ Punho + Paz: Objetos espalhados aleatoriamente.");
-  }
-  else if (g1 === "MÃO ABERTA" && g2 === "ROCK / METAL") {
-    triggerAcao("[AÇÃO 18] REVERBERAÇÃO ÁUDIO", () => {
-      playSound(200, 'sine', 0.6, 0.15);
-    }, "🖐️🤘 Aberta + Rock: Pulso de Baixa Frequência.");
-  }
-  else if (g1 === "DISLIKE" && g2 === "LIKE (JOINHA)") {
-    triggerAcao("[AÇÃO 19] INVERTER ESCALA", () => {
-      cubos.forEach(c => {
-        let sc = parseFloat(c.dataset.scale || 1);
-        sc = sc > 1 ? 0.6 : 1.8;
-        c.dataset.scale = sc;
-        c.style.transform = `scale(${sc})`;
-      });
-    }, "👎👍 Inversão de tamanho executada.");
-  }
-  else if (g1 === "APONTAR" && g2 === "ROCK / METAL") {
-    triggerAcao("[AÇÃO 20] MODO LASER HUD", () => {
-      cursor.style.borderColor = "#ff00ea";
-      setTimeout(() => cursor.style.borderColor = "#00f0ff", 2000);
-    }, "👉🤘 Indicador + Rock: Seletor Laser ativado!");
-  }
-}
-
-function triggerAcao(nomeAcao, callback, msgTutorial) {
-  cooldownGesto = Date.now() + 1200;
-  stAcao.textContent = nomeAcao;
-  tutorialBox.innerHTML = `✅ <b>${nomeAcao}:</b><br>${msgTutorial}`;
-  SFX.action();
-  callback();
-}
-
-// INICIALIZADOR DA CÂMERA
-const camera = new Camera(video, {
-  onFrame: async () => {
-    await hands.send({ image: video });
-  },
-  width: 640,
-  height: 480
-});
-
-camera.start().then(() => {
-  stText.textContent = "SISTEMA PRONTO";
-}).catch(() => {
-  stText.textContent = "MODO MANUAL (SEM CAM)";
-});
-
-// --- CONTROLES DE BOTÕES & MOUSE FALLBACK ---
-function criarCubo(x, y) {
-  initAudio();
-  const c = document.createElement('div');
-  c.className = 'cubo';
-  
-  const posX = x || (window.innerWidth / 2 - 40 + (Math.random() * 40 - 20));
-  const posY = y || (window.innerHeight / 2 - 40 + (Math.random() * 40 - 20));
-
-  c.style.left = `${posX}px`;
-  c.style.top = `${posY}px`;
-  c.style.borderColor = cores[corAtual];
-  c.style.background = cores[corAtual] + '22';
-  c.style.boxShadow = `0 0 15px ${cores[corAtual]}`;
-
-  let isDragging = false;
-  let offsetX = 0, offsetY = 0;
-
-  c.addEventListener('pointerdown', (e) => {
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
-    initAudio();
-    isDragging = true;
-    offsetX = e.clientX - c.offsetLeft;
-    offsetY = e.clientY - c.offsetTop;
-    c.classList.add('segurado');
-    SFX.grab();
-    c.setPointerCapture(e.pointerId);
-  });
-
-  c.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
-    c.style.left = `${e.clientX - offsetX}px`;
-    c.style.top = `${e.clientY - offsetY}px`;
-
-    const lixRect = lixeira.getBoundingClientRect();
-    const distLixo = Math.hypot(
-      e.clientX - (lixRect.left + lixRect.width / 2),
-      e.clientY - (lixRect.top + lixRect.height / 2)
-    );
-    lixeira.classList.toggle('ativo', distLixo < 90);
-  });
-
-  c.addEventListener('pointerup', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    c.classList.remove('segurado');
-
-    const lixRect = lixeira.getBoundingClientRect();
-    const distLixo = Math.hypot(
-      e.clientX - (lixRect.left + lixRect.width / 2),
-      e.clientY - (lixRect.top + lixRect.height / 2)
-    );
-
-    if (distLixo < 90) {
-      SFX.trash();
-      c.style.transition = '0.2s transform, 0.2s opacity';
-      c.style.transform = 'scale(0)';
-      c.style.opacity = '0';
-      setTimeout(() => {
-        c.remove();
-        cubos = cubos.filter(item => item !== c);
-        stObj.textContent = cubos.length;
-      }, 200);
-    }
-    lixeira.classList.remove('ativo');
-  });
-
-  document.body.appendChild(c);
-  cubos.push(c);
-  stObj.textContent = cubos.length;
-  SFX.spawn();
-}
-
-document.getElementById('novo').onclick = () => criarCubo();
-
-document.getElementById('limpar').onclick = () => {
-  initAudio();
-  SFX.trash();
-  cubos.forEach(c => c.remove());
-  cubos = [];
-  stObj.textContent = 0;
-};
-
-document.getElementById('cor').onclick = () => {
-  initAudio();
-  SFX.click();
-  corAtual = (corAtual + 1) % cores.length;
-  document.getElementById('cor').style.color = cores[corAtual];
-  document.getElementById('cor').style.borderColor = cores[corAtual];
-};
-
-// Criar primeiro cubo automaticamente
+const camera=new Camera(video,{onFrame:async()=>{await hands.send({image:video});},width:640,height:480});
+camera.start().then(()=>falar("Sistema iniciado. Mostre a mão aberta para calibrar"));
 criarCubo();
 </script>
 </body>
