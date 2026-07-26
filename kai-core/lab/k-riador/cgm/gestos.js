@@ -1,125 +1,95 @@
-// ===== CALIBRAGEM RÁPIDA 3 ETAPAS + VOZ =====
-const AudioContext = window.AudioContext || window.webkitAudioContext;let audioCtx = null;let vozLigada=true;
-function initAudio(){if(!audioCtx)audioCtx=new AudioContext();}
-function playSound(f,t='sine',d=0.1,v=0.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
-const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06),sucesso:()=>{playSound(1200,'sine',0.1,0.1);setTimeout(()=>playSound(1500,'sine',0.1,0.08),100)}};
-const falas=window.speechSynthesis;function falar(texto){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.2;falas.speak(msg);}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KORVIL G15</title>
+<style>
+* {box-sizing: border-box;margin: 0;padding: 0;touch-action: none;user-select: none;font-family: 'Courier New', Courier, monospace;}
+body {background: #030712;color: #00f0ff;overflow: hidden;width: 100vw;height: 100vh;}
+.grid-bg {position: absolute;inset: 0;background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);background-size: 30px 30px;pointer-events: none;z-index: 1;}
+.scanlines {position: absolute;inset: 0;background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);background-size: 100% 4px;pointer-events: none;z-index: 2;}
+#video {position: absolute;width: 100%;height: 100%;object-fit: cover;transform: scaleX(-1);opacity: 0.18;filter: grayscale(80%) contrast(150%);}
 
-// ESTADO
-let cubos=[],segurado=null;
+#menu {position: absolute;top: 15px;left: 15px;width: 220px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);padding: 12px;border-radius: 8px;backdrop-filter: blur(8px);z-index: 10;}
+.menu-title {font-size: 12px;font-weight: bold;letter-spacing: 1px;margin-bottom: 10px;text-shadow: 0 0 8px #00f0ff;display: flex;justify-content: space-between;color:#ffe600;}
+.btn {width: 100%;padding: 10px;margin: 4px 0;background: rgba(0, 240, 255, 0.1);border: 1px solid #00f0ff;color: #00f0ff;font-size: 11px;font-weight: bold;letter-spacing: 1px;cursor: pointer;border-radius: 5px;transition: all 0.15s ease;text-align: left;}
+.btn:hover {border-color: #ffffff;box-shadow: 0 0 15px #00f0ff;background: rgba(0, 240, 255, 0.4);color: #fff;transform:translateX(5px);}
+
+.cubo {position: absolute;width: 90px;height: 90px;border: 3px solid #00f0ff;background: rgba(0, 240, 255, 0.15);box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);border-radius: 8px;cursor: grab;z-index: 5;display: flex;align-items: center;justify-content: center;font-size: 11px;}
+.cubo::after {content: 'K-AI';opacity: 0.6;font-size: 10px;}
+.cubo.segurado {border-color: #ff00ea;background: rgba(255, 0, 234, 0.3);box-shadow: 0 0 35px #ff00ea;transform:scale(1.1);z-index:8;}
+
+#lixeira {position: absolute;bottom: 20px;left: 20px;width: 70px;height: 70px;border: 3px dashed #ff3366;border-radius: 12px;background: rgba(255, 51, 102, 0.15);display: flex;align-items: center;justify-content: center;font-size: 28px;z-index: 10;transition: all 0.2s ease;}
+#lixeira.ativo {border-color: #ff0044;background: rgba(255, 0, 68, 0.4);transform: scale(1.3);box-shadow: 0 0 35px #ff0044;}
+
+.pino {position: absolute;width: 22px;height: 22px;border-radius: 50%;pointer-events: none;z-index: 20;transform: translate(-50%, -50%);}
+#pino1 {background: #ff00ea;box-shadow: 0 0 20px #ff00ea;border: 3px solid #fff;}
+#pino2 {background: #00f0ff;box-shadow: 0 0 20px #00f0ff;border: 3px solid #fff;}
+#cursor {position: absolute;width: 40px;height: 40px;border: 2px dashed #00f0ff;border-radius: 50%;pointer-events: none;z-index: 19;transform: translate(-50%, -50%);animation: spin 4s linear infinite;}
+@keyframes spin {from { transform: translate(-50%, -50%) rotate(0deg); }to { transform: translate(-50%, -50%) rotate(360deg); }}
+
+#status-panel {position: absolute;bottom: 20px;right: 20px;width: 300px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;padding: 12px;border-radius: 8px;z-index: 10;}
+.status-title {font-size: 11px;font-weight: bold;color: #ffe600;margin-bottom: 6px;}
+.status-item {font-size: 11px;margin: 4px 0;color: #00f0ff;}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div><div class="scanlines"></div>
+<div id="lixeira">🗑️</div>
+
+<div id="menu">
+  <div class="menu-title"><span>> G15</span><span>v1.0</span></div>
+  <button class="btn" id="novo">[1] + NOVO CUBO</button>
+  <button class="btn" id="limpar">[2] RESETAR TUDO</button>
+  <button class="btn" id="cor">[3] TROCAR COR</button>
+</div>
+
+<video id="video" autoplay playsinline muted></video>
+<div id="pino1" class="pino"></div><div id="pino2" class="pino"></div><div id="cursor"></div>
+
+<div id="status-panel">
+  <div class="status-title">📡 K-AI STATUS</div>
+  <div class="status-item">STATUS: <span id="st-text">INICIALIZANDO...</span></div>
+  <div class="status-item">OBJETOS: <span id="st-obj">0</span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script>
+// ===== JS ORIGINAL =====
+let cubos=[];
 let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'];let corAtual=0;
 let posSuave={x:-100,y:-100,cx:-100,cy:-100};
 
-// NOVO ESTADO CALIBRAGEM
-let etapaCalibragem=0; // 0=não calibrado, 1=aberto, 2=punho, 3=pinça, 4=pronto
-let calibrado=false,calibValues={abrir:0.32,punho:0.12,pinca:0.06};
-let tempoCalib=0;
-
-// FUNÇÕES BASE
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
-function isMaoFechada(h){return dist(h[8],h[5])<calibValues.punho&&dist(h[12],h[9])<calibValues.punho;}
-function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
-function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y)return"PAZ";if(h[8].y<h[6].y)return"APONTAR";if(h[4].y<h[3].y)return"LIKE";if(h[4].y>h[2].y)return"DISLIKE";if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";return"NEUTRO";}
-
-// CALIBRAGEM RÁPIDA 3 ETAPAS
-function iniciarCalibragem(){
-  etapaCalibragem=1;calibrado=false;
-  document.getElementById('calibFill').style.width='0%';
-  document.getElementById('st-text').textContent="CALIBRANDO 1/3";
-  document.getElementById('tutorial-box').innerHTML="📍 <b>ETAPA 1/3:</b><br>Mostre a MÃO ABERTA e segure 2s";
-  falar("Etapa 1 de 3. Mostre a mão aberta e segure");
-}
-
-function checarCalibragem(h){
-  if(etapaCalibragem===0)return;
-
-  tempoCalib+=0.1;
-  document.getElementById('calibFill').style.width=(tempoCalib*50)+'%';
-
-  // ETAPA 1: MÃO ABERTA
-  if(etapaCalibragem===1 && isMaoAberta(h) && tempoCalib>2){
-    calibValues.abrir=dist(h[8],h[0])*1.1;
-    etapaCalibragem=2;tempoCalib=0;
-    document.getElementById('st-text').textContent="CALIBRANDO 2/3";
-    document.getElementById('tutorial-box').innerHTML="📍 <b>ETAPA 2/3:</b><br>Feche o PUNHO e segure 2s";
-    falar("Ótimo. Etapa 2 de 3. Agora feche o punho");
-    SFX.sucesso();
-  }
-
-  // ETAPA 2: PUNHO
-  else if(etapaCalibragem===2 && isMaoFechada(h) && tempoCalib>2){
-    calibValues.punho=dist(h[8],h[5])*1.2;
-    etapaCalibragem=3;tempoCalib=0;
-    document.getElementById('st-text').textContent="CALIBRANDO 3/3";
-    document.getElementById('tutorial-box').innerHTML="📍 <b>ETAPA 3/3:</b><br>Faça PINÇA e segure 2s";
-    falar("Perfeito. Etapa 3 de 3. Agora faça pinça");
-    SFX.sucesso();
-  }
-
-  // ETAPA 3: PINÇA
-  else if(etapaCalibragem===3 && isPinca(h) && tempoCalib>2){
-    calibValues.pinca=dist(h[4],h[8])*0.9;
-    etapaCalibragem=4;calibrado=true;tempoCalib=0;
-    document.getElementById('calibFill').style.width='100%';
-    document.getElementById('st-text').textContent="CALIBRADO";
-    document.getElementById('tutorial-box').innerHTML="✅ <b>CALIBRAGEM CONCLUÍDA!</b><br>Você pode usar todos os gestos agora";
-    falar("Calibragem concluída com sucesso. Sistema pronto para uso");
-    SFX.sucesso();
-  }
-
-  // Reset se soltar antes dos 2s
-  if(tempoCalib>0 && tempoCalib<2 &&
-     ((etapaCalibragem===1&&!isMaoAberta(h)) ||
-      (etapaCalibragem===2&&!isMaoFechada(h)) ||
-      (etapaCalibragem===3&&!isPinca(h)))){
-    tempoCalib=0;
-  }
-}
-
 // CRIAR CUBO + MOUSE
 function criarCubo(x,y){
-  initAudio();
   const c=document.createElement('div');c.className='cubo';
   c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';
   c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';
 
   let isDragging=false,offsetX=0,offsetY=0;
-  c.addEventListener('pointerdown',e=>{initAudio();isDragging=true;offsetX=e.clientX-c.offsetLeft;offsetY=e.clientY-c.offsetTop;c.classList.add('segurado');SFX.grab();c.setPointerCapture(e.pointerId);});
+  c.addEventListener('pointerdown',e=>{isDragging=true;offsetX=e.clientX-c.offsetLeft;offsetY=e.clientY-c.offsetTop;c.classList.add('segurado');c.setPointerCapture(e.pointerId);});
   c.addEventListener('pointermove',e=>{if(!isDragging)return;c.style.left=`${e.clientX-offsetX}px`;c.style.top=`${e.clientY-offsetY}px`;const lix=document.getElementById('lixeira').getBoundingClientRect();document.getElementById('lixeira').classList.toggle('ativo',Math.hypot(e.clientX-(lix.left+lix.width/2),e.clientY-(lix.top+lix.height/2))<90);});
-  c.addEventListener('pointerup',e=>{isDragging=false;c.classList.remove('segurado');const lix=document.getElementById('lixeira').getBoundingClientRect();if(Math.hypot(e.clientX-(lix.left+lix.width/2),e.clientY-(lix.top+lix.height/2))<90){SFX.trash();c.remove();cubos=cubos.filter(item=>item!==c);document.getElementById('st-obj').textContent=cubos.length;}document.getElementById('lixeira').classList.remove('ativo');});
-  document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;SFX.spawn();
+  c.addEventListener('pointerup',e=>{isDragging=false;c.classList.remove('segurado');const lix=document.getElementById('lixeira').getBoundingClientRect();if(Math.hypot(e.clientX-(lix.left+lix.width/2),e.clientY-(lix.top+lix.height/2))<90){c.remove();cubos=cubos.filter(item=>item!==c);document.getElementById('st-obj').textContent=cubos.length;}document.getElementById('lixeira').classList.remove('ativo');});
+  document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;
 }
 
-// 21 AÇÕES
-function executarAcao(g1,g2){
-  if(!calibrado)return;
-  if(Date.now()<cooldownGesto)return;cooldownGesto=Date.now()+800;
-  const combo=g2==="NEUTRO"?g1:g1+" "+g2;
-  const acoes={"PINÇA":()=>criarCubo(posSuave.x,posSuave.y),"LIKE":()=>document.getElementById('cor').click(),"DISLIKE":()=>{if(cubos.length){cubos.pop().remove();document.getElementById('st-obj').textContent=cubos.length;}},"ABERTO ABERTO":()=>document.getElementById('limpar').click(),"PUNHO PUNHO":()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+'px';c.style.top=window.innerHeight/2-45+i*20+'px'}),"LIKE LIKE":()=>cubos.forEach(c=>c.style.transform='scale(1.5)'),"DISLIKE DISLIKE":()=>cubos.forEach(c=>c.style.transform='scale(0.7)'),"PAZ PAZ":()=>criarCubo(),"APONTAR APONTAR":()=>document.getElementById('cursor').style.borderColor="#ff00ea"};
-  if(acoes[combo]){document.getElementById('st-acao').textContent=combo;falar("Ação: "+combo);SFX.action();acoes[combo]();}
-}
-
-// MEDIAPIPE
+// MEDIAPIPE SÓ PRA MOVER O PINO
 const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
+hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
 
 hands.onResults(res=>{
   const maos=res.multiHandLandmarks;
   if(maos&&maos.length>0){
+    document.getElementById('st-text').textContent="MÃO DETECTADA";
     const h1=maos[0];
     let tx=(1-h1[8].x)*window.innerWidth,ty=h1[8].y*window.innerHeight;
     posSuave.x+=(tx-posSuave.x)*0.4;posSuave.y+=(ty-posSuave.y)*0.4;
     document.getElementById('pino1').style.left=posSuave.x+'px';document.getElementById('pino1').style.top=posSuave.y+'px';
-    const gesto1=identificarGesto(h1);document.getElementById('st-gesto').textContent=gesto1;
-
-    // CALIBRAGEM
-    checarCalibragem(h1);
-
-    // AÇÕES SÓ FUNCIONAM DEPOIS DE CALIBRADO
-    if(calibrado){
-      if(maos.length>1){const h2=maos[1];const gesto2=identificarGesto(h2);executarAcao(gesto1,gesto2);}else{executarAcao(gesto1,"NEUTRO");}
-    }
+  } else {
+    document.getElementById('st-text').textContent="AGUARDANDO MÃO...";
   }
 });
 
@@ -127,10 +97,10 @@ hands.onResults(res=>{
 document.getElementById('novo').onclick=()=>criarCubo();
 document.getElementById('limpar').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('st-obj').textContent=0;};
 document.getElementById('cor').onclick=()=>{corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];};
-document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA';};
-document.getElementById('calibrar').onclick=()=>iniciarCalibragem();
 
 const camera=new Camera(document.getElementById('video'),{onFrame:async()=>{await hands.send({image:document.getElementById('video')});},width:640,height:480});
 camera.start();
 criarCubo();
-falar("Bem vindo ao Korvil. Clique em calibrar para começar");
+</script>
+</body>
+</html>
