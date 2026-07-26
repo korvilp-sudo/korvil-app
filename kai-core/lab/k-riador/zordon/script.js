@@ -27,7 +27,7 @@ const loader = new THREE.TextureLoader();
 
 loader.load(
 
-"./rosto.png",
+"./file_000000004980820ead22c12031f81004.png",
 
 function(texture){
 
