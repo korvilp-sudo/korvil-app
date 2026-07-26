@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jarvis Holograma</title>
+<style>
+body {
+  background: #000;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Arial';
+}
+.hologram {
+  width: 400px;
+  height: 400px;
+  border: 2px solid #00f7ff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 50px #00f7ff, inset 0 0 50px #00f7ff;
+  animation: girar 10s linear infinite;
+}
+.linha {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #00f7ff;
+  top: 50%;
+  box-shadow: 0 0 10px #00f7ff;
+}
+.texto {
+  color: #00f7ff;
+  position: absolute;
+  top: 60%;
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  text-shadow: 0 0 10px #00f7ff;
+}
+@keyframes girar {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+</style>
+</head>
+<body>
+  <div class="hologram">
+    <div class="linha"></div>
+  </div>
+  <div class="texto">JARVIS ONLINE</div>
+
+  <script>
+    document.body.addEventListener('mousemove', (e) => {
+      const hologram = document.querySelector('.hologram');
+      hologram.style.transform = `translate(-50%, -50%) rotateX(${(e.clientY-300)/10}deg) rotateY(${(e.clientX-300)/10}deg)`;
+    });
+  </script>
+</body>
+</html>
