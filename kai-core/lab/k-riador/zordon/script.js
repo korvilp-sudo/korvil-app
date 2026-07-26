@@ -1,147 +1,119 @@
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000814);
-scene.fog = new THREE.Fog(0x000814, 400, 1200);
+scene.background = new THREE.Color(0x000000);
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.set(0, 80, 750);
+camera.position.set(0, 0, 450);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById("container").appendChild(renderer.domElement);
 
-// LUZ AZUL DO COMANDO
-const pointLight = new THREE.PointLight(0x00e5ff, 4, 2000);
-pointLight.position.set(0, 200, 400);
-scene.add(pointLight);
-scene.add(new THREE.AmbientLight(0x001a33, 0.6));
+// LUZ
+scene.add(new THREE.AmbientLight(0x001111));
+const light = new THREE.PointLight(0x00ffff, 3, 1000);
+light.position.set(0, 100, 400);
+scene.add(light);
 
-// PAREDE COM GRADE
-const gridGeo = new THREE.PlaneGeometry(1400, 900, 25, 18);
-const gridMat = new THREE.MeshBasicMaterial({
-  color: 0x00e5ff,
-  wireframe: true,
-  transparent: true,
-  opacity: 0.3
-});
-const gridWall = new THREE.Mesh(gridGeo, gridMat);
-scene.add(gridWall);
-
-// LINHAS DE ENERGIA
-for(let y = -400; y <= 400; y += 90){
-  const line = new THREE.Mesh(
-    new THREE.BoxGeometry(1400, 4, 4),
-    new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.5 })
-  );
-  line.position.y = y;
-  scene.add(line);
-}
-
-// ROSTO DO ZORDON
-let faceMesh;
+let pointCloud;
 let isTalking = false;
+
 const loader = new THREE.TextureLoader();
 loader.load(
-  "./zordon-face.png", // sua imagem tem que estar na mesma pasta do index.html
+  "./file_000000004980820ead22c12031f81004.png", // SUA IMAGEM
 
   function(texture) {
-    const faceGeo = new THREE.PlaneGeometry(550, 550);
-    const faceMat = new THREE.MeshBasicMaterial({
-      map: texture,
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = texture.image.width;
+    canvas.height = texture.image.height;
+    ctx.drawImage(texture.image, 0, 0);
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    const geo = new THREE.BufferGeometry();
+    const positions = [];
+    const colors = [];
+
+    const gap = 3; // quanto menor, mais pontos. 3 = bem detalhado
+    const scale = 300;
+
+    for(let y = 0; y < canvas.height; y += gap){
+      for(let x = 0; x < canvas.width; x += gap){
+        const i = (y * canvas.width + x) * 4;
+        const alpha = data[i + 3];
+
+        if(alpha > 30){ // só onde tem imagem
+          positions.push(
+            (x - canvas.width/2) * (scale/canvas.width),
+            -(y - canvas.height/2) * (scale/canvas.height),
+            (Math.random()-0.5)*2
+          );
+          // cor ciano do filme
+          colors.push(0.1, 0.9, 1.0);
+        }
+      }
+    }
+
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 2.5,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.95,
-      color: 0x00e5ff, // deixa azul holograma
-      blending: THREE.AdditiveBlending,
-      side: THREE.DoubleSide
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending
     });
-    faceMesh = new THREE.Mesh(faceGeo, faceMat);
-    faceMesh.position.z = 5; // na frente da grade
-    scene.add(faceMesh);
+
+    pointCloud = new THREE.Points(geo, mat);
+    scene.add(pointCloud);
     animate();
   },
   undefined,
-  function(err){
-    console.error("ERRO: Não achou file_000000004980820ead22c12031f81004.png", err);
-    alert("Coloca a imagem file_000000004980820ead22c12031f81004.png na pasta");
-  }
+  (e) => console.error("ERRO: file_000004980820ead22c12031f81004.png não encontrada", e)
 );
 
-// PARTÍCULAS
-const particleGeo = new THREE.BufferGeometry();
-const particleCount = 400;
-const positions = new Float32Array(particleCount * 3);
-for(let i = 0; i < particleCount * 3; i++){
-  positions[i] = (Math.random() - 0.5) * 1500;
-}
-particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const particleMat = new THREE.PointsMaterial({ color: 0x00e5ff, size: 2 });
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
+// GRADE FUNDO
+const grid = new THREE.GridHelper(1000, 40, 0x00ffff, 0x003333);
+grid.rotation.x = Math.PI/2;
+scene.add(grid);
 
-// VOZ AO CLICAR
-function speakZordon(text){
+// VOZ
+function falar(txt){
   if('speechSynthesis' in window){
     isTalking = true;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.pitch = 0.4; // grave
-    utterance.rate = 0.75; // lento
-    utterance.onend = () => isTalking = false;
-    speechSynthesis.speak(utterance);
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang='pt-BR'; u.pitch=0.35; u.rate=0.7;
+    u.onend = () => isTalking = false;
+    speechSynthesis.speak(u);
   }
 }
-
 window.addEventListener('click', () => {
-  if(!isTalking){
-    const lines = [
-      "Rangers, me escutem.",
-      "O mal está se aproximando.",
-      "Vocês precisam trabalhar juntos.",
-      "A energia está com vocês."
-    ];
-    speakZordon(lines[Math.floor(Math.random() * lines.length)]);
-  }
+  if(!isTalking) falar("Onde estou?");
 });
 
-let time = 0;
+let t = 0;
 function animate(){
   requestAnimationFrame(animate);
-  time += 0.04;
+  t += 0.03;
 
-  if(faceMesh){
-    // Pulso do holograma
-    faceMesh.material.opacity = 0.9 + Math.sin(time * 3) * 0.05;
-
-    // Boca mexendo quando fala
-    if(isTalking){
-      faceMesh.scale.y = 1 + Math.sin(time * 35) * 0.04;
-    } else {
-      faceMesh.scale.y = 1 + Math.sin(time * 1.5) * 0.005; // respiração
+  if(pointCloud){
+    // EFEITO ONDA
+    const pos = pointCloud.geometry.attributes.position;
+    for(let i=2; i<pos.count*3; i+=3){
+      pos.array[i] = Math.sin(t + pos.array[i-1]*0.1) * 4;
     }
+    pos.needsUpdate = true;
 
-    // Piscar aleatório
-    if(Math.random() > 0.996){
-      faceMesh.material.opacity = 0.1;
-      setTimeout(() => { if(faceMesh) faceMesh.material.opacity = 0.95; }, 120);
-    }
+    // BOCA MEXENDO
+    pointCloud.scale.y = isTalking? 1 + Math.sin(t*50)*0.03 : 1;
+    pointCloud.rotation.y += 0.0005;
   }
-
-  // Parede pulsando
-  gridWall.material.opacity = 0.25 + Math.sin(time) * 0.05;
-  pointLight.intensity = 3.5 + Math.sin(time * 2) * 0.5;
-
-  // Partículas subindo
-  const pos = particles.geometry.attributes.position;
-  for(let i = 1; i < pos.count; i += 3){
-    pos.array[i] += 0.8;
-    if(pos.array[i] > 600) pos.array[i] = -600;
-  }
-  pos.needsUpdate = true;
 
   renderer.render(scene, camera);
 }
 
 window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
