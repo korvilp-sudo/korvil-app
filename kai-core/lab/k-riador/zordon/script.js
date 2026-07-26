@@ -40,7 +40,7 @@ wallGroup.add(grid);
 let face;
 const loader = new THREE.TextureLoader();
 loader.load(
-  "./zordon-face.png", // coloca tua imagem com esse nome na pasta zordon
+  "./file_000000004980820ead22c12031f81004.png", // coloca tua imagem com esse nome na pasta zordon
 
   function(texture) {
     const faceGeo = new THREE.PlaneGeometry(600, 600); // grande igual filme
