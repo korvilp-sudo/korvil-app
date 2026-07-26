@@ -2,220 +2,62 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 ULTRA 6.0 // CALIBRAGEM 21 AÇÕES</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KORVIL G15 ULTRA 7.0 // CONTROLE REAL</title>
 <style>
-* {box-sizing: border-box;margin: 0;padding: 0;touch-action: none;user-select: none;font-family: 'Courier New', Courier, monospace;}
-body {background: #030712;color: #00f0ff;overflow: hidden;width: 100vw;height: 100vh;}
-.grid-bg {position: absolute;inset: 0;background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);background-size: 30px 30px;pointer-events: none;z-index: 1;}
-.scanlines {position: absolute;inset: 0;background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);background-size: 100% 4px;pointer-events: none;z-index: 2;}
-#video {position: absolute;width: 100%;height: 100%;object-fit: cover;transform: scaleX(-1);opacity: 0.18;filter: grayscale(80%) contrast(150%);}
-
-#menu {position: absolute;top: 15px;left: 15px;width: 260px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);padding: 12px;border-radius: 8px;backdrop-filter: blur(8px);z-index: 10;}
-.menu-title {font-size: 12px;font-weight: bold;letter-spacing: 1px;margin-bottom: 10px;text-shadow: 0 0 8px #00f0ff;display: flex;justify-content: space-between;color:#ffe600;}
-.btn {width: 100%;padding: 10px;margin: 4px 0;background: rgba(0, 240, 255, 0.1);border: 1px solid #00f0ff;color: #00f0ff;font-size: 11px;font-weight: bold;letter-spacing: 1px;cursor: pointer;border-radius: 5px;transition: all 0.15s ease;text-align: left;}
-.btn:hover {border-color: #ffffff;box-shadow: 0 0 15px #00f0ff;background: rgba(0, 240, 255, 0.4);color: #fff;transform:translateX(5px);}
-
-.cubo {position: absolute;width: 90px;height: 90px;border: 3px solid #00f0ff;background: rgba(0, 240, 255, 0.15);box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);border-radius: 8px;cursor: grab;z-index: 5;display: flex;align-items: center;justify-content: center;font-size: 11px;}
-.cubo::after {content: 'K-AI';opacity: 0.6;font-size: 10px;}
-.cubo.segurado {border-color: #ff00ea;background: rgba(255, 0, 234, 0.3);box-shadow: 0 0 35px #ff00ea;transform:scale(1.1);z-index:8;}
-
-#lixeira {position: absolute;bottom: 20px;left: 20px;width: 70px;height: 70px;border: 3px dashed #ff3366;border-radius: 12px;background: rgba(255, 51, 102, 0.15);display: flex;align-items: center;justify-content: center;font-size: 28px;z-index: 10;transition: all 0.2s ease;}
-#lixeira.ativo {border-color: #ff0044;background: rgba(255, 0, 68, 0.4);transform: scale(1.3);box-shadow: 0 0 35px #ff0044;}
-#zonaSalvar {position: absolute;bottom: 20px;right: 20px;width: 70px;height: 70px;border: 3px dashed #00ff66;border-radius: 12px;background: rgba(0, 255, 102, 0.1);display: flex;align-items: center;justify-content: center;font-size: 28px;z-index: 10;transition: all 0.2s ease;}
-#zonaSalvar.ativo {background: rgba(0, 255, 102, 0.5);transform: scale(1.2);}
-
-.pino {position: absolute;width: 22px;height: 22px;border-radius: 50%;pointer-events: none;z-index: 20;transform: translate(-50%, -50%);}
-#pino1 {background: #ff00ea;box-shadow: 0 0 20px #ff00ea;border: 3px solid #fff;}
-#pino2 {background: #00f0ff;box-shadow: 0 0 20px #00f0ff;border: 3px solid #fff;}
-#cursor {position: absolute;width: 40px;height: 40px;border: 2px dashed #00f0ff;border-radius: 50%;pointer-events: none;z-index: 19;transform: translate(-50%, -50%);animation: spin 4s linear infinite;}
-@keyframes spin {from { transform: translate(-50%, -50%) rotate(0deg); }to { transform: translate(-50%, -50%) rotate(360deg); }}
-
-#status-panel {position: absolute;bottom: 20px;right: 20px;width: 340px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;padding: 12px;border-radius: 8px;z-index: 10;}
-.status-title {font-size: 11px;font-weight: bold;color: #ffe600;margin-bottom: 6px;}
-.status-item {font-size: 11px;margin: 4px 0;color: #00f0ff;}
-#tutorial-box {margin-top: 10px;padding: 10px;background: rgba(0, 240, 255, 0.12);border-left: 4px solid #00f0ff;font-size: 11px;color: #fff;line-height: 1.4;min-height:60px;}
-#gesture-progress {width: 0%;height: 4px;background: linear-gradient(90deg,#00ff00,#ffe600);margin-top: 6px;transition: width 0.1s linear;}
-.calib-bar {width:100%;height:6px;background:#001122;border-radius:3px;margin-top:5px;overflow:hidden;}
-.calib-fill {height:100%;width:0%;background:linear-gradient(90deg,#00ff00,#00f0ff);transition:0.3s;}
-.erro {color:#ff3366!important;}.sucesso {color:#00ff66!important;}
-
-#contador {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:200px;color:#ffe600;text-shadow:0 0 50px #ffe600;z-index:50;display:none;font-weight:900;}
-#galeria {position:absolute;bottom:100px;right:20px;width:120px;height:50vh;overflow-y:auto;z-index:9;}
-.foto-mini {width:100px;height:75px;margin:5px;border:2px solid #00f0ff;border-radius:5px;cursor:pointer;object-fit:cover;}
-.flash {position:absolute;inset:0;background:white;opacity:0;pointer-events:none;z-index:60;transition:0.2s;}
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Courier New';user-select:none;touch-action:none;}
+body{background:#030712;color:#00f0ff;overflow:hidden;width:100vw;height:100vh;}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.15;}
+.grid-bg{position:absolute;inset:0;background:linear-gradient(rgba(0,240,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.05) 1px,transparent 1px);background-size:30px 30px;z-index:1;}
+#menu{position:absolute;top:15px;left:15px;width:250px;background:rgba(5,12,24,.95);border:2px solid #00f0ff;padding:12px;border-radius:8px;z-index:10;}
+.menu-title{font-size:12px;font-weight:bold;color:#ffe600;margin-bottom:10px;}
+.btn{width:100%;padding:10px;margin:4px 0;background:rgba(0,240,255,.1);border:1px solid #00f0ff;color:#00f0ff;font-size:11px;cursor:pointer;border-radius:5px;}
+.btn:hover{background:rgba(0,240,255,.3);color:#fff;}
+.cubo{position:absolute;width:100px;height:100px;border:3px solid #00f0ff;background:rgba(0,240,255,.15);box-shadow:0 0 20px rgba(0,240,255,.6);border-radius:10px;display:flex;align-items:center;justify-content:center;z-index:5;}
+.cubo::after{content:'K-AI';font-size:10px;opacity:.6;}
+.cubo.segurado{border-color:#ff00ea;box-shadow:0 0 35px #ff00ea;transform:scale(1.1);}
+.cubo.travado{border-color:#ffe600;box-shadow:0 0 35px #ffe600;}
+#lixeira{position:absolute;bottom:20px;left:20px;width:80px;height:80px;border:3px dashed #ff3366;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:35px;background:rgba(255,51,102,.1);z-index:10;}
+#lixeira.ativo{background:rgba(255,0,68,.4);transform:scale(1.2);}
+.pino{position:absolute;width:20px;height:20px;border-radius:50%;pointer-events:none;z-index:20;transform:translate(-50%,-50%);}
+#pino1{background:#ff00ea;box-shadow:0 0 20px #ff00ea;border:2px solid #fff;}
+#pino2{background:#00f0ff;box-shadow:0 0 20px #00f0ff;border:2px solid #fff;}
+#status{position:absolute;bottom:20px;right:20px;width:350px;background:rgba(5,12,24,.95);border:2px solid #00f0ff;padding:12px;border-radius:8px;z-index:10;font-size:11px;}
+.status-title{color:#ffe600;font-weight:bold;margin-bottom:5px;}
+.calib-bar{width:100%;height:6px;background:#001122;border-radius:3px;margin:5px 0;}
+.calib-fill{height:100%;width:0%;background:linear-gradient(90deg,#00ff00,#00f0ff);transition:.3s;}
+#hold-bar{width:0%;height:4px;background:#ffe600;margin-top:4px;transition:.1s;}
+.erro{color:#ff3366}.sucesso{color:#00ff66}
 </style>
 </head>
 <body>
-
-<div class="grid-bg"></div><div class="scanlines"></div>
-<div id="contador">10</div><div class="flash" id="flash"></div>
-<div id="galeria"></div>
-<div id="lixeira">🗑️</div><div id="zonaSalvar">💾</div>
+<div class="grid-bg"></div>
+<video id="video" autoplay playsinline muted></video>
+<div id="pino1" class="pino"></div><div id="pino2" class="pino"></div>
 
 <div id="menu">
-  <div class="menu-title"><span>> G15 ULTRA</span><span>v6.0</span></div>
-  <button class="btn" id="calibrar">[CAL] CALIBRAR MÃO</button>
-  <button class="btn" id="novo">[1] + NOVO CUBO</button>
-  <button class="btn" id="limpar">[2] RESETAR TUDO</button>
-  <button class="btn" id="cor">[3] TROCAR COR</button>
-  <button class="btn" id="voz">🔊 VOZ: LIGADA</button>
-  <div style="font-size: 9px; color: #888; margin-top: 8px;">21 AÇÕES - SEGURE 2s</div>
+  <div class="menu-title">> G15 ULTRA v7.0</div>
+  <button class="btn" id="calibrar">[1] CALIBRAR MÃO</button>
+  <button class="btn" id="novo">[2] NOVO CUBO</button>
+  <button class="btn" id="limpar">[3] LIMPAR TUDO</button>
+  <button class="btn" id="voz">🔊 VOZ: ON</button>
   <div class="calib-bar"><div class="calib-fill" id="calibFill"></div></div>
 </div>
 
-<video id="video" autoplay playsinline muted></video>
-<div id="pino1" class="pino"></div><div id="pino2" class="pino"></div><div id="cursor"></div>
+<div id="lixeira">🗑️</div>
 
-<div id="status-panel">
-  <div class="status-title">📡 K-AI COACH v6.0 CALIBRADO</div>
-  <div class="status-item">STATUS: <span id="st-text">AGUARDANDO CALIBRAGEM</span></div>
-  <div class="status-item">GESTO: <span id="st-gesto" style="color: #ff00ea;">NENHUM</span></div>
-  <div class="status-item">AÇÃO: <span id="st-acao" style="color: #ffe600;">SEGURE 2s</span></div>
-  <div class="status-item">FEEDBACK: <span id="st-feedback" class="sucesso">PRONTO</span></div>
-  <div class="status-item">OBJETOS: <span id="st-obj">0</span></div>
-  <div id="gesture-progress"></div>
-  <div id="tutorial-box">💡 <b>PASSO 1:</b> Mostre MÃO ABERTA por 2s para calibrar</div>
+<div id="status">
+  <div class="status-title">📡 K-AI CONTROLE</div>
+  <div>STATUS: <span id="st">AGUARDANDO CALIBRAÇÃO</span></div>
+  <div>GESTO: <span id="gesto" style="color:#ff00ea">NENHUM</span></div>
+  <div>OBJETO: <span id="obj">NENHUM</span></div>
+  <div>FEEDBACK: <span id="feed" class="sucesso">CALIBRE PRIMEIRO</span></div>
+  <div id="hold-bar"></div>
+  <div id="help" style="margin-top:8px;">Mostre MÃO ABERTA por 2s</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script>
-// ===== SISTEMA DE VOZ =====
-const AudioContext = window.AudioContext || window.webkitAudioContext;let audioCtx = null;let vozLigada=true;
-function initAudio(){if(!audioCtx)audioCtx=new AudioContext();}
-function playSound(f,t='sine',d=0.1,v=0.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
-const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06)};
-const falas=window.speechSynthesis;function falar(texto){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.0;falas.speak(msg);}
-
-// ESTADO
-let cubos=[],segurado=null;
-let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'];let corAtual=0;
-let posSuave={x:-100,y:-100,cx:-100,cy:-100};
-let calibrado=false,calibValues={pinca:0.06,abrir:0.32};
-let gestoAtual="",gestoTimer=null,progressoGesto=0,fotos=[];
-
-// FUNÇÕES BASE
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
-function isMaoFechada(h){return dist(h[8],h[5])<0.12&&dist(h[12],h[9])<0.12;}
-function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
-function identificarGesto(h){
-  if(isPinca(h))return"PINÇA";
-  if(isMaoFechada(h))return"PUNHO";
-  if(isMaoAberta(h))return"ABERTO";
-  if(h[8].y<h[6].y&&h[12].y<h[10].y)return"PAZ";
-  if(h[8].y<h[6].y)return"APONTAR";
-  if(h[4].y<h[3].y)return"LIKE";
-  if(h[4].y>h[2].y)return"DISLIKE";
-  if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";
-  return"NEUTRO";
-}
-
-// CALIBRAGEM
-function calibrar(h){
-  calibValues.pinca=dist(h[4],h[8])*0.9;
-  calibValues.abrir=dist(h[8],h[0])*1.1;
-  document.getElementById('calibFill').style.width='100%';
-  calibrado=true;SFX.spawn();falar("Calibragem concluída. Agora segure cada gesto por 2 segundos para ativar");
-  document.getElementById('st-text').textContent="CALIBRADO";
-  document.getElementById('tutorial-box').innerHTML="✅ <b>CALIBRADO!</b><br>Agora segure qualquer gesto por 2s para ativar a ação";
-}
-
-// CRIAR CUBO + MOUSE
-function criarCubo(x,y){
-  initAudio();
-  const c=document.createElement('div');c.className='cubo';
-  c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';
-  c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';
-
-  let isDragging=false,offsetX=0,offsetY=0;
-  c.addEventListener('pointerdown',e=>{initAudio();isDragging=true;offsetX=e.clientX-c.offsetLeft;offsetY=e.clientY-c.offsetTop;c.classList.add('segurado');SFX.grab();c.setPointerCapture(e.pointerId);});
-  c.addEventListener('pointermove',e=>{if(!isDragging)return;c.style.left=`${e.clientX-offsetX}px`;c.style.top=`${e.clientY-offsetY}px`;const lix=document.getElementById('lixeira').getBoundingClientRect();document.getElementById('lixeira').classList.toggle('ativo',Math.hypot(e.clientX-(lix.left+lix.width/2),e.clientY-(lix.top+lix.height/2))<90);});
-  c.addEventListener('pointerup',e=>{isDragging=false;c.classList.remove('segurado');const lix=document.getElementById('lixeira').getBoundingClientRect();if(Math.hypot(e.clientX-(lix.left+lix.width/2),e.clientY-(lix.top+lix.height/2))<90){SFX.trash();c.remove();cubos=cubos.filter(item=>item!==c);document.getElementById('st-obj').textContent=cubos.length;}document.getElementById('lixeira').classList.remove('ativo');});
-  document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;SFX.spawn();
-}
-
-// FOTO
-function tirarFoto(){document.getElementById('contador').style.display='block';let count=10;const interval=setInterval(()=>{document.getElementById('contador').innerText=count;falar(count);count--;if(count<0){clearInterval(interval);const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;canvas.getContext('2d').drawImage(document.getElementById('video'),0,0,640,480);document.getElementById('flash').style.opacity='0.8';setTimeout(()=>document.getElementById('flash').style.opacity='0',200);let img=document.createElement('img');img.src=canvas.toDataURL();img.className='foto-mini';document.getElementById('galeria').prepend(img);document.getElementById('contador').style.display='none';falar("Foto capturada");}},1000);}
-
-// 21 AÇÕES COM HOLD 2s
-const ACOES = {
-  1: ["PINÇA", "CRIAR CUBO", () => criarCubo(posSuave.x,posSuave.y), "Junte dedão e indicador por 2 segundos"],
-  2: ["LIKE", "TROCAR COR", () => document.getElementById('cor').click(), "Faça joinha e segure 2 segundos"],
-  3: ["DISLIKE", "APAGAR ÚLTIMO", () => {if(cubos.length){cubos.pop().remove();document.getElementById('st-obj').textContent=cubos.length;SFX.trash()}}, "Polegar para baixo por 2 segundos"],
-  4: ["ROCK", "EFEITO GLITCH", () => {document.body.style.filter="hue-rotate(180deg)";setTimeout(()=>document.body.style.filter="none",1000)}, "Sinal de rock por 2 segundos"],
-  5: ["ABERTO", "LIMPAR TUDO", () => document.getElementById('limpar').click(), "Abra a mão toda por 2 segundos"],
-  6: ["PUNHO", "AGRUPAR CENTRO", () => cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+'px';c.style.top=window.innerHeight/2-45+i*20+'px'}), "Feche o punho por 2 segundos"],
-  7: ["PAZ", "DUPLICAR CUBO", () => criarCubo(window.innerWidth/2+Math.random()*100,window.innerHeight/2), "Faça sinal de paz por 2 segundos"],
-  8: ["APONTAR", "MODO MIRA", () => {document.getElementById('cursor').style.borderColor="#ff00ea";setTimeout(()=>document.getElementById('cursor').style.borderColor="#00f0ff",1000)}, "Aponte com indicador por 2 segundos"],
-  9: ["DISLIKE DISLIKE", "DIMINUIR TODOS", () => cubos.forEach(c=>c.style.transform='scale(0.7)'), "Dois dislikes por 2 segundos"],
-  10: ["LIKE LIKE", "AUMENTAR TODOS", () => cubos.forEach(c=>c.style.transform='scale(1.5)'), "Dois joinhas por 2 segundos"],
-  11: ["ROCK ROCK", "PULSO SONORO", () => playSound(1500,'sawtooth',0.4,0.2), "Dois rocks por 2 segundos"],
- 12: ["PUNHO PUNHO", "MODO MATRIX", () => {document.body.style.background="#001a05";setTimeout(()=>document.body.style.background="#030712",2000)}, "Dois punhos por 2 segundos"],
-  13: ["ABERTO ABERTO", "SNAP GRID", () => cubos.forEach(c=>{c.style.left=Math.round(c.offsetLeft/50)*50+'px';c.style.top=Math.round(c.offsetTop/50)*50+'px'}), "Duas mãos abertas por 2 segundos"],
-  14: ["PAZ PAZ", "MUTE VOZ", () => {vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA'}, "Dois paz por 2 segundos"],
- 15: ["LIKE DISLIKE", "COR ALEATÓRIA", () => {corAtual=Math.floor(Math.random()*cores.length);document.getElementById('cor').style.color=cores[corAtual]}, "Joinha + Dislike por 2 segundos"],
- 16: ["ROCK LIKE", "ROTACIONAR", () => cubos.forEach(c=>{let r=(parseFloat(c.dataset.rotate||0)+45)%360;c.dataset.rotate=r;c.style.transform=`rotate(${r}deg)`}), "Rock + Like por 2 segundos"],
- 17: ["PUNHO LIKE", "ESPALHAR", () => cubos.forEach(c=>{c.style.left=Math.random()*(window.innerWidth-100)+'px';c.style.top=Math.random()*(window.innerHeight-100)+'px'}), "Punho + Like por 2 segundos"],
-  18: ["ABERTO ROCK", "BASS BOOST", () => playSound(80,'sine',0.6,0.15), "Mão aberta + Rock por 2 segundos"],
-  19: ["APONTAR APONTAR", "AUMENTAR SENS", () => sensibilidade=Math.min(3,sensibilidade+0.2), "Dois indicadores por 2 segundos"],
-  20: ["DISLIKE LIKE", "INVERTER TAMANHO", () => cubos.forEach(c=>{let s=parseFloat(c.dataset.scale||1)>1?0.6:1.8;c.dataset.scale=s;c.style.transform=`scale(${s})`}), "Dislike + Like por 2 segundos"],
-  21: ["PINÇA PINÇA", "TIRAR FOTO", () => tirarFoto(), "Segure PINÇA com as duas mãos por 2 segundos"]
-};
-
-function executarAcao(gesto){
-  for(let i=1;i<=21;i++){
-    if(ACOES[i][0]===gesto){
-      document.getElementById('st-acao').textContent=`[AÇÃO ${i}] ${ACOES[i][1]}`;
-      document.getElementById('tutorial-box').innerHTML=`✅ <b>AÇÃO ${i}:</b> ${ACOES[i][3]}`;
-      falar(`Ação ${i} ativada. ${ACOES[i][1]}`);
-      SFX.action();ACOES[i][2]();
-      return;
-    }
-  }
-}
-
-// LOOP PRINCIPAL
-const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
-
-hands.onResults(res=>{
-  const maos=res.multiHandLandmarks;
-  if(maos&&maos.length>0){
-    const h1=maos[0];
-    let tx=(1-h1[8].x)*window.innerWidth,ty=h1[8].y*window.innerHeight;
-    posSuave.x+=(tx-posSuave.x)*0.4;posSuave.y+=(ty-posSuave.y)*0.4;
-    document.getElementById('pino1').style.left=posSuave.x+'px';document.getElementById('pino1').style.top=posSuave.y+'px';
-
-    let gesto=maos.length>1?identificarGesto(h1)+" "+identificarGesto(maos[1]):identificarGesto(h1);
-    document.getElementById('st-gesto').textContent=gesto;
-
-    // LÓGICA DE HOLD 2s
-    if(gesto!==gestoAtual){gestoAtual=gesto;progressoGesto=0;clearTimeout(gestoTimer);document.getElementById('gesture-progress').style.width='0%';}
-    else{
-      progressoGesto+=100/20; // 20 frames = 2s
-      document.getElementById('gesture-progress').style.width=progressoGesto+'%';
-      if(progressoGesto>=100){
-        if(!calibrado && gesto==="ABERTO"){calibrar(h1);}
-        else if(calibrado){executarAcao(gesto);}
-        progressoGesto=0;
-      }
-    }
-  }else{gestoAtual="";progressoGesto=0;document.getElementById('gesture-progress').style.width='0%';}
-});
-
-// BOTÕES + MOUSE
-document.getElementById('novo').onclick=()=>criarCubo();
-document.getElementById('limpar').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('st-obj').textContent=0;};
-document.getElementById('cor').onclick=()=>{corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];};
-document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA';};
-document.getElementById('calibrar').onclick=()=>{calibrado=false;document.getElementById('calibFill').style.width='0%';falar("Mostre mão aberta por 2 segundos");};
-
-const camera=new Camera(document.getElementById('video'),{onFrame:async()=>{await hands.send({image:document.getElementById('video')});},width:640,height:480});
-camera.start();
-criarCubo();
-falar("Sistema iniciado. Mostre mão aberta por 2 segundos para calibrar");
-</script>
+<script src="./korvil.js"></script>
 </body>
 </html>
