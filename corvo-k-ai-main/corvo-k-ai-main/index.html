@@ -1,44 +1,28 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><title>K-AI v-9000 SEGURO</title>
-<style>/* MESMO CSS DE ANTES */ body{background:#000;color:#00FFFF;font-family:monospace;padding:20px}</style></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-AI v-9100</title>
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
-<h1>K-AI v-9000 // 100% SEGURO</h1>
-<button onclick="lerPasta()">🧠 LER PASTA</button>
-<button id="mic" onmousedown="recognition.start()" onmouseup="recognition.stop()">🎤 FALAR</button>
-<input id="comando" style="width:50%">
-<button onclick="enviar()">EXECUTAR</button>
-<div id="log"></div>
+<div class="container">
+  <img id="avatar" src="kai-avatar.png" alt="K-AI">
+  <h1 class="glow">K-AI v-9100</h1>
+  <p class="sub glow">ASSISTENTE K-RIADOR ONLINE</p>
 
-<script>
-const REPO = "korvilp-sudo/korvil-app";
-const PATH = "corvo-k-ai-main/corvo-k-ai-main";
-let CEREBRO = {};
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'pt-BR';
-recognition.onresult = e => {
-  let texto = e.results[0][0].transcript;
-  if(!texto.toLowerCase().startsWith('kai')) texto = 'KAI: ' + texto;
-  document.getElementById('comando').value = texto; enviar();
-}
+  <div class="botoes">
+    <button onclick="lerPasta()">1. LER PASTA</button>
+    <button id="mic">🎤 SEGURE E FALE</button>
+    <button onclick="enviar()">3. EXECUTAR</button>
+    <button onclick="baixarCodigo()">4. BAIXAR CÓDIGO</button>
+  </div>
 
-function log(t){document.getElementById('log').innerHTML += t + '<br>'}
+  <input id="comando" placeholder="Ex: KAI: crie um botão azul">
+  <div id="log"></div>
+</div>
 
-async function lerPasta(){ /* MESMA FUNÇÃO DE ANTES */ }
-
-async function enviar(){
-  const comando = document.getElementById('comando').value;
-  const contexto = JSON.stringify(CEREBRO).slice(0,8000); // manda a pasta
-  log('Enviando pro Backend CEREBRO...');
-  
-  await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/kai-backend.yml/dispatches`, {
-    method: 'POST',
-    headers: {'Accept': 'application/vnd.github.v3+json'},
-    body: JSON.stringify({
-      ref: 'main',
-      inputs: {comando: comando, contexto: contexto}
-    })
-  });
-  log('✅ Ordem enviada! K-AI vai pensar e commitar sozinho.');
-}
-</script></body></html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="brain.js"></script>
+</body></html>
