@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>KORVIL G15 ULTRA 2.0 // HUD INTERFERENCE</title>
+  <title>KORVIL G15 ULTRA 2.0 // ADVANCED GESTURE HUD</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,7 +22,7 @@
       height: 100vh;
     }
 
-    /* Fundo Tecnológico Grid & Scanline */
+    /* Fundo Tecnológico Grid & Scanlines */
     .grid-bg {
       position: absolute;
       inset: 0;
@@ -59,8 +59,8 @@
       position: absolute;
       top: 15px;
       left: 15px;
-      width: 180px;
-      background: rgba(5, 12, 24, 0.85);
+      width: 200px;
+      background: rgba(5, 12, 24, 0.88);
       border: 1px solid #00f0ff;
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1);
       padding: 10px;
@@ -82,16 +82,17 @@
     .btn {
       width: 100%;
       padding: 8px;
-      margin: 4px 0;
+      margin: 3px 0;
       background: rgba(0, 240, 255, 0.08);
       border: 1px solid #00f0ff;
       color: #00f0ff;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
       letter-spacing: 1px;
       cursor: pointer;
       border-radius: 4px;
       transition: all 0.15s ease;
+      text-align: left;
     }
 
     .btn.hover {
@@ -127,20 +128,21 @@
     }
 
     .cubo::after {
-      content: '+';
+      content: 'K-AI';
       opacity: 0.5;
+      font-size: 9px;
     }
 
     .cubo.segurado {
       border-color: #ff00ea;
-      background: rgba(255, 0, 234, 0.2);
+      background: rgba(255, 0, 234, 0.25);
       box-shadow: 0 0 25px #ff00ea, inset 0 0 15px #ff00ea;
       z-index: 8;
     }
 
     .cubo.redimensionando {
       border-color: #ffe600;
-      background: rgba(255, 230, 0, 0.2);
+      background: rgba(255, 230, 0, 0.25);
       box-shadow: 0 0 35px #ffe600;
       z-index: 9;
     }
@@ -174,31 +176,31 @@
     /* Pinus / Ponteiros das Mãos */
     .pino {
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       pointer-events: none;
       z-index: 20;
       transform: translate(-50%, -50%);
-      transition: background 0.2s;
+      transition: background 0.1s;
     }
 
     #pino1 {
       background: #ff00ea;
-      box-shadow: 0 0 12px #ff00ea;
+      box-shadow: 0 0 14px #ff00ea;
       border: 2px solid #fff;
     }
 
     #pino2 {
       background: #00f0ff;
-      box-shadow: 0 0 12px #00f0ff;
+      box-shadow: 0 0 14px #00f0ff;
       border: 2px solid #fff;
     }
 
     #cursor {
       position: absolute;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border: 1px dashed #00f0ff;
       border-radius: 50%;
       pointer-events: none;
@@ -212,20 +214,55 @@
       to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    /* Painel Status HUD */
-    #status {
+    /* Painel Tutorial e Status HUD */
+    #status-panel {
       position: absolute;
       bottom: 20px;
       right: 20px;
-      color: #00f0ff;
-      font-size: 10px;
-      background: rgba(5, 12, 24, 0.85);
+      width: 280px;
+      background: rgba(5, 12, 24, 0.9);
       border: 1px solid #00f0ff;
-      padding: 8px 12px;
-      border-radius: 4px;
-      min-width: 160px;
+      padding: 10px;
+      border-radius: 6px;
       z-index: 10;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .status-title {
+      font-size: 10px;
+      font-weight: bold;
+      color: #ffe600;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    .status-item {
+      font-size: 10px;
+      margin: 3px 0;
+      color: #00f0ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #tutorial-box {
+      margin-top: 8px;
+      padding: 6px;
+      background: rgba(0, 240, 255, 0.08);
+      border-left: 3px solid #00f0ff;
+      font-size: 9px;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    /* Barra de Progresso do Punho */
+    #fist-progress {
+      width: 0%;
+      height: 3px;
+      background: #ff00ea;
+      margin-top: 5px;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px #ff00ea;
     }
   </style>
 </head>
@@ -239,9 +276,13 @@
     <span>> G15 ULTRA</span>
     <span>v2.0</span>
   </div>
-  <button class="btn" id="novo">+ NOVO CUBO</button>
-  <button class="btn" id="limpar">RESETAR</button>
-  <button class="btn" id="cor">TROCAR COR</button>
+  <button class="btn" id="novo">[1] + NOVO CUBO</button>
+  <button class="btn" id="limpar">[2] RESETAR TUDO</button>
+  <button class="btn" id="cor">[3] TROCAR COR</button>
+
+  <div style="font-size: 9px; color: #888; margin-top: 8px; border-top: 1px solid #00f0ff33; padding-top: 4px;">
+    <span>20 GESTOS ATIVOS</span>
+  </div>
 </div>
 
 <div id="lixeira">🗑️</div>
@@ -251,9 +292,20 @@
 <div id="pino2" class="pino"></div>
 <div id="cursor"></div>
 
-<div id="status">
-  <div>SISTEMA: <span id="st-text">INICIALIZANDO...</span></div>
-  <div>OBJETOS: <span id="st-obj">0</span></div>
+<div id="status-panel">
+  <div class="status-title">📡 SISTEMA K-AI HUD</div>
+  <div class="status-item">STATUS: <span id="st-text">INICIALIZANDO...</span></div>
+  <div class="status-item">GESTO: <span id="st-gesto" style="color: #ff00ea;">NENHUM</span></div>
+  <div class="status-item">AÇÃO: <span id="st-acao" style="color: #ffe600;">AGUARDANDO</span></div>
+  <div class="status-item">OBJETOS NA TELA: <span id="st-obj">0</span></div>
+  
+  <div id="fist-progress"></div>
+
+  <div id="tutorial-box">
+    💡 <b>DICA DE USO:</b><br>
+    • <b>PINÇAR:</b> Junte o Dedão + qualquer outro dedo para clicar/arrastar.<br>
+    • <b>PUNHO (2s):</b> Feche a mão 2 seg pra travar. Abra a mão para soltar!
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
@@ -288,7 +340,9 @@ const SFX = {
   click: () => { playSound(800, 'square', 0.05, 0.08); playSound(1200, 'sine', 0.08, 0.05); },
   grab: () => { playSound(300, 'sawtooth', 0.12, 0.08); },
   trash: () => { playSound(150, 'sawtooth', 0.25, 0.12); },
-  spawn: () => { playSound(600, 'sine', 0.1, 0.1); setTimeout(() => playSound(900, 'sine', 0.1, 0.08), 50); }
+  spawn: () => { playSound(600, 'sine', 0.1, 0.1); setTimeout(() => playSound(900, 'sine', 0.1, 0.08), 50); },
+  action: () => { playSound(1000, 'sine', 0.15, 0.06); },
+  lock: () => { playSound(400, 'square', 0.2, 0.1); setTimeout(() => playSound(800, 'square', 0.15, 0.08), 80); }
 };
 
 // --- ELEMENTOS E ESTADOS ---
@@ -297,8 +351,12 @@ const pino1 = document.getElementById('pino1');
 const pino2 = document.getElementById('pino2');
 const cursor = document.getElementById('cursor');
 const stText = document.getElementById('st-text');
+const stGesto = document.getElementById('st-gesto');
+const stAcao = document.getElementById('st-acao');
 const stObj = document.getElementById('st-obj');
 const lixeira = document.getElementById('lixeira');
+const fistProgress = document.getElementById('fist-progress');
+const tutorialBox = document.getElementById('tutorial-box');
 
 let cubos = [];
 let segurado = null;
@@ -313,7 +371,12 @@ let posSuave = { x: -100, y: -100, cx: -100, cy: -100 };
 let cores = ['#00f0ff', '#ff00ea', '#ffe600', '#00ff66', '#ff3366'];
 let corAtual = 0;
 
-// --- CÂMERA E MEDIAPIPE ---
+// Temporizador do Punho (2 segundos)
+let tempoPunhoInicio = null;
+let punhoTravado = false;
+let cooldownGesto = 0;
+
+// --- DEDUÇÃO DE GESTOS E MEDIAPIPE ---
 const hands = new Hands({
   locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
 });
@@ -326,8 +389,51 @@ hands.setOptions({
 });
 
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-const isPinca = h => dist(h[4], h[8]) < 0.06;
-const isClick = h => h[8].y < h[6].y && dist(h[8], h[12]) > 0.12;
+
+// 1. PINÇAR COM DEDÃO + QUALQUER OUTRO DEDO
+function isPincaQualquer(h) {
+  const thumbTip = h[4];
+  const tips = [8, 12, 16, 20]; // Indicador, Médio, Anelar, Mínimo
+  return tips.some(tipIdx => dist(thumbTip, h[tipIdx]) < 0.065);
+}
+
+// 2. MÃO FECHADA (PUNHO)
+function isMaoFechada(h) {
+  return dist(h[8], h[5]) < 0.13 && 
+         dist(h[12], h[9]) < 0.13 && 
+         dist(h[16], h[13]) < 0.13 && 
+         dist(h[20], h[17]) < 0.13;
+}
+
+// 3. MÃO ABERTA COMPLETA
+function isMaoAberta(h) {
+  return dist(h[8], h[0]) > 0.32 && 
+         dist(h[12], h[0]) > 0.35 && 
+         dist(h[16], h[0]) > 0.32 && 
+         dist(h[20], h[0]) > 0.28;
+}
+
+// 4. DETECTAR GESTO DA MÃO
+function identificarGestoMao(h) {
+  if (isPincaQualquer(h)) return "PINÇA (DEDÃO + QUALQUER)";
+  if (isMaoFechada(h)) return "PUNHO FECHADO";
+  if (isMaoAberta(h)) return "MÃO ABERTA";
+  
+  const indExt = h[8].y < h[6].y;
+  const medExt = h[12].y < h[10].y;
+  const aneExt = h[16].y < h[14].y;
+  const minExt = h[20].y < h[18].y;
+  const thumbUp = h[4].y < h[3].y && h[4].y < h[2].y;
+  const thumbDown = h[4].y > h[2].y && h[4].y > h[17].y;
+
+  if (indExt && medExt && !aneExt && !minExt) return "PAZ (VICTORY)";
+  if (indExt && !medExt && !aneExt && !minExt) return "APONTAR";
+  if (thumbUp && !indExt && !medExt && !aneExt) return "LIKE (JOINHA)";
+  if (thumbDown && !indExt && !medExt && !aneExt) return "DISLIKE";
+  if (indExt && minExt && !medExt && !aneExt) return "ROCK / METAL";
+  
+  return "MÃO NEUTRA";
+}
 
 hands.onResults(res => {
   const maos = res.multiHandLandmarks;
@@ -340,17 +446,63 @@ hands.onResults(res => {
     let targetX1 = (1 - h1[8].x) * window.innerWidth;
     let targetY1 = h1[8].y * window.innerHeight;
 
-    // Filtro LERP (Suavização de movimento)
     posSuave.x += (targetX1 - posSuave.x) * 0.45;
     posSuave.y += (targetY1 - posSuave.y) * 0.45;
 
     pino1.style.left = `${posSuave.x}px`;
     pino1.style.top = `${posSuave.y}px`;
 
-    const pinca1 = isPinca(h1);
+    const gestoMao1 = identificarGestoMao(h1);
+    const pinca1 = isPincaQualquer(h1);
+    const fechada1 = isMaoFechada(h1);
+    const aberta1 = isMaoAberta(h1);
 
-    // ARRASTAR CUBO (1 MÃO)
-    if (pinca1 && !segurado && !redimensionando) {
+    stGesto.textContent = gestoMao1;
+
+    // --- LÓGICA DO PUNHO FECHADO 2 SEGUNDOS ---
+    if (fechada1) {
+      if (!tempoPunhoInicio) {
+        tempoPunhoInicio = Date.now();
+      } else {
+        const decorrido = Date.now() - tempoPunhoInicio;
+        const pct = Math.min(100, (decorrido / 2000) * 100);
+        fistProgress.style.width = `${pct}%`;
+
+        if (decorrido >= 2000 && !punhoTravado) {
+          punhoTravado = true;
+          SFX.lock();
+          stAcao.textContent = "PUNHO TRAVADO (ARRANSTANDO)";
+          tutorialBox.innerHTML = "🔒 <b>PUNHO TRAVADO!</b> Movimente a mão para arrastar. <b>ABRA A MÃO</b> para soltar.";
+
+          // Tenta agarrar o cubo mais próximo
+          cubos.forEach(c => {
+            const rect = c.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < 120) {
+              segurado = c;
+            }
+          });
+        }
+      }
+    } else {
+      tempoPunhoInicio = null;
+      fistProgress.style.width = '0%';
+    }
+
+    // --- SOLTAR AO ABRIR A MÃO ---
+    if (aberta1 && (segurado || punhoTravado)) {
+      if (segurado) {
+        segurado.classList.remove('segurado');
+        segurado = null;
+      }
+      punhoTravado = false;
+      stAcao.textContent = "OBJETO SOLTO";
+      tutorialBox.innerHTML = "💡 <b>MÃO ABERTA:</b> Objeto liberado com sucesso.";
+    }
+
+    // --- ARRASTAR POR PINÇA INSTANTÂNEA OU PUNHO TRAVADO ---
+    if ((pinca1 || punhoTravado) && !segurado && !redimensionando) {
       cubos.forEach(c => {
         const rect = c.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -358,16 +510,16 @@ hands.onResults(res => {
         if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < Math.max(rect.width, rect.height) / 1.2) {
           segurado = c;
           SFX.grab();
+          stAcao.textContent = "CAPTURADO";
         }
       });
     }
 
-    if (segurado && pinca1 && !redimensionando) {
+    if (segurado && (pinca1 || punhoTravado) && !redimensionando) {
       segurado.classList.add('segurado');
       segurado.style.left = `${posSuave.x - segurado.offsetWidth / 2}px`;
       segurado.style.top = `${posSuave.y - segurado.offsetHeight / 2}px`;
 
-      // Hover na lixeira
       const lixRect = lixeira.getBoundingClientRect();
       const distLixo = Math.hypot(
         posSuave.x - (lixRect.left + lixRect.width / 2),
@@ -376,7 +528,7 @@ hands.onResults(res => {
       lixeira.classList.toggle('ativo', distLixo < 90);
     }
 
-    if (!pinca1 && segurado && !redimensionando) {
+    if (!pinca1 && !punhoTravado && segurado && !redimensionando) {
       const lixRect = lixeira.getBoundingClientRect();
       const distLixo = Math.hypot(
         posSuave.x - (lixRect.left + lixRect.width / 2),
@@ -401,7 +553,7 @@ hands.onResults(res => {
       segurado = null;
     }
 
-    // MÃO 2
+    // --- MÃO 2 E AÇÕES DE 20 GESTOS ---
     if (maos.length > 1) {
       const h2 = maos[1];
       let targetX2 = (1 - h2[8].x) * window.innerWidth;
@@ -415,9 +567,12 @@ hands.onResults(res => {
       cursor.style.left = `${posSuave.cx}px`;
       cursor.style.top = `${posSuave.cy}px`;
 
-      const pinca2 = isPinca(h2);
+      const gestoMao2 = identificarGestoMao(h2);
+      const pinca2 = isPincaQualquer(h2);
 
-      // REDIMENSIONAR E ROTACIONAR COM 2 MÃOS
+      stGesto.textContent = `${gestoMao1} + ${gestoMao2}`;
+
+      // REDIMENSIONAR E ROTACIONAR COM 2 MÃOS (PINÇA DUPLA)
       if (pinca1 && pinca2 && !redimensionando) {
         cubos.forEach(c => {
           const rect = c.getBoundingClientRect();
@@ -431,6 +586,7 @@ hands.onResults(res => {
             anguloInicial = Math.atan2(posSuave.cy - posSuave.y, posSuave.cx - posSuave.x);
             c.classList.add('redimensionando');
             SFX.grab();
+            stAcao.textContent = "ESCALA + ROTAÇÃO";
           }
         });
       }
@@ -452,25 +608,38 @@ hands.onResults(res => {
         redimensionando = null;
       }
 
-      // CLIQUE NO MENU COM PONTEIRO
+      // EXECUÇÃO DOS 20 GESTOS (COOLDOWN DE 1 SEG)
+      if (Date.now() > cooldownGesto) {
+        executarAcaoPorGesto(gestoMao1, gestoMao2);
+      }
+
+      // CLIQUE NO MENU COM PONTEIRO DA MÃO 2
       const btns = document.querySelectorAll('.btn');
       btns.forEach(b => {
         const r = b.getBoundingClientRect();
         if (posSuave.cx > r.left && posSuave.cx < r.right && posSuave.cy > r.top && posSuave.cy < r.bottom) {
           b.classList.add('hover');
-          if (isClick(h2)) {
+          if (gestoMao2 === "APONTAR" || pinca2) {
             b.classList.add('click');
             SFX.click();
             b.click();
+            cooldownGesto = Date.now() + 800;
             setTimeout(() => b.classList.remove('click'), 150);
           }
         } else {
           b.classList.remove('hover');
         }
       });
+    } else {
+      // APENAS 1 MÃO DETECTADA - AÇÕES INDIVIDUAIS
+      if (Date.now() > cooldownGesto) {
+        executarAcaoPorGesto(gestoMao1, "NENHUM");
+      }
     }
   } else {
     stText.textContent = "AGUARDANDO MÃOS...";
+    stGesto.textContent = "NENHUM";
+    stAcao.textContent = "EM ESPERA";
     pino1.style.left = '-100px';
     pino2.style.left = '-100px';
     cursor.style.left = '-100px';
@@ -480,7 +649,150 @@ hands.onResults(res => {
   }
 });
 
-// CAMERA UTILS INITIALIZATION
+// --- SISTEMA DE MAPEAMENTO DAS 20 AÇÕES E GESTOS ---
+function executarAcaoPorGesto(g1, g2) {
+  const parGesto = `${g1} + ${g2}`;
+
+  // Tabela de Ações
+  if (g1 === "PAZ (VICTORY)" && g2 === "NENHUM") {
+    triggerAcao("[AÇÃO 1] CRIAR CUBO", () => criarCubo(), "✌️ Gesto de Paz: Novo cubo criado!");
+  }
+  else if (g1 === "LIKE (JOINHA)" && g2 === "NENHUM") {
+    triggerAcao("[AÇÃO 2] TROCAR COR", () => document.getElementById('cor').click(), "👍 Like: Cor alterada.");
+  }
+  else if (g1 === "DISLIKE" && g2 === "NENHUM") {
+    triggerAcao("[AÇÃO 3] APAGAR ÚLTIMO", () => {
+      if (cubos.length) { cubos[cubos.length - 1].remove(); cubos.pop(); stObj.textContent = cubos.length; SFX.trash(); }
+    }, "👎 Dislike: Último cubo removido.");
+  }
+  else if (g1 === "ROCK / METAL" && g2 === "NENHUM") {
+    triggerAcao("[AÇÃO 4] EFEITO NEON GLITCH", () => {
+      document.body.style.filter = "hue-rotate(90deg) contrast(180%)";
+      setTimeout(() => document.body.style.filter = "none", 1000);
+    }, "🤘 Rock: Glitch HUD ativado!");
+  }
+  else if (g1 === "MÃO ABERTA" && g2 === "MÃO ABERTA") {
+    triggerAcao("[AÇÃO 5] LIMPAR TUDO", () => document.getElementById('limpar').click(), "🖐️🖐️ Mãos Abertas: Tela resetada.");
+  }
+  else if (g1 === "PUNHO FECHADO" && g2 === "PUNHO FECHADO") {
+    triggerAcao("[AÇÃO 6] AGROUPAR NO CENTRO", () => {
+      cubos.forEach((c, idx) => {
+        c.style.left = `${window.innerWidth / 2 - 40 + idx * 10}px`;
+        c.style.top = `${window.innerHeight / 2 - 40 + idx * 10}px`;
+      });
+    }, "✊✊ Dois Punhos: Objetos centralizados.");
+  }
+  else if (g1 === "LIKE (JOINHA)" && g2 === "LIKE (JOINHA)") {
+    triggerAcao("[AÇÃO 7] AUMENTAR ESCALA TODOS", () => {
+      cubos.forEach(c => {
+        let sc = parseFloat(c.dataset.scale || 1) + 0.2;
+        c.dataset.scale = sc;
+        c.style.transform = `scale(${sc})`;
+      });
+    }, "👍👍 Dois Likes: Todos os cubos aumentados.");
+  }
+  else if (g1 === "DISLIKE" && g2 === "DISLIKE") {
+    triggerAcao("[AÇÃO 8] DIMINUIR ESCALA TODOS", () => {
+      cubos.forEach(c => {
+        let sc = Math.max(0.4, parseFloat(c.dataset.scale || 1) - 0.2);
+        c.dataset.scale = sc;
+        c.style.transform = `scale(${sc})`;
+      });
+    }, "👎👎 Dois Dislikes: Todos os cubos reduzidos.");
+  }
+  else if (g1 === "PAZ (VICTORY)" && g2 === "PAZ (VICTORY)") {
+    triggerAcao("[AÇÃO 9] DUPLICAR CUBOS", () => {
+      if (cubos.length > 0 && cubos.length < 10) {
+        criarCubo(window.innerWidth / 2 + Math.random() * 100, window.innerHeight / 2 + Math.random() * 100);
+      }
+    }, "✌️✌️ Paz Duplo: Cubo duplicado.");
+  }
+  else if (g1 === "APONTAR" && g2 === "APONTAR") {
+    triggerAcao("[AÇÃO 10] CONECTAR CUBOS", () => {
+      SFX.action();
+    }, "👉👉 Dois Indicadores: Modo Conectar ativo.");
+  }
+  else if (g1 === "ROCK / METAL" && g2 === "ROCK / METAL") {
+    triggerAcao("[AÇÃO 11] EXPLOSÃO SONORA", () => {
+      playSound(1500, 'sawtooth', 0.4, 0.2);
+    }, "🤘🤘 Rock Duplo: Pulso cibernético emitido!");
+  }
+  else if (g1 === "PUNHO FECHADO" && g2 === "LIKE (JOINHA)") {
+    triggerAcao("[AÇÃO 12] MODO MATRIX", () => {
+      document.body.style.background = "#001a05";
+      setTimeout(() => document.body.style.background = "#030712", 2000);
+    }, "✊👍 Punho + Like: Modo Matrix temporário.");
+  }
+  else if (g1 === "MÃO ABERTA" && g2 === "APONTAR") {
+    triggerAcao("[AÇÃO 13] SNAP TO GRID", () => {
+      cubos.forEach(c => {
+        let x = Math.round(c.offsetLeft / 50) * 50;
+        let y = Math.round(c.offsetTop / 50) * 50;
+        c.style.left = `${x}px`;
+        c.style.top = `${y}px`;
+      });
+    }, "🖐️👉 Aberta + Apontar: Cubos alinhados ao Grid.");
+  }
+  else if (g1 === "PAZ (VICTORY)" && g2 === "APONTAR") {
+    triggerAcao("[AÇÃO 14] MUTE / UNMUTE SFX", () => {
+      audioCtx = audioCtx ? null : new AudioContext();
+    }, "✌️👉 Paz + Apontar: Áudio alternado.");
+  }
+  else if (g1 === "LIKE (JOINHA)" && g2 === "APONTAR") {
+    triggerAcao("[AÇÃO 15] COR ALEATÓRIA", () => {
+      corAtual = Math.floor(Math.random() * cores.length);
+      document.getElementById('cor').style.color = cores[corAtual];
+    }, "👍👉 Like + Apontar: Cor sorteada!");
+  }
+  else if (g1 === "ROCK / METAL" && g2 === "LIKE (JOINHA)") {
+    triggerAcao("[AÇÃO 16] ROTACIONAR 45 GRAUS", () => {
+      cubos.forEach(c => {
+        let rot = (parseFloat(c.dataset.rotate || 0) + 45) % 360;
+        c.dataset.rotate = rot;
+        c.style.transform = `scale(${c.dataset.scale || 1}) rotate(${rot}deg)`;
+      });
+    }, "🤘👍 Rock + Like: Gira todos em 45°.");
+  }
+  else if (g1 === "PUNHO FECHADO" && g2 === "PAZ (VICTORY)") {
+    triggerAcao("[AÇÃO 17] DISPERSAR CUBOS", () => {
+      cubos.forEach(c => {
+        c.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
+        c.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
+      });
+    }, "✊✌️ Punho + Paz: Objetos espalhados aleatoriamente.");
+  }
+  else if (g1 === "MÃO ABERTA" && g2 === "ROCK / METAL") {
+    triggerAcao("[AÇÃO 18] REVERBERAÇÃO ÁUDIO", () => {
+      playSound(200, 'sine', 0.6, 0.15);
+    }, "🖐️🤘 Aberta + Rock: Pulso de Baixa Frequência.");
+  }
+  else if (g1 === "DISLIKE" && g2 === "LIKE (JOINHA)") {
+    triggerAcao("[AÇÃO 19] INVERTER ESCALA", () => {
+      cubos.forEach(c => {
+        let sc = parseFloat(c.dataset.scale || 1);
+        sc = sc > 1 ? 0.6 : 1.8;
+        c.dataset.scale = sc;
+        c.style.transform = `scale(${sc})`;
+      });
+    }, "👎👍 Inversão de tamanho executada.");
+  }
+  else if (g1 === "APONTAR" && g2 === "ROCK / METAL") {
+    triggerAcao("[AÇÃO 20] MODO LASER HUD", () => {
+      cursor.style.borderColor = "#ff00ea";
+      setTimeout(() => cursor.style.borderColor = "#00f0ff", 2000);
+    }, "👉🤘 Indicador + Rock: Seletor Laser ativado!");
+  }
+}
+
+function triggerAcao(nomeAcao, callback, msgTutorial) {
+  cooldownGesto = Date.now() + 1200;
+  stAcao.textContent = nomeAcao;
+  tutorialBox.innerHTML = `✅ <b>${nomeAcao}:</b><br>${msgTutorial}`;
+  SFX.action();
+  callback();
+}
+
+// INICIALIZADOR DA CÂMERA
 const camera = new Camera(video, {
   onFrame: async () => {
     await hands.send({ image: video });
@@ -501,8 +813,8 @@ function criarCubo(x, y) {
   const c = document.createElement('div');
   c.className = 'cubo';
   
-  const posX = x || (window.innerWidth / 2 - 40);
-  const posY = y || (window.innerHeight / 2 - 40);
+  const posX = x || (window.innerWidth / 2 - 40 + (Math.random() * 40 - 20));
+  const posY = y || (window.innerHeight / 2 - 40 + (Math.random() * 40 - 20));
 
   c.style.left = `${posX}px`;
   c.style.top = `${posY}px`;
@@ -510,7 +822,6 @@ function criarCubo(x, y) {
   c.style.background = cores[corAtual] + '22';
   c.style.boxShadow = `0 0 15px ${cores[corAtual]}`;
 
-  // Suporte a Mouse/Touch para arrastar
   let isDragging = false;
   let offsetX = 0, offsetY = 0;
 
