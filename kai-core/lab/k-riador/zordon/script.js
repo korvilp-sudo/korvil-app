@@ -1,130 +1,147 @@
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000814); // azul escuro comando
-scene.fog = new THREE.Fog(0x000814, 500, 1500);
+scene.background = new THREE.Color(0x000814);
+scene.fog = new THREE.Fog(0x000814, 400, 1200);
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.set(0, 100, 800); // olhando pra parede
+camera.position.set(0, 80, 750);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById("container").appendChild(renderer.domElement);
 
-// LUZES AZUIS DO COMANDO
-const light = new THREE.PointLight(0x00e5ff, 4, 2000);
-light.position.set(0, 200, 500);
-scene.add(light);
-const ambLight = new THREE.AmbientLight(0x001a33, 0.5);
-scene.add(ambLight);
+// LUZ AZUL DO COMANDO
+const pointLight = new THREE.PointLight(0x00e5ff, 4, 2000);
+pointLight.position.set(0, 200, 400);
+scene.add(pointLight);
+scene.add(new THREE.AmbientLight(0x001a33, 0.6));
 
-// GRUPO DA PAREDE
-const wallGroup = new THREE.Group();
-scene.add(wallGroup);
-
-// 1. PAINEL DE FUNDO GIGANTE
-const bgPanel = new THREE.Mesh(
-  new THREE.PlaneGeometry(2000, 1200),
-  new THREE.MeshBasicMaterial({ color: 0x000814 })
-);
-bgPanel.position.z = -100;
-wallGroup.add(bgPanel);
-
-// 2. GRADE DA PAREDE
-const gridGeo = new THREE.PlaneGeometry(1400, 900, 20, 15);
+// PAREDE COM GRADE
+const gridGeo = new THREE.PlaneGeometry(1400, 900, 25, 18);
 const gridMat = new THREE.MeshBasicMaterial({
-  color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.25
+  color: 0x00e5ff,
+  wireframe: true,
+  transparent: true,
+  opacity: 0.3
 });
-const grid = new THREE.Mesh(gridGeo, gridMat);
-wallGroup.add(grid);
+const gridWall = new THREE.Mesh(gridGeo, gridMat);
+scene.add(gridWall);
 
-// 3. ROSTO DO ZORDON NA PAREDE
-let face;
+// LINHAS DE ENERGIA
+for(let y = -400; y <= 400; y += 90){
+  const line = new THREE.Mesh(
+    new THREE.BoxGeometry(1400, 4, 4),
+    new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.5 })
+  );
+  line.position.y = y;
+  scene.add(line);
+}
+
+// ROSTO DO ZORDON
+let faceMesh;
+let isTalking = false;
 const loader = new THREE.TextureLoader();
 loader.load(
-  "./file_000000004980820ead22c12031f81004.png", // coloca tua imagem com esse nome na pasta zordon
+  "./zordon-face.png", // sua imagem tem que estar na mesma pasta do index.html
 
   function(texture) {
-    const faceGeo = new THREE.PlaneGeometry(600, 600); // grande igual filme
+    const faceGeo = new THREE.PlaneGeometry(550, 550);
     const faceMat = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
       opacity: 0.95,
-      color: 0x00e5ff, // tom ciano holograma
-      blending: THREE.AdditiveBlending
+      color: 0x00e5ff, // deixa azul holograma
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide
     });
-    face = new THREE.Mesh(faceGeo, faceMat);
-    face.position.z = 10; // na frente da grade
-    wallGroup.add(face);
+    faceMesh = new THREE.Mesh(faceGeo, faceMat);
+    faceMesh.position.z = 5; // na frente da grade
+    scene.add(faceMesh);
     animate();
   },
   undefined,
-  function(err){ console.error("ERRO: file_000000004980820ead22c12031f81004.png não encontrada", err); }
+  function(err){
+    console.error("ERRO: Não achou zordon-face.png", err);
+    alert("Coloca a imagem zordon-face.png na pasta");
+  }
 );
 
-// 4. LINHAS DE ENERGIA HORIZONTAIS
-for(let y = -400; y <= 400; y += 100){
-  const line = new THREE.Mesh(
-    new THREE.BoxGeometry(1400, 3, 3),
-    new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.4 })
-  );
-  line.position.y = y;
-  wallGroup.add(line);
+// PARTÍCULAS
+const particleGeo = new THREE.BufferGeometry();
+const particleCount = 400;
+const positions = new Float32Array(particleCount * 3);
+for(let i = 0; i < particleCount * 3; i++){
+  positions[i] = (Math.random() - 0.5) * 1500;
 }
-
-// 5. PARTÍCULAS
-const particles = new THREE.Points(
-  new THREE.BufferGeometry(),
-  new THREE.PointsMaterial({ color: 0x00e5ff, size: 2.5 })
-);
-const pArray = new Float32Array(500 * 3);
-for(let i=0; i<500*3; i++) pArray[i] = (Math.random()-0.5)*1600;
-particles.geometry.setAttribute('position', new THREE.BufferAttribute(pArray, 3));
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particleMat = new THREE.PointsMaterial({ color: 0x00e5ff, size: 2 });
+const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
 
-// VOZ + ANIMAÇÃO
-let falando = false;
-function falar(texto){
+// VOZ AO CLICAR
+function speakZordon(text){
   if('speechSynthesis' in window){
-    falando = true;
-    const msg = new SpeechSynthesisUtterance(texto);
-    msg.lang = 'pt-BR'; msg.pitch = 0.4; msg.rate = 0.75;
-    msg.onend = () => falando = false;
-    speechSynthesis.speak(msg);
+    isTalking = true;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    utterance.pitch = 0.4; // grave
+    utterance.rate = 0.75; // lento
+    utterance.onend = () => isTalking = false;
+    speechSynthesis.speak(utterance);
   }
 }
+
 window.addEventListener('click', () => {
-  if(!falando){
-    const frases = ["Rangers.", "É hora de lutar.", "A energia está com vocês.", "Preciso da sua ajuda."];
-    falar(frases[Math.floor(Math.random()*frases.length)]);
+  if(!isTalking){
+    const lines = [
+      "Rangers, me escutem.",
+      "O mal está se aproximando.",
+      "Vocês precisam trabalhar juntos.",
+      "A energia está com vocês."
+    ];
+    speakZordon(lines[Math.floor(Math.random() * lines.length)]);
   }
 });
 
-let t = 0;
+let time = 0;
 function animate(){
   requestAnimationFrame(animate);
-  t += 0.03;
+  time += 0.04;
 
-  if(face){
-    // pulso holograma
-    face.material.opacity = 0.9 + Math.sin(t*4)*0.05;
-    // boca mexendo
-    face.scale.y = falando? 1 + Math.sin(t*40)*0.04 : 1;
-    // piscar
-    if(Math.random() > 0.996) face.material.opacity = 0.1;
+  if(faceMesh){
+    // Pulso do holograma
+    faceMesh.material.opacity = 0.9 + Math.sin(time * 3) * 0.05;
+
+    // Boca mexendo quando fala
+    if(isTalking){
+      faceMesh.scale.y = 1 + Math.sin(time * 35) * 0.04;
+    } else {
+      faceMesh.scale.y = 1 + Math.sin(time * 1.5) * 0.005; // respiração
+    }
+
+    // Piscar aleatório
+    if(Math.random() > 0.996){
+      faceMesh.material.opacity = 0.1;
+      setTimeout(() => { if(faceMesh) faceMesh.material.opacity = 0.95; }, 120);
+    }
   }
 
-  grid.material.opacity = 0.2 + Math.sin(t)*0.05;
-  light.intensity = 3.5 + Math.sin(t*2)*0.5;
+  // Parede pulsando
+  gridWall.material.opacity = 0.25 + Math.sin(time) * 0.05;
+  pointLight.intensity = 3.5 + Math.sin(time * 2) * 0.5;
 
-  // particulas sobem
+  // Partículas subindo
   const pos = particles.geometry.attributes.position;
-  for(let i=1; i<pos.count; i+=3){ pos.array[i] += 1; if(pos.array[i]>600) pos.array[i] = -600; }
+  for(let i = 1; i < pos.count; i += 3){
+    pos.array[i] += 0.8;
+    if(pos.array[i] > 600) pos.array[i] = -600;
+  }
   pos.needsUpdate = true;
 
   renderer.render(scene, camera);
 }
 
 window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
