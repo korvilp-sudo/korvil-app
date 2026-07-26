@@ -60,8 +60,8 @@ loader.load(
   },
   undefined,
   function(err){
-    console.error("ERRO: Não achou zordon-face.png", err);
-    alert("Coloca a imagem zordon-face.png na pasta");
+    console.error("ERRO: Não achou file_000000004980820ead22c12031f81004.png", err);
+    alert("Coloca a imagem file_000000004980820ead22c12031f81004.png na pasta");
   }
 );
 
