@@ -1,120 +1,175 @@
-// ===== KORVIL G15 ULTRA 5.1 JS =====
-// ===== SISTEMA DE VOZ + SFX =====
+// ===== KORVIL G15 ULTRA 5.2 JS - FOTO TRAVADA =====
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;let vozLigada=true;
 function initAudio(){if(!audioCtx)audioCtx=new AudioContext();}
 function playSound(f,t='sine',d=0.1,v=0.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
-const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06),erro:()=>{playSound(200,'sawtooth',0.3,0.15);setTimeout(()=>playSound(150,'sawtooth',0.3,0.15),150)},sucesso:()=>{playSound(1200,'sine',0.1,0.1);setTimeout(()=>playSound(1500,'sine',0.1,0.08),100)}};
-const falas=window.speechSynthesis;
-function falar(texto,tipo='info'){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.1;msg.pitch=tipo==='erro'?0.8:tipo==='sucesso'?1.3:1.1;falas.speak(msg);}
+const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06)};
+const falas=window.speechSynthesis;function falar(texto){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.1;falas.speak(msg);}
 
-// ===== ESTADO =====
+// ESTADO
 let cubos=[],segurado=null;
 let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'];let corAtual=0;
 let posSuave={x:-100,y:-100,cx:-100,cy:-100},sensibilidade=1.0;
-let tempoPunhoInicio=null,punhoTravado=false,cooldownGesto=0,calibrado=true,calibValues={pinca:0.06,abrir:0.32};
-let ultimoErro='',ultimoAcerto='';
+let tempoPunhoInicio=null,punhoTravado=false,cooldownGesto=0;
 
-// ===== ESTADO FOTO =====
-let fotos = [];let pincaTimer = null;let contagemAtiva = false;let contador = 10;let swipeInicio = {x:0, y:0, tempo:0, id:null};
-let modoMouse = false;
+// NOVO ESTADO FOTO TRAVADA
+let fotos=[],pincaTimer=null,contagemAtiva=false,contador=10;
+let modoFotoTravado=false; // TRAVA TUDO DEPOIS DA FOTO
+let fotoPendente=null; // Foto que acabou de tirar
 
-// ===== FUNÇÕES BASE =====
+// FUNÇÕES BASE
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
-function isMaoFechada(h){return dist(h[8],h[5])<0.12&&dist(h[12],h[9])<0.12&&dist(h[16],h[13])<0.12&&dist(h[20],h[17])<0.12;}
-function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
-function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y&&h[16].y>h[14].y)return"PAZ";if(h[8].y<h[6].y&&h[12].y>h[10].y)return"APONTAR";if(h[4].y<h[3].y&&h[8].y>h[6].y)return"LIKE";if(h[4].y>h[2].y)return"DISLIKE";if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";return"NEUTRO";}
+function isPinca(h){return dist(h[4],h[8])<0.06;}
+function isMaoFechada(h){return dist(h[8],h[5])<0.12&&dist(h[12],h[9])<0.12;}
+function isMaoAberta(h){return dist(h[8],h[0])>0.32&&dist(h[12],h[0])>0.32;}
+function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y)return"PAZ";if(h[8].y<h[6].y)return"APONTAR";if(h[4].y<h[3].y)return"LIKE";if(h[4].y>h[2].y)return"DISLIKE";if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";return"NEUTRO";}
 
-// ===== FUNÇÕES FOTO =====
-function tirarFoto(){if(contagemAtiva)return;contagemAtiva=true;contador=10;document.getElementById('contador').style.display='block';falar("Foto em 10 segundos", 'sucesso');const interval=setInterval(()=>{document.getElementById('contador').innerText=contador;if(contador<=3)falar(contador.toString());contador--;if(contador<0){clearInterval(interval);capturarFrame();document.getElementById('contador').style.display='none';contagemAtiva=false;}},1000);}
-function capturarFrame(){const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;const ctx=canvas.getContext('2d');ctx.drawImage(document.getElementById('video'),0,0,640,480);document.getElementById('flash').style.opacity='0.8';setTimeout(()=>document.getElementById('flash').style.opacity='0',200);const dataURL=canvas.toDataURL('image/png');let foto={id:Date.now(),src:dataURL};fotos.push(foto);let img=document.createElement('img');img.src=foto.src;img.className='foto-mini';img.dataset.id=foto.id;document.getElementById('galeria').prepend(img);falar("Foto capturada", 'sucesso');SFX.sucesso();}
-function salvarFoto(foto){const a=document.createElement('a');a.href=foto.src;a.download=`KORVIL-FOTO-${foto.id}.png`;a.click();falar("Foto salva");SFX.click();}
-function deletarFoto(fotoId){fotos=fotos.filter(f=>f.id!=fotoId);const el=document.querySelector(`.foto-mini[data-id="${fotoId}"]`);if(el)el.remove();falar("Foto excluída");SFX.trash();}
+// CRIAR CUBO + MOUSE
+function criarCubo(x,y){
+  if(modoFotoTravado)return; // BLOQUEIA SE ESTIVER NO MODO FOTO
+  initAudio();
+  const c=document.createElement('div');c.className='cubo';
+  c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';
+  c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';
 
-// ===== 21 AÇÕES MAPEADAS =====
-function executarAcao(g1,g2){
-  if(Date.now()<cooldownGesto)return;cooldownGesto=Date.now()+1000;
-  const acoes={
-    1:["PINÇA","CRIAR CUBO",()=>criarCubo(),"Junte dedão com indicador"],
-    2:["LIKE","TROCAR COR",()=>document.getElementById('cor').click(),"Faça joinha"],
-    3:["DISLIKE","APAGAR ÚLTIMO",()=>{if(cubos.length){cubos.pop().remove();document.getElementById('st-obj').textContent=cubos.length;SFX.trash()}},"Polegar para baixo"],
-    4:["ROCK","EFEITO GLITCH",()=>{document.body.style.filter="hue-rotate(180deg)";setTimeout(()=>document.body.style.filter="none",800)},"Sinal de rock"],
-    5:["ABERTO ABERTO","LIMPAR TUDO",()=>document.getElementById('limpar').click(),"Duas mãos abertas"],
-    6:["PUNHO PUNHO","AGRUPAR CENTRO",()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+i*15+'px';c.style.top=window.innerHeight/2-45+'px'}),"Dois punhos"],
-    7:["LIKE LIKE","AUMENTAR TODOS",()=>cubos.forEach(c=>{let s=Math.min(3,parseFloat(c.dataset.scale||1)+0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois joinhas"],
-    8:["DISLIKE DISLIKE","DIMINUIR TODOS",()=>cubos.forEach(c=>{let s=Math.max(0.4,parseFloat(c.dataset.scale||1)-0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois dislikes"],
-    9:["PAZ PAZ","DUPLICAR",()=>{if(cubos.length<12)criarCubo(window.innerWidth/2+Math.random()*100,window.innerHeight/2)},"Duas paz e amor"],
-    10:["APONTAR APONTAR","MODO MIRA",()=>{document.getElementById('cursor').style.borderColor="#ff00ea";setTimeout(()=>document.getElementById('cursor').style.borderColor="#00f0ff",1500)},"Dois dedos apontando"],
-    11:["ROCK ROCK","PULSO SONORO",()=>playSound(1500,'sawtooth',0.4,0.2),"Dois sinais de rock"],
-    12:["PUNHO LIKE","MODO MATRIX",()=>{document.body.style.background="#001a05";setTimeout(()=>document.body.style.background="#030712",2000)},"Punho e joinha"],
-    13:["ABERTO APONTAR","SNAP GRID",()=>cubos.forEach(c=>{c.style.left=Math.round(c.offsetLeft/50)*50+'px';c.style.top=Math.round(c.offsetTop/50)*50+'px'})),"Mão aberta e apontar"],
-    14:["PAZ APONTAR","MUTE AUDIO",()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA'},"Paz e apontar"],
-    15:["LIKE APONTAR","COR ALEATÓRIA",()=>{corAtual=Math.floor(Math.random()*cores.length);document.getElementById('cor').style.color=cores[corAtual]},"Like e apontar"],
-    16:["ROCK LIKE","ROTACIONAR 45°",()=>cubos.forEach(c=>{let r=(parseFloat(c.dataset.rotate||0)+45)%360;c.dataset.rotate=r;c.style.transform=`scale(${c.dataset.scale||1}) rotate(${r}deg)`})),"Rock e like"],
-    17:["PUNHO PAZ","ESPALHAR",()=>cubos.forEach(c=>{c.style.left=Math.random()*(window.innerWidth-100)+'px';c.style.top=Math.random()*(window.innerHeight-100)+'px'})),"Punho e paz"],
-    18:["ABERTO ROCK","BASS BOOST",()=>playSound(80,'sine',0.6,0.15),"Mão aberta e rock"],
-    19:["DISLIKE LIKE","INVERTER TAMANHO",()=>cubos.forEach(c=>{let s=parseFloat(c.dataset.scale||1)>1?0.6:1.8;c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dislike e like"],
-    20:["APONTAR ROCK","AUMENTAR SENS",()=>{sensibilidade=Math.min(3,sensibilidade+0.2)},"Apontar e rock"],
-    21:["PINÇA","TIRAR FOTO",()=>tirarFoto(),"Segure pinça 2 segundos"]
-  };
-  for(let i=1;i<=21;i++){
-    let combo = g2==="NEUTRO"? g1 : g1+" "+g2;
-    if(acoes[i][0]===combo){
-      if(ultimoAcerto!==i){document.getElementById('st-acao').textContent=`[AÇÃO ${i}] ${acoes[i][1]}`;document.getElementById('tutorial-box').innerHTML=`✅ <b>AÇÃO ${i}: ${acoes[i][1]}</b><br>${acoes[i][3]}`;falar(`Ação ${i}: ${acoes[i][1]}`, 'sucesso');SFX.action();acoes[i][2]();ultimoAcerto=i;}
-      return;
-    }
-  }
+  let isDragging=false,offsetX=0,offsetY=0;
+  c.addEventListener('pointerdown',e=>{if(modoFotoTravado)return;initAudio();isDragging=true;offsetX=e.clientX-c.offsetLeft;offsetY=e.clientY-c.offsetTop;c.classList.add('segurado');SFX.grab();c.setPointerCapture(e.pointerId);});
+  c.addEventListener('pointermove',e=>{if(!isDragging||modoFotoTravado)return;c.style.left=`${e.clientX-offsetX}px`;c.style.top=`${e.clientY-offsetY}px`;});
+  c.addEventListener('pointerup',e=>{
+    if(modoFotoTravado)return;
+    isDragging=false;c.classList.remove('segurado');
+    const lixRect=document.getElementById('lixeira').getBoundingClientRect();
+    const distLixo=Math.hypot(e.clientX-(lixRect.left+lixRect.width/2),e.clientY-(lixRect.top+lixRect.height/2));
+    if(distLixo<90){SFX.trash();c.remove();cubos=cubos.filter(item=>item!==c);document.getElementById('st-obj').textContent=cubos.length;}
+  });
+  document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;SFX.spawn();
 }
 
-// ===== LOOP MEDIAPIPE =====
+// FOTO NOVA COM TRAVA
+function tirarFoto(){
+  if(contagemAtiva||modoFotoTravado)return;
+  contagemAtiva=true;contador=10;
+  document.getElementById('contador').style.display='block';
+  document.getElementById('st-feedback').textContent="CONTAGEM 10s";
+  falar("Foto em 10 segundos");
+
+  const interval=setInterval(()=>{
+    document.getElementById('contador').innerText=contador;
+    if(contador<=3)falar(contador.toString());
+    contador--;
+    if(contador<0){
+      clearInterval(interval);
+      capturarFrame();
+      document.getElementById('contador').style.display='none';
+      contagemAtiva=false;
+      ativarModoFotoTravado(); // ATIVA A TRAVA AQUI
+    }
+  },1000);
+}
+
+function capturarFrame(){
+  const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;
+  const ctx=canvas.getContext('2d');ctx.drawImage(document.getElementById('video'),0,0,640,480);
+  document.getElementById('flash').style.opacity='0.8';setTimeout(()=>document.getElementById('flash').style.opacity='0',200);
+  const dataURL=canvas.toDataURL('image/png');
+  fotoPendente={id:Date.now(),src:dataURL}; // GUARDA A FOTO PENDENTE
+  falar("Foto capturada. Passe para esquerda para excluir ou direita para salvar");
+}
+
+function ativarModoFotoTravado(){
+  modoFotoTravado=true;
+  document.getElementById('st-text').textContent="MODO FOTO ATIVO";
+  document.getElementById('st-feedback').textContent="ESQUERDA=EXCLUIR | DIREITA=SALVAR";
+  document.getElementById('tutorial-box').innerHTML="📸 <b>FOTO PRONTA!</b><br>👈 Passe a mão pra LIXEIRA<br>👉 Passe a mão pra SALVAR";
+  document.getElementById('lixeira').style.borderColor="#ff0044";
+  document.getElementById('zonaSalvar').style.borderColor="#00ff66";
+}
+
+function sairModoFotoTravado(){
+  modoFotoTravado=false;
+  fotoPendente=null;
+  document.getElementById('st-text').textContent="SISTEMA NORMAL";
+  document.getElementById('st-feedback').textContent="PRONTO";
+  document.getElementById('tutorial-box').innerHTML="💡 <b>COACH ATIVO</b><br>Segure PINÇA 2s para tirar foto";
+  document.getElementById('lixeira').style.borderColor="#ff3366";
+  document.getElementById('zonaSalvar').style.borderColor="#00ff66";
+}
+
+function salvarFotoPendente(){
+  if(!fotoPendente)return;
+  const a=document.createElement('a');a.href=fotoPendente.src;a.download=`KORVIL-FOTO-${fotoPendente.id}.png`;a.click();
+  adicionarNaGaleria(fotoPendente);
+  falar("Foto salva com sucesso");
+  SFX.click();
+  sairModoFotoTravado();
+}
+
+function deletarFotoPendente(){
+  falar("Foto excluída");
+  SFX.trash();
+  sairModoFotoTravado();
+}
+
+function adicionarNaGaleria(foto){
+  fotos.push(foto);
+  let img=document.createElement('img');img.src=foto.src;img.className='foto-mini';
+  document.getElementById('galeria').prepend(img);
+}
+
+// 21 AÇÕES - BLOQUEADAS NO MODO FOTO
+function executarAcao(g1,g2){
+  if(modoFotoTravado)return; // BLOQUEIA TODAS AS AÇÕES DURANTE O MODO FOTO
+  if(Date.now()<cooldownGesto)return;cooldownGesto=Date.now()+800;
+  const combo=g2==="NEUTRO"?g1:g1+" "+g2;
+  const acoes={"PINÇA":()=>criarCubo(posSuave.x,posSuave.y),"LIKE":()=>document.getElementById('cor').click(),"DISLIKE":()=>{if(cubos.length){cubos.pop().remove();document.getElementById('st-obj').textContent=cubos.length;}},"ABERTO ABERTO":()=>document.getElementById('limpar').click(),"PUNHO PUNHO":()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+'px';c.style.top=window.innerHeight/2-45+i*20+'px'}),"LIKE LIKE":()=>cubos.forEach(c=>c.style.transform='scale(1.5)'),"DISLIKE DISLIKE":()=>cubos.forEach(c=>c.style.transform='scale(0.7)'),"PAZ PAZ":()=>criarCubo(),"APONTAR APONTAR":()=>document.getElementById('cursor').style.borderColor="#ff00ea"};
+  if(acoes[combo]){document.getElementById('st-acao').textContent=combo;falar("Ação: "+combo);SFX.action();acoes[combo]();}
+}
+
+// MEDIAPIPE
 const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2,modelComplexity:0,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
 
 hands.onResults(res=>{
-  if(modoMouse)return;
   const maos=res.multiHandLandmarks;
   if(maos&&maos.length>0){
     document.getElementById('st-text').textContent=maos.length===2?"2 MÃOS":"1 MÃO";
     const h1=maos[0];
     let tx=(1-h1[8].x)*window.innerWidth,ty=h1[8].y*window.innerHeight;
-    posSuave.x+=(tx-posSuave.x)*0.4*sensibilidade;posSuave.y+=(ty-posSuave.y)*0.4*sensibilidade;
+    posSuave.x+=(tx-posSuave.x)*0.4;posSuave.y+=(ty-posSuave.y)*0.4;
     document.getElementById('pino1').style.left=posSuave.x+'px';document.getElementById('pino1').style.top=posSuave.y+'px';
     const gesto1=identificarGesto(h1);document.getElementById('st-gesto').textContent=gesto1;
 
     // AÇÃO 21: PINÇA 2s
-    if(gesto1==="PINÇA"&&!pincaTimer&&!contagemAtiva){pincaTimer=setTimeout(()=>tirarFoto(),2000);document.getElementById('st-feedback').textContent="SEGURE PINÇA 2s...";}
+    if(gesto1==="PINÇA"&&!pincaTimer&&!modoFotoTravado){pincaTimer=setTimeout(()=>tirarFoto(),2000);document.getElementById('st-feedback').textContent="SEGURE PINÇA 2s...";}
     if(gesto1!=="PINÇA"&&pincaTimer){clearTimeout(pincaTimer);pincaTimer=null;}
 
-    // SWIPE GALERIA
-    document.querySelectorAll('.foto-mini').forEach(img=>{const rect=img.getBoundingClientRect();if(posSuave.x>rect.left&&posSuave.x<rect.right&&posSuave.y>rect.top&&posSuave.y<rect.bottom){if(!swipeInicio.tempo){swipeInicio={x:posSuave.x,y:posSuave.y,tempo:Date.now(),id:img.dataset.id};}else{let dx=posSuave.x-swipeInicio.x,dt=Date.now()-swipeInicio.tempo;if(dt<500&&Math.abs(dx)>80){if(dx<-80){document.getElementById('zonaLixeira').classList.add('ativo');deletarFoto(swipeInicio.id);}if(dx>80){document.getElementById('zonaSalvar').classList.add('ativo');const foto=fotos.find(f=>f.id==swipeInicio.id);if(foto)salvarFoto(foto);}setTimeout(()=>{document.getElementById('zonaLixeira').classList.remove('ativo');document.getElementById('zonaSalvar').classList.remove('ativo');},300);swipeInicio={x:0,y:0,tempo:0};}}}});
+    // NOVO: DETECTAR SWIPE NO MODO FOTO TRAVADO
+    if(modoFotoTravado){
+      const lixRect=document.getElementById('lixeira').getBoundingClientRect();
+      const saveRect=document.getElementById('zonaSalvar').getBoundingClientRect();
 
-    if(gesto1==="PUNHO"){if(!tempoPunhoInicio)tempoPunhoInicio=Date.now();else{document.getElementById('fist-progress').style.width=Math.min(100,(Date.now()-tempoPunhoInicio)/20)+'%';if(Date.now()-tempoPunhoInicio>2000&&!punhoTravado){punhoTravado=true;}}}
-    else{tempoPunhoInicio=null;document.getElementById('fist-progress').style.width='0%';if(punhoTravado){punhoTravado=false;if(segurado){segurado.classList.remove('segurado');segurado=null;}}}
+      if(posSuave.x < lixRect.right + 50){ // PERTO DA LIXEIRA = ESQUERDA
+        document.getElementById('lixeira').classList.add('ativo');
+        setTimeout(()=>{deletarFotoPendente();document.getElementById('lixeira').classList.remove('ativo');},300);
+      }
+      if(posSuave.x > saveRect.left - 50){ // PERTO DO SALVAR = DIREITA
+        document.getElementById('zonaSalvar').classList.add('ativo');
+        setTimeout(()=>{salvarFotoPendente();document.getElementById('zonaSalvar').classList.remove('ativo');},300);
+      }
+    }
 
-    if((gesto1==="PINÇA"||punhoTravado)&&!segurado){cubos.forEach(c=>{let r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;if(Math.hypot(posSuave.x-cx,posSuave.y-cy)<120){segurado=c;SFX.grab();}});}
-    if(segurado){segurado.classList.add('segurado');segurado.style.left=posSuave.x-segurado.offsetWidth/2+'px';segurado.style.top=posSuave.y-segurado.offsetHeight/2+'px';}
-    if(gesto1!=="PINÇA"&&!punhoTravado&&segurado){segurado.classList.remove('segurado');segurado=null;}
-
-    if(maos.length>1){const h2=maos[1];let tx2=(1-h2[8].x)*window.innerWidth,ty2=h2[8].y*window.innerHeight;posSuave.cx+=(tx2-posSuave.cx)*0.4*sensibilidade;posSuave.cy+=(ty2-posSuave.cy)*0.4*sensibilidade;document.getElementById('pino2').style.left=posSuave.cx+'px';document.getElementById('pino2').style.top=posSuave.cy+'px';document.getElementById('cursor').style.left=posSuave.cx+'px';document.getElementById('cursor').style.top=posSuave.cy+'px';const gesto2=identificarGesto(h2);document.getElementById('st-gesto').textContent=`${gesto1} + ${gesto2}`;executarAcao(gesto1,gesto2);}else{executarAcao(gesto1,"NEUTRO");}
-  }else{document.getElementById('st-text').textContent="SEM CÂMERA - USANDO MOUSE";modoMouse=true;}
+    if(maos.length>1){const h2=maos[1];const gesto2=identificarGesto(h2);executarAcao(gesto1,gesto2);}else{executarAcao(gesto1,"NEUTRO");}
+  }
 });
 
-// ===== MOUSE FALLBACK =====
-let mouseSegurando=false;
-document.addEventListener('mousemove',e=>{if(modoMouse){posSuave.x=e.clientX;posSuave.y=e.clientY;document.getElementById('pino1').style.left=posSuave.x+'px';document.getElementById('pino1').style.top=posSuave.y+'px';}});
-document.addEventListener('mousedown',()=>{mouseSegurando=true;cubos.forEach(c=>{let r=c.getBoundingClientRect();if(posSuave.x>r.left&&posSuave.x<r.right&&posSuave.y>r.top&&posSuave.y<r.bottom){segurado=c;SFX.grab();}})});
-document.addEventListener('mouseup',()=>{mouseSegurando=false;if(segurado){segurado.classList.remove('segurado');segurado=null;}});
-
-// ===== CUBOS E BOTÕES =====
-function criarCubo(x,y){initAudio();const c=document.createElement('div');c.className='cubo';c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;SFX.spawn();}
-document.getElementById('novo').onclick=()=>{criarCubo();falar("Novo cubo criado");};
-document.getElementById('limpar').onclick=()=>{SFX.trash();cubos.forEach(c=>c.remove());cubos=[];document.getElementById('st-obj').textContent=0;falar("Tela limpa");};
-document.getElementById('cor').onclick=()=>{SFX.click();corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];falar("Cor alterada");};
-document.getElementById('calibrar').onclick=()=>{calibrado=true;document.getElementById('calibFill').style.width='100%';falar("Calibrado no modo mouse");};
+// BOTÕES
+document.getElementById('novo').onclick=()=>criarCubo();
+document.getElementById('limpar').onclick=()=>{if(modoFotoTravado)return;cubos.forEach(c=>c.remove());cubos=[];document.getElementById('st-obj').textContent=0;};
+document.getElementById('cor').onclick=()=>{if(modoFotoTravado)return;corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];};
 document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA';};
+document.getElementById('calibrar').onclick=()=>{falar("Calibrado");document.getElementById('calibFill').style.width='100%';};
 
-// ===== INIT =====
 const camera=new Camera(document.getElementById('video'),{onFrame:async()=>{await hands.send({image:document.getElementById('video')});},width:640,height:480});
-camera.start().then(()=>{document.getElementById('st-text').textContent="CÂMERA OK";falar("Sistema iniciado")}).catch(()=>{document.getElementById('st-text').textContent="MODO MOUSE ATIVO";modoMouse=true;falar("Câmera indisponível. Usando mouse")});
+camera.start();
 criarCubo();
+falar("Sistema iniciado");
