@@ -1,213 +1,594 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 ULTRA 2.0</title>
-<style>
-*{margin:0;padding:0;touch-action:none}
-body{background:#000;overflow:hidden;font-family:Arial}
-#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.2}
-#menu{position:absolute;top:5px;left:5px;width:160px;background:#000e;border:2px solid #0ff;padding:5px;color:#0ff;font-size:10px}
-.btn{width:100%;padding:6px;margin:3px 0;background:#0ff2;border:1px solid #0ff;color:#0ff;font-size:10px}
-.btn.hover{border-color:#fff;box-shadow:0 0 10px #fff;background:#fff2}
-.btn.click{animation:clickAnim 0.2s}
-@keyframes clickAnim{0%{transform:scale(1)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
-.cubo{position:absolute;width:80px;height:80px;border:2px solid #0ff;background:#0ff1;box-shadow:0 0 10px #0ff;transition:transform 0.1s}
-.cubo.segurado{border-color:magenta;box-shadow:0 0 20px magenta}
-.cubo.redimensionando{border-color:#ff0;box-shadow:0 0 30px #ff0}
-#lixeira{position:absolute;bottom:5px;left:5px;font-size:40px;border:3px dashed red;padding:10px;border-radius:12px;background:#0008}
-#lixeira.ativo{border-color:#f00;background:#f003;transform:scale(1.2)}
-.pino{position:absolute;width:14px;height:14px;border-radius:50%;pointer-events:none}
-#pino1{background:magenta;box-shadow:0 0 10px magenta}
-#pino2{background:cyan;box-shadow:0 0 10px cyan}
-#cursor{position:absolute;width:25px;height:25px;border:2px solid #fff;border-radius:50%;pointer-events:none}
-#status{position:absolute;bottom:5px;right:5px;color:#0ff;font-size:9px;background:#000c;padding:4px;min-width:120px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>KORVIL G15 ULTRA 2.0 // HUD INTERFERENCE</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      touch-action: none;
+      user-select: none;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background: #030712;
+      color: #00f0ff;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Fundo Tecnológico Grid & Scanline */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Vídeo da Câmera (Espelhado) */
+    #video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      opacity: 0.18;
+      filter: grayscale(80%) contrast(150%);
+    }
+
+    /* Menu Flutuante HUD */
+    #menu {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 180px;
+      background: rgba(5, 12, 24, 0.85);
+      border: 1px solid #00f0ff;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1);
+      padding: 10px;
+      border-radius: 6px;
+      backdrop-filter: blur(5px);
+      z-index: 10;
+    }
+
+    .menu-title {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 5px #00f0ff;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 8px;
+      margin: 4px 0;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid #00f0ff;
+      color: #00f0ff;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn.hover {
+      border-color: #ffffff;
+      box-shadow: 0 0 12px #00f0ff;
+      background: rgba(0, 240, 255, 0.3);
+      color: #fff;
+    }
+
+    .btn:active, .btn.click {
+      transform: scale(0.95);
+      background: #00f0ff;
+      color: #000;
+    }
+
+    /* Cubos Holográficos Interativos */
+    .cubo {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 2px solid #00f0ff;
+      background: rgba(0, 240, 255, 0.12);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 15px rgba(0, 240, 255, 0.1);
+      border-radius: 6px;
+      cursor: grab;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      letter-spacing: 1px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cubo::after {
+      content: '+';
+      opacity: 0.5;
+    }
+
+    .cubo.segurado {
+      border-color: #ff00ea;
+      background: rgba(255, 0, 234, 0.2);
+      box-shadow: 0 0 25px #ff00ea, inset 0 0 15px #ff00ea;
+      z-index: 8;
+    }
+
+    .cubo.redimensionando {
+      border-color: #ffe600;
+      background: rgba(255, 230, 0, 0.2);
+      box-shadow: 0 0 35px #ffe600;
+      z-index: 9;
+    }
+
+    /* Lixeira HUD */
+    #lixeira {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      border: 2px dashed #ff3366;
+      border-radius: 10px;
+      background: rgba(255, 51, 102, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 10;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
+    }
+
+    #lixeira.ativo {
+      border-color: #ff0044;
+      background: rgba(255, 0, 68, 0.35);
+      transform: scale(1.25);
+      box-shadow: 0 0 25px #ff0044;
+    }
+
+    /* Pinus / Ponteiros das Mãos */
+    .pino {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 20;
+      transform: translate(-50%, -50%);
+      transition: background 0.2s;
+    }
+
+    #pino1 {
+      background: #ff00ea;
+      box-shadow: 0 0 12px #ff00ea;
+      border: 2px solid #fff;
+    }
+
+    #pino2 {
+      background: #00f0ff;
+      box-shadow: 0 0 12px #00f0ff;
+      border: 2px solid #fff;
+    }
+
+    #cursor {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border: 1px dashed #00f0ff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 19;
+      transform: translate(-50%, -50%);
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Painel Status HUD */
+    #status {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      color: #00f0ff;
+      font-size: 10px;
+      background: rgba(5, 12, 24, 0.85);
+      border: 1px solid #00f0ff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      min-width: 160px;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+  </style>
 </head>
 <body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
 <div id="menu">
-  <div>> G15 ULTRA 2.0</div>
-  <button class="btn" id="novo">NOVO</button>
-  <button class="btn" id="limpar">LIMPAR</button>
+  <div class="menu-title">
+    <span>> G15 ULTRA</span>
+    <span>v2.0</span>
+  </div>
+  <button class="btn" id="novo">+ NOVO CUBO</button>
+  <button class="btn" id="limpar">RESETAR</button>
   <button class="btn" id="cor">TROCAR COR</button>
 </div>
+
 <div id="lixeira">🗑️</div>
-<video id="video" autoplay playsinline></video>
+<video id="video" autoplay playsinline muted></video>
+
 <div id="pino1" class="pino"></div>
 <div id="pino2" class="pino"></div>
 <div id="cursor"></div>
-<div id="status">Carregando...</div>
+
+<div id="status">
+  <div>SISTEMA: <span id="st-text">INICIALIZANDO...</span></div>
+  <div>OBJETOS: <span id="st-obj">0</span></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
 <script>
+// --- SINTETIZADOR DE ÁUDIO WEB AUDIO API ---
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new AudioContext();
+}
+
+function playSound(freq, type = 'sine', duration = 0.1, vol = 0.1) {
+  if (!audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+const SFX = {
+  click: () => { playSound(800, 'square', 0.05, 0.08); playSound(1200, 'sine', 0.08, 0.05); },
+  grab: () => { playSound(300, 'sawtooth', 0.12, 0.08); },
+  trash: () => { playSound(150, 'sawtooth', 0.25, 0.12); },
+  spawn: () => { playSound(600, 'sine', 0.1, 0.1); setTimeout(() => playSound(900, 'sine', 0.1, 0.08), 50); }
+};
+
+// --- ELEMENTOS E ESTADOS ---
 const video = document.getElementById('video');
 const pino1 = document.getElementById('pino1');
 const pino2 = document.getElementById('pino2');
 const cursor = document.getElementById('cursor');
-const status = document.getElementById('status');
+const stText = document.getElementById('st-text');
+const stObj = document.getElementById('st-obj');
+const lixeira = document.getElementById('lixeira');
+
 let cubos = [];
 let segurado = null;
 let redimensionando = null;
+
 let escalaInicial = 1;
+let anguloInicial = 0;
 let distInicial = 0;
-let ultimoFrame = 0;
-let posSuave = {x:0,y:0, cx:0, cy:0};
-let cores = ['#0ff','#f0f','#ff0','#0f0','#f00'];
+let rotacaoAtual = 0;
+
+let posSuave = { x: -100, y: -100, cx: -100, cy: -100 };
+let cores = ['#00f0ff', '#ff00ea', '#ffe600', '#00ff66', '#ff3366'];
 let corAtual = 0;
 
-// 1. CÂMERA
-navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:240, height:180}}).then(s=>video.srcObject=s);
+// --- CÂMERA E MEDIAPIPE ---
+const hands = new Hands({
+  locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+});
 
-// 2. MEDIAPIPE 2 MÃOS
-const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2, modelComplexity:0, minDetectionConfidence:0.5, minTrackingConfidence:0.5});
+hands.setOptions({
+  maxNumHands: 2,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
+});
 
-const dist = (a,b)=>Math.hypot(a.x-b.x, a.y-b.y);
-function isPinca(h){ return dist(h[4], h[8]) < 0.05; }
-function isAberta(h){ return dist(h[8], h[0]) > 0.25; }
-function isClick(h){ return h[8].y < h[6].y && dist(h[8], h[12]) > 0.15; }
-function isFechada(h){ return dist(h[8], h[5]) < 0.15 && dist(h[12], h[9]) < 0.15; } // punho
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const isPinca = h => dist(h[4], h[8]) < 0.06;
+const isClick = h => h[8].y < h[6].y && dist(h[8], h[12]) > 0.12;
 
-hands.onResults(res=>{
+hands.onResults(res => {
   const maos = res.multiHandLandmarks;
-  if(maos.length > 0){
+
+  if (maos && maos.length > 0) {
+    stText.textContent = maos.length === 2 ? "2 MÃOS DETECTADAS" : "1 MÃO DETECTADA";
+
     // MÃO 1
     const h1 = maos[0];
-    let x1 = (1-h1[8].x)*window.innerWidth;
-    let y1 = h1[8].y*window.innerHeight;
-    posSuave.x = posSuave.x*0.6 + x1*0.4;
-    posSuave.y = posSuave.y*0.6 + y1*0.4;
-    pino1.style.left=(posSuave.x-7)+'px'; pino1.style.top=(posSuave.y-7)+'px';
+    let targetX1 = (1 - h1[8].x) * window.innerWidth;
+    let targetY1 = h1[8].y * window.innerHeight;
+
+    // Filtro LERP (Suavização de movimento)
+    posSuave.x += (targetX1 - posSuave.x) * 0.45;
+    posSuave.y += (targetY1 - posSuave.y) * 0.45;
+
+    pino1.style.left = `${posSuave.x}px`;
+    pino1.style.top = `${posSuave.y}px`;
 
     const pinca1 = isPinca(h1);
-    const aberta1 = isAberta(h1);
 
-    // PEGAR CUBO COM 1 MÃO
-    if(pinca1 &&!segurado &&!redimensionando){
-      cubos.forEach(c=>{
-        const cx = c.offsetLeft + c.offsetWidth/2;
-        const cy = c.offsetTop + c.offsetHeight/2;
-        if(Math.abs(posSuave.x-cx)<70 && Math.abs(posSuave.y-cy)<70) segurado = c;
+    // ARRASTAR CUBO (1 MÃO)
+    if (pinca1 && !segurado && !redimensionando) {
+      cubos.forEach(c => {
+        const rect = c.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < Math.max(rect.width, rect.height) / 1.2) {
+          segurado = c;
+          SFX.grab();
+        }
       });
     }
-    if(segurado && pinca1){
+
+    if (segurado && pinca1 && !redimensionando) {
       segurado.classList.add('segurado');
-      segurado.style.left=(posSuave.x-segurado.offsetWidth/2)+'px';
-      segurado.style.top=(posSuave.y-segurado.offsetHeight/2)+'px';
+      segurado.style.left = `${posSuave.x - segurado.offsetWidth / 2}px`;
+      segurado.style.top = `${posSuave.y - segurado.offsetHeight / 2}px`;
+
+      // Hover na lixeira
+      const lixRect = lixeira.getBoundingClientRect();
+      const distLixo = Math.hypot(
+        posSuave.x - (lixRect.left + lixRect.width / 2),
+        posSuave.y - (lixRect.top + lixRect.height / 2)
+      );
+      lixeira.classList.toggle('ativo', distLixo < 90);
     }
-    if(!pinca1 && segurado){
-      const lix = document.getElementById('lixeira').getBoundingClientRect();
-      const distLixo = Math.hypot(posSuave.x - (lix.left+lix.width/2), posSuave.y - (lix.top+lix.height/2));
-      if(distLixo < 120){
-        segurado.style.transition = '0.3s';
-        segurado.style.left = (lix.left)+'px';
-        segurado.style.top = (lix.top)+'px';
-        setTimeout(()=>{segurado.remove(); cubos = cubos.filter(c=>c!=segurado)}, 300);
+
+    if (!pinca1 && segurado && !redimensionando) {
+      const lixRect = lixeira.getBoundingClientRect();
+      const distLixo = Math.hypot(
+        posSuave.x - (lixRect.left + lixRect.width / 2),
+        posSuave.y - (lixRect.top + lixRect.height / 2)
+      );
+
+      if (distLixo < 90) {
+        SFX.trash();
+        segurado.style.transition = '0.2s transform, 0.2s opacity';
+        segurado.style.transform = 'scale(0)';
+        segurado.style.opacity = '0';
+        const itemRemover = segurado;
+        setTimeout(() => {
+          itemRemover.remove();
+          cubos = cubos.filter(c => c !== itemRemover);
+          stObj.textContent = cubos.length;
+        }, 200);
       }
+
+      lixeira.classList.remove('ativo');
       segurado.classList.remove('segurado');
       segurado = null;
     }
 
     // MÃO 2
-    if(maos.length > 1){
+    if (maos.length > 1) {
       const h2 = maos[1];
-      let x2 = (1-h2[8].x)*window.innerWidth;
-      let y2 = h2[8].y*window.innerHeight - 80;
-      posSuave.cx = posSuave.cx*0.6 + x2*0.4;
-      posSuave.cy = posSuave.cy*0.6 + y2*0.4;
-      pino2.style.left=(posSuave.cx-7)+'px'; pino2.style.top=(posSuave.cy-7)+'px';
-      cursor.style.left=(posSuave.cx-12)+'px'; cursor.style.top=(posSuave.cy-12)+'px';
+      let targetX2 = (1 - h2[8].x) * window.innerWidth;
+      let targetY2 = h2[8].y * window.innerHeight;
+
+      posSuave.cx += (targetX2 - posSuave.cx) * 0.45;
+      posSuave.cy += (targetY2 - posSuave.cy) * 0.45;
+
+      pino2.style.left = `${posSuave.cx}px`;
+      pino2.style.top = `${posSuave.cy}px`;
+      cursor.style.left = `${posSuave.cx}px`;
+      cursor.style.top = `${posSuave.cy}px`;
 
       const pinca2 = isPinca(h2);
 
-      // GESTO NOVO 1: REDIMENSIONAR COM 2 MÃOS
-      if(pinca1 && pinca2 &&!redimensionando){
-        cubos.forEach(c=>{
-          const cx = c.offsetLeft + c.offsetWidth/2;
-          const cy = c.offsetTop + c.offsetHeight/2;
-          const d1 = Math.hypot(posSuave.x-cx, posSuave.y-cy);
-          const d2 = Math.hypot(posSuave.cx-cx, posSuave.cy-cy);
-          if(d1<70 && d2<70){ // as 2 mãos estão no mesmo cubo
+      // REDIMENSIONAR E ROTACIONAR COM 2 MÃOS
+      if (pinca1 && pinca2 && !redimensionando) {
+        cubos.forEach(c => {
+          const rect = c.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          if (Math.hypot(posSuave.x - cx, posSuave.y - cy) < 100 && Math.hypot(posSuave.cx - cx, posSuave.cy - cy) < 100) {
             redimensionando = c;
-            escalaInicial = parseFloat(c.style.transform.replace(/[^0-9.]/g,'')) || 1;
-            distInicial = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
+            escalaInicial = parseFloat(c.dataset.scale || 1);
+            rotacaoAtual = parseFloat(c.dataset.rotate || 0);
+            distInicial = Math.hypot(posSuave.x - posSuave.cx, posSuave.y - posSuave.cy);
+            anguloInicial = Math.atan2(posSuave.cy - posSuave.y, posSuave.cx - posSuave.x);
             c.classList.add('redimensionando');
+            SFX.grab();
           }
         });
       }
-      if(redimensionando && pinca1 && pinca2){
-        const distAtual = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
-        const novaEscala = escalaInicial * (distAtual / distInicial);
-        const escalaLimitada = Math.max(0.3, Math.min(3, novaEscala)); // min 30% max 300%
-        redimensionando.style.transform = `scale(${escalaLimitada})`;
-        status.innerText = `ESCALA: ${Math.round(escalaLimitada*100)}%`;
+
+      if (redimensionando && pinca1 && pinca2) {
+        const distAtual = Math.hypot(posSuave.x - posSuave.cx, posSuave.y - posSuave.cy);
+        const anguloAtual = Math.atan2(posSuave.cy - posSuave.y, posSuave.cx - posSuave.x);
+
+        const novaEscala = Math.max(0.4, Math.min(3.5, escalaInicial * (distAtual / distInicial)));
+        const novoAngulo = rotacaoAtual + (anguloAtual - anguloInicial) * (180 / Math.PI);
+
+        redimensionando.dataset.scale = novaEscala;
+        redimensionando.dataset.rotate = novoAngulo;
+        redimensionando.style.transform = `scale(${novaEscala}) rotate(${novoAngulo}deg)`;
       }
-      if((!pinca1 ||!pinca2) && redimensionando){
+
+      if ((!pinca1 || !pinca2) && redimensionando) {
         redimensionando.classList.remove('redimensionando');
         redimensionando = null;
       }
 
-      // GESTO NOVO 2: JUNTAR AS 2 MÃOS FECHADAS = DIMINUIR PRO MÍNIMO
-      const fechada1 = isFechada(h1);
-      const fechada2 = isFechada(h2);
-      if(fechada1 && fechada2){
-        const distMaos = Math.hypot(posSuave.x-posSuave.cx, posSuave.y-posSuave.cy);
-        if(distMaos < 80 && segurado){
-          segurado.style.transform = 'scale(0.3)';
-          status.innerText = "DIMINUIDO AO MINIMO";
-        }
-      }
-
-      // CLICK NO MENU
+      // CLIQUE NO MENU COM PONTEIRO
       const btns = document.querySelectorAll('.btn');
-      btns.forEach(b=>b.classList.remove('hover'));
-      const menuRect = document.getElementById('menu').getBoundingClientRect();
-      if(posSuave.cx > menuRect.left && posSuave.cx < menuRect.right && posSuave.cy > menuRect.top){
-        btns.forEach(b=>{
-          const r = b.getBoundingClientRect();
-          if(posSuave.cx > r.left && posSuave.cx < r.right && posSuave.cy > r.top && posSuave.cy < r.bottom){
-            b.classList.add('hover');
-            if(isClick(h2)){
-              b.classList.add('click');
-              setTimeout(()=>b.click(), 50);
-            }
+      btns.forEach(b => {
+        const r = b.getBoundingClientRect();
+        if (posSuave.cx > r.left && posSuave.cx < r.right && posSuave.cy > r.top && posSuave.cy < r.bottom) {
+          b.classList.add('hover');
+          if (isClick(h2)) {
+            b.classList.add('click');
+            SFX.click();
+            b.click();
+            setTimeout(() => b.classList.remove('click'), 150);
           }
-        });
-      }
+        } else {
+          b.classList.remove('hover');
+        }
+      });
     }
-  }else{
-    status.innerText = "SEM MÃO";
-    if(segurado){segurado.classList.remove('segurado'); segurado=null}
-    if(redimensionando){redimensionando.classList.remove('redimensionando'); redimensionando=null}
+  } else {
+    stText.textContent = "AGUARDANDO MÃOS...";
+    pino1.style.left = '-100px';
+    pino2.style.left = '-100px';
+    cursor.style.left = '-100px';
+
+    if (segurado) { segurado.classList.remove('segurado'); segurado = null; }
+    if (redimensionando) { redimensionando.classList.remove('redimensionando'); redimensionando = null; }
   }
 });
 
-// LOOP 15FPS
+// CAMERA UTILS INITIALIZATION
 const camera = new Camera(video, {
   onFrame: async () => {
-    const agora = Date.now();
-    if(agora - ultimoFrame > 66){ await hands.send({image: video}); ultimoFrame = agora; }
+    await hands.send({ image: video });
   },
-  width: 240, height: 180
+  width: 640,
+  height: 480
 });
-camera.start();
 
-// BOTOES
-document.getElementById('novo').onclick=()=>{
-  const c=document.createElement('div');c.className='cubo';
-  c.style.left=(window.innerWidth/2-40)+'px';c.style.top=(window.innerHeight/2-40)+'px';
-  c.style.background = cores[corAtual]+'2';
+camera.start().then(() => {
+  stText.textContent = "SISTEMA PRONTO";
+}).catch(() => {
+  stText.textContent = "MODO MANUAL (SEM CAM)";
+});
+
+// --- CONTROLES DE BOTÕES & MOUSE FALLBACK ---
+function criarCubo(x, y) {
+  initAudio();
+  const c = document.createElement('div');
+  c.className = 'cubo';
+  
+  const posX = x || (window.innerWidth / 2 - 40);
+  const posY = y || (window.innerHeight / 2 - 40);
+
+  c.style.left = `${posX}px`;
+  c.style.top = `${posY}px`;
   c.style.borderColor = cores[corAtual];
-  document.body.appendChild(c);cubos.push(c)
+  c.style.background = cores[corAtual] + '22';
+  c.style.boxShadow = `0 0 15px ${cores[corAtual]}`;
+
+  // Suporte a Mouse/Touch para arrastar
+  let isDragging = false;
+  let offsetX = 0, offsetY = 0;
+
+  c.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    initAudio();
+    isDragging = true;
+    offsetX = e.clientX - c.offsetLeft;
+    offsetY = e.clientY - c.offsetTop;
+    c.classList.add('segurado');
+    SFX.grab();
+    c.setPointerCapture(e.pointerId);
+  });
+
+  c.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    c.style.left = `${e.clientX - offsetX}px`;
+    c.style.top = `${e.clientY - offsetY}px`;
+
+    const lixRect = lixeira.getBoundingClientRect();
+    const distLixo = Math.hypot(
+      e.clientX - (lixRect.left + lixRect.width / 2),
+      e.clientY - (lixRect.top + lixRect.height / 2)
+    );
+    lixeira.classList.toggle('ativo', distLixo < 90);
+  });
+
+  c.addEventListener('pointerup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    c.classList.remove('segurado');
+
+    const lixRect = lixeira.getBoundingClientRect();
+    const distLixo = Math.hypot(
+      e.clientX - (lixRect.left + lixRect.width / 2),
+      e.clientY - (lixRect.top + lixRect.height / 2)
+    );
+
+    if (distLixo < 90) {
+      SFX.trash();
+      c.style.transition = '0.2s transform, 0.2s opacity';
+      c.style.transform = 'scale(0)';
+      c.style.opacity = '0';
+      setTimeout(() => {
+        c.remove();
+        cubos = cubos.filter(item => item !== c);
+        stObj.textContent = cubos.length;
+      }, 200);
+    }
+    lixeira.classList.remove('ativo');
+  });
+
+  document.body.appendChild(c);
+  cubos.push(c);
+  stObj.textContent = cubos.length;
+  SFX.spawn();
 }
-document.getElementById('limpar').onclick=()=>{cubos.forEach(c=>c.remove());cubos=[];document.getElementById('novo').click()}
-document.getElementById('cor').onclick=()=>{
-  corAtual = (corAtual+1)%cores.length;
+
+document.getElementById('novo').onclick = () => criarCubo();
+
+document.getElementById('limpar').onclick = () => {
+  initAudio();
+  SFX.trash();
+  cubos.forEach(c => c.remove());
+  cubos = [];
+  stObj.textContent = 0;
+};
+
+document.getElementById('cor').onclick = () => {
+  initAudio();
+  SFX.click();
+  corAtual = (corAtual + 1) % cores.length;
   document.getElementById('cor').style.color = cores[corAtual];
-}
-document.getElementById('novo').click();
+  document.getElementById('cor').style.borderColor = cores[corAtual];
+};
+
+// Criar primeiro cubo automaticamente
+criarCubo();
 </script>
 </body>
 </html>
