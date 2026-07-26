@@ -3,171 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 ULTRA 5.0 // FOTO COM GESTOS</title>
+<title>KORVIL G15 ULTRA 5.0 // 21 AÇÕES + FOTO</title>
 <style>
-/*... MANTEM TODO CSS ANTERIOR... */
+* {box-sizing: border-box;margin: 0;padding: 0;touch-action: none;user-select: none;font-family: 'Courier New', Courier, monospace;}
+body {background: #030712;color: #00f0ff;overflow: hidden;width: 100vw;height: 100vh;}
+.grid-bg {position: absolute;inset: 0;background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);background-size: 30px 30px;pointer-events: none;z-index: 1;}
+.scanlines {position: absolute;inset: 0;background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);background-size: 100% 4px;pointer-events: none;z-index: 2;}
+#video {position: absolute;width: 100%;height: 100%;object-fit: cover;transform: scaleX(-1);opacity: 0.18;filter: grayscale(80%) contrast(150%);}
+
+#menu {position: absolute;top: 15px;left: 15px;width: 260px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);padding: 12px;border-radius: 8px;backdrop-filter: blur(8px);z-index: 10;}
+.menu-title {font-size: 12px;font-weight: bold;letter-spacing: 1px;margin-bottom: 10px;text-shadow: 0 0 8px #00f0ff;display: flex;justify-content: space-between;color:#ffe600;}
+.btn {width: 100%;padding: 10px;margin: 4px 0;background: rgba(0, 240, 255, 0.1);border: 1px solid #00f0ff;color: #00f0ff;font-size: 11px;font-weight: bold;letter-spacing: 1px;cursor: pointer;border-radius: 5px;transition: all 0.15s ease;text-align: left;}
+.btn:hover {border-color: #ffffff;box-shadow: 0 0 15px #00f0ff;background: rgba(0, 240, 255, 0.4);color: #fff;transform:translateX(5px);}
+
+.cubo {position: absolute;width: 90px;height: 90px;border: 3px solid #00f0ff;background: rgba(0, 240, 255, 0.15);box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);border-radius: 8px;cursor: grab;z-index: 5;display: flex;align-items: center;justify-content: center;font-size: 11px;}
+.cubo::after {content: 'K-AI';opacity: 0.6;font-size: 10px;}
+.cubo.segurado {border-color: #ff00ea;background: rgba(255, 0, 234, 0.3);box-shadow: 0 0 35px #ff00ea;transform:scale(1.1);}
+.cubo.redimensionando {border-color: #ffe600;background: rgba(255, 230, 0, 0.3);box-shadow: 0 0 45px #ffe600;}
+
+#zonaLixeira {position: absolute;bottom: 20px;left: 20px;width: 100px;height: 100px;border: 3px dashed #ff3366;border-radius: 15px;background: rgba(255, 51, 102, 0.1);display: flex;align-items: center;justify-content: center;font-size: 40px;z-index: 10;transition: all 0.2s ease;}
+#zonaSalvar {position: absolute;bottom: 20px;right: 140px;width: 100px;height: 100px;border: 3px dashed #00ff66;border-radius: 15px;background: rgba(0, 255, 102, 0.1);display: flex;align-items: center;justify-content: center;font-size: 40px;z-index: 10;transition: all 0.2s ease;}
+#zonaLixeira.ativo {background: rgba(255, 0, 68, 0.5);transform: scale(1.2);}
+#zonaSalvar.ativo {background: rgba(0, 255, 102, 0.5);transform: scale(1.2);}
+
+.pino {position: absolute;width: 22px;height: 22px;border-radius: 50%;pointer-events: none;z-index: 20;transform: translate(-50%, -50%);transition: all 0.1s;}
+#pino1 {background: #ff00ea;box-shadow: 0 0 20px #ff00ea;border: 3px solid #fff;}
+#pino2 {background: #00f0ff;box-shadow: 0 0 20px #00f0ff;border: 3px solid #fff;}
+#cursor {position: absolute;width: 40px;height: 40px;border: 2px dashed #00f0ff;border-radius: 50%;pointer-events: none;z-index: 19;transform: translate(-50%, -50%);animation: spin 4s linear infinite;}
+@keyframes spin {from { transform: translate(-50%, -50%) rotate(0deg); }to { transform: translate(-50%, -50%) rotate(360deg); }}
+
+#status-panel {position: absolute;bottom: 20px;right: 20px;width: 340px;background: rgba(5, 12, 24, 0.95);border: 2px solid #00f0ff;padding: 12px;border-radius: 8px;z-index: 10;box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);}
+.status-title {font-size: 11px;font-weight: bold;color: #ffe600;margin-bottom: 6px;}
+.status-item {font-size: 11px;margin: 4px 0;color: #00f0ff;}
+#tutorial-box {margin-top: 10px;padding: 10px;background: rgba(0, 240, 255, 0.12);border-left: 4px solid #00f0ff;font-size: 11px;color: #fff;line-height: 1.4;max-height:140px;overflow-y:auto;}
+#fist-progress {width: 0%;height: 4px;background: linear-gradient(90deg,#ff00ea,#ffe600);margin-top: 6px;transition: width 0.1s linear;}
+.calib-bar {width:100%;height:6px;background:#001122;border-radius:3px;margin-top:5px;overflow:hidden;}
+.calib-fill {height:100%;width:0%;background:linear-gradient(90deg,#00ff00,#00f0ff);transition:0.3s;}
+.erro {color:#ff3366!important;}.sucesso {color:#00ff66!important;}
+
 #contador {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:200px;color:#ffe600;text-shadow:0 0 50px #ffe600;z-index:50;display:none;font-weight:900;}
-#galeria {position:absolute;bottom:100px;right:20px;width:120px;height:80vh;overflow-y:auto;z-index:9;}
+#galeria {position:absolute;bottom:140px;right:20px;width:120px;height:60vh;overflow-y:auto;z-index:9;}
 .foto-mini {width:100px;height:75px;margin:5px;border:2px solid #00f0ff;border-radius:5px;cursor:pointer;object-fit:cover;transition:0.3s;}
 .foto-mini:hover {transform:scale(1.1);border-color:#ff00ea;}
-#zonaLixeira {position:absolute;bottom:20px;left:20px;width:100px;height:100px;border:3px dashed #ff3366;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:40px;background:rgba(255,51,102,0.1);}
-#zonaSalvar {position:absolute;bottom:20px;right:20px;width:100px;height:100px;border:3px dashed #00ff66;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:40px;background:rgba(0,255,102,0.1);}
-#zonaLixeira.ativo {background:rgba(255,0,68,0.5);transform:scale(1.2);}
-#zonaSalvar.ativo {background:rgba(0,255,102,0.5);transform:scale(1.2);}
-.flash {position:absolute;inset:0;background:white;opacity:0;pointer-events:none;z-index:60;}
+.flash {position:absolute;inset:0;background:white;opacity:0;pointer-events:none;z-index:60;transition:0.2s;}
 </style>
 </head>
 <body>
 
-<div id="contador">10</div>
-<div class="flash" id="flash"></div>
+<div class="grid-bg"></div><div class="scanlines"></div>
+<div id="contador">10</div><div class="flash" id="flash"></div>
 <div id="galeria"></div>
-<div id="zonaLixeira">🗑️</div>
-<div id="zonaSalvar">💾</div>
+<div id="zonaLixeira">🗑️</div><div id="zonaSalvar">💾</div>
 
-<!--... RESTO DO HTML ANTERIOR... -->
+<div id="menu">
+  <div class="menu-title"><span>> G15 ULTRA</span><span>v5.0</span></div>
+  <button class="btn" id="calibrar">[CAL] CALIBRAR MÃO</button>
+  <button class="btn" id="novo">[1] + NOVO CUBO</button>
+  <button class="btn" id="limpar">[2] RESETAR TUDO</button>
+  <button class="btn" id="cor">[3] TROCAR COR</button>
+  <button class="btn" id="voz">🔊 VOZ: LIGADA</button>
+  <div style="font-size: 9px; color: #888; margin-top: 8px;">21 GESTOS + FOTO</div>
+  <div class="calib-bar"><div class="calib-fill" id="calibFill"></div></div>
+</div>
 
+<video id="video" autoplay playsinline muted></video>
+<div id="pino1" class="pino"></div><div id="pino2" class="pino"></div><div id="cursor"></div>
+
+<div id="status-panel">
+  <div class="status-title">📡 K-AI COACH v5.0</div>
+  <div class="status-item">STATUS: <span id="st-text">INICIALIZANDO...</span></div>
+  <div class="status-item">GESTO: <span id="st-gesto" style="color: #ff00ea;">NENHUM</span></div>
+  <div class="status-item">AÇÃO: <span id="st-acao" style="color: #ffe600;">AGUARDANDO</span></div>
+  <div class="status-item">FEEDBACK: <span id="st-feedback" class="sucesso">PRONTO</span></div>
+  <div class="status-item">OBJETOS: <span id="st-obj">0</span></div>
+  <div id="fist-progress"></div>
+  <div id="tutorial-box">💡 <b>COACH ATIVO</b><br>Mostre a mão aberta para calibrar</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script>
-// ===== ADICIONAR NO JS =====
-let fotos = [];
-let fotoAtual = null;
-let pincaTimer = null;
-let contagemAtiva = false;
-let contador = 10;
-let swipeInicio = {x:0, y:0, tempo:0};
+// ===== SISTEMA DE VOZ + SFX =====
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;let vozLigada=true;
+function initAudio(){if(!audioCtx)audioCtx=new AudioContext();}
+function playSound(f,t='sine',d=0.1,v=0.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+const SFX={click:()=>playSound(800,'square',0.05,0.08),grab:()=>playSound(300,'sawtooth',0.12,0.08),trash:()=>playSound(150,'sawtooth',0.25,0.12),spawn:()=>{playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50);},action:()=>playSound(1000,'sine',0.15,0.06),erro:()=>{playSound(200,'sawtooth',0.3,0.15);setTimeout(()=>playSound(150,'sawtooth',0.3,0.15),150)},sucesso:()=>{playSound(1200,'sine',0.1,0.1);setTimeout(()=>playSound(1500,'sine',0.1,0.08),100)}};
+const falas=window.speechSynthesis;
+function falar(texto,tipo='info'){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.1;msg.pitch=tipo==='erro'?0.8:tipo==='sucesso'?1.3:1.1;falas.speak(msg);}
 
-function tirarFoto() {
-  if (contagemAtiva) return;
-  contagemAtiva = true;
-  contador = 10;
-  document.getElementById('contador').style.display = 'block';
-  falar("Foto em 10 segundos", 'sucesso');
+// ===== ESTADO GERAL =====
+let cubos=[],segurado=null,redimensionando=null;
+let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'];let corAtual=0;
+let posSuave={x:-100,y:-100,cx:-100,cy:-100},sensibilidade=1.0;
+let tempoPunhoInicio=null,punhoTravado=false,cooldownGesto=0,calibrado=false,calibValues={pinca:0.06,abrir:0.32};
+let ultimoErro='',ultimoAcerto='';
 
-  const interval = setInterval(() => {
-    document.getElementById('contador').innerText = contador;
-    falar(contador.toString());
-    contador--;
-    if (contador < 0) {
-      clearInterval(interval);
-      capturarFrame();
-      document.getElementById('contador').style.display = 'none';
-      contagemAtiva = false;
+// ===== ESTADO FOTO =====
+let fotos = [];let fotoAtual = null;let pincaTimer = null;let contagemAtiva = false;let contador = 10;let swipeInicio = {x:0, y:0, tempo:0, id:null};
+
+// ===== FUNÇÕES =====
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function calibrarMao(h){let pinca=dist(h[4],h[8]),abrir=dist(h[8],h[0]);calibValues.pinca=pinca*0.9;calibValues.abrir=abrir*1.1;document.getElementById('calibFill').style.width='100%';calibrado=true;SFX.sucesso();falar("Calibragem concluída com sucesso. Sistema pronto", 'sucesso');document.getElementById('st-text').textContent="CALIBRADO";document.getElementById('st-feedback').textContent="CALIBRADO";document.getElementById('st-feedback').className="sucesso";}
+function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
+function isMaoFechada(h){return dist(h[8],h[5])<0.12&&dist(h[12],h[9])<0.12&&dist(h[16],h[13])<0.12&&dist(h[20],h[17])<0.12;}
+function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
+function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y&&h[16].y>h[14].y)return"PAZ";if(h[8].y<h[6].y&&h[12].y>h[10].y)return"APONTAR";if(h[4].y<h[3].y&&h[8].y>h[6].y)return"LIKE";if(h[4].y>h[2].y)return"DISLIKE";if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";return"NEUTRO";}
+
+// ===== FOTO =====
+function tirarFoto(){if(contagemAtiva)return;contagemAtiva=true;contador=10;document.getElementById('contador').style.display='block';falar("Foto em 10 segundos", 'sucesso');const interval=setInterval(()=>{document.getElementById('contador').innerText=contador;if(contador<=3)falar(contador.toString());contador--;if(contador<0){clearInterval(interval);capturarFrame();document.getElementById('contador').style.display='none';contagemAtiva=false;}},1000);}
+function capturarFrame(){const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;const ctx=canvas.getContext('2d');ctx.drawImage(document.getElementById('video'),0,0,640,480);document.getElementById('flash').style.opacity='0.8';setTimeout(()=>document.getElementById('flash').style.opacity='0',200);const dataURL=canvas.toDataURL('image/png');fotoAtual={id:Date.now(),src:dataURL};adicionarNaGaleria(fotoAtual);falar("Foto capturada", 'sucesso');SFX.sucesso();}
+function adicionarNaGaleria(foto){fotos.push(foto);const img=document.createElement('img');img.src=foto.src;img.className='foto-mini';img.dataset.id=foto.id;document.getElementById('galeria').prepend(img);}
+function salvarFoto(foto){const a=document.createElement('a');a.href=foto.src;a.download=`KORVIL-FOTO-${foto.id}.png`;a.click();falar("Foto salva na pasta Downloads");SFX.click();}
+function deletarFoto(fotoId){fotos=fotos.filter(f=>f.id!=fotoId);const el=document.querySelector(`.foto-mini[data-id="${fotoId}"]`);if(el)el.remove();falar("Foto excluída");SFX.trash();}
+
+// ===== 21 AÇÕES =====
+function executarAcao(g1,g2){
+  if(Date.now()<cooldownGesto)return;cooldownGesto=Date.now()+1200;
+  const acoes={
+    1:["PINÇA + NEUTRO","CRIAR CUBO",()=>criarCubo(),"Junte dedão com indicador"],
+    2:["LIKE + NEUTRO","TROCAR COR",()=>document.getElementById('cor').click(),"Faça joinha"],
+    3:["DISLIKE + NEUTRO","APAGAR ÚLTIMO",()=>{if(cubos.length){cubos.pop().remove();document.getElementById('st-obj').textContent=cubos.length;SFX.trash()}},"Polegar para baixo"],
+    4:["ROCK + NEUTRO","EFEITO GLITCH",()=>{document.body.style.filter="hue-rotate(180deg)";setTimeout(()=>document.body.style.filter="none",800)},"Sinal de rock"],
+    5:["ABERTO + ABERTO","LIMPAR TUDO",()=>document.getElementById('limpar').click(),"Duas mãos abertas"],
+    6:["PUNHO + PUNHO","AGRUPAR CENTRO",()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-45+i*15+'px';c.style.top=window.innerHeight/2-45+'px'}),"Dois punhos"],
+    7:["LIKE + LIKE","AUMENTAR TODOS",()=>cubos.forEach(c=>{let s=Math.min(3,parseFloat(c.dataset.scale||1)+0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois joinhas"],
+    8:["DISLIKE + DISLIKE","DIMINUIR TODOS",()=>cubos.forEach(c=>{let s=Math.max(0.4,parseFloat(c.dataset.scale||1)-0.3);c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dois dislikes"],
+    9:["PAZ + PAZ","DUPLICAR",()=>{if(cubos.length<12)criarCubo(window.innerWidth/2+Math.random()*100,window.innerHeight/2)},"Duas paz e amor"],
+    10:["APONTAR + APONTAR","MODO MIRA",()=>{document.getElementById('cursor').style.borderColor="#ff00ea";setTimeout(()=>document.getElementById('cursor').style.borderColor="#00f0ff",1500)},"Dois dedos apontando"],
+    11:["ROCK + ROCK","PULSO SONORO",()=>playSound(1500,'sawtooth',0.4,0.2),"Dois sinais de rock"],
+    12:["PUNHO + LIKE","MODO MATRIX",()=>{document.body.style.background="#001a05";setTimeout(()=>document.body.style.background="#030712",2000)},"Punho e joinha"],
+    13:["ABERTO + APONTAR","SNAP GRID",()=>cubos.forEach(c=>{c.style.left=Math.round(c.offsetLeft/50)*50+'px';c.style.top=Math.round(c.offsetTop/50)*50+'px'})),"Mão aberta e apontar"],
+    14:["PAZ + APONTAR","MUTE AUDIO",()=>{audioCtx=audioCtx?null:new AudioContext();vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA'},"Paz e apontar"],
+    15:["LIKE + APONTAR","COR ALEATÓRIA",()=>{corAtual=Math.floor(Math.random()*cores.length);document.getElementById('cor').style.color=cores[corAtual]},"Like e apontar"],
+    16:["ROCK + LIKE","ROTACIONAR 45°",()=>cubos.forEach(c=>{let r=(parseFloat(c.dataset.rotate||0)+45)%360;c.dataset.rotate=r;c.style.transform=`scale(${c.dataset.scale||1}) rotate(${r}deg)`})),"Rock e like"],
+    17:["PUNHO + PAZ","ESPALHAR",()=>cubos.forEach(c=>{c.style.left=Math.random()*(window.innerWidth-100)+'px';c.style.top=Math.random()*(window.innerHeight-100)+'px'})),"Punho e paz"],
+    18:["ABERTO + ROCK","BASS BOOST",()=>playSound(80,'sine',0.6,0.15),"Mão aberta e rock"],
+    19:["DISLIKE + LIKE","INVERTER TAMANHO",()=>cubos.forEach(c=>{let s=parseFloat(c.dataset.scale||1)>1?0.6:1.8;c.dataset.scale=s;c.style.transform=`scale(${s})`})),"Dislike e like"],
+    20:["APONTAR + ROCK","AUMENTAR SENS",()=>{sensibilidade=Math.min(3,sensibilidade+0.2)},"Apontar e rock"],
+    21:["PINÇA + NEUTRO","MODO FOTO",()=>{},"Segure pinça 2 segundos para foto"]
+  };
+  let achou=false;
+  for(let i=1;i<=21;i++){
+    if((acoes[i][0].includes(g1)&&acoes[i][0].includes(g2))||(acoes[i][0].includes(g2)&&acoes[i][0].includes(g1))){
+      if(ultimoAcerto!==i&&i!==21){document.getElementById('st-acao').textContent=`[AÇÃO ${i}] ${acoes[i][1]}`;document.getElementById('st-feedback').textContent="AÇÃO EXECUTADA";document.getElementById('st-feedback').className="sucesso";document.getElementById('tutorial-box').innerHTML=`✅ <b>AÇÃO ${i}: ${acoes[i][1]}</b><br>${acoes[i][3]}`;falar(`Ação ${i} executada: ${acoes[i][1]}`, 'sucesso');SFX.action();acoes[i][2]();ultimoAcerto=i;ultimoErro='';}
+      return;
     }
-  }, 1000);
-}
-
-function capturarFrame() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 640; canvas.height = 480;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, 640, 480);
-
-  // FLASH
-  document.getElementById('flash').style.opacity = '0.8';
-  setTimeout(() => document.getElementById('flash').style.opacity = '0', 200);
-
-  const dataURL = canvas.toDataURL('image/png');
-  fotoAtual = {id: Date.now(), src: dataURL};
-  adicionarNaGaleria(fotoAtual);
-  falar("Foto capturada", 'sucesso');
-  SFX.sucesso();
-}
-
-function adicionarNaGaleria(foto) {
-  fotos.push(foto);
-  const img = document.createElement('img');
-  img.src = foto.src; img.className = 'foto-mini'; img.dataset.id = foto.id;
-  img.draggable = true;
-  document.getElementById('galeria').prepend(img);
-}
-
-function salvarFoto(foto) {
-  const a = document.createElement('a');
-  a.href = foto.src; a.download = `KORVIL-FOTO-${foto.id}.png`;
-  a.click();
-  falar("Foto salva na pasta Downloads");
-  SFX.click();
-}
-
-function deletarFoto(fotoId) {
-  fotos = fotos.filter(f => f.id!= fotoId);
-  document.querySelector(`.foto-mini[data-id="${fotoId}"]`).remove();
-  falar("Foto excluída");
-  SFX.trash();
-}
-
-// ===== MODIFICAR O LOOP PRINCIPAL hands.onResults =====
-hands.onResults(res => {
-  const maos = res.multiHandLandmarks;
-  if (maos && maos.length > 0) {
-    const h1 = maos[0];
-    let tx = (1 - h1[8].x) * window.innerWidth, ty = h1[8].y * window.innerHeight;
-    posSuave.x += (tx - posSuave.x) * 0.4 * sensibilidade;
-    posSuave.y += (ty - posSuave.y) * 0.4 * sensibilidade;
-    pino1.style.left = posSuave.x + 'px'; pino1.style.top = posSuave.y + 'px';
-
-    const gesto1 = identificarGesto(h1);
-
-    // ===== NOVA AÇÃO 21: PINÇA 2s = FOTO =====
-    if (gesto1 === "PINÇA" &&!pincaTimer &&!contagemAtiva) {
-      pincaTimer = setTimeout(() => {
-        tirarFoto();
-      }, 2000);
-      stFeedback.textContent = "SEGURE PINÇA 2s...";
-      falar("Segure para tirar foto");
-    }
-    if (gesto1!== "PINÇA" && pincaTimer) {
-      clearTimeout(pincaTimer); pincaTimer = null;
-    }
-
-    // ===== DETECTAR SWIPE NA FOTO =====
-    const fotoElements = document.querySelectorAll('.foto-mini');
-    fotoElements.forEach(img => {
-      const rect = img.getBoundingClientRect();
-      if (posSuave.x > rect.left && posSuave.x < rect.right && posSuave.y > rect.top && posSuave.y < rect.bottom) {
-        if (!swipeInicio.tempo) {
-          swipeInicio = {x: posSuave.x, y: posSuave.y, tempo: Date.now(), id: img.dataset.id};
-        } else {
-          let dx = posSuave.x - swipeInicio.x;
-          let dt = Date.now() - swipeInicio.tempo;
-          if (dt < 500 && Math.abs(dx) > 80) { // swipe rápido
-            if (dx < -80) { // ESQUERDA = LIXEIRA
-              document.getElementById('zonaLixeira').classList.add('ativo');
-              deletarFoto(swipeInicio.id);
-            }
-            if (dx > 80) { // DIREITA = SALVAR
-              document.getElementById('zonaSalvar').classList.add('ativo');
-              const foto = fotos.find(f => f.id == swipeInicio.id);
-              if (foto) salvarFoto(foto);
-            }
-            setTimeout(() => {
-              document.getElementById('zonaLixeira').classList.remove('ativo');
-              document.getElementById('zonaSalvar').classList.remove('ativo');
-            }, 300);
-            swipeInicio = {x:0,y:0,tempo:0};
-          }
-        }
-      }
-    });
-
-    //... RESTO DO CODIGO ANTERIOR DE GESTOS 1-20...
-    if (calibrado) executarAcao(gesto1, maos.length > 1? identificarGesto(maos[1]) : "NEUTRO");
-
-  } else {
-    if (pincaTimer) { clearTimeout(pincaTimer); pincaTimer = null; }
-    swipeInicio = {x:0,y:0,tempo:0};
   }
+  if(g1!=="NEUTRO"&&ultimoErro!==g1){document.getElementById('st-feedback').textContent="GESTO INVÁLIDO";document.getElementById('st-feedback').className="erro";falar("Gesto não reconhecido. Tente novamente", 'erro');SFX.erro();ultimoErro=g1;}
+}
+
+// ===== LOOP MEDIAPIPE =====
+const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+hands.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:0.6,minTrackingConfidence:0.6});
+
+hands.onResults(res=>{
+  const maos=res.multiHandLandmarks;
+  if(maos&&maos.length>0){
+    document.getElementById('st-text').textContent=maos.length===2?"2 MÃOS DETECTADAS":"1 MÃO DETECTADA";
+    const h1=maos[0];
+    let tx=(1-h1[8].x)*window.innerWidth,ty=h1[8].y*window.innerHeight;
+    posSuave.x+=(tx-posSuave.x)*0.4*sensibilidade;posSuave.y+=(ty-posSuave.y)*0.4*sensibilidade;
+    document.getElementById('pino1').style.left=posSuave.x+'px';document.getElementById('pino1').style.top=posSuave.y+'px';
+    const gesto1=identificarGesto(h1);document.getElementById('st-gesto').textContent=gesto1;
+
+    // AÇÃO 21: PINÇA 2s = FOTO
+    if(gesto1==="PINÇA"&&!pincaTimer&&!contagemAtiva){pincaTimer=setTimeout(()=>tirarFoto(),2000);document.getElementById('st-feedback').textContent="SEGURE PINÇA 2s...";falar("Segure para tirar foto");}
+    if(gesto1!=="PINÇA"&&pincaTimer){clearTimeout(pincaTimer);pincaTimer=null;}
+
+    // SWIPE GALERIA
+    document.querySelectorAll('.foto-mini').forEach(img=>{const rect=img.getBoundingClientRect();if(posSuave.x>rect.left&&posSuave.x<rect.right&&posSuave.y>rect.top&&posSuave.y<rect.bottom){if(!swipeInicio.tempo){swipeInicio={x:posSuave.x,y:posSuave.y,tempo:Date.now(),id:img.dataset.id};}else{let dx=posSuave.x-swipeInicio.x,dt=Date.now()-swipeInicio.tempo;if(dt<500&&Math.abs(dx)>80){if(dx<-80){document.getElementById('zonaLixeira').classList.add('ativo');deletarFoto(swipeInicio.id);}if(dx>80){document.getElementById('zonaSalvar').classList.add('ativo');const foto=fotos.find(f=>f.id==swipeInicio.id);if(foto)salvarFoto(foto);}setTimeout(()=>{document.getElementById('zonaLixeira').classList.remove('ativo');document.getElementById('zonaSalvar').classList.remove('ativo');},300);swipeInicio={x:0,y:0,tempo:0};}}}});
+
+    if(!calibrado){if(gesto1==="ABERTO"){calibrarMao(h1);}else{document.getElementById('tutorial-box').innerHTML="⚠️ <b>PRECISA CALIBRAR</b><br>Abra a mão completamente";falar("Abra a mão para calibrar", 'erro');}return;}
+
+    if(gesto1==="PUNHO"){if(!tempoPunhoInicio)tempoPunhoInicio=Date.now();else{document.getElementById('fist-progress').style.width=Math.min(100,(Date.now()-tempoPunhoInicio)/20)+'%';if(Date.now()-tempoPunhoInicio>2000&&!punhoTravado){punhoTravado=true;falar("Objeto travado. Mova para arrastar", 'sucesso');}}}
+    else{tempoPunhoInicio=null;document.getElementById('fist-progress').style.width='0%';if(punhoTravado){punhoTravado=false;if(segurado){segurado.classList.remove('segurado');segurado=null;falar("Objeto solto");}}}
+
+    if((gesto1==="PINÇA"||punhoTravado)&&!segurado){cubos.forEach(c=>{let r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;if(Math.hypot(posSuave.x-cx,posSuave.y-cy)<120){segurado=c;SFX.grab();falar("Objeto capturado");}});}
+    if(segurado){segurado.classList.add('segurado');segurado.style.left=posSuave.x-segurado.offsetWidth/2+'px';segurado.style.top=posSuave.y-segurado.offsetHeight/2+'px';}
+    if(gesto1!=="PINÇA"&&!punhoTravado&&segurado){segurado.classList.remove('segurado');segurado=null;}
+
+    if(maos.length>1){
+      const h2=maos[1];let tx2=(1-h2[8].x)*window.innerWidth,ty2=h2[8].y*window.innerHeight;
+      posSuave.cx+=(tx2-posSuave.cx)*0.4*sensibilidade;posSuave.cy+=(ty2-posSuave.cy)*0.4*sensibilidade;
+      document.getElementById('pino2').style.left=posSuave.cx+'px';document.getElementById('pino2').style.top=posSuave.cy+'px';
+      document.getElementById('cursor').style.left=posSuave.cx+'px';document.getElementById('cursor').style.top=posSuave.cy+'px';
+      const gesto2=identificarGesto(h2);document.getElementById('st-gesto').textContent=`${gesto1} + ${gesto2}`;
+      executarAcao(gesto1,gesto2);
+    }else{executarAcao(gesto1,"NEUTRO");}
+  }else{document.getElementById('st-text').textContent="AGUARDANDO MÃOS...";document.getElementById('st-gesto').textContent="NENHUM";if(pincaTimer){clearTimeout(pincaTimer);pincaTimer=null;}swipeInicio={x:0,y:0,tempo:0};}
 });
 
-// ===== ATUALIZAR TABELA DE AÇÕES =====
-function executarAcao(g1,g2){
-  //... CODIGO ANTERIOR...
-  // ADICIONAR AÇÃO 21
-  if(g1==="PINÇA" && g2==="NEUTRO" && Date.now()>cooldownGesto+2000){
-    stAcao.textContent="[AÇÃO 21] MODO FOTO";
-    tutorialBox.innerHTML="📸 <b>AÇÃO 21:</b><br>Segure Pinça 2s para iniciar contagem de 10s";
-  }
-}
+// ===== CUBOS E BOTÕES =====
+function criarCubo(x,y){initAudio();const c=document.createElement('div');c.className='cubo';c.style.left=(x||window.innerWidth/2-45)+'px';c.style.top=(y||window.innerHeight/2-45)+'px';c.style.borderColor=cores[corAtual];c.style.background=cores[corAtual]+'22';document.body.appendChild(c);cubos.push(c);document.getElementById('st-obj').textContent=cubos.length;SFX.spawn();}
+document.getElementById('novo').onclick=()=>{criarCubo();falar("Novo cubo criado");};
+document.getElementById('limpar').onclick=()=>{SFX.trash();cubos.forEach(c=>c.remove());cubos=[];document.getElementById('st-obj').textContent=0;falar("Todos os objetos removidos");};
+document.getElementById('cor').onclick=()=>{SFX.click();corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual];falar("Cor alterada");};
+document.getElementById('calibrar').onclick=()=>{calibrado=false;document.getElementById('calibFill').style.width='0%';document.getElementById('st-text').textContent="MOSTRE MÃO ABERTA";falar("Mostre a mão aberta para calibrar");};
+document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'🔊 VOZ: LIGADA':'🔇 VOZ: DESLIGADA';falar(vozLigada?'Voz ativada':'Voz desativada');};
+
+const camera=new Camera(document.getElementById('video'),{onFrame:async()=>{await hands.send({image:document.getElementById('video')});},width:640,height:480});
+camera.start().then(()=>falar("Sistema iniciado. Mostre a mão aberta para calibrar"));
+criarCubo();
 </script>
 </body>
 </html>
