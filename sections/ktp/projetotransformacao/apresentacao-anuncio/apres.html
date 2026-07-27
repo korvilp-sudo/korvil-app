@@ -103,7 +103,7 @@
   /* --- LOGO FIXA NO TOPO --- */
   .logo-wrapper {
     position: fixed;
-    top: 10px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
@@ -112,38 +112,32 @@
     background: rgba(4, 10, 24, 0.85);
     backdrop-filter: blur(16px);
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.3);
-    animation: logoFloat 3s ease-in-out infinite alternate;
-    padding: 4px 12px;
+    padding: 2px 10px;
   }
   
   .logo-top {
-    width: 26vw;
-    max-width: 340px;
-    min-width: 180px;
+    width: 22vw;
+    max-width: 260px;
+    min-width: 160px;
     height: auto;
     display: block;
     object-fit: contain;
     filter: drop-shadow(0 0 15px #00ffff);
   }
 
-  @keyframes logoFloat {
-    0% { transform: translateX(-50%) translateY(0); box-shadow: 0 0 25px rgba(0,255,255,0.4); }
-    100% { transform: translateX(-50%) translateY(-6px); box-shadow: 0 0 45px rgba(0,255,255,0.8); }
-  }
-
-  /* --- SLIDES & TRANSIÇÕES --- */
+  /* --- ÁREA CENTRAL DOS SLIDES (ENTRE LOGO E BOTÕES) --- */
   .slide {
     position: absolute;
+    left: 0;
     width: 100%;
-    height: 100%;
+    top: 100px;    /* Abaixo da logo com distância segura */
+    bottom: 90px;  /* Acima dos botões/barra com distância segura */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center; /* Centralização perfeita no meio da tela */
     text-align: center;
-    padding: 0 5%;
-    padding-top: 18vh; /* Garante que os textos comecem ABAIXO da logo sem sobrepor */
-    padding-bottom: 110px;
+    padding: 0 6%;
     transform-style: preserve-3d;
     transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
@@ -161,10 +155,10 @@
     opacity: 0; 
   }
 
-  /* --- TIPOGRAFIA GRANDE E DESTACADA --- */
+  /* --- TIPOGRAFIA --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(26px, 6.5vw, 58px);
+    font-size: clamp(24px, 5.5vw, 50px);
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
@@ -176,15 +170,15 @@
     margin-bottom: 12px;
     position: relative;
     width: 100%;
-    line-height: 1.1;
+    line-height: 1.15;
   }
 
   h1::after {
     content: '';
     position: absolute;
     bottom: -6px;
-    left: 15%;
-    width: 70%;
+    left: 20%;
+    width: 60%;
     height: 3px;
     background: linear-gradient(90deg, transparent, #00ffff, transparent);
     box-shadow: 0 0 15px #00ffff;
@@ -193,7 +187,7 @@
   .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -201,7 +195,7 @@
   }
 
   .sub-item {
-    font-size: clamp(18px, 4.5vw, 36px);
+    font-size: clamp(16px, 4vw, 32px);
     font-weight: 800;
     color: rgba(255,255,255,0.4);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -210,20 +204,20 @@
   }
 
   .sub-item.active {
-    font-size: clamp(22px, 5.5vw, 44px);
+    font-size: clamp(20px, 5vw, 40px);
     color: #00ffff;
     text-shadow: 0 0 25px #00ffff, 0 0 50px #00aaff;
-    transform: scale(1.05) translateZ(20px);
+    transform: scale(1.04) translateZ(20px);
   }
 
-  /* --- TABELAS FUTURISTAS --- */
+  /* --- TABELAS --- */
   table {
     border-collapse: separate;
     border-spacing: 0;
     margin: 10px auto;
-    font-size: clamp(14px, 3.2vw, 24px);
+    font-size: clamp(13px, 2.8vw, 22px);
     width: 95%;
-    max-width: 1200px;
+    max-width: 1100px;
     background: rgba(0, 15, 30, 0.7);
     backdrop-filter: blur(12px);
     border-radius: 14px;
@@ -233,7 +227,7 @@
   }
 
   th, td {
-    padding: 10px 14px;
+    padding: 8px 12px;
     text-align: center;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   }
@@ -242,7 +236,7 @@
     background: rgba(0, 255, 255, 0.2);
     color: #00ffff;
     font-family: 'Orbitron';
-    font-size: clamp(15px, 3.6vw, 26px);
+    font-size: clamp(14px, 3.2vw, 24px);
     letter-spacing: 1px;
     text-shadow: 0 0 15px #00ffff;
   }
@@ -261,13 +255,13 @@
     100% { text-shadow: 0 0 30px #ff0055, 0 0 50px #ff0000; transform: scale(1.05); }
   }
 
-  /* --- BARRA DE PROGRESSO E BOTÕES FIXOS --- */
+  /* --- BARRA DE PROGRESSO E CONTROLES FIXOS --- */
   .progress { 
     position: fixed; 
-    bottom: 70px; 
+    bottom: 60px; 
     left: 4%; 
     width: 92%; 
-    height: 6px; 
+    height: 5px; 
     background: rgba(255,255,255,0.15); 
     border-radius: 10px; 
     z-index: 100; 
@@ -283,7 +277,7 @@
 
   .footer-controls {
     position: fixed;
-    bottom: 12px;
+    bottom: 10px;
     left: 0;
     width: 100%;
     padding: 0 4%;
@@ -301,8 +295,8 @@
   }
 
   .btn {
-    padding: 10px 18px;
-    font-size: clamp(12px, 2.5vw, 16px);
+    padding: 8px 16px;
+    font-size: clamp(11px, 2.2vw, 15px);
     font-family: 'Orbitron';
     background: rgba(0, 255, 255, 0.15);
     border: 2px solid #00ffff;
@@ -322,8 +316,8 @@
   }
 
   .btn-participar {
-    padding: 10px 22px;
-    font-size: clamp(12px, 2.8vw, 18px);
+    padding: 9px 20px;
+    font-size: clamp(11px, 2.5vw, 17px);
     text-decoration: none;
     background: linear-gradient(90deg, #00ffff, #0088ff);
     color: #000;
@@ -341,9 +335,9 @@
 
   .counter { 
     position: fixed; 
-    top: 18vh; 
+    top: 15px; 
     right: 20px; 
-    font-size: clamp(12px, 2vw, 18px); 
+    font-size: clamp(12px, 2vw, 16px); 
     color: #00ffff; 
     font-family: 'Orbitron'; 
     z-index: 100; 
@@ -364,6 +358,7 @@
   <div class="scanlines"></div>
 </div>
 
+<!-- LOGO NO TOPO -->
 <div class="logo-wrapper">
   <img src="sections/ktp/images/logoprojetotransformacao.png" 
        onerror="this.onerror=null; this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png';" 
@@ -371,14 +366,16 @@
        class="logo-top">
 </div>
 
-<!-- CONTADORES E PROGRESSO FIXOS -->
+<!-- CONTADOR DE SLIDES -->
 <div class="counter" id="slideCounter">1 / 10</div>
+
+<!-- BARRA DE PROGRESSO FIXA -->
 <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
-<!-- SLIDES (CONTEÚDO) -->
+<!-- CONTAINER DE CONTEÚDO CENTRALIZADO -->
 <div id="slides"></div>
 
-<!-- PAINEL FIXO DE CONTROLES -->
+<!-- PAINEL FIXO DE CONTROLES NO RODAPÉ -->
 <div class="footer-controls">
   <div class="nav-buttons">
     <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
@@ -426,7 +423,7 @@ const progressBar = document.getElementById('progressBar');
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1>${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:clamp(18px, 4vw, 36px);color:#00ffff;margin-bottom:10px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:clamp(16px, 3.8vw, 32px);color:#00ffff;margin-bottom:8px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -442,8 +439,8 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.p) content += `<p style="font-size:clamp(16px, 3.8vw, 32px);margin-top:14px;text-align:center;line-height:1.3;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:clamp(18px, 4.2vw, 36px);margin-top:14px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.p) content += `<p style="font-size:clamp(15px, 3.5vw, 28px);margin-top:10px;text-align:center;line-height:1.3;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:clamp(16px, 3.8vw, 32px);margin-top:10px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `<div class="slide active">${content}</div>`;
   
