@@ -7,7 +7,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700;900&display=swap');
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: pointer; }
 
   body {
     background: #000;
@@ -18,18 +18,26 @@
     height: 100vh;
   }
 
-.grid {
+  /* FUNDO PRETO VIVO SE MEXENDO */
+ .bg {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-image: linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.2;
-    animation: moveGrid 20s linear infinite;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background:
+      radial-gradient(circle at 20% 50%, #001a1a 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, #001f2e 0%, transparent 50%),
+      #000;
+    animation: bgMove 15s ease-in-out infinite alternate;
     z-index: 0;
   }
+  @keyframes bgMove {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(5deg) scale(1.1); }
+  }
 
-.slide {
+ .slide {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -38,95 +46,187 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 80px;
-    background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+    padding: 60px;
     transform: translateX(100%);
     opacity: 0;
-    transition: transform 1.2s cubic-bezier(0.77,0,0.175,1), opacity 1s;
+    transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
     z-index: 1;
   }
-.slide.active { transform: translateX(0); opacity: 1; }
-.slide.exit { transform: translateX(-100%); opacity: 0; }
+ .slide.active { transform: translateX(0); opacity: 1; }
+ .slide.exit { transform: translateX(-100%); opacity: 0; }
 
+  /* TITULO COM SINALIZADOR PISCANDO 3s */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 9vw;
+    font-size: 8vw;
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 3px;
-    text-shadow: 0 0 5px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
-    margin-bottom: 30px;
+    text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
+    margin-bottom: 40px;
     position: relative;
-    animation: glow 2s ease-in-out infinite alternate;
   }
-  h1::before, h1::after {
+  h1.blink::before, h1.blink::after {
     content: '';
     position: absolute;
-    width: 110%;
-    height: 4px;
+    width: 120%;
+    height: 5px;
     background: linear-gradient(90deg, transparent, #00ffff, #00aaff, transparent);
-    left: -5%;
+    left: -10%;
+    box-shadow: 0 0 30px #00ffff;
+    animation: blinkSignal 3s ease-in-out;
+  }
+  h1.blink::before { top: -20px; }
+  h1.blink::after { bottom: -20px; }
+  @keyframes blinkSignal {
+    0%,100% { opacity: 0; } 50% { opacity: 1; }
+  }
+
+  /* SUBTITULOS ALINHADOS VERTICAL + ZOOM 6s */
+ .sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+  }
+ .sub-item {
+    font-size: 3vw;
+    font-weight: 700;
+    color: #ddd;
+    animation: zoomHighlight 6s ease-in-out;
+    transform-origin: center;
+  }
+  @keyframes zoomHighlight {
+    0% { transform: scale(1); color: #ddd; }
+    50% { transform: scale(1.15); color: #00ffff; text-shadow: 0 0 20px #00ffff; }
+    100% { transform: scale(1); color: #ddd; }
+  }
+
+  /* TABELAS ORGANIZADAS */
+  table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    font-size: 2.5vw;
+    width: 90%;
+  }
+  th, td {
+    border: 2px solid #00ffff44;
+    padding: 15px 25px;
+    text-align: center;
+  }
+  th {
+    background: #00ffff22;
+    color: #00ffff;
+    font-family: 'Orbitron';
+  }
+  td { background: #111; }
+
+ .destaque { color: #00ffff; font-weight: 900; }
+ .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
+
+  /* BARRA 6 SEGUNDOS */
+ .progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; }
+ .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 6s linear forwards; }
+
+  /* BOTOES CONTROLE */
+ .controls {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    gap: 30px;
+  }
+ .btn {
+    padding: 15px 40px;
+    font-size: 2vw;
+    font-family: 'Orbitron';
+    background: linear-gradient(90deg, #00ffff, #00aaff);
+    border: none;
+    border-radius: 15px;
+    color: #000;
+    font-weight: 900;
     box-shadow: 0 0 20px #00ffff;
+    transition: 0.3s;
   }
-  h1::before { top: -15px; }
-  h1::after { bottom: -15px; }
+ .btn:hover { transform: scale(1.1); }
 
-  h2 { font-size: 4vw; font-weight: 700; color: #00ffff; margin-bottom: 40px; text-shadow: 0 0 15px #00ffff; }
-  p { font-size: 3.2vw; font-weight: 600; white-space: pre-line; line-height: 1.6; color: #ddd; max-width: 90%; }
-.destaque { color: #00ffff; font-weight: 900; }
-
-.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; border: 1px solid #00ffff33; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
-
-.btn-participar {
-    position: absolute; bottom: 40px; padding: 25px 80px; font-size: 2.8vw; font-family: 'Orbitron', sans-serif;
-    font-weight: 900; color: #000; background: linear-gradient(90deg, #00ffff, #00aaff); border: none; border-radius: 20px;
-    cursor: pointer; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 40px #00ffff;
-    transition: all 0.3s; animation: pulseBtn 1.5s infinite;
-  }
-.btn-participar:hover { transform: scale(1.08); box-shadow: 0 0 80px #00ffff; }
-
-.counter { position: absolute; top: 40px; right: 50px; font-size: 2.2vw; color: #00ffff; font-family: 'Orbitron'; opacity: 0.7; }
-
-.vagas {
-    font-size: 4vw;
-    color: #ff0033;
-    text-shadow: 0 0 20px #ff0033;
-    animation: alert 0.8s infinite;
+ .btn-participar {
+    position: absolute; right: 40px; bottom: 40px;
+    padding: 20px 50px; font-size: 2.2vw; text-decoration: none;
   }
 
-  @keyframes glow { from { text-shadow: 0 0 10px #00ffff; } to { text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff; } }
+ .counter { position: absolute; top: 40px; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; }
+
   @keyframes load { from { width: 0%; } to { width: 100%; } }
-  @keyframes pulseBtn { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
   @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-  @keyframes moveGrid { from { background-position: 0 0; } to { background-position: 0 600px; } }
 </style>
 </head>
 <body>
 
-<audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/audio/2025/04/07/audio_39cfb6e2c7.mp3" type="audio/mpeg">
-</audio>
+<div class="bg"></div>
+<div id="slides"></div>
 
 <audio id="whoosh">
   <source src="https://cdn.pixabay.com/audio/2024/08/09/audio_8c8b2c5d5e.mp3" type="audio/mpeg">
 </audio>
 
-<div class="grid"></div>
-<div id="slides"></div>
-
 <script>
 const slides = [
-  { t: "K-TP", s: "TREINAMENTO PERSONALIZADO", p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span>\nO MÉTODO QUE VAI MUDAR SEU CORPO E SUA MENTE" },
-  { t: "4 FASES", p: "<span class='destaque'>FASE 1:</span> AVALIAÇÃO COMPLETA\n<span class='destaque'>FASE 2:</span> ADAPTAÇÃO INTELIGENTE\n<span class='destaque'>FASE 3:</span> EVOLUÇÃO ACELERADA\n<span class='destaque'>FASE 4:</span> RESULTADO DEFINITIVO" },
-  { t: "METODOLOGIA", p: "<span class='destaque'>4 SEMANAS</span> QUE VÃO REVOLUCIONAR VOCÊ\nSEMANA 1: FORÇA BASE | SEMANA 2: HIPERTROFIA\nSEMANA 3: RESISTÊNCIA | SEMANA 4: PERFORMANCE MÁXIMA" },
-  { t: "CRONOGRAMA", p: "<span class='destaque'>JANEIRO A NOVEMBRO:</span> EXECUÇÃO TOTAL\n<span class='destaque'>DEZEMBRO:</span> CONCLUSÃO E CELEBRAÇÃO DA SUA NOVA VERSÃO" },
-  { t: "NOSSA MISSÃO", p: "SAÚDE • ESTÉTICA • PERFORMANCE\n<span class='destaque'>DISCIPLINA • FOCO • RESULTADO REAL</span>\nSEM DESCULPAS. SÓ TRANSFORMAÇÃO." },
-  { t: "PARA VOCÊ", p: "CRIANÇAS 10+ • JOVENS • ADULTOS • IDOSOS • ATLETAS\n<span class='destaque'>TREINO 100% PERSONALIZADO</span>\nNÃO IMPORTA SUA IDADE. IMPORTA SUA VONTADE." },
-  { t: "PLANOS EXCLUSIVOS", p: "<span class='destaque'>BÁSICO:</span> Acesso Completo\n<span class='destaque'>PREMIUM:</span> + Acompanhamento VIP\n<span class='destaque'>VIP 24H:</span> ACADEMIA EXCLUSIVA 24 HORAS\n<span class='destaque'>VAGAS LIMITADAS!</span>" },
-  { t: "FUNCIONAMENTO", p: "<span class='destaque'>SEGUNDA A SEXTA:</span> HORÁRIOS COMPLETOS\n<span class='destaque'>ACADEMIA EXCLUSIVA 24H:</span> DOMINGO A DOMINGO\nTREINE QUANDO QUISER. SEMPRE ABERTO PARA VOCÊ." },
-  { t: "HORÁRIOS", p: "06H 07H 08H 09H 10H\n16H 17H 18H 19H 20H 21H 22H 23H 00H 01H 02H 03H 04H 05H\n<span class='destaque'>APENAS 7 VAGAS POR HORÁRIO</span>\nGARANTA JÁ A SUA!" },
+  {
+    t: "K-TP",
+    s: "TREINAMENTO PERSONALIZADO",
+    p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span>\nO MÉTODO CIENTÍFICO PARA SUA MELHOR VERSÃO"
+  },
+  {
+    t: "4 FASES DO PROJETO",
+    lista: ["1. OFF SEASON", "2. BULKING", "3. MAINTENANCE", "4. CUTTING"]
+  },
+  {
+    t: "4 SEMANAS DO MÉTODO",
+    lista: ["SEMANA 1: MANUTENÇÃO", "SEMANA 2: RESISTÊNCIA", "SEMANA 3: FORÇA", "SEMANA 4: HIPERTROFIA"]
+  },
+  {
+    t: "NOSSOS OBJETIVOS",
+    lista: ["GANHO DE PESO", "EMAGRECIMENTO", "DEFINIÇÃO MUSCULAR", "SAÚDE", "CONDICIONAMENTO FÍSICO", "HIPERTROFIA", "REABILITAÇÃO FÍSICA"]
+  },
+  {
+    t: "CRONOGRAMA",
+    tabela: [
+      ["PERÍODO", "ETAPA"],
+      ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"],
+      ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]
+    ]
+  },
+  {
+    t: "PARA TODOS",
+    lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"]
+  },
+  {
+    t: "PLANOS E VALORES",
+    tabela: [
+      ["PLANO", "MODALIDADE", "FREQUÊNCIA"],
+      ["AVULSO", "PRESENCIAL / ONLINE", "1X NA SEMANA"],
+      ["MENSAL", "PRESENCIAL / ONLINE", "2X NA SEMANA"],
+      ["MENSAL", "PRESENCIAL / ONLINE", "3X NA SEMANA"],
+      ["MENSAL", "PRESENCIAL / ONLINE", "4X NA SEMANA"],
+      ["MENSAL VIP", "PRESENCIAL / ONLINE", "5X NA SEMANA"]
+    ]
+  },
+  {
+    t: "FUNCIONAMENTO",
+    tabela: [
+      ["TIPO", "DIAS"],
+      ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"],
+      ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]
+    ]
+  },
+  {
+    t: "HORÁRIOS DISPONÍVEIS",
+    tabela: [
+      ["MANHÃ", "NOITE / MADRUGADA", "VAGAS"],
+      ["06H 07H 08H 09H 10H", "16H A 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]
+    ]
+  },
   {
     t: "CHEGOU SUA VEZ",
     s: "PARE DE ADIAR",
@@ -136,44 +236,91 @@ const slides = [
 ];
 
 let current = 0;
+let timer;
 const container = document.getElementById('slides');
-const bgMusic = document.getElementById('bgMusic');
 const whoosh = document.getElementById('whoosh');
 
-bgMusic.volume = 0.3;
-bgMusic.play().catch(()=>{}); // Toca música ao carregar
+function renderSlide(i) {
+  const slide = slides[i];
+  let content = `<h1 class="blink">${slide.t}</h1>`;
+  if(slide.s) content += `<h2 style="font-size:3.5vw;color:#00ffff;margin-bottom:30px;">${slide.s}</h2>`;
 
-function showSlide(i) {
-  const prev = container.querySelector('.slide.active');
-  if(prev) prev.classList.add('exit');
-  whoosh.currentTime = 0;
-  whoosh.play();
+  if(slide.lista) {
+    content += `<div class="sub-list">`;
+    slide.lista.forEach(item => content += `<div class="sub-item">${item}</div>`);
+    content += `</div>`;
+  }
+  if(slide.tabela) {
+    content += `<table>`;
+    slide.tabela.forEach((row, idx) => {
+      content += `<tr>`;
+      row.forEach(cell => content += idx===0? `<th>${cell}</th>` : `<td>${cell}</td>`);
+      content += `</tr>`;
+    });
+    content += `</table>`;
+  }
+  if(slide.p) content += `<p style="font-size:3vw;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3.5vw;margin-top:20px;">RESTAM POUCAS VAGAS!</p>`;
 
-  setTimeout(() => {
-    const slide = slides[i];
-    container.innerHTML = `
-      <div class="slide active">
-        ${slide.t? `<h1>${slide.t}</h1>` : ''}
-        ${slide.s? `<h2>${slide.s}</h2>` : ''}
-        <p>${slide.p}</p>
-        ${slide.vagas? `<p class="vagas">RESTAM POUCAS VAGAS!</p>` : ''}
-        <div class="progress"><div class="progress-bar"></div></div>
-        <div class="counter">${i + 1} / ${slides.length}</div>
-        <a href="/projetotransformacao/projetotransformacao.html" class="btn-participar">QUERO ME TRANSFORMAR</a>
+  container.innerHTML = `
+    <div class="slide active">
+      ${content}
+      <div class="progress"><div class="progress-bar"></div></div>
+      <div class="counter">${i + 1} / ${slides.length}</div>
+      <div class="controls">
+        <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
+        <button class="btn" onclick="pauseResume()">⏯ PAUSAR</button>
+        <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
       </div>
-    `;
-  }, 600);
+      <a href="/projetotransformacao/projetotransformacao.html" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
+    </div>
+  `;
+  // Remove classe blink depois de 3s
+  setTimeout(()=> document.querySelector('h1')?.classList.remove('blink'), 3000);
 }
 
 function nextSlide() {
-  current = (current + 1) % slides.length;
-  showSlide(current);
+  clearInterval(timer);
+  const prev = container.querySelector('.slide.active');
+  if(prev) prev.classList.add('exit');
+  whoosh.currentTime = 0; whoosh.play();
+  setTimeout(()=> {
+    current = (current + 1) % slides.length;
+    renderSlide(current);
+    startTimer();
+  }, 600);
 }
 
-showSlide(0);
-setInterval(nextSlide, 10000); // 10 SEGUNDOS
+function prevSlide() {
+  clearInterval(timer);
+  const prev = container.querySelector('.slide.active');
+  if(prev) prev.classList.add('exit');
+  whoosh.currentTime = 0; whoosh.play();
+  setTimeout(()=> {
+    current = (current - 1 + slides.length) % slides.length;
+    renderSlide(current);
+    startTimer();
+  }, 600);
+}
 
-document.body.addEventListener('click', () => { bgMusic.play(); }); // Garante que toca no mobile
+let paused = false;
+function pauseResume() {
+  paused =!paused;
+  if(paused) clearInterval(timer);
+  else startTimer();
+}
+
+function startTimer() {
+  timer = setInterval(nextSlide, 6000); // 6 SEGUNDOS
+}
+
+// Clicar na tela avança
+document.body.addEventListener('click', (e)=>{
+  if(!e.target.classList.contains('btn') &&!e.target.classList.contains('btn-participar')) nextSlide();
+});
+
+renderSlide(0);
+startTimer();
 </script>
 
 </body>
