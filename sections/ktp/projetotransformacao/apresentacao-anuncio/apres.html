@@ -18,7 +18,6 @@
     height: 100vh;
   }
 
-  /* FUNDO PRETO VIVO */
 .bg {
     position: absolute;
     width: 100%;
@@ -40,29 +39,26 @@
   }
   @keyframes moveBg { from { transform: translate(0,0); } to { transform: translate(80px,80px); } }
 
-  /* LOGO BMW NO TOPO COM BORDA AZUL */
 .logo-wrapper {
     position: absolute;
-    top: 20px;
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 3;
-    padding: 12px;
-    border-radius: 20px;
-    background: radial-gradient(circle, #00ffff22, transparent);
-    border: 3px solid #00ffff;
-    box-shadow: 0 0 30px #00ffff, 0 0 60px #00aaff, inset 0 0 20px #00ffff33;
+    z-index: 10;
+    border: 4px solid #00ffff;
+    box-shadow: 0 0 40px #00ffff, 0 0 80px #00aaff;
     animation: logoPulse 2s ease-in-out infinite alternate;
+    line-height: 0;
   }
 .logo-top {
-    width: 18vw;
-    max-width: 280px;
+    width: 54vw;
+    max-width: 800px;
     display: block;
-    filter: drop-shadow(0 0 10px #00ffff);
+    filter: drop-shadow(0 0 15px #00ffff);
   }
   @keyframes logoPulse {
-    from { box-shadow: 0 0 20px #00ffff, 0 0 40px #00aaff, inset 0 0 10px #00ffff33; }
-    to { box-shadow: 0 0 50px #00ffff, 0 0 90px #00aaff, inset 0 0 30px #00ffff55; }
+    from { box-shadow: 0 0 30px #00ffff, 0 0 60px #00aaff; }
+    to { box-shadow: 0 0 70px #00ffff, 0 0 120px #00aaff; }
   }
 
 .slide {
@@ -71,11 +67,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* CENTRALIZADO */
     justify-content: center;
-    text-align: left;
+    text-align: center; /* TEXTO CENTRALIZADO */
     padding: 0 8%;
-    padding-top: 18vh; /* Espaço pra logo com borda */
+    padding-top: 35vh;
+    padding-bottom: 160px;
     transform: translateX(100%);
     opacity: 0;
     transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
@@ -84,16 +81,15 @@
 .slide.active { transform: translateX(0); opacity: 1; }
 .slide.exit { transform: translateX(-100%); opacity: 0; }
 
-  /* TITULO CENTRALIZADO */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 6.5vw;
+    font-size: 6vw;
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 3px;
     text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     position: relative;
     width: 100%;
     text-align: center;
@@ -112,84 +108,105 @@
   h1.blink::after { bottom: -15px; }
   @keyframes blinkSignal { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
 
-  /* SUBTITULOS ALINHADOS ESQUERDA + ANIMAÇÃO SEQUENCIAL 10s */
+  /* SUBTITULOS CENTRALIZADOS */
 .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    align-items: flex-start;
+    gap: 16px;
+    align-items: center; /* CENTRALIZADO */
+    justify-content: center;
     width: 100%;
   }
 .sub-item {
-    font-size: 2.6vw;
+    font-size: 2.4vw;
     font-weight: 700;
     color: #ccc;
     opacity: 0.4;
     transition: all 0.6s ease;
+    text-align: center;
   }
 .sub-item.active {
-    font-size: 3vw;
+    font-size: 2.8vw;
     color: #00ffff;
     opacity: 1;
     text-shadow: 0 0 20px #00ffff;
-    transform: translateX(20px);
+    transform: scale(1.08); /* Zoom centralizado, sem deslocar pra esquerda */
   }
 
-  /* TABELAS */
   table {
     border-collapse: collapse;
-    margin: 15px 0;
-    font-size: 2vw;
+    margin: 12px auto; /* CENTRALIZADA */
+    font-size: 1.9vw;
     width: 90%;
   }
   th, td {
     border: 2px solid #00ffff44;
-    padding: 10px 18px;
-    text-align: left;
+    padding: 10px 16px;
+    text-align: center; /* CENTRALIZADA */
   }
   th {
     background: #00ffff22;
     color: #00ffff;
     font-family: 'Orbitron';
-    text-align: center;
   }
   td { background: #0a0a0a; }
+
+.tabela-titulo {
+    font-size: 2.2vw;
+    color: #00ffff;
+    font-weight: 900;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+  }
 
 .destaque { color: #00ffff; font-weight: 900; }
 .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
 
-.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; }
+.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; z-index: 5; }
 .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
 
 .controls {
     position: absolute;
     bottom: 40px;
-    left: 8%;
+    left: 50%;
+    transform: translateX(-50%); /* CENTRALIZADO */
     display: flex;
     gap: 20px;
-    z-index: 2;
+    z-index: 20;
+    flex-wrap: wrap;
   }
 .btn {
-    padding: 15px 30px;
+    padding: 16px 32px;
     font-size: 1.8vw;
     font-family: 'Orbitron';
     background: linear-gradient(90deg, #00ffff, #00aaff);
-    border: none;
+    border: 2px solid #00ffff;
     border-radius: 12px;
     color: #000;
     font-weight: 900;
     cursor: pointer;
     box-shadow: 0 0 20px #00ffff;
     transition: 0.3s;
+    white-space: nowrap;
+    box-sizing: border-box;
   }
-.btn:hover { transform: scale(1.08); }
+.btn:hover { transform: scale(1.08); box-shadow: 0 0 40px #00ffff; }
 
 .btn-participar {
-    position: absolute; right: 8%; bottom: 40px;
-    padding: 18px 40px; font-size: 2vw; text-decoration: none; z-index: 2;
+    position: absolute;
+    right: 8%;
+    bottom: 40px;
+    padding: 18px 40px;
+    font-size: 2vw;
+    text-decoration: none;
+    z-index: 20;
+    white-space: nowrap;
+    box-sizing: border-box;
   }
 
-.counter { position: absolute; top: 220px; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; }
+.counter { position: absolute; top: 38vh; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; z-index: 5; }
 
   @keyframes load { from { width: 0%; } to { width: 100%; } }
   @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
@@ -199,7 +216,7 @@
 
 <div class="bg"></div>
 <div class="logo-wrapper">
-  <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" alt="Logo K-TP" class="logo-top">
+  <img src="sections/ktp/images/logoprojetotransformacao.png" alt="Logo K-TP" class="logo-top">
 </div>
 <div id="slides"></div>
 
@@ -217,7 +234,13 @@ const slides = [
   { t: "NOSSOS OBJETIVOS", lista: ["GANHO DE PESO", "EMAGRECIMENTO", "DEFINIÇÃO MUSCULAR", "SAÚDE", "CONDICIONAMENTO FÍSICO", "HIPERTROFIA", "REABILITAÇÃO FÍSICA"] },
   { t: "CRONOGRAMA", tabela: [["PERÍODO", "ETAPA"], ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"], ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]] },
   { t: "PARA TODOS", lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"] },
-  { t: "PLANOS E VALORES", tabela: [["PLANO", "MODALIDADE", "FREQUÊNCIA"], ["AVULSO", "PRESENCIAL / ONLINE", "1X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "2X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "3X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "4X NA SEMANA"], ["MENSAL VIP", "PRESENCIAL / ONLINE", "5X NA SEMANA"]] },
+  {
+    t: "PLANOS E VALORES",
+    tabelas: [
+      { titulo: "AULAS AVULSAS", dados: [["MODALIDADE", "FREQUÊNCIA"], ["PRESENCIAL", "1X NA SEMANA"], ["ONLINE", "1X NA SEMANA"]] },
+      { titulo: "MENSALIDADE", dados: [["MODALIDADE", "FREQUÊNCIA"], ["PRESENCIAL", "2X NA SEMANA"], ["ONLINE", "2X NA SEMANA"], ["PRESENCIAL", "3X NA SEMANA"], ["ONLINE", "3X NA SEMANA"], ["PRESENCIAL", "4X NA SEMANA"], ["ONLINE", "4X NA SEMANA"], ["PRESENCIAL VIP", "5X NA SEMANA"], ["ONLINE VIP", "5X NA SEMANA"]] }
+    ]
+  },
   { t: "FUNCIONAMENTO", tabela: [["TIPO", "DIAS"], ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"], ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]] },
   { t: "HORÁRIOS DISPONÍVEIS", tabela: [["MANHÃ", "NOITE / MADRUGADA", "VAGAS"], ["06H 07H 08H 09H 10H", "16H ÀS 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]] },
   { t: "CHEGOU SUA VEZ", s: "PARE DE ADIAR", p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO<br>A TRANSFORMAÇÃO COMEÇA AGORA", vagas: true },
@@ -232,7 +255,7 @@ const whoosh = document.getElementById('whoosh');
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1 class="blink">${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:3vw;color:#00ffff;margin-bottom:25px;width:100%;text-align:center;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:2.8vw;color:#00ffff;margin-bottom:20px;width:100%;text-align:center;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -248,8 +271,20 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.p) content += `<p style="font-size:2.6vw;margin-top:15px;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3vw;margin-top:15px;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.tabelas) {
+    slide.tabelas.forEach(t => {
+      content += `<div class="tabela-titulo">${t.titulo}</div>`;
+      content += `<table>`;
+      t.dados.forEach((row, idx) => {
+        content += `<tr>`;
+        row.forEach(cell => content += idx===0? `<th>${cell}</th>` : `<td>${cell}</td>`);
+        content += `</tr>`;
+      });
+      content += `</table>`;
+    });
+  }
+  if(slide.p) content += `<p style="font-size:2.4vw;margin-top:15px;text-align:center;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:2.8vw;margin-top:15px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `
     <div class="slide active">
