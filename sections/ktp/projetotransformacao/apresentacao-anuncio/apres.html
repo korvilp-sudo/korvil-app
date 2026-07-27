@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TP - PROJETO TRANSFORMAÇÃO 4D</title>
+<title>K-TP - PROJETO TRANSFORMAÇÃO 4D XL</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap');
 
@@ -31,7 +31,6 @@
     background: radial-gradient(circle at 50% 50%, #081026 0%, #000000 100%);
   }
 
-  /* Orbes Flutuantes de Plasma Bioluminescente */
   .orb {
     position: absolute;
     border-radius: 50%;
@@ -70,7 +69,6 @@
     100% { transform: translate(-60px, 80px) scale(0.9); }
   }
 
-  /* Grid Tridimensional Cyber 3D em Movimento Real */
   .grid-3d {
     position: absolute;
     width: 200vw;
@@ -91,7 +89,6 @@
     100% { transform: perspective(600px) rotateX(65deg) translateY(60px); }
   }
 
-  /* Scanlines Holográficas estilo 8K */
   .scanlines {
     position: absolute;
     width: 100%;
@@ -103,10 +100,10 @@
     opacity: 0.6;
   }
 
-  /* --- LOGO WRAPPER 8K --- */
+  /* --- LOGO WRAPPER --- */
   .logo-wrapper {
     position: absolute;
-    top: 15px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
@@ -116,13 +113,13 @@
     backdrop-filter: blur(16px);
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.3);
     animation: logoFloat 3s ease-in-out infinite alternate;
-    padding: 6px 16px;
+    padding: 4px 12px;
   }
   
   .logo-top {
-    width: 36vw;
-    max-width: 520px;
-    min-width: 260px;
+    width: 32vw;
+    max-width: 450px;
+    min-width: 240px;
     height: auto;
     display: block;
     object-fit: contain;
@@ -134,7 +131,7 @@
     100% { transform: translateX(-50%) translateY(-6px); box-shadow: 0 0 45px rgba(0,255,255,0.8); }
   }
 
-  /* --- SLIDES & TRANSIÇÕES 4D --- */
+  /* --- SLIDES & TRANSIÇÕES --- */
   .slide {
     position: absolute;
     width: 100%;
@@ -144,9 +141,9 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 8%;
-    padding-top: 24vh;
-    padding-bottom: 90px;
+    padding: 0 5%;
+    padding-top: 18vh;
+    padding-bottom: 95px;
     transform-style: preserve-3d;
     transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
@@ -164,10 +161,10 @@
     opacity: 0; 
   }
 
-  /* --- TIPOGRAFIA 8K --- */
+  /* --- TIPOGRAFIA (AUMENTADA 2X) --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3.6vw;
+    font-size: 6vw; /* Aumentado ~2x */
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
@@ -175,19 +172,20 @@
     background: linear-gradient(180deg, #ffffff 30%, #00ffff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 20px rgba(0,255,255,0.8));
-    margin-bottom: 15px;
+    filter: drop-shadow(0 0 25px rgba(0,255,255,0.9));
+    margin-bottom: 20px;
     position: relative;
     width: 100%;
+    line-height: 1.1;
   }
 
   h1::after {
     content: '';
     position: absolute;
-    bottom: -8px;
-    left: 25%;
-    width: 50%;
-    height: 2px;
+    bottom: -10px;
+    left: 15%;
+    width: 70%;
+    height: 3px;
     background: linear-gradient(90deg, transparent, #00ffff, transparent);
     box-shadow: 0 0 15px #00ffff;
   }
@@ -195,79 +193,81 @@
   .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
     align-items: center;
     justify-content: center;
     width: 100%;
   }
 
   .sub-item {
-    font-size: 2vw;
-    font-weight: 700;
+    font-size: 3.5vw; /* Aumentado ~2x */
+    font-weight: 800;
     color: rgba(255,255,255,0.4);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: center;
+    line-height: 1.2;
   }
 
   .sub-item.active {
-    font-size: 2.4vw;
+    font-size: 4.2vw; /* Aumentado ~2x */
     color: #00ffff;
-    text-shadow: 0 0 20px #00ffff, 0 0 40px #00aaff;
-    transform: scale(1.1) translateZ(20px);
+    text-shadow: 0 0 25px #00ffff, 0 0 50px #00aaff;
+    transform: scale(1.08) translateZ(20px);
   }
 
-  /* --- TABELAS FUTURISTAS GLASSMORPHISM --- */
+  /* --- TABELAS FUTURISTAS (AUMENTADAS 2X) --- */
   table {
     border-collapse: separate;
     border-spacing: 0;
     margin: 10px auto;
-    font-size: 1.3vw;
-    width: 85%;
-    max-width: 880px;
-    background: rgba(0, 15, 30, 0.6);
+    font-size: 2.3vw; /* Aumentado ~2x */
+    width: 92%;
+    max-width: 1200px;
+    background: rgba(0, 15, 30, 0.7);
     backdrop-filter: blur(12px);
-    border-radius: 12px;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0,255,255,0.1);
+    border-radius: 14px;
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 30px rgba(0,255,255,0.2);
     overflow: hidden;
   }
 
   th, td {
-    padding: 10px 16px;
+    padding: 12px 18px;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   }
 
   th {
-    background: rgba(0, 255, 255, 0.15);
+    background: rgba(0, 255, 255, 0.2);
     color: #00ffff;
     font-family: 'Orbitron';
-    font-size: 1.4vw;
+    font-size: 2.6vw; /* Aumentado ~2x */
     letter-spacing: 1px;
-    text-shadow: 0 0 10px #00ffff;
+    text-shadow: 0 0 15px #00ffff;
   }
 
   td { 
-    background: rgba(0, 0, 0, 0.4);
-    color: #e0e0e0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-weight: 700;
   }
 
-  .destaque { color: #00ffff; font-weight: 900; text-shadow: 0 0 10px #00ffff; }
+  .destaque { color: #00ffff; font-weight: 900; text-shadow: 0 0 15px #00ffff; }
   .destaque-red { color: #ff0055; font-weight: 900; animation: alertNeon 0.8s infinite alternate; }
 
   @keyframes alertNeon {
-    0% { text-shadow: 0 0 5px #ff0055; transform: scale(1); }
-    100% { text-shadow: 0 0 25px #ff0055, 0 0 40px #ff0000; transform: scale(1.05); }
+    0% { text-shadow: 0 0 8px #ff0055; transform: scale(1); }
+    100% { text-shadow: 0 0 30px #ff0055, 0 0 50px #ff0000; transform: scale(1.05); }
   }
 
-  /* --- BARRA DE PROGRESSO & CONTROLES --- */
+  /* --- BARRA DE PROGRESSO & CONTROLES (AUMENTADOS) --- */
   .progress { 
     position: absolute; 
-    bottom: 75px; 
-    left: 5%; 
-    width: 90%; 
-    height: 4px; 
-    background: rgba(255,255,255,0.1); 
+    bottom: 85px; 
+    left: 4%; 
+    width: 92%; 
+    height: 6px; 
+    background: rgba(255,255,255,0.15); 
     border-radius: 10px; 
     z-index: 20; 
     overflow: hidden;
@@ -292,33 +292,34 @@
   }
 
   .btn {
-    padding: 10px 22px;
-    font-size: 1vw;
+    padding: 12px 28px;
+    font-size: 1.6vw; /* Aumentado */
     font-family: 'Orbitron';
-    background: rgba(0, 255, 255, 0.1);
+    background: rgba(0, 255, 255, 0.15);
     border: 2px solid #00ffff;
     border-radius: 30px;
     color: #00ffff;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     backdrop-filter: blur(8px);
+    white-space: nowrap;
   }
 
   .btn:hover { 
     background: #00ffff; 
     color: #000; 
     transform: translateY(-3px) scale(1.05); 
-    box-shadow: 0 0 30px #00ffff; 
+    box-shadow: 0 0 35px #00ffff; 
   }
 
   .btn-participar {
     position: absolute;
-    right: 5%;
+    right: 4%;
     bottom: 18px;
-    padding: 10px 22px;
-    font-size: 1vw;
+    padding: 12px 28px;
+    font-size: 1.6vw; /* Aumentado */
     text-decoration: none;
     z-index: 30;
     background: linear-gradient(90deg, #00ffff, #0088ff);
@@ -326,24 +327,25 @@
     border: none;
     border-radius: 30px;
     font-weight: 900;
-    box-shadow: 0 0 20px rgba(0,255,255,0.6);
+    box-shadow: 0 0 25px rgba(0,255,255,0.7);
     transition: all 0.3s ease;
+    white-space: nowrap;
   }
 
   .btn-participar:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 40px #00ffff;
+    box-shadow: 0 0 45px #00ffff;
   }
 
   .counter { 
     position: absolute; 
-    top: 22vh; 
-    right: 40px; 
-    font-size: 1.4vw; 
+    top: 18vh; 
+    right: 30px; 
+    font-size: 2vw; /* Aumentado */
     color: #00ffff; 
     font-family: 'Orbitron'; 
     z-index: 20; 
-    text-shadow: 0 0 10px #00ffff;
+    text-shadow: 0 0 15px #00ffff;
   }
 
   @keyframes load { from { width: 0%; } to { width: 100%; } }
@@ -408,7 +410,7 @@ const whoosh = document.getElementById('whoosh');
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1>${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:2vw;color:#00ffff;margin-bottom:12px;width:100%;text-align:center;text-shadow:0 0 10px #00ffff;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:3.2vw;color:#00ffff;margin-bottom:16px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -424,8 +426,8 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.p) content += `<p style="font-size:1.8vw;margin-top:10px;text-align:center;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:2vw;margin-top:10px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.p) content += `<p style="font-size:3vw;margin-top:14px;text-align:center;line-height:1.2;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3.5vw;margin-top:14px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `
     <div class="slide active">
