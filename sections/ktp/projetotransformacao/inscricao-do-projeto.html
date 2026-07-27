@@ -279,37 +279,74 @@ function enviarWhatsApp(){
   if(nome==''){alert('Preencha o nome');return;}
   if(document.getElementById('cpf').value==''){alert('Preencha o CPF');return;}
   if(document.getElementById('whats').value==''){alert('Preencha o WhatsApp');return;}
+  if(document.getElementById('cep').value==''){alert('Preencha o CEP');return;}
+  if(document.getElementById('numero').value==''){alert('Preencha o Número');return;}
+
   let total = parseInt(plano.valor)+parseInt(plano.mat);
-  let msg = `*NOVA INSCRIÇÃO K-TP*\n\n` +
-            `*1. ANAMNESE*\n` +
-            `Nível de Atividade: ${document.getElementById('nivelAtividade').value}\n` +
-            `1. Já praticou atividade física antes? ${document.getElementById('q1').value}\n` +
-            `2. Como descreve sua ALIMENTAÇÃO? ${document.getElementById('q2').value}\n` +
-            `3. Quantas horas DORME por noite? ${document.getElementById('q3').value}\n` +
-            `4. Possui RESTRIÇÃO alimentar? ${document.getElementById('q4').value}\n` +
-            `5. Qual parte do corpo quer MELHORAR? ${document.getElementById('q5').value}\n` +
-            `6. Possui DEFICIENCIA/LIMITAÇÃO? ${document.getElementById('q6').value}\n` +
-            `7. Já teve acompanhamento PSICOLÓGICO? ${document.getElementById('q7').value}\n` +
-            `8. Está fazendo algum TRATAMENTO? ${document.getElementById('q8').value}\n` +
-            `9. Está fazendo USO DE MEDICAMENTOS? ${document.getElementById('q9').value}\n` +
-            `Objetivos: ${document.getElementById('objetivos').value}\n\n` +
-            `*2. PLANO ESCOLHIDO*\n` +
-            `Plano: ${plano.nome}\n` +
-            `Dias: ${dias.join(', ')}\n` +
-            `Horário: ${hora}\n` +
-            `Mensalidade: R$${plano.valor},00\n` +
-            `Matrícula: R$${plano.mat},00\n` +
-            `Total: R$${total},00\n` +
-            `*3. DADOS PESSOAIS*\n` +
-            `Nome: ${nome}\n` +
-            `CPF: ${document.getElementById('cpf').value}\n` +
-            `Nascimento: ${document.getElementById('nasc').value}\n` +
-            `Idade: ${document.getElementById('idade').value}\n` +
-            `Gênero: ${document.getElementById('publico').value}\n` +
-            `WhatsApp: ${document.getElementById('whats').value}\n` +
-            `Email: ${document.getElementById('email').value}`;
+  let tipo_plano = `${plano.freq == 1? "Aula Avulsa" : "Mensal"} ${plano.tipo.includes('pres')? "Presencial" : "Online"} ${plano.freq}x`;
+  
+  // Formatar data de hoje como data da matrícula
+  let hoje = new Date().toLocaleDateString('pt-BR');
+
+  let msg = `*🚨 NOVA INSCRIÇÃO K-TP PROJETO TRANSFORMAÇÃO 🚨*\n\n` +
+            
+            `*==================================*\n` +
+            `*1. DADOS DO PLANO*\n` +
+            `*==================================*\n` +
+            `*Modalidade:* ${plano.tipo.includes('pres')? "PRESENCIAL" : "ONLINE"}\n` +
+            `*Tipo de Plano:* ${tipo_plano}\n` +
+            `*Dias:* ${dias.join(', ')}\n` +
+            `*Horário:* ${hora}\n` +
+            `*Frequência:* ${plano.freq}x na semana\n` +
+            `*Valor Mensal:* R$${plano.valor},00\n` +
+            `*Matrícula Paga:* R$${plano.mat},00 - ${hoje}\n` +
+            `*Total 1º Pagamento:* R$${total},00\n\n` +
+
+            `*==================================*\n` +
+            `*2. DADOS PESSOAIS*\n` +
+            `*==================================*\n` +
+            `*Nome:* ${nome}\n` +
+            `*CPF:* ${document.getElementById('cpf').value}\n` +
+            `*Data Nascimento:* ${document.getElementById('nasc').value.split('-').reverse().join('/')}\n` +
+            `*Idade:* ${document.getElementById('idade').value}\n` +
+            `*Gênero:* ${document.getElementById('publico').value}\n` +
+            `*WhatsApp:* ${document.getElementById('whats').value}\n` +
+            `*Email:* ${document.getElementById('email').value}\n\n` +
+
+            `*==================================*\n` +
+            `*3. ENDEREÇO*\n` +
+            `*==================================*\n` +
+            `*CEP:* ${document.getElementById('cep').value}\n` +
+            `*Rua:* ${document.getElementById('rua').value}\n` +
+            `*Número:* ${document.getElementById('numero').value}\n` +
+            `*Bairro:* ${document.getElementById('bairro').value}\n` +
+            `*Cidade:* ${document.getElementById('cidade').value}\n\n` +
+
+            `*==================================*\n` +
+            `*4. ANAMNESE - OBJETIVOS*\n` +
+            `*==================================*\n` +
+            `*Objetivos em Prioridade:* ${document.getElementById('objetivos').value}\n` +
+            `*Nível de Atividade:* ${document.getElementById('nivelAtividade').value}\n\n` +
+
+            `*==================================*\n` +
+            `*5. ANAMNESE - HISTÓRICO*\n` +
+            `*==================================*\n` +
+            `*Q1. Já praticou atividade física antes?* ${document.getElementById('q1').value}\n` +
+            `*Q2. Como descreve sua ALIMENTAÇÃO atual?* ${document.getElementById('q2').value}\n` +
+            `*Q3. Quantas horas DORME por noite?* ${document.getElementById('q3').value}\n` +
+            `*Q4. Possui RESTRIÇÃO alimentar?* ${document.getElementById('q4').value}\n` +
+            `*Q5. Qual parte do corpo quer MELHORAR mais?* ${document.getElementById('q5').value}\n` +
+            `*Q6. Possui DEFICIENCIA ou LIMITAÇÃO física?* ${document.getElementById('q6').value}\n` +
+            `*Q7. Está passando ou JÁ TEVE acompanhamento PSICOLÓGICO?* ${document.getElementById('q7').value}\n` +
+            `*Q8. Está fazendo ALGUM TRATAMENTO físico ou psicológico?* ${document.getElementById('q8').value}\n` +
+            `*Q9. Está fazendo USO DE MEDICAMENTOS? Quais?* ${document.getElementById('q9').value}\n\n` +
+
+            `*==================================*\n` +
+            `*STATUS: ATIVO*\n` +
+            `*==================================*`;
+
   let numero = "5513997690898";
-  window.location.href = `whatsapp://send?phone=${numero}&text=${encodeURIComponent(msg)}`;
+  window.location.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
 }
 </script>
 </body>
