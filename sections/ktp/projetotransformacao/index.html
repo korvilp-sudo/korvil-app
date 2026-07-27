@@ -2,129 +2,289 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#000">
-<title>K-TP PROJETO TRANSFORMAÇÃO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TP - PROJETO TRANSFORMAÇÃO</title>
 <style>
-:root{--c:#00f5ff; --bg:#000; --card:#0a0a0a; --text:#fff; --text2:#aaa; --borda:#1f1f1f; --ok:#00ff88; --erro:#ff4444;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);padding:16px;max-width:700px;margin:auto;}
-h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16px;letter-spacing:1px;text-shadow:0 0 10px var(--c);}
-.card{background:var(--card);border:1.5px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:12px;}
-.titulo-secao{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;border-left:3px solid var(--c);padding-left:8px;}
-.sub-titulo{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.4;}
-.btn{width:100%;padding:14px;background:var(--c);color:#000;text-align:center;border-radius:10px;font-weight:800;font-size:14px;border:0;cursor:pointer;margin-top:10px;}
-.btn.acessar{background:transparent;border:1.5px solid var(--c);color:var(--c);}
-.btn.acessar:active{background:var(--c);color:#000;}
-.logo{display:block;margin:0 auto 10px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.logo-projeto{display:block;margin:0 auto 16px;max-width:140px;border:2px solid var(--c);border-radius:12px;padding:6px;background:#111;}
-.check{color:var(--ok);margin-right:6px;}
-.fase-card{background:#0a0a0a;border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:12px;}
-.meses{background:rgba(0,245,255,.1);border:1px solid var(--c);color:var(--c);font-size:11px;font-weight:900;padding:8px 10px;border-radius:6px;text-align:center;margin-bottom:10px;}
-.titulo-fase{font-size:14px;font-weight:900;color:var(--c);margin-bottom:8px;}
-.desc-fase{font-size:11px;color:var(--text2);line-height:1.7;text-align:justify;}
-.numero{color:var(--ok);}
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* FUNDO PRETO VIVO COM PARTICULAS */
+.bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    z-index: 0;
+  }
+.bg::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, #00ffff11 1px, transparent 1px);
+    background-size: 80px 80px;
+    animation: moveBg 20s linear infinite;
+  }
+  @keyframes moveBg { from { transform: translate(0,0); } to { transform: translate(80px,80px); } }
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    padding: 0 8%;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
+    z-index: 1;
+  }
+.slide.active { transform: translateX(0); opacity: 1; }
+.slide.exit { transform: translateX(-100%); opacity: 0; }
+
+  /* TITULO CENTRALIZADO COM SINALIZADOR 3s */
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7vw;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
+    margin-bottom: 40px;
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+  h1.blink::before, h1.blink::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    left: 20%;
+    box-shadow: 0 0 30px #00ffff;
+    animation: blinkSignal 3s ease-in-out;
+  }
+  h1.blink::before { top: -15px; }
+  h1.blink::after { bottom: -15px; }
+  @keyframes blinkSignal { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+  /* SUBTITULOS ALINHADOS ESQUERDA + ANIMAÇÃO SEQUENCIAL */
+.sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+  }
+.sub-item {
+    font-size: 2.8vw;
+    font-weight: 700;
+    color: #ccc;
+    opacity: 0.4;
+    transition: all 0.6s ease;
+  }
+.sub-item.active {
+    font-size: 3.2vw;
+    color: #00ffff;
+    opacity: 1;
+    text-shadow: 0 0 20px #00ffff;
+    transform: translateX(20px);
+  }
+
+  /* TABELAS */
+  table {
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 2.2vw;
+    width: 90%;
+  }
+  th, td {
+    border: 2px solid #00ffff44;
+    padding: 12px 20px;
+    text-align: left;
+  }
+  th {
+    background: #00ffff22;
+    color: #00ffff;
+    font-family: 'Orbitron';
+    text-align: center;
+  }
+  td { background: #0a0a0a; }
+
+.destaque { color: #00ffff; font-weight: 900; }
+.destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
+
+.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
+
+.controls {
+    position: absolute;
+    bottom: 40px;
+    left: 8%;
+    display: flex;
+    gap: 20px;
+    z-index: 2;
+  }
+.btn {
+    padding: 15px 30px;
+    font-size: 1.8vw;
+    font-family: 'Orbitron';
+    background: linear-gradient(90deg, #00ffff, #00aaff);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00ffff;
+    transition: 0.3s;
+  }
+.btn:hover { transform: scale(1.08); }
+
+.btn-participar {
+    position: absolute; right: 8%; bottom: 40px;
+    padding: 18px 40px; font-size: 2vw; text-decoration: none; z-index: 2;
+  }
+
+.counter { position: absolute; top: 40px; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; }
+
+  @keyframes load { from { width: 0%; } to { width: 100%; } }
+  @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 </style>
 </head>
 <body>
 
-<!-- TELA INICIAL: APRESENTAÇÃO -->
-<div id="apresentacao">
-  <div class="card">
-    <div style="text-align:center;font-size:13px;font-weight:800;color:var(--c);margin-bottom:10px;">K-TP Treinamento Personalizado</div>
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoktp.png" class="logo">
-    <img src="https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png" class="logo-projeto">
-    <div style="text-align:center;font-size:15px;font-weight:900;color:var(--c);margin-bottom:16px;">PROJETO TRANSFORMAÇÃO</div>
+<div class="bg"></div>
+<div id="slides"></div>
 
-    <div class="titulo-secao">| SOBRE O PROGRAMA</div>
-    <div class="sub-titulo">Programa de guia fitness desenvolvido por Say Korvil</div>
-
-    <div class="card" style="background:#111;border:1.5px solid var(--c);">
-      <div style="font-weight:800;color:var(--c);font-size:13px;">Treinador<br>Terapeuta Holístico<br>Especialista em Resultados</div>
-    </div>
-
-    <div class="titulo-secao">| PARTICIPANTES</div>
-    <div class="sub-titulo"><span class="check">✓</span>Crianças a partir de 10 anos<br><span class="check">✓</span>Jovens<br><span class="check">✓</span>Adultos<br><span class="check">✓</span>Idosos<br><span class="check">✓</span>Praticantes<br><span class="check">✓</span>Atletas</div>
-
-    <div class="titulo-secao">| METODOLOGIA</div>
-    <div class="sub-titulo"><span class="check">✓</span>1. Manutenção<br><span class="check">✓</span>2. Resistência<br><span class="check">✓</span>3. Força<br><span class="check">✓</span>4. Hipertrofia</div>
-
-    <div class="titulo-secao">| LINHA DO TEMPO DO PROJETO</div>
-
-    <!-- FASE 1: OFF SEASON -->
-    <div class="fase-card">
-      <div class="meses">JANEIRO A FEVEREIRO - OFF SEASON: PREPARO</div>
-      <div class="titulo-fase"><span class="numero">1.</span> OFF SEASON - ADAPTAÇÃO GERAL</div>
-      <div class="desc-fase">
-        Fase de adaptação total de corpo e mente às rotinas do Projeto TRANSFORMAÇÃO. Não existe dieta restritiva aqui. O objetivo é aumentar a ingestão calórica de forma estratégica para elevar energia, disposição, recuperação e preparar o metabolismo para o bulking. Para quem já fez o projeto no ano anterior, é o momento de liberdade consciente: aproveitar o que gosta sem sabotar os objetivos. Foco também na adaptação técnica: aprender execução correta dos exercícios e entender a metodologia semanal de cada fase. Essencial para ectomorfos e alunos com dificuldade de ganhar massa e peso. Se o objetivo for ganho de peso e hipertrofia, trabalhamos com superávit calórico. Se for emagrecimento e definição muscular, já iniciamos o controle calórico. Dieta mais liberal, mas sempre direcionada.
-      </div>
-    </div>
-
-    <!-- FASE 2: BULKING -->
-    <div class="fase-card">
-      <div class="meses">MARÇO A MAIO - BULKING: EVOLUÇÃO</div>
-      <div class="titulo-fase"><span class="numero">2.</span> BULKING - HIPERTROFIA MÁXIMA</div>
-      <div class="desc-fase">
-        Fase prioritária de construção. Objetivo principal: hipertrofia muscular, ganho de força, regeneração tecidual, reabilitação e condicionamento físico geral com foco em saúde e performance. Regra básica: comer mais do que gasta. Dieta limpa e protocolar, totalmente alinhada aos objetivos escolhidos por cada aluno, com prioridade máxima em proteínas de alta qualidade, carboidratos complexos e micronutrientes. Treinos estruturados para progressão de carga e execução técnica impecável, sem erros. Zero desperdício. Essa é a fase de ganhar massa magra de verdade, volume e densidade muscular. Disciplina na dieta e no treino é obrigatória para construir a base sólida do físico.
-      </div>
-    </div>
-
-    <!-- FASE 3: MAINTENANCE -->
-    <div class="fase-card">
-      <div class="meses">JUNHO A AGOSTO - MAINTENANCE: MANTER RESULTADOS</div>
-      <div class="titulo-fase"><span class="numero">3.</span> MAINTENANCE - CONSOLIDAÇÃO</div>
-      <div class="desc-fase">
-        Fase de manutenção e consolidação de todos os ganhos conquistados no bulking. Momento de verificar, ajustar e refinar o protocolo geral do projeto. Objetivo: manter massa magra, reduzir levemente a gordura corporal e densificar a musculatura. Preparação física e mental para a fase de cutting. Foco total em disciplina, consistência e nutrição inteligente para nutrir o físico. Trabalhamos também o equilíbrio da mente, da alma e do estado de espírito. Os treinos são de intensidade mediana para evitar lesões, preservar articulações e não comprometer a energia da fase final. Esta é a ponte entre construção e definição. Fase de lapidar o que foi construído.
-      </div>
-    </div>
-
-    <!-- FASE 4: CUTTING -->
-    <div class="fase-card">
-      <div class="meses">SETEMBRO A NOVEMBRO - CUTTING: FINALIZAÇÃO</div>
-      <div class="titulo-fase"><span class="numero">4.</span> CUTTING - DEFINIÇÃO TOTAL</div>
-      <div class="desc-fase">
-        Fase de finalização e exposição do resultado do Projeto TRANSFORMAÇÃO. Objetivo: eliminar o máximo de gordura corporal possível preservando 100% da massa muscular conquistada. Dieta rigorosa com déficit calórico controlado e estratégico. Treinos intensos, técnicos e precisos. Não pode errar e não pode se lesionar. Foco total em estética, simetria, vascularização e modelagem do físico. É aqui que o trabalho do ano inteiro aparece. Fase de definição muscular geral, performance máxima e resultado visível. Execução perfeita em dieta e treino. Sem falhas.
-      </div>
-    </div>
-
-    <!-- FASE 5: DEZEMBRO -->
-    <div class="fase-card">
-      <div class="meses">DEZEMBRO - FÉRIAS: APROVEITAR OS RESULTADOS</div>
-      <div class="titulo-fase"><span class="numero">5.</span> DEZEMBRO - FÉRIAS ESTRATÉGICAS</div>
-      <div class="desc-fase">
-        Período oficial de férias e recarga. Treinos leves com exercícios de rotina, mobilidade e manutenção. Objetivo: aproveitar os resultados conquistados, descansar corpo e articulações e manter o corpo ativo sem pressão. Momento para avaliar o ano, celebrar a evolução e repensar as escolhas de objetivos para o próximo ciclo do projeto. É a fase de transição: manter a constância sem estresse. Para voltar no ano seguinte com mais foco, mais energia e mais estratégia para atingir um novo nível.
-      </div>
-    </div>
-
-    <button class="btn" onclick="window.location.href='inscricao-do-projeto.html'">COMEÇAR INSCRIÇÃO</button>
-    <button class="btn acessar" onclick="acessarProjeto()">ACESSAR</button>
-  </div>
-</div>
+<audio id="whoosh">
+  <source src="https://cdn.pixabay.com/audio/2024/08/09/audio_8c8b2c5d5e.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-// MESMOS IDS DO projetotransformacao.html ALUNOS_DB
-const idsPermitidos = [
-  "ktp0", "mag1", "mcarla2", "hvitoria3", "alexandra4", "michele5", "aline6", 
-  "adriana7", "joss8", "amigaadrum9", "amigaadrdois10", "angel11", "anapaula12", 
-  "gusta13", "sueli14", "fabi15", "paula16", "nop17", "bianca18", "lau19", 
-  "cass20", "katia21", "mara22", "edna23", "luciane24", "marly25", "mcris26", 
-  "juci27", "joce28", "marcos29", "lucas30", "celi31", "jaque32", "elisa33", 
-  "gice34", "pati35", "mel36", "naty37", "gon38", "nicol39", "tchuco40", "dani41"
-]; 
+const LINK_FINAL = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html";
 
-function acessarProjeto(){
-  const senha = prompt("Digite sua senha/ID de aluno do Projeto Transformação:");
-  if(!senha){return;}
-  const senhaNormalizada = senha.trim().toLowerCase().replace(/\s+/g, ''); // TIRA ESPAÇO E MINÚSCULO
-  console.log("Tentando logar com:", senhaNormalizada); // PRA VER NO CONSOLE
+const slides = [
+  { t: "K-TP", s: "TREINAMENTO PERSONALIZADO", p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span><br>O MÉTODO CIENTÍFICO PARA SUA MELHOR VERSÃO" },
+  { t: "4 FASES DO PROJETO", lista: ["1. OFF SEASON", "2. BULKING", "3. MAINTENANCE", "4. CUTTING"] },
+  { t: "4 SEMANAS DO MÉTODO", lista: ["SEMANA 1: MANUTENÇÃO", "SEMANA 2: RESISTÊNCIA", "SEMANA 3: FORÇA", "SEMANA 4: HIPERTROFIA"] },
+  { t: "NOSSOS OBJETIVOS", lista: ["GANHO DE PESO", "EMAGRECIMENTO", "DEFINIÇÃO MUSCULAR", "SAÚDE", "CONDICIONAMENTO FÍSICO", "HIPERTROFIA", "REABILITAÇÃO FÍSICA"] },
+  { t: "CRONOGRAMA", tabela: [["PERÍODO", "ETAPA"], ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"], ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]] },
+  { t: "PARA TODOS", lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"] },
+  { t: "PLANOS E VALORES", tabela: [["PLANO", "MODALIDADE", "FREQUÊNCIA"], ["AVULSO", "PRESENCIAL / ONLINE", "1X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "2X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "3X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "4X NA SEMANA"], ["MENSAL VIP", "PRESENCIAL / ONLINE", "5X NA SEMANA"]] },
+  { t: "FUNCIONAMENTO", tabela: [["TIPO", "DIAS"], ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"], ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]] },
+  { t: "HORÁRIOS DISPONÍVEIS", tabela: [["MANHÃ", "NOITE / MADRUGADA", "VAGAS"], ["06H 07H 08H 09H 10H", "16H ÀS 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]] },
+  { t: "CHEGOU SUA VEZ", s: "PARE DE ADIAR", p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO<br>A TRANSFORMAÇÃO COMEÇA AGORA", vagas: true },
+];
 
-  if(idsPermitidos.includes(senhaNormalizada)){
-    localStorage.setItem('idLogado', senhaNormalizada);
-    window.location.href = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html"; 
-  } else {
-    alert("Acesso negado. ID: " + senha + " não encontrado.");
+let current = 0;
+let timer;
+let subTimer;
+const container = document.getElementById('slides');
+const whoosh = document.getElementById('whoosh');
+
+function renderSlide(i) {
+  const slide = slides[i];
+  let content = `<h1 class="blink">${slide.t}</h1>`;
+  if(slide.s) content += `<h2 style="font-size:3.2vw;color:#00ffff;margin-bottom:30px;width:100%;text-align:center;">${slide.s}</h2>`;
+
+  if(slide.lista) {
+    content += `<div class="sub-list">`;
+    slide.lista.forEach(item => content += `<div class="sub-item">${item}</div>`);
+    content += `</div>`;
   }
+  if(slide.tabela) {
+    content += `<table>`;
+    slide.tabela.forEach((row, idx) => {
+      content += `<tr>`;
+      row.forEach(cell => content += idx===0? `<th>${cell}</th>` : `<td>${cell}</td>`);
+      content += `</tr>`;
+    });
+    content += `</table>`;
+  }
+  if(slide.p) content += `<p style="font-size:2.8vw;margin-top:20px;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3.2vw;margin-top:20px;">RESTAM POUCAS VAGAS!</p>`;
+
+  container.innerHTML = `
+    <div class="slide active">
+      ${content}
+      <div class="progress"><div class="progress-bar"></div></div>
+      <div class="counter">${i + 1} / ${slides.length}</div>
+      <div class="controls">
+        <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
+        <button class="btn" onclick="pauseResume()">⏯ PAUSAR</button>
+        <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
+      </div>
+      <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
+    </div>
+  `;
+  setTimeout(()=> document.querySelector('h1')?.classList.remove('blink'), 3000);
+  startSubAnimation();
 }
+
+function startSubAnimation(){
+  clearInterval(subTimer);
+  const items = document.querySelectorAll('.sub-item');
+  if(items.length === 0) return;
+  let idx = 0;
+  const timePerItem = 10000 / items.length;
+  items.forEach(it => it.classList.remove('active'));
+  items[0].classList.add('active');
+  subTimer = setInterval(()=>{
+    items.forEach(it => it.classList.remove('active'));
+    idx = (idx + 1) % items.length;
+    items[idx].classList.add('active');
+  }, timePerItem);
+}
+
+function goToSlide(n) {
+  clearInterval(timer); clearInterval(subTimer);
+  const prev = container.querySelector('.slide.active');
+  if(prev) prev.classList.add('exit');
+  whoosh.currentTime = 0; whoosh.play();
+  setTimeout(()=> {
+    current = n;
+    renderSlide(current);
+    startTimer();
+  }, 600);
+}
+
+function nextSlide() { goToSlide((current + 1) % slides.length); }
+function prevSlide() { goToSlide((current - 1 + slides.length) % slides.length); }
+
+let paused = false;
+function pauseResume() {
+  paused =!paused;
+  if(paused) { clearInterval(timer); clearInterval(subTimer); }
+  else { startTimer(); startSubAnimation(); }
+}
+
+function startTimer() { timer = setInterval(nextSlide, 10000); }
+
+document.body.addEventListener('click', (e)=>{
+  if(!e.target.closest('.btn') &&!e.target.closest('.btn-participar')) nextSlide();
+});
+
+renderSlide(0);
+startTimer();
 </script>
+
 </body>
 </html>
