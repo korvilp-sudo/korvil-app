@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 /* BANNER + ACESSOS */
 .banner{margin:12px 4%;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,#001a1a,var(--c));padding:20px}
 .acessos{display:flex;gap:20px;padding:15px 4%;overflow-x:auto}
-.acesso{text-align:center;min-width:70px;cursor:pointer}
+.acesso{text-align:center;min-width:70px;cursor:pointer;text-decoration:none;color:#000}
 .acesso.icon{width:50px;height:50px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:24px;margin:auto;border:1px solid var(--borda);position:relative}
 .badge{background:green;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;position:absolute;top:-5px;right:-5px;font-weight:800}
 
@@ -39,9 +39,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 .ofertas{display:flex;gap:12px;padding:0 4%;overflow-x:auto}
 .card-oferta{min-width:150px;background:var(--card);border-radius:10px;padding:10px;border:1px solid var(--borda);cursor:pointer}
 .card-oferta img{width:100%;height:120px;object-fit:cover;border-radius:8px;background:#111}
-.preco-old{text-decoration:line-through;color:var(--text2);font-size:12px}
 .preco{color:var(--c2);font-size:18px;font-weight:900}
-.off{background:green;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:800}
 
 /* MENU INFERIOR */
 .menu-inf{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid var(--borda);display:flex;justify-content:space-around;padding:8px 0;z-index:99}
@@ -60,8 +58,8 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 </head>
 <body>
 
-<!-- PAGINA INICIO - FICA AQUI MESMO -->
-<div id="inicio" class="pagina ativo">
+<!-- PAGINA INICIO -->
+<div id="inicio">
   <div class="topo">
     <div class="barra-top">
       <div class="perfil-top" onclick="abrirPopup('contas')">K</div>
@@ -95,27 +93,27 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
   </div>
 
   <div class="acessos">
-    <div class="acesso"><div class="icon">%<div class="badge">NOVO</div></div><span>Ofertaço</span></div>
-    <div class="acesso"><div class="icon">🎟️</div><span>Cupons</span></div>
-    <div class="acesso" onclick="abrirPopup('anuncio')"><div class="icon">🔗<div class="badge">GANHA $</div></div><span>Afiliados</span></div>
-    <div class="acesso"><div class="icon">🏆</div><span>Bolão 2026</span></div>
-    <div class="acesso"><div class="icon">🏪<div class="badge">NOVO</div></div><span>Lojas</span></div>
+    <a class="acesso"><div class="icon">%<div class="badge">NOVO</div></div><span>Ofertaço</span></a>
+    <a class="acesso"><div class="icon">🎟️</div><span>Cupons</span></a>
+    <a class="acesso" onclick="abrirPopup('anuncio')"><div class="icon">🔗<div class="badge">GANHA $</div></div><span>Afiliados</span></a>
+    <a class="acesso"><div class="icon">🏆</div><span>Bolão 2026</span></a>
+    <a class="acesso"><div class="icon">🏪<div class="badge">NOVO</div></div><span>Lojas</span></a>
   </div>
 
   <h3 class="titulo">OFERTAS RELÂMPAGO</h3>
   <div class="ofertas" id="gridOfertas"></div>
 </div>
 
-<!-- MENU INFERIOR - AGORA LINKA PRA PASTAS -->
+<!-- MENU INFERIOR - AGORA LINKA PRA PASTAS REAIS -->
 <div class="menu-inf">
   <a href="index.html" class="item-menu ativo"><ion-icon name="home"></ion-icon>Inicio</a>
   <a href="categorias/index.html" class="item-menu"><ion-icon name="grid"></ion-icon>Categorias</a>
   <a href="carrinho/index.html" class="item-menu"><ion-icon name="cart"></ion-icon>Carrinho</a>
   <a href="#" class="item-menu"><ion-icon name="play-circle"></ion-icon>Videos</a>
-  <a href="mais/index.html" class="item-menu"><ion-icon name="menu"></ion-icon>Mais</a>
+  <a href="perfil/index.html" class="item-menu"><ion-icon name="menu"></ion-icon>Mais</a>
 </div>
 
-<!-- POPUPS CONTINUAM AQUI NA HOME -->
+<!-- POPUPS -->
 <div id="popup-contas" class="popup" onclick="fecharPopup()">
   <div class="popup-conteudo" onclick="event.stopPropagation()">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px">
@@ -125,7 +123,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
     <h4>Alterar conta</h4>
     <div class="popup-item"><b>SAMMY DAVID</b><br><span style="color:var(--text2)">saykorvil@gmail.com</span></div>
     <div class="popup-item"><b>Say Korvil</b><br><span style="color:var(--text2)">korvil.p@gmail.com</span></div>
-    <div class="popup-item"><ion-icon name="person-add-outline"></ion-icon> Adicionar conta</div>
   </div>
 </div>
 
@@ -134,7 +131,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
     <h3>Escolha um endereço de entrega</h3>
     <p style="color:var(--text2);font-size:13px">O frete varia conforme a localização.</p>
     <div class="popup-item"><input type="radio" checked> Rua Marivaldo Fernandes 546<br><span style="color:var(--text2)">CEP: 11256075 - Bertioga, SP</span></div>
-    <div class="popup-item"><input type="radio"> Rua Oswaldo Cruz 2407<br><span style="color:var(--text2)">CEP: 11250524 - Bertioga, SP</span></div>
     <button class="btn-azul" onclick="fecharPopup()">Confirmar</button>
   </div>
 </div>
@@ -144,7 +140,6 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
     <h3 style="color:var(--c)">🎉 CUPOM LIBERADO</h3>
     <div style="background:var(--card); padding:15px; border-radius:10px; text-align:center; margin:15px 0">
       <div style="font-size:24px; font-weight:900; color:var(--c)">KORVIL10</div>
-      <div style="font-size:12px">10% OFF em todo o site</div>
     </div>
     <button class="btn-azul" onclick="navigator.clipboard.writeText('KORVIL10');alert('Cupom Copiado!')">COPIAR CUPOM</button>
   </div>
@@ -153,7 +148,7 @@ body{background:var(--bg);color:var(--text);padding-bottom:70px}
 <div id="popup-anuncio" class="popup" onclick="fecharPopup()">
   <div class="popup-conteudo" onclick="event.stopPropagation()">
     <h3>Anunciar produto automaticamente</h3>
-    <p style="color:var(--text2); font-size:14px">Vamos anunciar seu produto nos 4 setores: SISTEMA K, K-TP, K-AFORTUNADO, K-ALMA</p>
+    <p style="color:var(--text2); font-size:14px">Vamos anunciar seu produto nos 4 setores</p>
     <button class="btn-azul" style="margin-top:15px" onclick="alert('Anuncio Ativado!')">ATIVAR ANÚNCIO AUTO</button>
   </div>
 </div>
@@ -166,18 +161,16 @@ const produtos = {
   kafortunado: [{id:3,nome:"Curso Finanças",preco:299.90,img:"https://placehold.co/200/00f5ff/000?text=CURSO"}],
   kalma: [{id:4,nome:"Sessão Terapia",preco:150.00,img:"https://placehold.co/200/00d4ff/000?text=TERAPIA"}]
 };
-let carrinho = JSON.parse(localStorage.getItem('carrinhoKORVIL')) || [];
 
-// FUNÇÕES NAVEGAÇÃO
+// FUNÇÕES
 function abrirPopup(id){document.getElementById('popup-'+id).classList.add('ativo')}
 function fecharPopup(){document.querySelectorAll('.popup').forEach(p=>p.classList.remove('ativo'))}
 
-// FUNÇÃO SETORES
 function abrirSetor(setor){
   let grid = document.getElementById('gridOfertas');
   let lista = setor=='todos'? Object.values(produtos).flat() : produtos[setor];
   grid.innerHTML = lista.map(p=>`
-    <div class="card-oferta" onclick="addCarrinho(${p.id},'${p.nome}',${p.preco},'${p.img}')">
+    <div class="card-oferta" onclick="window.location.href='produto/index.html'">
       <img src="${p.img}">
       <p style="font-size:13px;margin:8px 0">${p.nome}</p>
       <div class="preco">R$ ${p.preco.toFixed(2)}</div>
@@ -185,14 +178,6 @@ function abrirSetor(setor){
   `).join('');
 }
 
-// CARRINHO
-function addCarrinho(id,nome,preco,img){
-  carrinho.push({id,nome,preco,img,qtd:1});
-  localStorage.setItem('carrinhoKORVIL', JSON.stringify(carrinho));
-  alert('Adicionado ao carrinho!');
-}
-
-// INICIAR
 abrirSetor('todos');
 </script>
 </body>
