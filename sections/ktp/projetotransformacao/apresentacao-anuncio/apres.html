@@ -51,7 +51,7 @@
     line-height: 0;
   }
 .logo-top {
-    width: 54vw;
+    width: 54vw; /* LOGO GRANDE VOLTOU */
     max-width: 800px;
     display: block;
     filter: drop-shadow(0 0 15px #00ffff);
@@ -67,12 +67,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* CENTRALIZADO */
+    align-items: center;
     justify-content: center;
-    text-align: center; /* TEXTO CENTRALIZADO */
+    text-align: center;
     padding: 0 8%;
     padding-top: 35vh;
-    padding-bottom: 160px;
+    padding-bottom: 120px; /* Reduzi pra caber botões menores */
     transform: translateX(100%);
     opacity: 0;
     transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
@@ -108,12 +108,11 @@
   h1.blink::after { bottom: -15px; }
   @keyframes blinkSignal { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
 
-  /* SUBTITULOS CENTRALIZADOS */
 .sub-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    align-items: center; /* CENTRALIZADO */
+    align-items: center;
     justify-content: center;
     width: 100%;
   }
@@ -130,19 +129,19 @@
     color: #00ffff;
     opacity: 1;
     text-shadow: 0 0 20px #00ffff;
-    transform: scale(1.08); /* Zoom centralizado, sem deslocar pra esquerda */
+    transform: scale(1.08);
   }
 
   table {
     border-collapse: collapse;
-    margin: 12px auto; /* CENTRALIZADA */
+    margin: 12px auto;
     font-size: 1.9vw;
     width: 90%;
   }
   th, td {
     border: 2px solid #00ffff44;
     padding: 10px 16px;
-    text-align: center; /* CENTRALIZADA */
+    text-align: center;
   }
   th {
     background: #00ffff22;
@@ -164,42 +163,42 @@
 .destaque { color: #00ffff; font-weight: 900; }
 .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
 
-.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; z-index: 5; }
+.progress { position: absolute; bottom: 100px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; z-index: 5; } /* Subi a barra */
 .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
 
 .controls {
     position: absolute;
-    bottom: 40px;
+    bottom: 25px; /* Mais pra cima */
     left: 50%;
-    transform: translateX(-50%); /* CENTRALIZADO */
+    transform: translateX(-50%);
     display: flex;
-    gap: 20px;
+    gap: 12px; /* Menos espaço */
     z-index: 20;
     flex-wrap: wrap;
   }
 .btn {
-    padding: 16px 32px;
-    font-size: 1.8vw;
+    padding: 10px 18px; /* BEM MENORES */
+    font-size: 1.3vw; /* Fonte menor */
     font-family: 'Orbitron';
     background: linear-gradient(90deg, #00ffff, #00aaff);
     border: 2px solid #00ffff;
-    border-radius: 12px;
+    border-radius: 10px;
     color: #000;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 0 20px #00ffff;
+    box-shadow: 0 0 15px #00ffff;
     transition: 0.3s;
     white-space: nowrap;
     box-sizing: border-box;
   }
-.btn:hover { transform: scale(1.08); box-shadow: 0 0 40px #00ffff; }
+.btn:hover { transform: scale(1.08); box-shadow: 0 0 30px #00ffff; }
 
 .btn-participar {
     position: absolute;
     right: 8%;
-    bottom: 40px;
-    padding: 18px 40px;
-    font-size: 2vw;
+    bottom: 25px; /* Alinhado com os outros */
+    padding: 12px 22px; /* BEM MENOR */
+    font-size: 1.4vw; /* Fonte menor */
     text-decoration: none;
     z-index: 20;
     white-space: nowrap;
