@@ -7,7 +7,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700;900&display=swap');
 
-    * { margin: 0; padding: 0; box-sizing: border-box; cursor: pointer; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: #000;
@@ -18,144 +18,178 @@
     height: 100vh;
   }
 
-  /* FUNDO PRETO VIVO SE MEXENDO */
- .bg {
+  /* FUNDO PRETO VIVO */
+.bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    z-index: 0;
+  }
+.bg::before {
+    content: '';
     position: absolute;
     width: 200%;
     height: 200%;
     top: -50%;
     left: -50%;
-    background:
-      radial-gradient(circle at 20% 50%, #001a1a 0%, transparent 50%),
-      radial-gradient(circle at 80% 50%, #001f2e 0%, transparent 50%),
-      #000;
-    animation: bgMove 15s ease-in-out infinite alternate;
-    z-index: 0;
+    background: radial-gradient(circle, #00ffff11 1px, transparent 1px);
+    background-size: 80px 80px;
+    animation: moveBg 20s linear infinite;
   }
-  @keyframes bgMove {
-    0% { transform: rotate(0deg) scale(1); }
-    100% { transform: rotate(5deg) scale(1.1); }
+  @keyframes moveBg { from { transform: translate(0,0); } to { transform: translate(80px,80px); } }
+
+  /* LOGO BMW NO TOPO COM BORDA AZUL */
+.logo-wrapper {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    padding: 12px;
+    border-radius: 20px;
+    background: radial-gradient(circle, #00ffff22, transparent);
+    border: 3px solid #00ffff;
+    box-shadow: 0 0 30px #00ffff, 0 0 60px #00aaff, inset 0 0 20px #00ffff33;
+    animation: logoPulse 2s ease-in-out infinite alternate;
+  }
+.logo-top {
+    width: 18vw;
+    max-width: 280px;
+    display: block;
+    filter: drop-shadow(0 0 10px #00ffff);
+  }
+  @keyframes logoPulse {
+    from { box-shadow: 0 0 20px #00ffff, 0 0 40px #00aaff, inset 0 0 10px #00ffff33; }
+    to { box-shadow: 0 0 50px #00ffff, 0 0 90px #00aaff, inset 0 0 30px #00ffff55; }
   }
 
- .slide {
+.slide {
     position: absolute;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    text-align: center;
-    padding: 60px;
+    text-align: left;
+    padding: 0 8%;
+    padding-top: 18vh; /* Espaço pra logo com borda */
     transform: translateX(100%);
     opacity: 0;
     transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
     z-index: 1;
   }
- .slide.active { transform: translateX(0); opacity: 1; }
- .slide.exit { transform: translateX(-100%); opacity: 0; }
+.slide.active { transform: translateX(0); opacity: 1; }
+.slide.exit { transform: translateX(-100%); opacity: 0; }
 
-  /* TITULO COM SINALIZADOR PISCANDO 3s */
+  /* TITULO CENTRALIZADO */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 8vw;
+    font-size: 6.5vw;
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 3px;
     text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     position: relative;
+    width: 100%;
+    text-align: center;
   }
   h1.blink::before, h1.blink::after {
     content: '';
     position: absolute;
-    width: 120%;
-    height: 5px;
-    background: linear-gradient(90deg, transparent, #00ffff, #00aaff, transparent);
-    left: -10%;
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    left: 20%;
     box-shadow: 0 0 30px #00ffff;
     animation: blinkSignal 3s ease-in-out;
   }
-  h1.blink::before { top: -20px; }
-  h1.blink::after { bottom: -20px; }
-  @keyframes blinkSignal {
-    0%,100% { opacity: 0; } 50% { opacity: 1; }
-  }
+  h1.blink::before { top: -15px; }
+  h1.blink::after { bottom: -15px; }
+  @keyframes blinkSignal { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
 
-  /* SUBTITULOS ALINHADOS VERTICAL + ZOOM 6s */
- .sub-list {
+  /* SUBTITULOS ALINHADOS ESQUERDA + ANIMAÇÃO SEQUENCIAL 10s */
+.sub-list {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    align-items: center;
+    gap: 18px;
+    align-items: flex-start;
+    width: 100%;
   }
- .sub-item {
-    font-size: 3vw;
+.sub-item {
+    font-size: 2.6vw;
     font-weight: 700;
-    color: #ddd;
-    animation: zoomHighlight 6s ease-in-out;
-    transform-origin: center;
+    color: #ccc;
+    opacity: 0.4;
+    transition: all 0.6s ease;
   }
-  @keyframes zoomHighlight {
-    0% { transform: scale(1); color: #ddd; }
-    50% { transform: scale(1.15); color: #00ffff; text-shadow: 0 0 20px #00ffff; }
-    100% { transform: scale(1); color: #ddd; }
+.sub-item.active {
+    font-size: 3vw;
+    color: #00ffff;
+    opacity: 1;
+    text-shadow: 0 0 20px #00ffff;
+    transform: translateX(20px);
   }
 
-  /* TABELAS ORGANIZADAS */
+  /* TABELAS */
   table {
     border-collapse: collapse;
-    margin: 20px auto;
-    font-size: 2.5vw;
+    margin: 15px 0;
+    font-size: 2vw;
     width: 90%;
   }
   th, td {
     border: 2px solid #00ffff44;
-    padding: 15px 25px;
-    text-align: center;
+    padding: 10px 18px;
+    text-align: left;
   }
   th {
     background: #00ffff22;
     color: #00ffff;
     font-family: 'Orbitron';
+    text-align: center;
   }
-  td { background: #111; }
+  td { background: #0a0a0a; }
 
- .destaque { color: #00ffff; font-weight: 900; }
- .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
+.destaque { color: #00ffff; font-weight: 900; }
+.destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
 
-  /* BARRA 6 SEGUNDOS */
- .progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; }
- .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 6s linear forwards; }
+.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
 
-  /* BOTOES CONTROLE */
- .controls {
+.controls {
     position: absolute;
     bottom: 40px;
+    left: 8%;
     display: flex;
-    gap: 30px;
+    gap: 20px;
+    z-index: 2;
   }
- .btn {
-    padding: 15px 40px;
-    font-size: 2vw;
+.btn {
+    padding: 15px 30px;
+    font-size: 1.8vw;
     font-family: 'Orbitron';
     background: linear-gradient(90deg, #00ffff, #00aaff);
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     color: #000;
     font-weight: 900;
+    cursor: pointer;
     box-shadow: 0 0 20px #00ffff;
     transition: 0.3s;
   }
- .btn:hover { transform: scale(1.1); }
+.btn:hover { transform: scale(1.08); }
 
- .btn-participar {
-    position: absolute; right: 40px; bottom: 40px;
-    padding: 20px 50px; font-size: 2.2vw; text-decoration: none;
+.btn-participar {
+    position: absolute; right: 8%; bottom: 40px;
+    padding: 18px 40px; font-size: 2vw; text-decoration: none; z-index: 2;
   }
 
- .counter { position: absolute; top: 40px; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; }
+.counter { position: absolute; top: 220px; right: 50px; font-size: 2vw; color: #00ffff; font-family: 'Orbitron'; }
 
   @keyframes load { from { width: 0%; } to { width: 100%; } }
   @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
@@ -164,6 +198,9 @@
 <body>
 
 <div class="bg"></div>
+<div class="logo-wrapper">
+  <img src="sections/ktp/images/logoprojetotransformacao.png" alt="Logo K-TP" class="logo-top">
+</div>
 <div id="slides"></div>
 
 <audio id="whoosh">
@@ -171,79 +208,31 @@
 </audio>
 
 <script>
+const LINK_FINAL = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html";
+
 const slides = [
-  {
-    t: "K-TP",
-    s: "TREINAMENTO PERSONALIZADO",
-    p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span>\nO MÉTODO CIENTÍFICO PARA SUA MELHOR VERSÃO"
-  },
-  {
-    t: "4 FASES DO PROJETO",
-    lista: ["1. OFF SEASON", "2. BULKING", "3. MAINTENANCE", "4. CUTTING"]
-  },
-  {
-    t: "4 SEMANAS DO MÉTODO",
-    lista: ["SEMANA 1: MANUTENÇÃO", "SEMANA 2: RESISTÊNCIA", "SEMANA 3: FORÇA", "SEMANA 4: HIPERTROFIA"]
-  },
-  {
-    t: "NOSSOS OBJETIVOS",
-    lista: ["GANHO DE PESO", "EMAGRECIMENTO", "DEFINIÇÃO MUSCULAR", "SAÚDE", "CONDICIONAMENTO FÍSICO", "HIPERTROFIA", "REABILITAÇÃO FÍSICA"]
-  },
-  {
-    t: "CRONOGRAMA",
-    tabela: [
-      ["PERÍODO", "ETAPA"],
-      ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"],
-      ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]
-    ]
-  },
-  {
-    t: "PARA TODOS",
-    lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"]
-  },
-  {
-    t: "PLANOS E VALORES",
-    tabela: [
-      ["PLANO", "MODALIDADE", "FREQUÊNCIA"],
-      ["AVULSO", "PRESENCIAL / ONLINE", "1X NA SEMANA"],
-      ["MENSAL", "PRESENCIAL / ONLINE", "2X NA SEMANA"],
-      ["MENSAL", "PRESENCIAL / ONLINE", "3X NA SEMANA"],
-      ["MENSAL", "PRESENCIAL / ONLINE", "4X NA SEMANA"],
-      ["MENSAL VIP", "PRESENCIAL / ONLINE", "5X NA SEMANA"]
-    ]
-  },
-  {
-    t: "FUNCIONAMENTO",
-    tabela: [
-      ["TIPO", "DIAS"],
-      ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"],
-      ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]
-    ]
-  },
-  {
-    t: "HORÁRIOS DISPONÍVEIS",
-    tabela: [
-      ["MANHÃ", "NOITE / MADRUGADA", "VAGAS"],
-      ["06H 07H 08H 09H 10H", "16H A 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]
-    ]
-  },
-  {
-    t: "CHEGOU SUA VEZ",
-    s: "PARE DE ADIAR",
-    p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO\nA TRANSFORMAÇÃO COMEÇA AGORA",
-    vagas: true
-  },
+  { t: "K-TP", s: "TREINAMENTO PERSONALIZADO", p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span><br>O MÉTODO CIENTÍFICO PARA SUA MELHOR VERSÃO" },
+  { t: "4 FASES DO PROJETO", lista: ["1. OFF SEASON", "2. BULKING", "3. MAINTENANCE", "4. CUTTING"] },
+  { t: "4 SEMANAS DO MÉTODO", lista: ["SEMANA 1: MANUTENÇÃO", "SEMANA 2: RESISTÊNCIA", "SEMANA 3: FORÇA", "SEMANA 4: HIPERTROFIA"] },
+  { t: "NOSSOS OBJETIVOS", lista: ["GANHO DE PESO", "EMAGRECIMENTO", "DEFINIÇÃO MUSCULAR", "SAÚDE", "CONDICIONAMENTO FÍSICO", "HIPERTROFIA", "REABILITAÇÃO FÍSICA"] },
+  { t: "CRONOGRAMA", tabela: [["PERÍODO", "ETAPA"], ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"], ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]] },
+  { t: "PARA TODOS", lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"] },
+  { t: "PLANOS E VALORES", tabela: [["PLANO", "MODALIDADE", "FREQUÊNCIA"], ["AVULSO", "PRESENCIAL / ONLINE", "1X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "2X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "3X NA SEMANA"], ["MENSAL", "PRESENCIAL / ONLINE", "4X NA SEMANA"], ["MENSAL VIP", "PRESENCIAL / ONLINE", "5X NA SEMANA"]] },
+  { t: "FUNCIONAMENTO", tabela: [["TIPO", "DIAS"], ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"], ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]] },
+  { t: "HORÁRIOS DISPONÍVEIS", tabela: [["MANHÃ", "NOITE / MADRUGADA", "VAGAS"], ["06H 07H 08H 09H 10H", "16H ÀS 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]] },
+  { t: "CHEGOU SUA VEZ", s: "PARE DE ADIAR", p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO<br>A TRANSFORMAÇÃO COMEÇA AGORA", vagas: true },
 ];
 
 let current = 0;
 let timer;
+let subTimer;
 const container = document.getElementById('slides');
 const whoosh = document.getElementById('whoosh');
 
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1 class="blink">${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:3.5vw;color:#00ffff;margin-bottom:30px;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:3vw;color:#00ffff;margin-bottom:25px;width:100%;text-align:center;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -259,8 +248,8 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.p) content += `<p style="font-size:3vw;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3.5vw;margin-top:20px;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.p) content += `<p style="font-size:2.6vw;margin-top:15px;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3vw;margin-top:15px;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `
     <div class="slide active">
@@ -272,51 +261,54 @@ function renderSlide(i) {
         <button class="btn" onclick="pauseResume()">⏯ PAUSAR</button>
         <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
       </div>
-      <a href="/projetotransformacao/projetotransformacao.html" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
+      <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
     </div>
   `;
-  // Remove classe blink depois de 3s
   setTimeout(()=> document.querySelector('h1')?.classList.remove('blink'), 3000);
+  startSubAnimation();
 }
 
-function nextSlide() {
-  clearInterval(timer);
+function startSubAnimation(){
+  clearInterval(subTimer);
+  const items = document.querySelectorAll('.sub-item');
+  if(items.length === 0) return;
+  let idx = 0;
+  const timePerItem = 10000 / items.length;
+  items.forEach(it => it.classList.remove('active'));
+  items[0].classList.add('active');
+  subTimer = setInterval(()=>{
+    items.forEach(it => it.classList.remove('active'));
+    idx = (idx + 1) % items.length;
+    items[idx].classList.add('active');
+  }, timePerItem);
+}
+
+function goToSlide(n) {
+  clearInterval(timer); clearInterval(subTimer);
   const prev = container.querySelector('.slide.active');
   if(prev) prev.classList.add('exit');
   whoosh.currentTime = 0; whoosh.play();
   setTimeout(()=> {
-    current = (current + 1) % slides.length;
+    current = n;
     renderSlide(current);
     startTimer();
   }, 600);
 }
 
-function prevSlide() {
-  clearInterval(timer);
-  const prev = container.querySelector('.slide.active');
-  if(prev) prev.classList.add('exit');
-  whoosh.currentTime = 0; whoosh.play();
-  setTimeout(()=> {
-    current = (current - 1 + slides.length) % slides.length;
-    renderSlide(current);
-    startTimer();
-  }, 600);
-}
+function nextSlide() { goToSlide((current + 1) % slides.length); }
+function prevSlide() { goToSlide((current - 1 + slides.length) % slides.length); }
 
 let paused = false;
 function pauseResume() {
   paused =!paused;
-  if(paused) clearInterval(timer);
-  else startTimer();
+  if(paused) { clearInterval(timer); clearInterval(subTimer); }
+  else { startTimer(); startSubAnimation(); }
 }
 
-function startTimer() {
-  timer = setInterval(nextSlide, 6000); // 6 SEGUNDOS
-}
+function startTimer() { timer = setInterval(nextSlide, 10000); }
 
-// Clicar na tela avança
 document.body.addEventListener('click', (e)=>{
-  if(!e.target.classList.contains('btn') &&!e.target.classList.contains('btn-participar')) nextSlide();
+  if(!e.target.closest('.btn') &&!e.target.closest('.btn-participar')) nextSlide();
 });
 
 renderSlide(0);
