@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+8<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -65,59 +65,95 @@ tr:hover{background:#0a0a0a;}
 </div>
   
 <script>
-let ALUNOS_DB = {
-  "ktp0": {nome:"SAY KORVIL", tipo:"ADMIN"}, // SEU ID ADM
-  "mag1": {nome:"Magda Gomes dos Santos", tipo:"ADMIN"}, // MAG ADM
-  "mcarla2": {nome:"Maria Carla Carvalho Santos", tipo:"ALUNO"},
-  "hvitoria3": {nome:"Hellem Vitória Carvalho dos Santos", tipo:"ALUNO"},
-  "alexandra4": {nome:"Alexandra", tipo:"ALUNO"},
-  "michele5": {nome:"Michele B", tipo:"ALUNO"},
-  "aline6": {nome:"Aline", tipo:"ALUNO"},
-  "adriana7": {nome:"Adriana", tipo:"ALUNO"},
-  "joss8": {nome:"Jossiane Alves", tipo:"ALUNO"},
-  "amigaadrum9": {nome:"amigaadrum", tipo:"ALUNO"},
-  "amigaadrdois10": {nome:"amigaadrdois", tipo:"ALUNO"},
-  "angel11": {nome:"Angélica", tipo:"ALUNO"},
-  "anapaula12": {nome:"Ana Paula", tipo:"ALUNO"},
-  "gusta13": {nome:"Gustavo Geraldino", tipo:"ALUNO"},
-  "sueli14": {nome:"Sueli", tipo:"ALUNO"},
-  "fabi15": {nome:"Fabiana", tipo:"ALUNO"},
-  "paula16": {nome:"Paula Cristine", tipo:"ALUNO"},
-  "nop17": {nome:"Natan Osvath Paoli", tipo:"ALUNO"},
-  "bianca18": {nome:"Bianca", tipo:"ALUNO"},
-  "lau19": {nome:"Laura Jesus Aragão", tipo:"ALUNO"},
-  "cass20": {nome:"Cassandra Jesus", tipo:"ALUNO"},
-  "katia21": {nome:"Kátia Paoli", tipo:"ALUNO"},
-  "mara22": {nome:"Lucimara", tipo:"ALUNO"},
-  "edna23": {nome:"Edna", tipo:"ALUNO"},
-  "luciane24": {nome:"Luciane Paoli", tipo:"ALUNO"},
-  "marly25": {nome:"Marly", tipo:"ALUNO"},
-  "mcris26": {nome:"Maria Cristina", tipo:"ALUNO"},
-  "juci27": {nome:"Jucilene", tipo:"ALUNO"},
-  "joce28": {nome:"Jocélia", tipo:"ALUNO"},
-  "marcos29": {nome:"Marcos França", tipo:"ALUNO"},
-  "lucas30": {nome:"Lucas", tipo:"ALUNO"},
-  "celi31": {nome:"Celidalva", tipo:"ALUNO"},
-  "jaque32": {nome:"Jaqueline", tipo:"ALUNO"},
-  "elisa33": {nome:"Elisangela", tipo:"ALUNO"},
-  "gice34": {nome:"Gicelia", tipo:"ALUNO"},
-  "pati35": {nome:"Patrícia", tipo:"ALUNO"},
-  "mel36": {nome:"Melissa", tipo:"ALUNO"},
-  "naty37": {nome:"Natália Melo", tipo:"ALUNO"},
-  "gon38": {nome:"José Gonzaga", tipo:"ALUNO"},
-  "nicol39": {nome:"Nicoli da Silga Guedes", tipo:"ALUNO"},
-  "tchuco1": {nome:"Tchuco Silva", tipo:"ALUNO"},
-  "dani2": {nome:"Daniele Vieira Leite", tipo:"ALUNO"}
-};
+const ALUNOS_DB = [
+  {n:0, id:"ktp0", aluno:"SAY KORVIL", modalidade:"PRESENCIAL", horario:"08h00 🐢", dias:"--", freq:"--", objetivo:"Administrador", valor:"--", matricula:"--", total:"--", venc:"--", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:1, id:"mag1", aluno:"Magda Gomes dos Santos", modalidade:"PRESENCIAL", horario:"08h00 🐢", dias:"Segunda, Terça, Quarta, Quinta, Sexta", freq:"5x", objetivo:"Definição Muscular", valor:"R$150,00", matricula:"R$50,00", total:"R$200,00", venc:"13/05/26", status:"Ativo", cpf:"112.505.24", nasc:"2026-07-27", idade:"0 anos", genero:"Feminino", whats:"(13) 99636-4009", email:"magdagomes998@gmail.com", nivel_atividade:"Intermediário", q1:"Sim", q2:"Irregular", q3:"9 horas", q4:"Não", q5:"Abdômen", q6:"Não", q7:"Sim", q8:"Sim", q9:"Anti depressivo", plano:"Presencial 5x"},
+  
+  {n:2, id:"mcarla2", aluno:"Maria Carla Carvalho Santos", modalidade:"PRESENCIAL", horario:"08h00 🐢", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
+  
+  {n:3, id:"hvitoria3", aluno:"Hellem Vitória Carvalho dos Santos", modalidade:"PRESENCIAL", horario:"08h00 🐢", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"},
+  
+  {n:4, id:"alexandra4", aluno:"Alexandra", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:5, id:"michele5", aluno:"Michele B", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:6, id:"aline6", aluno:"Aline", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:7, id:"adriana7", aluno:"Adriana", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"Ter Qua", freq:"2x", objetivo:"Emagrecimento", valor:"R$80,00", matricula:"R$0,00", total:"R$80,00", venc:"24/03/26", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Presencial 2x"},
+  
+  {n:8, id:"joss8", aluno:"Jossiane Alves", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:"R$150,00", matricula:"R$0,00", total:"R$150,00", venc:"24/10/25", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Presencial 5x"},
+  
+  {n:9, id:"amigaadrum9", aluno:"amigaadrum", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:10, id:"amigaadrdois10", aluno:"amigaadrdois", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:11, id:"angel11", aluno:"Angélica", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:12, id:"anapaula12", aluno:"Ana Paula", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:13, id:"gusta13", aluno:"Gustavo Geraldino", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:14, id:"sueli14", aluno:"Sueli", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:15, id:"fabi15", aluno:"Fabiana", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:16, id:"paula16", aluno:"Paula Cristine", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:17, id:"nop17", aluno:"Natan Osvath Paoli", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:18, id:"bianca18", aluno:"Bianca", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:19, id:"lau19", aluno:"Laura Jesus Aragão", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:20, id:"cass20", aluno:"Cassandra Jesus", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:21, id:"katia21", aluno:"LUCIRENE Katia Paoli ferreira", modalidade:"PRESENCIAL", horario:"17h00 ⭐", dias:"Terça, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$0,00", total:"R$100,00", venc:"27/08/2026", status:"Ativo", cpf:"284.743.828-90", nasc:"1980-06-23", idade:"46 anos", genero:"Feminino", whats:"(13) 99739-5370", email:"katiapaoli70@gmail.com", nivel_atividade:"Sim (Já praticou)", q1:"Sim", q2:"Saudavel", q3:"7 horas", q4:"Não como carnes", q5:"Diminuir braços e abdômen e costas", q6:"Sim no joelho", q7:"Passo em terapeuta", q8:"Sim", q9:"Somente pressão", plano:"Presencial 3x"},
+  
+  {n:22, id:"mara22", aluno:"Lucimara", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:23, id:"edna23", aluno:"Edna", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:24, id:"luciane24", aluno:"Luciane Paoli", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:25, id:"marly25", aluno:"Marly", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:26, id:"mcris26", aluno:"Maria Cristina", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:27, id:"juci27", aluno:"Jucilene", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:28, id:"joce28", aluno:"Jocélia", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:29, id:"marcos29", aluno:"Marcos França", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:30, id:"lucas30", aluno:"Lucas", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:31, id:"celi31", aluno:"Celidalva", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:32, id:"jaque32", aluno:"Jaqueline", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:33, id:"elisa33", aluno:"Elisangela", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:34, id:"gice34", aluno:"Gicelia", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:35, id:"pati35", aluno:"Patrícia", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:36, id:"mel36", aluno:"Melissa", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:37, id:"naty37", aluno:"Natália Melo", modalidade:"PRESENCIAL", horario:"06h00 🐦", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+  
+  {n:38, id:"gon38", aluno:"José Gonzaga", modalidade:"PRESENCIAL", horario:"19h00 ⭐", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:"R$100,00", matricula:"R$0,00", total:"R$100,00", venc:"13/05/26", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Presencial 3x"},
+  
+  {n:39, id:"nicol39", aluno:"Nicoli da Silga Guedes", modalidade:"PRESENCIAL", horario:"19h00 ⭐", dias:"Segunda, Quarta, Sexta", freq:"3x", objetivo:"Definição Muscular | Condicionamento Físico | Reabilitação Física | Saúde", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/04/26", status:"Ativo", cpf:"397.764.168-96", nasc:"2001-10-21", idade:"25 anos", genero:"Feminino", whats:"(13) 99657-4924", email:"nicolisgdss@gmail.com", nivel_atividade:"Iniciante", q1:"Apenas na epoca de escola", q2:"Nao me alimento corretamente", q3:"7/8h", q4:"Nao", q5:"Resistencia de braco e pernas, pois nao tenho forca", q6:"Nao", q7:"Sim", q8:"Sim", q9:"Nao", plano:"Presencial 3x"},
+  
+  // ONLINE
+  {n:1, id:"tchuco1", aluno:"Tchuco Silva", modalidade:"ONLINE", horario:"14h00", dias:"Segunda a Sexta", freq:"5x", objetivo:"Condicionamento Físico | Saúde", valor:"R$60,00", matricula:"R$0,00", total:"R$60,00", venc:"15/07/26", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Online 5x"},
+  
+  {n:2, id:"dani2", aluno:"Daniele Vieira Leite", modalidade:"ONLINE", horario:"14h00", dias:"Seg a Sex", freq:"5x", objetivo:"Definição", valor:"R$60,00", matricula:"R$0,00", total:"R$60,00", venc:"13/05/26", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Online 5x"}
+];
 
 let CRONOGRAMA_DB = {
   "PRESENCIAL": [
-    {hora:"08h00 🐢", status:"ATIVOS", alunos:[
-      {n:0, id:"ktp0", aluno:"SAY KORVIL", dias:"--", freq:"--", objetivo:"Administrador", valor:"--", matricula:"--", total:"--", venc:"--", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
-      {n:1, id:"mag1", aluno:"Magda Gomes dos Santos", dias:"Segunda, Terça, Quarta, Quinta, Sexta", freq:"5x", objetivo:"Definição Muscular", valor:"R$150,00", matricula:"R$50,00", total:"R$200,00", venc:"13/05/26", status:"Ativo", cpf:"112.505.24", nasc:"2026-07-27", idade:"0 anos", genero:"Feminino", whats:"(13) 99636-4009", email:"magdagomes998@gmail.com", nivel_atividade:"Intermediário", q1:"Sim", q2:"Irregular", q3:"9 horas", q4:"Não", q5:"Abdômen", q6:"Não", q7:"Sim", q8:"Sim", q9:"Anti depressivo", plano:"Presencial 5x"},
-      {n:2, id:"mcarla2", aluno:"Maria Carla Carvalho Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
-      {n:3, id:"hvitoria3", aluno:"Hellem Vitória Carvalho dos Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"}
-    ]},
     {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[
       {n:4, id:"alexandra4", aluno:"Alexandra", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
       {n:5, id:"michele5", aluno:"Michele B", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
@@ -153,14 +189,86 @@ let CRONOGRAMA_DB = {
       {n:36, id:"mel36", aluno:"Melissa", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
       {n:37, id:"naty37", aluno:"Natália Melo", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", venc:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
     ]},
+    
+    {hora:"07h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"08h00 🐢", status:"ATIVOS", alunos:[
+      {n:0, id:"ktp0", aluno:"SAY KORVIL", dias:"--", freq:"--", objetivo:"Administrador", valor:"--", matricula:"--", total:"--", venc:"--", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"},
+      {n:1, id:"mag1", aluno:"Magda Gomes dos Santos", dias:"Segunda, Terça, Quarta, Quinta, Sexta", freq:"5x", objetivo:"Definição Muscular", valor:"R$150,00", matricula:"R$50,00", total:"R$200,00", venc:"13/05/26", status:"Ativo", cpf:"112.505.24", nasc:"2026-07-27", idade:"0 anos", genero:"Feminino", whats:"(13) 99636-4009", email:"magdagomes998@gmail.com", nivel_atividade:"Intermediário", q1:"Sim", q2:"Irregular", q3:"9 horas", q4:"Não", q5:"Abdômen", q6:"Não", q7:"Sim", q8:"Sim", q9:"Anti depressivo", plano:"Presencial 5x"},
+      {n:2, id:"mcarla2", aluno:"Maria Carla Carvalho Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Hipertrofia | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.068-52", nasc:"1996-04-22", idade:"30 anos", genero:"Feminino", whats:"(13) 99768-3699", email:"carlacarvalho8362@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Mais ou menos, preciso melhorar", q3:"6 a 7 horas", q4:"Não", q5:"Barriga, braços e pernas", q6:"Não", q7:"Sim", q8:"Sim", q9:"Vitaminas e ferro norimpurum", plano:"Presencial 3x"},
+      {n:3, id:"hvitoria3", aluno:"Hellem Vitória Carvalho dos Santos", dias:"Segunda, Quinta, Sexta", freq:"3x", objetivo:"Definição Muscular | Saúde | Hipertrofia | Condicionamento Físico | Reabilitação Física | Emagrecimento", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"06/08/2026", status:"Ativo", cpf:"417.344.078-24", nasc:"1999-01-11", idade:"27 anos", genero:"Feminino", whats:"(13) 99645-0471", email:"vitoria2018201@gmail.com", nivel_atividade:"Iniciante", q1:"Sim", q2:"Normal,preciso aumentar a proteína", q3:"7 horas", q4:"Não", q5:"Braços,barriga, culote e pernas.", q6:"Não", q7:"Sim", q8:"Sim", q9:"Só noripurum", plano:"Presencial 3x"}
+    ]},
+
+    {hora:"09h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"10h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"16h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
     {hora:"17h00 ⭐", status:"ATIVOS", alunos:[
       {n:21, id:"katia21", aluno:"LUCIRENE Katia Paoli ferreira", dias:"Terça, Quinta, Sexta", freq:"3x", objetivo:"Emagrecimento | Saúde | Definição Muscular | Condicionamento Físico | Reabilitação Física", valor:"R$100,00", matricula:"R$0,00", total:"R$100,00", venc:"27/08/2026", status:"Ativo", cpf:"284.743.828-90", nasc:"1980-06-23", idade:"46 anos", genero:"Feminino", whats:"(13) 99739-5370", email:"katiapaoli70@gmail.com", nivel_atividade:"Sim (Já praticou)", q1:"Sim", q2:"Saudavel", q3:"7 horas", q4:"Não como carnes", q5:"Diminuir braços e abdômen e costas", q6:"Sim no joelho", q7:"Passo em terapeuta", q8:"Sim", q9:"Somente pressão", plano:"Presencial 3x"}
     ]},
+
+    {hora:"18h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
     {hora:"19h00 ⭐", status:"ATIVOS", alunos:[
       {n:38, id:"gon38", aluno:"José Gonzaga", dias:"Seg Qua Sex", freq:"3x", objetivo:"Hipertrofia", valor:"R$100,00", matricula:"R$0,00", total:"R$100,00", venc:"13/05/26", status:"Ativo", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Presencial 3x"},
       {n:39, id:"nicol39", aluno:"Nicoli da Silga Guedes", dias:"Segunda, Quarta, Sexta", freq:"3x", objetivo:"Definição Muscular | Condicionamento Físico | Reabilitação Física | Saúde", valor:"R$100,00", matricula:"R$50,00", total:"R$150,00", venc:"30/04/26", status:"Ativo", cpf:"397.764.168-96", nasc:"2001-10-21", idade:"25 anos", genero:"Feminino", whats:"(13) 99657-4924", email:"nicolisgdss@gmail.com", nivel_atividade:"Iniciante", q1:"Apenas na epoca de escola", q2:"Nao me alimento corretamente", q3:"7/8h", q4:"Nao", q5:"Resistencia de braco e pernas, pois nao tenho forca", q6:"Nao", q7:"Sim", q8:"Sim", q9:"Nao", plano:"Presencial 3x"}
+    ]},
+
+    {hora:"20h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"21h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"22h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"23h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"00h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"01h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"02h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"03h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"04h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"
+    {hora:"04h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
+    ]},
+
+    {hora:"05h00", status:"VAZIO", alunos:[
+      {n:"--", id:"--", aluno:"--", dias:"--", freq:"--", objetivo:"--", valor:"--", matricula:"--", total:"--", venc:"--", status:"--", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--"}
     ]}
   ],
+
   "ONLINE": [
     {hora:"14h00", status:"DESATIVADOS", alunos:[
       {n:1, id:"tchuco1", aluno:"Tchuco Silva", dias:"Segunda a Sexta", freq:"5x", objetivo:"Condicionamento Físico | Saúde", valor:"R$60,00", matricula:"R$0,00", total:"R$60,00", venc:"15/07/26", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"Online 5x"},
