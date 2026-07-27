@@ -117,9 +117,9 @@
   }
   
   .logo-top {
-    width: 32vw;
-    max-width: 450px;
-    min-width: 240px;
+    width: 28vw;
+    max-width: 380px;
+    min-width: 200px;
     height: auto;
     display: block;
     object-fit: contain;
@@ -139,11 +139,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     padding: 0 5%;
-    padding-top: 18vh;
-    padding-bottom: 95px;
+    padding-top: 14vh;
+    padding-bottom: 120px;
     transform-style: preserve-3d;
     transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
@@ -161,19 +161,19 @@
     opacity: 0; 
   }
 
-  /* --- TIPOGRAFIA (AUMENTADA 2X) --- */
+  /* --- TIPOGRAFIA (AUMENTADA +2X) --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 6vw; /* Aumentado ~2x */
+    font-size: clamp(28px, 7.5vw, 65px); /* Dobro do tamanho de destaque */
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     background: linear-gradient(180deg, #ffffff 30%, #00ffff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 25px rgba(0,255,255,0.9));
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     position: relative;
     width: 100%;
     line-height: 1.1;
@@ -182,7 +182,7 @@
   h1::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: -8px;
     left: 15%;
     width: 70%;
     height: 3px;
@@ -193,14 +193,15 @@
   .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-top: 10px;
   }
 
   .sub-item {
-    font-size: 3.5vw; /* Aumentado ~2x */
+    font-size: clamp(18px, 4.8vw, 38px); /* Dobro do tamanho dos itens */
     font-weight: 800;
     color: rgba(255,255,255,0.4);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -209,19 +210,19 @@
   }
 
   .sub-item.active {
-    font-size: 4.2vw; /* Aumentado ~2x */
+    font-size: clamp(22px, 5.8vw, 46px); /* Destaque ampliado */
     color: #00ffff;
     text-shadow: 0 0 25px #00ffff, 0 0 50px #00aaff;
-    transform: scale(1.08) translateZ(20px);
+    transform: scale(1.05) translateZ(20px);
   }
 
-  /* --- TABELAS FUTURISTAS (AUMENTADAS 2X) --- */
+  /* --- TABELAS FUTURISTAS --- */
   table {
     border-collapse: separate;
     border-spacing: 0;
     margin: 10px auto;
-    font-size: 2.3vw; /* Aumentado ~2x */
-    width: 92%;
+    font-size: clamp(14px, 3.2vw, 24px);
+    width: 95%;
     max-width: 1200px;
     background: rgba(0, 15, 30, 0.7);
     backdrop-filter: blur(12px);
@@ -232,7 +233,7 @@
   }
 
   th, td {
-    padding: 12px 18px;
+    padding: 10px 14px;
     text-align: center;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   }
@@ -241,7 +242,7 @@
     background: rgba(0, 255, 255, 0.2);
     color: #00ffff;
     font-family: 'Orbitron';
-    font-size: 2.6vw; /* Aumentado ~2x */
+    font-size: clamp(15px, 3.6vw, 26px);
     letter-spacing: 1px;
     text-shadow: 0 0 15px #00ffff;
   }
@@ -260,10 +261,10 @@
     100% { text-shadow: 0 0 30px #ff0055, 0 0 50px #ff0000; transform: scale(1.05); }
   }
 
-  /* --- BARRA DE PROGRESSO & CONTROLES (AUMENTADOS) --- */
+  /* --- BARRA DE PROGRESSO E CONTROLES ORGANIZADOS --- */
   .progress { 
     position: absolute; 
-    bottom: 85px; 
+    bottom: 80px; 
     left: 4%; 
     width: 92%; 
     height: 6px; 
@@ -281,27 +282,36 @@
     animation: load 6s linear forwards; 
   }
 
-  .controls {
+  /* BARRA INFERIOR DE BOTÕES (GRID/FLEX REORGANIZADO) */
+  .footer-controls {
     position: absolute;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 12px;
+    left: 0;
+    width: 100%;
+    padding: 0 4%;
     display: flex;
-    gap: 16px;
-    z-index: 30;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    z-index: 40;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 8px;
   }
 
   .btn {
-    padding: 12px 28px;
-    font-size: 1.6vw; /* Aumentado */
+    padding: 10px 18px;
+    font-size: clamp(12px, 2.5vw, 16px);
     font-family: 'Orbitron';
     background: rgba(0, 255, 255, 0.15);
     border: 2px solid #00ffff;
-    border-radius: 30px;
+    border-radius: 20px;
     color: #00ffff;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     backdrop-filter: blur(8px);
     white-space: nowrap;
@@ -310,42 +320,39 @@
   .btn:hover { 
     background: #00ffff; 
     color: #000; 
-    transform: translateY(-3px) scale(1.05); 
-    box-shadow: 0 0 35px #00ffff; 
+    transform: translateY(-2px) scale(1.03); 
+    box-shadow: 0 0 25px #00ffff; 
   }
 
   .btn-participar {
-    position: absolute;
-    right: 4%;
-    bottom: 18px;
-    padding: 12px 28px;
-    font-size: 1.6vw; /* Aumentado */
+    padding: 10px 22px;
+    font-size: clamp(12px, 2.8vw, 18px);
     text-decoration: none;
-    z-index: 30;
     background: linear-gradient(90deg, #00ffff, #0088ff);
     color: #000;
     border: none;
-    border-radius: 30px;
+    border-radius: 20px;
     font-weight: 900;
+    font-family: 'Orbitron';
     box-shadow: 0 0 25px rgba(0,255,255,0.7);
     transition: all 0.3s ease;
     white-space: nowrap;
   }
 
   .btn-participar:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 45px #00ffff;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 0 35px #00ffff;
   }
 
   .counter { 
     position: absolute; 
-    top: 18vh; 
-    right: 30px; 
-    font-size: 2vw; /* Aumentado */
+    top: 14vh; 
+    right: 20px; 
+    font-size: clamp(14px, 2.5vw, 20px); 
     color: #00ffff; 
     font-family: 'Orbitron'; 
     z-index: 20; 
-    text-shadow: 0 0 15px #00ffff;
+    text-shadow: 0 0 12px #00ffff;
   }
 
   @keyframes load { from { width: 0%; } to { width: 100%; } }
@@ -410,7 +417,7 @@ const whoosh = document.getElementById('whoosh');
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1>${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:3.2vw;color:#00ffff;margin-bottom:16px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:clamp(20px, 4.5vw, 40px);color:#00ffff;margin-bottom:12px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -426,19 +433,21 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.p) content += `<p style="font-size:3vw;margin-top:14px;text-align:center;line-height:1.2;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:3.5vw;margin-top:14px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.p) content += `<p style="font-size:clamp(16px, 3.8vw, 32px);margin-top:14px;text-align:center;line-height:1.3;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:clamp(18px, 4.2vw, 36px);margin-top:14px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `
     <div class="slide active">
       ${content}
       <div class="progress"><div class="progress-bar"></div></div>
       <div class="counter">${i + 1} / ${slides.length}</div>
-      <div class="controls">
-        <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
-        <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
+      <div class="footer-controls">
+        <div class="nav-buttons">
+          <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
+          <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
+        </div>
+        <a href="${LINK_FINAL}" target="_blank" class="btn-participar">QUERO PARTICIPAR</a>
       </div>
-      <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
     </div>
   `;
   startSubAnimation();
