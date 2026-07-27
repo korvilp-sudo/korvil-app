@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-TP - Projeto TRANSFORMAÇÃO</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Arial Black', sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+ .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    opacity: 0;
+    transform: scale(0.9) translateY(50px);
+    transition: all 0.8s ease-in-out;
+    background: linear-gradient(135deg, var(--cor1), var(--cor2));
+  }
+ .slide.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  h1 {
+    font-size: 8vw;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    animation: pulse 2s infinite;
+  }
+  h2 {
+    font-size: 4vw;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  p {
+    font-size: 2.5vw;
+    font-weight: 600;
+    white-space: pre-line;
+    line-height: 1.6;
+  }
+ .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 8px;
+    background: rgba(255,255,255,0.3);
+    width: 100%;
+  }
+ .progress-bar {
+    height: 100%;
+    background: #fff;
+    width: 0%;
+    animation: load 6s linear forwards;
+  }
+ .counter {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 2vw;
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 50px;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes load { from { width: 0%; } to { width: 100%; } }
+</style>
+</head>
+<body>
+
+<div id="slides"></div>
+
+<script>
+const slides = [
+  { t: "K-TP", s: "Treinamento Personalizado", p: "Projeto TRANSFORMAÇÃO\n11° ANO", c1: "#2563eb", c2: "#9333ea" },
+  { t: "4 FASES DO PROJETO", p: "1. Avaliação Inicial\n2. Adaptação Física\n3. Evolução de Performance\n4. Consolidação de Resultados", c1: "#16a34a", c2: "#0d9488" },
+  { t: "4 MÉTODOS DAS SEMANAS", p: "Semana 1: Força Base\nSemana 2: Hipertrofia\nSemana 3: Resistência\nSemana 4: Performance Máxima", c1: "#ea580c", c2: "#dc2626" },
+  { t: "LINHA DO TEMPO", p: "Janeiro a Novembro: Execução e Evolução\nDezembro: Conclusão e Resultados Finais", c1: "#4f46e5", c2: "#2563eb" },
+  { t: "NOSSOS OBJETIVOS", p: "Saúde • Estética • Performance • Qualidade de Vida\nDisciplina • Foco • Transformação Real", c1: "#db2777", c2: "#e11d48" },
+  { t: "PARA TODAS AS IDADES", p: "Crianças 10+ • Jovens • Adultos • Idosos • Atletas\nTreino 100% adaptado para você", c1: "#ca8a04", c2: "#d97706" },
+  { t: "PLANOS E VALORES", p: "Plano Básico\nPlano Premium\nPlano VIP 24H\nConsulte condições especiais", c1: "#059669", c2: "#16a34a" },
+  { t: "FUNCIONAMENTO", p: "Segunda a Sexta-feira\nAcademia EXCLUSIVA 24H\nDomingo a Domingo", c1: "#0891b2", c2: "#0284c7" },
+  { t: "HORÁRIOS DISPONÍVEIS", p: "06h 07h 08h 09h 10h\n16h 17h 18h 19h 20h 21h 22h 23h 00h 01h 02h 03h 04h 05h\n7 VAGAS POR HORÁRIO", c1: "#7c3aed", c2: "#9333ea" },
+  { t: "ENTRE PARA A TRANSFORMAÇÃO", s: "Vagas Limitadas!", p: "K-TP - Seu Corpo, Nossa Missão", c1: "#dc2626", c2: "#db2777" },
+];
+
+let current = 0;
+const container = document.getElementById('slides');
+
+function showSlide(i) {
+  container.innerHTML = `
+    <div class="slide active" style="--cor1:${slides[i].c1}; --cor2:${slides[i].c2}">
+      ${slides[i].t? `<h1>${slides[i].t}</h1>` : ''}
+      ${slides[i].s? `<h2>${slides[i].s}</h2>` : ''}
+      <p>${slides[i].p}</p>
+      <div class="progress"><div class="progress-bar"></div></div>
+      <div class="counter">${i + 1} / ${slides.length}</div>
+    </div>
+  `;
+}
+
+function nextSlide() {
+  current = (current + 1) % slides.length;
+  showSlide(current);
+}
+
+// Inicia
+showSlide(0);
+setInterval(nextSlide, 6000); // 6 segundos
+</script>
+
+</body>
+</html>
