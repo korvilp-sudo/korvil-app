@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K-TP - PROJETO TRANSFORMAÇÃO</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700;900&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -18,19 +18,18 @@
     height: 100vh;
   }
 
- .grid {
+.grid {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-image:
-      linear-gradient(#111 1px, transparent 1px),
-      linear-gradient(90deg, #111 1px, transparent 1px);
+    background-image: linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px);
     background-size: 60px 60px;
     opacity: 0.2;
+    animation: moveGrid 20s linear infinite;
     z-index: 0;
   }
 
- .slide {
+.slide {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -46,10 +45,9 @@
     transition: transform 1.2s cubic-bezier(0.77,0,0.175,1), opacity 1s;
     z-index: 1;
   }
- .slide.active { transform: translateX(0); opacity: 1; }
- .slide.exit { transform: translateX(-100%); opacity: 0; }
+.slide.active { transform: translateX(0); opacity: 1; }
+.slide.exit { transform: translateX(-100%); opacity: 0; }
 
-  /* TITULO IMPACTO */
   h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 9vw;
@@ -74,149 +72,91 @@
   h1::before { top: -15px; }
   h1::after { bottom: -15px; }
 
-  /* SUBTITULO */
-  h2 {
+  h2 { font-size: 4vw; font-weight: 700; color: #00ffff; margin-bottom: 40px; text-shadow: 0 0 15px #00ffff; }
+  p { font-size: 3.2vw; font-weight: 600; white-space: pre-line; line-height: 1.6; color: #ddd; max-width: 90%; }
+.destaque { color: #00ffff; font-weight: 900; }
+
+.progress { position: absolute; bottom: 140px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; border: 1px solid #00ffff33; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
+
+.btn-participar {
+    position: absolute; bottom: 40px; padding: 25px 80px; font-size: 2.8vw; font-family: 'Orbitron', sans-serif;
+    font-weight: 900; color: #000; background: linear-gradient(90deg, #00ffff, #00aaff); border: none; border-radius: 20px;
+    cursor: pointer; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 40px #00ffff;
+    transition: all 0.3s; animation: pulseBtn 1.5s infinite;
+  }
+.btn-participar:hover { transform: scale(1.08); box-shadow: 0 0 80px #00ffff; }
+
+.counter { position: absolute; top: 40px; right: 50px; font-size: 2.2vw; color: #00ffff; font-family: 'Orbitron'; opacity: 0.7; }
+
+.vagas {
     font-size: 4vw;
-    font-weight: 700;
-    color: #00ffff;
-    margin-bottom: 40px;
-    text-shadow: 0 0 15px #00ffff;
-  }
-
-  /* TEXTO PERSUASIVO */
-  p {
-    font-size: 3.2vw;
-    font-weight: 600;
-    white-space: pre-line;
-    line-height: 1.6;
-    color: #ddd;
-    max-width: 90%;
-  }
- .destaque { color: #00ffff; font-weight: 900; }
-
-  /* BARRA DE PROGRESSO */
- .progress {
-    position: absolute;
-    bottom: 140px;
-    left: 5%;
-    width: 90%;
-    height: 8px;
-    background: #111;
-    border-radius: 10px;
-    border: 1px solid #00ffff33;
-  }
- .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #00ffff, #00aaff);
-    box-shadow: 0 0 20px #00ffff;
-    width: 0%;
-    animation: load 10s linear forwards;
-  }
-
-  /* BOTAO CTA */
- .btn-participar {
-    position: absolute;
-    bottom: 40px;
-    padding: 25px 80px;
-    font-size: 2.8vw;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    color: #000;
-    background: linear-gradient(90deg, #00ffff, #00aaff);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 0 40px #00ffff;
-    transition: all 0.3s;
-    animation: pulseBtn 1.5s infinite;
-  }
- .btn-participar:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 80px #00ffff;
-  }
-
- .counter {
-    position: absolute;
-    top: 40px;
-    right: 50px;
-    font-size: 2.2vw;
-    color: #00ffff;
-    font-family: 'Orbitron';
-    opacity: 0.7;
+    color: #ff0033;
+    text-shadow: 0 0 20px #ff0033;
+    animation: alert 0.8s infinite;
   }
 
   @keyframes glow { from { text-shadow: 0 0 10px #00ffff; } to { text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff; } }
   @keyframes load { from { width: 0%; } to { width: 100%; } }
   @keyframes pulseBtn { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  @keyframes moveGrid { from { background-position: 0 0; } to { background-position: 0 600px; } }
 </style>
 </head>
 <body>
+
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/audio/2025/04/07/audio_39cfb6e2c7.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="whoosh">
+  <source src="https://cdn.pixabay.com/audio/2024/08/09/audio_8c8b2c5d5e.mp3" type="audio/mpeg">
+</audio>
 
 <div class="grid"></div>
 <div id="slides"></div>
 
 <script>
 const slides = [
-  {
-    t: "K-TP",
-    s: "TREINAMENTO PERSONALIZADO",
-    p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span>\nO MÉTODO QUE VAI MUDAR SEU CORPO E SUA MENTE"
-  },
-  {
-    t: "4 FASES",
-    p: "<span class='destaque'>FASE 1:</span> AVALIAÇÃO COMPLETA\n<span class='destaque'>FASE 2:</span> ADAPTAÇÃO INTELIGENTE\n<span class='destaque'>FASE 3:</span> EVOLUÇÃO ACELERADA\n<span class='destaque'>FASE 4:</span> RESULTADO DEFINITIVO"
-  },
-  {
-    t: "METODOLOGIA",
-    p: "<span class='destaque'>4 SEMANAS</span> QUE VÃO REVOLUCIONAR VOCÊ\nSEMANA 1: FORÇA BASE | SEMANA 2: HIPERTROFIA\nSEMANA 3: RESISTÊNCIA | SEMANA 4: PERFORMANCE MÁXIMA"
-  },
-  {
-    t: "CRONOGRAMA",
-    p: "<span class='destaque'>JANEIRO A NOVEMBRO:</span> EXECUÇÃO TOTAL\n<span class='destaque'>DEZEMBRO:</span> CONCLUSÃO E CELEBRAÇÃO DA SUA NOVA VERSÃO"
-  },
-  {
-    t: "NOSSA MISSÃO",
-    p: "SAÚDE • ESTÉTICA • PERFORMANCE\n<span class='destaque'>DISCIPLINA • FOCO • RESULTADO REAL</span>\nSEM DESCULPAS. SÓ TRANSFORMAÇÃO."
-  },
-  {
-    t: "PARA VOCÊ",
-    p: "CRIANÇAS 10+ • JOVENS • ADULTOS • IDOS • ATLETAS\n<span class='destaque'>TREINO 100% PERSONALIZADO</span>\nNÃO IMPORTA SUA IDADE. IMPORTA SUA VONTADE."
-  },
-  {
-    t: "PLANOS EXCLUSIVOS",
-    p: "<span class='destaque'>BÁSICO:</span> Acesso Completo\n<span class='destaque'>PREMIUM:</span> + Acompanhamento VIP\n<span class='destaque'>VIP 24H:</span> ACADEMIA EXCLUSIVA 24 HORAS\n<span class='destaque'>VAGAS LIMITADAS!</span>"
-  },
-  {
-    t: "FUNCIONAMENTO",
-    p: "<span class='destaque'>SEGUNDA A SEXTA:</span> HORÁRIOS COMPLETOS\n<span class='destaque'>ACADEMIA EXCLUSIVA 24H:</span> DOMINGO A DOMINGO\nTREINE QUANDO QUISER. SEMPRE ABERTO PARA VOCÊ."
-  },
-  {
-    t: "HORÁRIOS",
-    p: "06H 07H 08H 09H 10H\n16H 17H 18H 19H 20H 21H 22H 23H 00H 01H 02H 03H 04H 05H\n<span class='destaque'>APENAS 7 VAGAS POR HORÁRIO</span>\nGARANTA JÁ A SUA!"
-  },
+  { t: "K-TP", s: "TREINAMENTO PERSONALIZADO", p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span>\nO MÉTODO QUE VAI MUDAR SEU CORPO E SUA MENTE" },
+  { t: "4 FASES", p: "<span class='destaque'>FASE 1:</span> AVALIAÇÃO COMPLETA\n<span class='destaque'>FASE 2:</span> ADAPTAÇÃO INTELIGENTE\n<span class='destaque'>FASE 3:</span> EVOLUÇÃO ACELERADA\n<span class='destaque'>FASE 4:</span> RESULTADO DEFINITIVO" },
+  { t: "METODOLOGIA", p: "<span class='destaque'>4 SEMANAS</span> QUE VÃO REVOLUCIONAR VOCÊ\nSEMANA 1: FORÇA BASE | SEMANA 2: HIPERTROFIA\nSEMANA 3: RESISTÊNCIA | SEMANA 4: PERFORMANCE MÁXIMA" },
+  { t: "CRONOGRAMA", p: "<span class='destaque'>JANEIRO A NOVEMBRO:</span> EXECUÇÃO TOTAL\n<span class='destaque'>DEZEMBRO:</span> CONCLUSÃO E CELEBRAÇÃO DA SUA NOVA VERSÃO" },
+  { t: "NOSSA MISSÃO", p: "SAÚDE • ESTÉTICA • PERFORMANCE\n<span class='destaque'>DISCIPLINA • FOCO • RESULTADO REAL</span>\nSEM DESCULPAS. SÓ TRANSFORMAÇÃO." },
+  { t: "PARA VOCÊ", p: "CRIANÇAS 10+ • JOVENS • ADULTOS • IDOSOS • ATLETAS\n<span class='destaque'>TREINO 100% PERSONALIZADO</span>\nNÃO IMPORTA SUA IDADE. IMPORTA SUA VONTADE." },
+  { t: "PLANOS EXCLUSIVOS", p: "<span class='destaque'>BÁSICO:</span> Acesso Completo\n<span class='destaque'>PREMIUM:</span> + Acompanhamento VIP\n<span class='destaque'>VIP 24H:</span> ACADEMIA EXCLUSIVA 24 HORAS\n<span class='destaque'>VAGAS LIMITADAS!</span>" },
+  { t: "FUNCIONAMENTO", p: "<span class='destaque'>SEGUNDA A SEXTA:</span> HORÁRIOS COMPLETOS\n<span class='destaque'>ACADEMIA EXCLUSIVA 24H:</span> DOMINGO A DOMINGO\nTREINE QUANDO QUISER. SEMPRE ABERTO PARA VOCÊ." },
+  { t: "HORÁRIOS", p: "06H 07H 08H 09H 10H\n16H 17H 18H 19H 20H 21H 22H 23H 00H 01H 02H 03H 04H 05H\n<span class='destaque'>APENAS 7 VAGAS POR HORÁRIO</span>\nGARANTA JÁ A SUA!" },
   {
     t: "CHEGOU SUA VEZ",
     s: "PARE DE ADIAR",
-    p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO\nA TRANSFORMAÇÃO COMEÇA AGORA"
+    p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO\nA TRANSFORMAÇÃO COMEÇA AGORA",
+    vagas: true
   },
 ];
 
 let current = 0;
 const container = document.getElementById('slides');
+const bgMusic = document.getElementById('bgMusic');
+const whoosh = document.getElementById('whoosh');
+
+bgMusic.volume = 0.3;
+bgMusic.play().catch(()=>{}); // Toca música ao carregar
 
 function showSlide(i) {
   const prev = container.querySelector('.slide.active');
   if(prev) prev.classList.add('exit');
+  whoosh.currentTime = 0;
+  whoosh.play();
 
   setTimeout(() => {
+    const slide = slides[i];
     container.innerHTML = `
       <div class="slide active">
-        ${slides[i].t? `<h1>${slides[i].t}</h1>` : ''}
-        ${slides[i].s? `<h2>${slides[i].s}</h2>` : ''}
-        <p>${slides[i].p}</p>
+        ${slide.t? `<h1>${slide.t}</h1>` : ''}
+        ${slide.s? `<h2>${slide.s}</h2>` : ''}
+        <p>${slide.p}</p>
+        ${slide.vagas? `<p class="vagas">RESTAM POUCAS VAGAS!</p>` : ''}
         <div class="progress"><div class="progress-bar"></div></div>
         <div class="counter">${i + 1} / ${slides.length}</div>
         <a href="/projetotransformacao/projetotransformacao.html" class="btn-participar">QUERO ME TRANSFORMAR</a>
@@ -232,6 +172,8 @@ function nextSlide() {
 
 showSlide(0);
 setInterval(nextSlide, 10000); // 10 SEGUNDOS
+
+document.body.addEventListener('click', () => { bgMusic.play(); }); // Garante que toca no mobile
 </script>
 
 </body>
