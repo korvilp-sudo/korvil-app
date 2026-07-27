@@ -51,7 +51,7 @@
     line-height: 0;
   }
 .logo-top {
-    width: 54vw; /* LOGO GRANDE VOLTOU */
+    width: 54vw; /* LOGO GRANDE */
     max-width: 800px;
     display: block;
     filter: drop-shadow(0 0 15px #00ffff);
@@ -72,7 +72,7 @@
     text-align: center;
     padding: 0 8%;
     padding-top: 35vh;
-    padding-bottom: 120px; /* Reduzi pra caber botões menores */
+    padding-bottom: 120px;
     transform: translateX(100%);
     opacity: 0;
     transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
@@ -163,22 +163,22 @@
 .destaque { color: #00ffff; font-weight: 900; }
 .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
 
-.progress { position: absolute; bottom: 100px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; z-index: 5; } /* Subi a barra */
+.progress { position: absolute; bottom: 100px; left: 5%; width: 90%; height: 8px; background: #111; border-radius: 10px; z-index: 5; }
 .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
 
 .controls {
     position: absolute;
-    bottom: 25px; /* Mais pra cima */
+    bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px; /* Menos espaço */
+    gap: 12px;
     z-index: 20;
     flex-wrap: wrap;
   }
 .btn {
-    padding: 10px 18px; /* BEM MENORES */
-    font-size: 1.3vw; /* Fonte menor */
+    padding: 10px 18px;
+    font-size: 1.3vw;
     font-family: 'Orbitron';
     background: linear-gradient(90deg, #00ffff, #00aaff);
     border: 2px solid #00ffff;
@@ -196,9 +196,9 @@
 .btn-participar {
     position: absolute;
     right: 8%;
-    bottom: 25px; /* Alinhado com os outros */
-    padding: 12px 22px; /* BEM MENOR */
-    font-size: 1.4vw; /* Fonte menor */
+    bottom: 25px;
+    padding: 12px 22px;
+    font-size: 1.4vw;
     text-decoration: none;
     z-index: 20;
     white-space: nowrap;
@@ -215,7 +215,7 @@
 
 <div class="bg"></div>
 <div class="logo-wrapper">
-  <img src="sections/ktp/images/logoprojetotransformacao.png" alt="Logo K-TP" class="logo-top">
+  <img src="./sections/ktp/images/logoprojetotransformacao.png" alt="Logo K-TP" class="logo-top">
 </div>
 <div id="slides"></div>
 
@@ -295,7 +295,7 @@ function renderSlide(i) {
         <button class="btn" onclick="pauseResume()">⏯ PAUSAR</button>
         <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
       </div>
-      <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO PARTICIPAR</a>
+      <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
     </div>
   `;
   setTimeout(()=> document.querySelector('h1')?.classList.remove('blink'), 3000);
