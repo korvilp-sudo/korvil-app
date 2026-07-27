@@ -100,16 +100,16 @@
     opacity: 0.6;
   }
 
-  /* --- LOGO WRAPPER --- */
+  /* --- LOGO FIXA NO TOPO --- */
   .logo-wrapper {
-    position: absolute;
+    position: fixed;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
     border: 2px solid rgba(0, 255, 255, 0.8);
     border-radius: 12px;
-    background: rgba(4, 10, 24, 0.75);
+    background: rgba(4, 10, 24, 0.85);
     backdrop-filter: blur(16px);
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.3);
     animation: logoFloat 3s ease-in-out infinite alternate;
@@ -117,9 +117,9 @@
   }
   
   .logo-top {
-    width: 28vw;
-    max-width: 380px;
-    min-width: 200px;
+    width: 26vw;
+    max-width: 340px;
+    min-width: 180px;
     height: auto;
     display: block;
     object-fit: contain;
@@ -142,8 +142,8 @@
     justify-content: flex-start;
     text-align: center;
     padding: 0 5%;
-    padding-top: 14vh;
-    padding-bottom: 110px; /* Espaço para não cobrir pelos botões fixos */
+    padding-top: 18vh; /* Garante que os textos comecem ABAIXO da logo sem sobrepor */
+    padding-bottom: 110px;
     transform-style: preserve-3d;
     transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
@@ -161,10 +161,10 @@
     opacity: 0; 
   }
 
-  /* --- TIPOGRAFIA (AUMENTADA 2X MANTIDA) --- */
+  /* --- TIPOGRAFIA GRANDE E DESTACADA --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(28px, 7.5vw, 65px);
+    font-size: clamp(26px, 6.5vw, 58px);
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
@@ -173,7 +173,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 25px rgba(0,255,255,0.9));
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     position: relative;
     width: 100%;
     line-height: 1.1;
@@ -182,7 +182,7 @@
   h1::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: -6px;
     left: 15%;
     width: 70%;
     height: 3px;
@@ -193,7 +193,7 @@
   .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -201,7 +201,7 @@
   }
 
   .sub-item {
-    font-size: clamp(18px, 4.8vw, 38px);
+    font-size: clamp(18px, 4.5vw, 36px);
     font-weight: 800;
     color: rgba(255,255,255,0.4);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -210,7 +210,7 @@
   }
 
   .sub-item.active {
-    font-size: clamp(22px, 5.8vw, 46px);
+    font-size: clamp(22px, 5.5vw, 44px);
     color: #00ffff;
     text-shadow: 0 0 25px #00ffff, 0 0 50px #00aaff;
     transform: scale(1.05) translateZ(20px);
@@ -261,7 +261,7 @@
     100% { text-shadow: 0 0 30px #ff0055, 0 0 50px #ff0000; transform: scale(1.05); }
   }
 
-  /* --- BARRA DE PROGRESSO E CONTROLES FIXOS (SEM ANIMAR / SEM SUMIR) --- */
+  /* --- BARRA DE PROGRESSO E BOTÕES FIXOS --- */
   .progress { 
     position: fixed; 
     bottom: 70px; 
@@ -291,7 +291,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    z-index: 100; /* Garante que fique acima de qualquer transição de slide */
+    z-index: 100;
     pointer-events: auto;
   }
 
@@ -341,9 +341,9 @@
 
   .counter { 
     position: fixed; 
-    top: 14vh; 
+    top: 18vh; 
     right: 20px; 
-    font-size: clamp(14px, 2.5vw, 20px); 
+    font-size: clamp(12px, 2vw, 18px); 
     color: #00ffff; 
     font-family: 'Orbitron'; 
     z-index: 100; 
@@ -378,7 +378,7 @@
 <!-- SLIDES (CONTEÚDO) -->
 <div id="slides"></div>
 
-<!-- PAINEL FIXO DE CONTROLES E BOTÕES (NÃO PHENOMENA NEM ANIMA) -->
+<!-- PAINEL FIXO DE CONTROLES -->
 <div class="footer-controls">
   <div class="nav-buttons">
     <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
@@ -426,7 +426,7 @@ const progressBar = document.getElementById('progressBar');
 function renderSlide(i) {
   const slide = slides[i];
   let content = `<h1>${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:clamp(20px, 4.5vw, 40px);color:#00ffff;margin-bottom:12px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
+  if(slide.s) content += `<h2 style="font-size:clamp(18px, 4vw, 36px);color:#00ffff;margin-bottom:10px;width:100%;text-align:center;text-shadow:0 0 15px #00ffff;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -447,10 +447,9 @@ function renderSlide(i) {
 
   container.innerHTML = `<div class="slide active">${content}</div>`;
   
-  // Atualiza contador e barra de progresso
   counterEl.innerText = `${i + 1} / ${slides.length}`;
   progressBar.style.animation = 'none';
-  progressBar.offsetHeight; /* Trigger reflow */
+  progressBar.offsetHeight;
   progressBar.style.animation = 'load 6s linear forwards';
 
   startSubAnimation();
