@@ -3,73 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-TP - PROJETO TRANSFORMAÇÃO</title>
+<title>K-TP - PROJETO TRANSFORMAÇÃO 4D</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #000;
+    background: #020208;
     color: #fff;
     font-family: 'Rajdhani', sans-serif;
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    perspective: 1200px;
   }
 
-  .bg {
+  /* --- FUNDO VIVO ANIMADO 4D --- */
+  .bg-container {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #000;
+    top: 0;
+    left: 0;
     overflow: hidden;
     z-index: 0;
+    background: radial-gradient(circle at 50% 50%, #081026 0%, #000000 100%);
   }
-  .bg::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: radial-gradient(circle, #00ffff11 1px, transparent 1px);
-    background-size: 80px 80px;
-    animation: moveBg 20s linear infinite;
-  }
-  @keyframes moveBg { from { transform: translate(0,0); } to { transform: translate(80px,80px); } }
 
-  /* FIX DA LOGO: Garantindo visibilidade e z-index prioritário */
+  /* Orbes Flutuantes de Plasma Bioluminescente */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: floatOrb 12s ease-in-out infinite alternate;
+  }
+  .orb-1 {
+    width: 50vw;
+    height: 50vw;
+    background: #00ffff;
+    top: -20vw;
+    left: -10vw;
+  }
+  .orb-2 {
+    width: 45vw;
+    height: 45vw;
+    background: #0066ff;
+    bottom: -15vw;
+    right: -10vw;
+    animation-delay: -6s;
+  }
+  .orb-3 {
+    width: 35vw;
+    height: 35vw;
+    background: #ff0055;
+    top: 30%;
+    left: 30%;
+    opacity: 0.25;
+    animation-duration: 18s;
+  }
+
+  @keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, 50px) scale(1.15); }
+    100% { transform: translate(-60px, 80px) scale(0.9); }
+  }
+
+  /* Grid Tridimensional Cyber 3D em Movimento Real */
+  .grid-3d {
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    top: -50vh;
+    left: -50vw;
+    background-image: 
+      linear-gradient(to right, rgba(0, 255, 255, 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(600px) rotateX(65deg) translateZ(0);
+    animation: gridMove 8s linear infinite;
+    transform-origin: center center;
+  }
+
+  @keyframes gridMove {
+    0% { transform: perspective(600px) rotateX(65deg) translateY(0); }
+    100% { transform: perspective(600px) rotateX(65deg) translateY(60px); }
+  }
+
+  /* Scanlines Holográficas estilo 8K */
+  .scanlines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+    background-size: 100% 4px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* --- LOGO WRAPPER 8K --- */
   .logo-wrapper {
     position: absolute;
     top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100; /* Aumentado para não ficar atrás do container do slide */
-    border: 3px solid #00ffff;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.85); /* Fundo escuro para contrastar se houver overlay */
-    box-shadow: 0 0 30px #00ffff, 0 0 60px #00aaff;
-    animation: logoPulse 2s ease-in-out infinite alternate;
-    line-height: 0;
-    padding: 6px;
+    z-index: 100;
+    border: 2px solid rgba(0, 255, 255, 0.8);
+    border-radius: 12px;
+    background: rgba(4, 10, 24, 0.75);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.3);
+    animation: logoFloat 3s ease-in-out infinite alternate;
+    padding: 6px 16px;
   }
   
   .logo-top {
-    width: 45vw;
-    max-width: 650px;
-    min-width: 280px;
+    width: 36vw;
+    max-width: 520px;
+    min-width: 260px;
     height: auto;
     display: block;
     object-fit: contain;
     filter: drop-shadow(0 0 15px #00ffff);
   }
 
-  @keyframes logoPulse {
-    from { box-shadow: 0 0 20px #00ffff, 0 0 40px #00aaff; }
-    to { box-shadow: 0 0 50px #00ffff, 0 0 90px #00aaff; }
+  @keyframes logoFloat {
+    0% { transform: translateX(-50%) translateY(0); box-shadow: 0 0 25px rgba(0,255,255,0.4); }
+    100% { transform: translateX(-50%) translateY(-6px); box-shadow: 0 0 45px rgba(0,255,255,0.8); }
   }
 
+  /* --- SLIDES & TRANSIÇÕES 4D --- */
   .slide {
     position: absolute;
     width: 100%;
@@ -80,149 +145,221 @@
     justify-content: center;
     text-align: center;
     padding: 0 8%;
-    padding-top: 28vh; /* Ajustado para dar espaço à logo */
-    padding-bottom: 120px;
-    transform: translateX(100%);
+    padding-top: 24vh;
+    padding-bottom: 90px;
+    transform-style: preserve-3d;
+    transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
-    transition: transform 1s cubic-bezier(0.77,0,0.175,1), opacity 1s;
-    z-index: 1;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
   }
-  .slide.active { transform: translateX(0); opacity: 1; }
-  .slide.exit { transform: translateX(-100%); opacity: 0; }
 
+  .slide.active { 
+    transform: translateZ(0) rotateY(0deg); 
+    opacity: 1; 
+  }
+  
+  .slide.exit { 
+    transform: translateZ(-300px) rotateY(-90deg); 
+    opacity: 0; 
+  }
+
+  /* --- TIPOGRAFIA 8K --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 5vw;
+    font-size: 3.6vw;
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 3px;
-    text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
-    margin-bottom: 20px;
+    background: linear-gradient(180deg, #ffffff 30%, #00ffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(0,255,255,0.8));
+    margin-bottom: 15px;
     position: relative;
     width: 100%;
-    text-align: center;
   }
-  h1.blink::before, h1.blink::after {
+
+  h1::after {
     content: '';
     position: absolute;
-    width: 60%;
-    height: 4px;
+    bottom: -8px;
+    left: 25%;
+    width: 50%;
+    height: 2px;
     background: linear-gradient(90deg, transparent, #00ffff, transparent);
-    left: 20%;
-    box-shadow: 0 0 30px #00ffff;
-    animation: blinkSignal 3s ease-in-out;
+    box-shadow: 0 0 15px #00ffff;
   }
-  h1.blink::before { top: -15px; }
-  h1.blink::after { bottom: -15px; }
-  @keyframes blinkSignal { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
 
   .sub-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     align-items: center;
     justify-content: center;
     width: 100%;
   }
+
   .sub-item {
-    font-size: 2.4vw;
+    font-size: 2vw;
     font-weight: 700;
-    color: #ccc;
-    opacity: 0.4;
-    transition: all 0.6s ease;
+    color: rgba(255,255,255,0.4);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: center;
-  }
-  .sub-item.active {
-    font-size: 2.8vw;
-    color: #00ffff;
-    opacity: 1;
-    text-shadow: 0 0 20px #00ffff;
-    transform: scale(1.08);
   }
 
+  .sub-item.active {
+    font-size: 2.4vw;
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #00aaff;
+    transform: scale(1.1) translateZ(20px);
+  }
+
+  /* --- TABELAS FUTURISTAS GLASSMORPHISM --- */
   table {
-    border-collapse: collapse;
-    margin: 12px auto;
-    font-size: 1.8vw;
-    width: 90%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 10px auto;
+    font-size: 1.3vw;
+    width: 85%;
+    max-width: 880px;
+    background: rgba(0, 15, 30, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0,255,255,0.1);
+    overflow: hidden;
   }
+
   th, td {
-    border: 2px solid #00ffff44;
-    padding: 8px 14px;
+    padding: 10px 16px;
     text-align: center;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
   }
+
   th {
-    background: #00ffff22;
+    background: rgba(0, 255, 255, 0.15);
     color: #00ffff;
     font-family: 'Orbitron';
-  }
-  td { background: #0a0a0a; }
-
-  .tabela-titulo {
-    font-size: 2vw;
-    color: #00ffff;
-    font-weight: 900;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    text-align: center;
-    width: 100%;
+    font-size: 1.4vw;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px #00ffff;
   }
 
-  .destaque { color: #00ffff; font-weight: 900; }
-  .destaque-red { color: #ff0033; font-weight: 900; animation: alert 0.8s infinite; }
+  td { 
+    background: rgba(0, 0, 0, 0.4);
+    color: #e0e0e0;
+  }
 
-  .progress { position: absolute; bottom: 90px; left: 5%; width: 90%; height: 6px; background: #111; border-radius: 10px; z-index: 5; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, #00ffff, #00aaff); box-shadow: 0 0 20px #00ffff; width: 0%; animation: load 10s linear forwards; }
+  .destaque { color: #00ffff; font-weight: 900; text-shadow: 0 0 10px #00ffff; }
+  .destaque-red { color: #ff0055; font-weight: 900; animation: alertNeon 0.8s infinite alternate; }
+
+  @keyframes alertNeon {
+    0% { text-shadow: 0 0 5px #ff0055; transform: scale(1); }
+    100% { text-shadow: 0 0 25px #ff0055, 0 0 40px #ff0000; transform: scale(1.05); }
+  }
+
+  /* --- BARRA DE PROGRESSO & CONTROLES --- */
+  .progress { 
+    position: absolute; 
+    bottom: 75px; 
+    left: 5%; 
+    width: 90%; 
+    height: 4px; 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 10px; 
+    z-index: 20; 
+    overflow: hidden;
+  }
+
+  .progress-bar { 
+    height: 100%; 
+    background: linear-gradient(90deg, #00ffff, #00aaff, #ff0055); 
+    box-shadow: 0 0 20px #00ffff; 
+    width: 0%; 
+    animation: load 6s linear forwards; 
+  }
 
   .controls {
     position: absolute;
-    bottom: 20px;
+    bottom: 18px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px;
-    z-index: 20;
-    flex-wrap: nowrap;
+    gap: 16px;
+    z-index: 30;
   }
+
   .btn {
-    padding: 10px 18px;
-    font-size: 1.2vw;
+    padding: 10px 22px;
+    font-size: 1vw;
     font-family: 'Orbitron';
-    background: linear-gradient(90deg, #00ffff, #00aaff);
+    background: rgba(0, 255, 255, 0.1);
     border: 2px solid #00ffff;
-    border-radius: 10px;
-    color: #000;
+    border-radius: 30px;
+    color: #00ffff;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 0 15px #00ffff;
-    transition: 0.3s;
-    white-space: nowrap;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(8px);
   }
-  .btn:hover { transform: scale(1.08); box-shadow: 0 0 30px #00ffff; }
+
+  .btn:hover { 
+    background: #00ffff; 
+    color: #000; 
+    transform: translateY(-3px) scale(1.05); 
+    box-shadow: 0 0 30px #00ffff; 
+  }
 
   .btn-participar {
     position: absolute;
     right: 5%;
-    bottom: 20px;
-    padding: 10px 20px;
-    font-size: 1.2vw;
+    bottom: 18px;
+    padding: 10px 22px;
+    font-size: 1vw;
     text-decoration: none;
-    z-index: 20;
-    white-space: nowrap;
+    z-index: 30;
+    background: linear-gradient(90deg, #00ffff, #0088ff);
+    color: #000;
+    border: none;
+    border-radius: 30px;
+    font-weight: 900;
+    box-shadow: 0 0 20px rgba(0,255,255,0.6);
+    transition: all 0.3s ease;
   }
 
-  .counter { position: absolute; top: 30vh; right: 40px; font-size: 1.8vw; color: #00ffff; font-family: 'Orbitron'; z-index: 5; }
+  .btn-participar:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 40px #00ffff;
+  }
+
+  .counter { 
+    position: absolute; 
+    top: 22vh; 
+    right: 40px; 
+    font-size: 1.4vw; 
+    color: #00ffff; 
+    font-family: 'Orbitron'; 
+    z-index: 20; 
+    text-shadow: 0 0 10px #00ffff;
+  }
 
   @keyframes load { from { width: 0%; } to { width: 100%; } }
-  @keyframes alert { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 </style>
 </head>
 <body>
 
-<div class="bg"></div>
+<!-- FUNDO VIVO ANIMADO 4D -->
+<div class="bg-container">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-3d"></div>
+  <div class="scanlines"></div>
+</div>
 
-<!-- LOGO COM CAMINHO CORRIGIDO E Z-INDEX ELEVADO -->
 <div class="logo-wrapper">
   <img src="sections/ktp/images/logoprojetotransformacao.png" 
        onerror="this.onerror=null; this.src='https://korvilp-sudo.github.io/korvil-app/sections/ktp/images/logoprojetotransformacao.png';" 
@@ -247,15 +384,19 @@ const slides = [
   { t: "CRONOGRAMA", tabela: [["PERÍODO", "ETAPA"], ["JANEIRO A NOVEMBRO", "EXECUÇÃO E EVOLUÇÃO"], ["DEZEMBRO", "CONCLUSÃO E RESULTADOS FINAIS"]] },
   { t: "PARA TODOS", lista: ["CRIANÇAS 10+", "JOVENS", "ADULTOS", "IDOSOS", "ATLETAS", "<span class='destaque'>TREINO 100% PERSONALIZADO</span>"] },
   {
-    t: "PLANOS E VALORES",
-    tabelas: [
-      { titulo: "AULAS AVULSAS", dados: [["MODALIDADE", "FREQUÊNCIA"], ["PRESENCIAL", "1X NA SEMANA"], ["ONLINE", "1X NA SEMANA"]] },
-      { titulo: "MENSALIDADE", dados: [["MODALIDADE", "FREQUÊNCIA"], ["PRESENCIAL", "2X NA SEMANA"], ["ONLINE", "2X NA SEMANA"], ["PRESENCIAL", "3X NA SEMANA"], ["ONLINE", "3X NA SEMANA"], ["PRESENCIAL", "4X NA SEMANA"], ["ONLINE", "4X NA SEMANA"], ["PRESENCIAL VIP", "5X NA SEMANA"], ["ONLINE VIP", "5X NA SEMANA"]] }
+    t: "PLANOS E FREQUÊNCIA",
+    tabela: [
+      ["PLANO", "FREQUÊNCIA", "MODALIDADE"],
+      ["AULA AVULSA", "1X NA SEMANA", "PRESENCIAL OU ONLINE"],
+      ["MENSAL", "2X NA SEMANA", "PRESENCIAL OU ONLINE"],
+      ["MENSAL", "3X NA SEMANA", "PRESENCIAL OU ONLINE"],
+      ["MENSAL", "4X NA SEMANA", "PRESENCIAL OU ONLINE"],
+      ["MENSAL VIP", "5X NA SEMANA", "PRESENCIAL OU ONLINE"]
     ]
   },
   { t: "FUNCIONAMENTO", tabela: [["TIPO", "DIAS"], ["TREINO GUIADO", "SEGUNDA A SEXTA-FEIRA"], ["ACADEMIA EXCLUSIVA 24H", "DOMINGO A DOMINGO"]] },
   { t: "HORÁRIOS DISPONÍVEIS", tabela: [["MANHÃ", "NOITE / MADRUGADA", "VAGAS"], ["06H 07H 08H 09H 10H", "16H ÀS 05H", "<span class='destaque-red'>7 VAGAS POR HORÁRIO</span>"]] },
-  { t: "CHEGOU SUA VEZ", s: "PARE DE ADIAR", p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO<br>A TRANSFORMAÇÃO COMEÇA AGORA", vagas: true },
+  { t: "CHEGOU SUA VEZ", s: "PARE DE ADIAR", p: "<span class='destaque'>K-TP</span> - SEU CORPO, NOSSA MISSÃO<br>O difícil é começar, continuar é um processo..", vagas: true },
 ];
 
 let current = 0;
@@ -266,8 +407,8 @@ const whoosh = document.getElementById('whoosh');
 
 function renderSlide(i) {
   const slide = slides[i];
-  let content = `<h1 class="blink">${slide.t}</h1>`;
-  if(slide.s) content += `<h2 style="font-size:2.5vw;color:#00ffff;margin-bottom:15px;width:100%;text-align:center;">${slide.s}</h2>`;
+  let content = `<h1>${slide.t}</h1>`;
+  if(slide.s) content += `<h2 style="font-size:2vw;color:#00ffff;margin-bottom:12px;width:100%;text-align:center;text-shadow:0 0 10px #00ffff;">${slide.s}</h2>`;
 
   if(slide.lista) {
     content += `<div class="sub-list">`;
@@ -283,20 +424,8 @@ function renderSlide(i) {
     });
     content += `</table>`;
   }
-  if(slide.tabelas) {
-    slide.tabelas.forEach(t => {
-      content += `<div class="tabela-titulo">${t.titulo}</div>`;
-      content += `<table>`;
-      t.dados.forEach((row, idx) => {
-        content += `<tr>`;
-        row.forEach(cell => content += idx===0? `<th>${cell}</th>` : `<td>${cell}</td>`);
-        content += `</tr>`;
-      });
-      content += `</table>`;
-    });
-  }
-  if(slide.p) content += `<p style="font-size:2.2vw;margin-top:15px;text-align:center;">${slide.p}</p>`;
-  if(slide.vagas) content += `<p class="destaque-red" style="font-size:2.5vw;margin-top:15px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
+  if(slide.p) content += `<p style="font-size:1.8vw;margin-top:10px;text-align:center;">${slide.p}</p>`;
+  if(slide.vagas) content += `<p class="destaque-red" style="font-size:2vw;margin-top:10px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
   container.innerHTML = `
     <div class="slide active">
@@ -305,13 +434,11 @@ function renderSlide(i) {
       <div class="counter">${i + 1} / ${slides.length}</div>
       <div class="controls">
         <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
-        <button class="btn" onclick="pauseResume()">⏯ PAUSAR</button>
         <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
       </div>
       <a href="${LINK_FINAL}" target="_blank" class="btn btn-participar">QUERO ME TRANSFORMAR</a>
     </div>
   `;
-  setTimeout(()=> document.querySelector('h1')?.classList.remove('blink'), 3000);
   startSubAnimation();
 }
 
@@ -320,7 +447,7 @@ function startSubAnimation(){
   const items = document.querySelectorAll('.sub-item');
   if(items.length === 0) return;
   let idx = 0;
-  const timePerItem = 10000 / items.length;
+  const timePerItem = 6000 / items.length;
   items.forEach(it => it.classList.remove('active'));
   items[0].classList.add('active');
   subTimer = setInterval(()=>{
@@ -345,14 +472,7 @@ function goToSlide(n) {
 function nextSlide() { goToSlide((current + 1) % slides.length); }
 function prevSlide() { goToSlide((current - 1 + slides.length) % slides.length); }
 
-let paused = false;
-function pauseResume() {
-  paused = !paused;
-  if(paused) { clearInterval(timer); clearInterval(subTimer); }
-  else { startTimer(); startSubAnimation(); }
-}
-
-function startTimer() { timer = setInterval(nextSlide, 10000); }
+function startTimer() { timer = setInterval(nextSlide, 6000); }
 
 document.body.addEventListener('click', (e)=>{
   if(!e.target.closest('.btn') && !e.target.closest('.btn-participar')) nextSlide();
