@@ -143,7 +143,7 @@
     text-align: center;
     padding: 0 5%;
     padding-top: 14vh;
-    padding-bottom: 120px;
+    padding-bottom: 110px; /* Espaço para não cobrir pelos botões fixos */
     transform-style: preserve-3d;
     transform: translateZ(-300px) rotateY(90deg);
     opacity: 0;
@@ -161,10 +161,10 @@
     opacity: 0; 
   }
 
-  /* --- TIPOGRAFIA (AUMENTADA +2X) --- */
+  /* --- TIPOGRAFIA (AUMENTADA 2X MANTIDA) --- */
   h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(28px, 7.5vw, 65px); /* Dobro do tamanho de destaque */
+    font-size: clamp(28px, 7.5vw, 65px);
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
@@ -201,7 +201,7 @@
   }
 
   .sub-item {
-    font-size: clamp(18px, 4.8vw, 38px); /* Dobro do tamanho dos itens */
+    font-size: clamp(18px, 4.8vw, 38px);
     font-weight: 800;
     color: rgba(255,255,255,0.4);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -210,7 +210,7 @@
   }
 
   .sub-item.active {
-    font-size: clamp(22px, 5.8vw, 46px); /* Destaque ampliado */
+    font-size: clamp(22px, 5.8vw, 46px);
     color: #00ffff;
     text-shadow: 0 0 25px #00ffff, 0 0 50px #00aaff;
     transform: scale(1.05) translateZ(20px);
@@ -261,16 +261,16 @@
     100% { text-shadow: 0 0 30px #ff0055, 0 0 50px #ff0000; transform: scale(1.05); }
   }
 
-  /* --- BARRA DE PROGRESSO E CONTROLES ORGANIZADOS --- */
+  /* --- BARRA DE PROGRESSO E CONTROLES FIXOS (SEM ANIMAR / SEM SUMIR) --- */
   .progress { 
-    position: absolute; 
-    bottom: 80px; 
+    position: fixed; 
+    bottom: 70px; 
     left: 4%; 
     width: 92%; 
     height: 6px; 
     background: rgba(255,255,255,0.15); 
     border-radius: 10px; 
-    z-index: 20; 
+    z-index: 100; 
     overflow: hidden;
   }
 
@@ -279,12 +279,10 @@
     background: linear-gradient(90deg, #00ffff, #00aaff, #ff0055); 
     box-shadow: 0 0 20px #00ffff; 
     width: 0%; 
-    animation: load 6s linear forwards; 
   }
 
-  /* BARRA INFERIOR DE BOTÕES (GRID/FLEX REORGANIZADO) */
   .footer-controls {
-    position: absolute;
+    position: fixed;
     bottom: 12px;
     left: 0;
     width: 100%;
@@ -293,7 +291,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    z-index: 40;
+    z-index: 100; /* Garante que fique acima de qualquer transição de slide */
+    pointer-events: auto;
   }
 
   .nav-buttons {
@@ -312,7 +311,6 @@
     font-weight: 900;
     cursor: pointer;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     backdrop-filter: blur(8px);
     white-space: nowrap;
   }
@@ -320,7 +318,6 @@
   .btn:hover { 
     background: #00ffff; 
     color: #000; 
-    transform: translateY(-2px) scale(1.03); 
     box-shadow: 0 0 25px #00ffff; 
   }
 
@@ -335,23 +332,21 @@
     font-weight: 900;
     font-family: 'Orbitron';
     box-shadow: 0 0 25px rgba(0,255,255,0.7);
-    transition: all 0.3s ease;
     white-space: nowrap;
   }
 
   .btn-participar:hover {
-    transform: translateY(-2px) scale(1.05);
     box-shadow: 0 0 35px #00ffff;
   }
 
   .counter { 
-    position: absolute; 
+    position: fixed; 
     top: 14vh; 
     right: 20px; 
     font-size: clamp(14px, 2.5vw, 20px); 
     color: #00ffff; 
     font-family: 'Orbitron'; 
-    z-index: 20; 
+    z-index: 100; 
     text-shadow: 0 0 12px #00ffff;
   }
 
@@ -376,15 +371,27 @@
        class="logo-top">
 </div>
 
+<!-- CONTADORES E PROGRESSO FIXOS -->
+<div class="counter" id="slideCounter">1 / 10</div>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- SLIDES (CONTEÚDO) -->
 <div id="slides"></div>
+
+<!-- PAINEL FIXO DE CONTROLES E BOTÕES (NÃO PHENOMENA NEM ANIMA) -->
+<div class="footer-controls">
+  <div class="nav-buttons">
+    <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
+    <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
+  </div>
+  <a href="https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html" target="_blank" class="btn-participar">QUERO ME TRANSFORMAR</a>
+</div>
 
 <audio id="whoosh">
   <source src="https://cdn.pixabay.com/audio/2024/08/09/audio_8c8b2c5d5e.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const LINK_FINAL = "https://korvilp-sudo.github.io/korvil-app/sections/ktp/projetotransformacao/index.html";
-
 const slides = [
   { t: "K-TP", s: "TREINAMENTO PERSONALIZADO", p: "<span class='destaque'>PROJETO TRANSFORMAÇÃO - 11° ANO</span><br>O MÉTODO CIENTÍFICO PARA SUA MELHOR VERSÃO" },
   { t: "4 FASES DO PROJETO", lista: ["1. OFF SEASON", "2. BULKING", "3. MAINTENANCE", "4. CUTTING"] },
@@ -413,6 +420,8 @@ let timer;
 let subTimer;
 const container = document.getElementById('slides');
 const whoosh = document.getElementById('whoosh');
+const counterEl = document.getElementById('slideCounter');
+const progressBar = document.getElementById('progressBar');
 
 function renderSlide(i) {
   const slide = slides[i];
@@ -436,20 +445,14 @@ function renderSlide(i) {
   if(slide.p) content += `<p style="font-size:clamp(16px, 3.8vw, 32px);margin-top:14px;text-align:center;line-height:1.3;">${slide.p}</p>`;
   if(slide.vagas) content += `<p class="destaque-red" style="font-size:clamp(18px, 4.2vw, 36px);margin-top:14px;text-align:center;">RESTAM POUCAS VAGAS!</p>`;
 
-  container.innerHTML = `
-    <div class="slide active">
-      ${content}
-      <div class="progress"><div class="progress-bar"></div></div>
-      <div class="counter">${i + 1} / ${slides.length}</div>
-      <div class="footer-controls">
-        <div class="nav-buttons">
-          <button class="btn" onclick="prevSlide()">◀ VOLTAR</button>
-          <button class="btn" onclick="nextSlide()">AVANÇAR ▶</button>
-        </div>
-        <a href="${LINK_FINAL}" target="_blank" class="btn-participar">QUERO PARTICIPAR</a>
-      </div>
-    </div>
-  `;
+  container.innerHTML = `<div class="slide active">${content}</div>`;
+  
+  // Atualiza contador e barra de progresso
+  counterEl.innerText = `${i + 1} / ${slides.length}`;
+  progressBar.style.animation = 'none';
+  progressBar.offsetHeight; /* Trigger reflow */
+  progressBar.style.animation = 'load 6s linear forwards';
+
   startSubAnimation();
 }
 
@@ -486,7 +489,9 @@ function prevSlide() { goToSlide((current - 1 + slides.length) % slides.length);
 function startTimer() { timer = setInterval(nextSlide, 6000); }
 
 document.body.addEventListener('click', (e)=>{
-  if(!e.target.closest('.btn') && !e.target.closest('.btn-participar')) nextSlide();
+  if(!e.target.closest('.footer-controls') && !e.target.closest('.btn') && !e.target.closest('.btn-participar')) {
+    nextSlide();
+  }
 });
 
 renderSlide(0);
