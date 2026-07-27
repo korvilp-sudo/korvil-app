@@ -23,6 +23,7 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
 .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}
 .grid-4{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;}
 .dia,.hora{padding:10px;background:#0a0a0a;border:1.5px solid var(--borda);border-radius:8px;text-align:center;font-size:12px;font-weight:700;cursor:not-allowed;opacity:0.4;}
 .dia.lib,.hora.lib{cursor:pointer;opacity:1;}
 .dia.lib:hover,.hora.lib:hover{border-color:var(--c);}
@@ -186,6 +187,16 @@ h1{text-align:center;font-size:18px;font-weight:900;color:var(--c);margin:0 0 16
     </div>
     <div class="input-group"><label>WhatsApp *</label><input type="tel" id="whats" placeholder="(11) 99999-9999" oninput="mascaraWhats(this)"></div>
     <div class="input-group"><label>Email</label><input type="email" id="email"></div>
+
+    <div class="titulo-secao" style="margin-top:16px;">ENDEREÇO</div>
+    <div class="input-group"><label>CEP *</label><input type="text" id="cep" maxlength="9" placeholder="00000-000" onblur="buscarCEP(this.value)" oninput="mascaraCEP(this)"></div>
+    <div class="grid-3">
+      <div class="input-group"><label>Rua</label><input type="text" id="rua"></div>
+      <div class="input-group"><label>Número *</label><input type="text" id="numero"></div>
+      <div class="input-group"><label>Bairro</label><input type="text" id="bairro"></div>
+    </div>
+    <div class="input-group"><label>Cidade</label><input type="text" id="cidade"></div>
+
     <button class="btn" onclick="enviarWhatsApp()">FINALIZAR INSCRIÇÃO</button>
     <button class="btn voltar" onclick="mostrarTela('tela2')">Voltar</button>
   </div>
@@ -274,6 +285,22 @@ function irParaDados(){
 function calcularIdade(){let nasc = document.getElementById('nasc').value; if(!nasc) return;let idade = new Date().getFullYear() - new Date(nasc).getFullYear();document.getElementById('idade').value = idade + ' anos';}
 function mascaraCPF(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); }
 function mascaraWhats(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2"); }
+function mascaraCEP(i){ i.value = i.value.replace(/\D/g,'').replace(/(\d{5})(\d)/,"$1-$2"); }
+
+async function buscarCEP(cep){
+  cep = cep.replace(/\D/g,'');
+  if(cep.length!== 8) return;
+  try{
+    let res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    let data = await res.json();
+    if(!data.erro){
+      document.getElementById('rua').value = data.logradouro;
+      document.getElementById('bairro').value = data.bairro;
+      document.getElementById('cidade').value = data.localidade;
+    }
+  }catch(e){}
+}
+
 function enviarWhatsApp(){
   let nome = document.getElementById('nome').value;
   if(nome==''){alert('Preencha o nome');return;}
@@ -284,12 +311,9 @@ function enviarWhatsApp(){
 
   let total = parseInt(plano.valor)+parseInt(plano.mat);
   let tipo_plano = `${plano.freq == 1? "Aula Avulsa" : "Mensal"} ${plano.tipo.includes('pres')? "Presencial" : "Online"} ${plano.freq}x`;
-  
-  // Formatar data de hoje como data da matrícula
   let hoje = new Date().toLocaleDateString('pt-BR');
 
   let msg = `*🚨 NOVA INSCRIÇÃO K-TP PROJETO TRANSFORMAÇÃO 🚨*\n\n` +
-            
             `*==================================*\n` +
             `*1. DADOS DO PLANO*\n` +
             `*==================================*\n` +
