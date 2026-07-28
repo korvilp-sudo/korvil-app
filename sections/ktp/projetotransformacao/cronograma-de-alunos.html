@@ -3,67 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KTP - K-AI.K-B.D</title>
+<title>KTP - K-AI.K-B.D 8K</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
   :root{
-    --bg1:#020210; --bg2:#0a0a2a; --neon:#00f7ff; --neon2:#7b2fff; --txt:#e0e0ff; --green:#00ff88; --alert:#ffaa00;
-    --glass: rgba(10,10,40,0.6); --red:#ff0066;
+    --bg1:#01010f; --bg2:#0a0a2a; --neon:#00f7ff; --neon2:#ff00ff; --txt:#e0e0ff; --green:#00ff88; --alert:#ffaa00;
+    --glass: rgba(10,10,40,0.4); --red:#ff0066; --metal: linear-gradient(145deg, #1a1a2e, #0f0f1a);
   }
-  *{margin:0;padding:0;box-sizing:border-box;font-family:"Consolas", monospace;}
-  body{background: radial-gradient(1200px 800px at 50% -10%, var(--bg2), var(--bg1)); color:var(--txt); min-height:100vh; padding:20px; overflow-x:auto;}
-  h1{text-align:center; font-size:2.5rem; color:var(--neon); text-shadow:0 0 20px var(--neon); margin-bottom:30px;}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Orbitron", monospace;}
+  body{
+    background: radial-gradient(1200px 800px at 50% -10%, var(--bg2), var(--bg1));
+    background-image:
+      linear-gradient(rgba(0,247,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,247,255,0.07) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 30s linear infinite;
+    color:var(--txt); min-height:100vh; padding:30px; overflow-x:auto; font-size: 18px; /* AUMENTADO 3x */
+  }
+  @keyframes gridMove{ 0%{background-position: 0 0;} 100%{background-position: 500px 500px;} }
 
-.tabs{display:flex; gap:10px; justify-content:center; margin-bottom:20px;}
-.tab-btn{padding:12px 24px; background:var(--glass); border:1px solid var(--neon); color:var(--neon); cursor:pointer; border-radius:8px; font-weight:bold; box-shadow:0 0 15px rgba(0,247,255,0.3); transition:0.3s; position:relative;}
-.tab-btn.active{background:var(--neon); color:#000; box-shadow:0 0 30px var(--neon);}
-.lock-icon{font-size:14px; margin-left:6px;}
+  h1{text-align:center; font-size:3.5rem; color:var(--neon); text-shadow:0 0 20px var(--neon), 0 0 40px var(--neon2); margin-bottom:40px; font-weight:900;}
 
-.screen{display:none; backdrop-filter:blur(10px); background:var(--glass); border:1px solid var(--neon2); border-radius:12px; padding:20px; box-shadow:0 0 40px rgba(123,47,255,0.4); transform: perspective(1000px) rotateX(2deg);}
-.screen.active{display:block;}
-.locked{display:flex; align-items:center; justify-content:center; flex-direction:column; height:400px; gap:20px;}
+  /* ABAS 4D */
+ .tabs{display:flex; gap:15px; justify-content:center; margin-bottom:30px; perspective:1000px;}
+ .tab-btn{
+    padding:18px 36px; background:var(--glass); border:2px solid var(--neon); color:var(--neon);
+    cursor:pointer; border-radius:12px; font-weight:700; font-size:1.2rem;
+    box-shadow:0 0 20px rgba(0,247,255,0.4); transition:0.3s; position:relative;
+    transform: rotateX(10deg); backdrop-filter: blur(10px);
+  }
+ .tab-btn:hover{transform: rotateX(0deg) scale(1.05); box-shadow:0 0 40px var(--neon);}
+ .tab-btn.active{background:var(--neon); color:#000; box-shadow:0 0 50px var(--neon);}
+ .lock-icon{font-size:18px; margin-left:8px; animation: pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.4;}}
 
-.horario-bloco{margin-bottom:30px; border:1px solid rgba(0,247,255,0.2); padding:15px; border-radius:8px; background:rgba(0,0,0,0.3);}
-.horario-titulo{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--neon2);}
-.horario-titulo h3{color:var(--neon); text-shadow:0 0 10px var(--neon);}
-.vagas{color:var(--green); font-weight:bold; font-size:14px;}
-.vagas.lotado{color:var(--red);}
+  /* TELA 4D METALICA */
+ .screen{display:none; backdrop-filter:blur(15px); background:var(--metal); border:2px solid var(--neon2); border-radius:20px; padding:30px;
+    box-shadow:0 0 60px rgba(123,47,255,0.5), inset 0 0 30px rgba(0,247,255,0.1); transform: perspective(1200px) rotateX(3deg);}
+ .screen.active{display:block; animation: fadeIn 0.5s;}
+  @keyframes fadeIn{ from{opacity:0; transform: translateY(20px);} to{opacity:1; transform: translateY(0);} }
 
-.table-wrap{overflow-x:auto; margin-bottom:20px;}
-  table{width:100%; border-collapse:collapse; font-size:11px; min-width:2000px;}
-  th,td{border:1px solid rgba(0,247,255,0.2); padding:6px 8px; text-align:left; white-space:nowrap;}
-  th{background:linear-gradient(180deg, var(--neon2), #000); color:var(--neon); position:sticky; top:0;}
-  tr:nth-child(even){background:rgba(0,247,255,0.05);}
-  tr:hover{background:rgba(0,247,255,0.15);}
-.status-Ativo{color:var(--green); font-weight:bold;}
-.status-Desativado{color:var(--red);}
-.vence-alerta{color:var(--alert); font-weight:bold; animation: blink 1s infinite;}
-@keyframes blink {50%{opacity:0.3;}}
+ .locked{display:flex; align-items:center; justify-content:center; flex-direction:column; height:500px; gap:20px; user-select:none;}
+ .locked.lock-icon{font-size:8rem; color:var(--neon2); text-shadow:0 0 30px var(--neon2);}
+ .locked p{font-size:1.5rem; color:var(--neon);}
 
-.totais{display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-top:20px; background:rgba(0,247,255,0.1); border:1px solid var(--neon); padding:15px; border-radius:8px;}
-.totais div{text-align:center;}
-.totais h4{color:var(--neon); font-size:12px; margin-bottom:5px;}
-.totais p{color:var(--green); font-size:18px; font-weight:bold; text-shadow:0 0 10px var(--green);}
+ .horario-bloco{margin-bottom:40px; border:2px solid rgba(0,247,255,0.3); padding:25px; border-radius:15px; background:rgba(0,0,0,0.4);}
+ .horario-titulo{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:2px solid var(--neon2);}
+ .horario-titulo h3{color:var(--neon); text-shadow:0 0 15px var(--neon); font-size:1.8rem;}
+ .vagas{color:var(--green); font-weight:bold; font-size:1.2rem;}
+ .vagas.lotado{color:var(--red); text-shadow:0 0 10px var(--red);}
 
-.lembretes{margin-top:20px; padding:15px; border:1px dashed var(--alert); background:rgba(255,170,0,0.1); border-radius:8px;}
-.lembretes h3{color:var(--alert); margin-bottom:10px; text-shadow:0 0 10px var(--alert);}
-.lembretes ul{list-style:none;}
-.lembretes li{padding:4px 0; color:var(--txt);}
+ .table-wrap{overflow-x:auto; margin-bottom:30px; border:1px solid var(--neon);}
+  table{width:100%; border-collapse:collapse; font-size:16px; min-width:2200px;} /* AUMENTADO 3x */
+  th,td{border:1px solid rgba(0,247,255,0.3); padding:12px 15px; text-align:left; white-space:nowrap;}
+  th{background:linear-gradient(180deg, var(--neon2), #000); color:var(--neon); position:sticky; top:0; font-size:1.1rem;}
+  tr:nth-child(even){background:rgba(0,247,255,0.08);}
+  tr:hover{background:rgba(0,247,255,0.25); box-shadow: inset 0 0 20px rgba(0,247,255,0.2);}
+ .status-Ativo{color:var(--green); font-weight:bold; text-shadow:0 0 8px var(--green);}
+ .status-Desativado{color:var(--red); text-shadow:0 0 8px var(--red);}
+ .vence-alerta{color:var(--alert); font-weight:bold; animation: blink 1s infinite;}
+  @keyframes blink {50%{opacity:0.3;}}
 
-.popup{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:999;}
-.popup-content{background:var(--glass); border:2px solid var(--neon); padding:30px; border-radius:12px; text-align:center; box-shadow:0 0 50px var(--neon2);}
-.popup-content input{background:#000; border:1px solid var(--neon); color:var(--neon); padding:10px; width:200px; text-align:center;}
-.popup-content button{margin-top:15px; padding:10px 20px; background:var(--neon); border:none; color:#000; font-weight:bold; cursor:pointer;}
-.countdown{font-size:3rem; color:var(--neon); text-shadow:0 0 20px var(--neon);}
+ .totais{display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-top:30px; background:rgba(0,247,255,0.1); border:2px solid var(--neon); padding:25px; border-radius:15px;}
+ .totais div{text-align:center;}
+ .totais h4{color:var(--neon); font-size:1.2rem; margin-bottom:10px;}
+ .totais p{color:var(--green); font-size:2.2rem; font-weight:900; text-shadow:0 0 20px var(--green);}
+
+ .lembretes{margin-top:30px; padding:20px; border:2px dashed var(--alert); background:rgba(255,170,0,0.1); border-radius:12px;}
+ .lembretes h3{color:var(--alert); margin-bottom:15px; text-shadow:0 0 15px var(--alert); font-size:1.5rem;}
+ .lembretes li{padding:8px 0; font-size:1.1rem;}
+
+ .popup{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:999;}
+ .popup-content{background:var(--metal); border:3px solid var(--neon); padding:40px; border-radius:20px; text-align:center; box-shadow:0 0 80px var(--neon2);}
+ .popup-content input{background:#000; border:2px solid var(--neon); color:var(--neon); padding:15px; width:250px; text-align:center; font-size:1.2rem;}
+ .popup-content button{margin-top:20px; padding:15px 30px; background:var(--neon); border:none; color:#000; font-weight:900; cursor:pointer; font-size:1.2rem;}
+ .countdown{font-size:4rem; color:var(--neon); text-shadow:0 0 30px var(--neon);}
+
+  /* BLOQUEAR SELEÇÃO E MENU EM AREAS PROTEGIDAS */
+ .protected-lock{user-select:none;}
 </style>
 </head>
-<body>
+<body oncontextmenu="return false">
 
 <h1>🚨 KTP - PROJETO TRANSFORMAÇÃO - DATABASE 8K 🚨</h1>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="showTab('ativos')">1. ALUNOS ATIVOS</button>
-  <button class="tab-btn" onclick="requestUnlock('desativados', this)">2. ALUNOS DESATIVADOS <span class="lock-icon">🔒</span></button>
-  <button class="tab-btn" onclick="requestUnlock('todos', this)">3. CRONOGRAMA COMPLETO <span class="lock-icon">🔒</span></button>
+  <button class="tab-btn" onmousedown="startHold('desativados')" onmouseup="stopHold()" onmouseleave="stopHold()">2. ALUNOS DESATIVADOS <span class="lock-icon">🔒</span></button>
+  <button class="tab-btn" onmousedown="startHold('todos')" onmouseup="stopHold()" onmouseleave="stopHold()">3. CRONOGRAMA COMPLETO <span class="lock-icon">🔒</span></button>
 </div>
 
 <div id="ativos" class="screen active">
@@ -73,13 +100,13 @@
   <div class="lembretes" id="lembretes-semana"></div>
 </div>
 
-<div id="desativados" class="screen">
-  <div id="desativados-locked" class="locked"><div class="lock-icon" style="font-size:5rem;">🔒</div><p>Segure o cadeado por 5 segundos</p><div id="hold-count" class="countdown"></div></div>
+<div id="desativados" class="screen protected-lock">
+  <div id="desativados-locked" class="locked"><div class="lock-icon">🔒</div><p>SEGURE 5 SEGUNDOS PARA LIBERAR</p><div id="hold-count" class="countdown"></div></div>
   <div id="desativados-content" style="display:none;"><h2>ALUNOS DESATIVADOS POR HORÁRIO</h2><div id="desativados-por-horario"></div></div>
 </div>
 
-<div id="todos" class="screen">
-  <div id="todos-locked" class="locked"><div class="lock-icon" style="font-size:5rem;">🔒</div><p>Segure o cadeado por 5 segundos</p><div id="hold-count2" class="countdown"></div></div>
+<div id="todos" class="screen protected-lock">
+  <div id="todos-locked" class="locked"><div class="lock-icon">🔒</div><p>SEGURE 5 SEGUNDOS PARA LIBERAR</p><div id="hold-count2" class="countdown"></div></div>
   <div id="todos-content" style="display:none;"><h2>CRONOGRAMA COMPLETO - TODOS HORÁRIOS</h2><div id="todos-por-horario"></div></div>
 </div>
 
@@ -89,8 +116,8 @@
 const TABELA_PLANOS = {1:60, 2:80, 3:100, 4:130, 5:150};
 const TABELA_DZ = {1:30, 2:40, 3:50, 4:60, 5:70};
 const VAGAS_MAX = 7;
+const SENHA_SECRETA = "quando"; // MUDE AQUI SUA SENHA
 
-// SEU CRONOGRAMA_DB COMPLETO
 let CRONOGRAMA_DB = {
   "PRESENCIAL": [
     {hora:"06h00 🐦", status:"DESATIVADOS", alunos:[{n:4, id:"alexandra4", aluno:"Alexandra", dias:"--", freq:"--", objetivo:"Saúde", valor:"--", matricula:"--", total:"--", mensalidade:"--", status:"Desativado", cpf:"--", nasc:"--", idade:"--", genero:"--", whats:"--", email:"--", nivel_atividade:"--", q1:"--", q2:"--", q3:"--", q4:"--", q5:"--", q6:"--", q7:"--", q8:"--", q9:"--", plano:"--", cep:"--", rua:"--", numero:"--", bairro:"--", cidade:"--"}]},
@@ -111,7 +138,6 @@ let CRONOGRAMA_DB = {
   ]
 };
 
-// FUNÇÕES AUXILIARES
 function calcularDiasFaltantes(dataStr){
   if(!dataStr || dataStr === "--") return "--";
   let partes = dataStr.includes("/")? dataStr.split("/") : dataStr.split("-");
@@ -128,10 +154,8 @@ function gerarBlocosPorHorario(containerId, horarios, filtroStatus=null){
     let alunosFiltrados = h.alunos.filter(a=> a.aluno!== "--" && (!filtroStatus || a.status === filtroStatus));
     let vagasOcupadas = alunosFiltrados.length;
     let vagasDisponiveis = VAGAS_MAX - vagasOcupadas;
-
     let dadosTabela = JSON.parse(JSON.stringify(alunosFiltrados));
     dadosTabela.forEach(a=> a.FALTAM_DIAS = calcularDiasFaltantes(a.mensalidade));
-
     html += `
     <div class="horario-bloco">
       <div class="horario-titulo">
@@ -159,12 +183,10 @@ function gerarTabelaHTML(dados){
   return thead + tbody;
 }
 
-// CALCULAR TOTAIS E LEMBRETES
 function calcularTotais(ativos){
   let totalBruto = 0; let totalDZ = 0; let lembretes = [];
   let hoje = new Date(); let diaSemana = hoje.getDay();
   let domingoAnterior = new Date(hoje); domingoAnterior.setDate(hoje.getDate() - diaSemana);
-
   ativos.forEach(a=>{
     let valor = parseFloat(a.valor.replace("R$", "").replace(",", "."));
     if(!isNaN(valor)) totalBruto += valor;
@@ -188,15 +210,13 @@ function calcularTotais(ativos){
     `<h3>🔔 LEMBRETES - VENCEM EM ATÉ 7 DIAS</h3><p>Nenhum vencimento próximo.</p>`;
 }
 
-// LOCK E SENHA
+// SISTEMA DE LOCK 5 SEGUNDOS
 let targetTab = ""; let holdTimer = null; let holdCount = 0;
-function startHold(tab){targetTab = tab; holdCount = 0; const countEl = tab==="desativados"? document.getElementById("hold-count") : document.getElementById("hold-count2"); holdTimer = setInterval(()=>{holdCount++; countEl.innerText = holdCount; if(holdCount >= 5){clearInterval(holdTimer); document.getElementById("popup").style.display = "flex"; startAccessCountdown();}}, 1000);}
-function stopHold(){clearInterval(holdTimer); holdCount = 0; document.getElementById("hold-count").innerText = ""; document.getElementById("hold-count2").innerText = "";}
-function startAccessCountdown(){let c = 3; const countEl = targetTab==="desativados"? document.getElementById("hold-count") : document.getElementById("hold-count2"); const interval = setInterval(()=>{countEl.innerText = c > 0? c : "Acesso Aberto: ✅"; c--; if(c < 0){clearInterval(interval); document.getElementById("popup").style.display = "none"; unlockTab(targetTab);}}, 1000);}
-function checkPassword(){const senha = document.getElementById("senhaInput").value; if(senha === "quando"){document.getElementById("erroSenha").innerText = ""; startAccessCountdown();} else {document.getElementById("erroSenha").innerText = "Senha incorreta!";}}
-function unlockTab(tab){document.getElementById(tab+"-locked").style.display = "none"; document.getElementById(tab+"-content").style.display = "block";}
+function startHold(tab){targetTab = tab; holdCount = 0; const countEl = tab==="desativados"? document.getElementById("hold-count") : document.getElementById("hold-count2"); countEl.innerText = 0; holdTimer = setInterval(()=>{holdCount++; countEl.innerText = holdCount; if(holdCount >= 5){clearInterval(holdTimer); document.getElementById("popup").style.display = "flex"; document.getElementById("senhaInput").focus();}}, 1000);}
+function stopHold(){clearInterval(holdTimer); holdCount = 0; document.getElementById("hold-count").innerText = ""; document.getElementById("hold-count2").innerText = ""}
+function checkPassword(){const senha = document.getElementById("senhaInput").value; if(senha === SENHA_SECRETA){document.getElementById("erroSenha").innerText = ""; document.getElementById("popup").style.display = "none"; unlockTab(targetTab);} else {document.getElementById("erroSenha").innerText = "Senha incorreta!";}}
+function unlockTab(tab){document.getElementById(tab+"-locked").style.display = "none"; document.getElementById(tab+"-content").style.display = "block"; showTab(tab);}
 
-// INICIALIZAR TELAS
 let horarios = CRONOGRAMA_DB.PRESENCIAL;
 let todosAlunos = []; horarios.forEach(h=> todosAlunos = todosAlunos.concat(h.alunos));
 let ativos = todosAlunos.filter(a => a.status === "Ativo" && a.aluno!== "--" && a.valor!== "--");
@@ -208,6 +228,5 @@ calcularTotais(ativos);
 
 function showTab(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active")); document.getElementById(id).classList.add("active"); event.target.closest(".tab-btn").classList.add("active");}
 </script>
-
 </body>
 </html>
