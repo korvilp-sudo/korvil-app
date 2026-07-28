@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KORVIL - Gerador de Site Parceria</title>
+<style>
+    :root { --cor1: #00bfff; --cor2: #0d1117; --cor3: #ffffff; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--cor2); color: var(--cor3); }
+
+    /* EDITOR */
+    #editor { max-width: 900px; margin: 20px auto; padding: 20px; background: #1a1f2b; border-radius: 12px; }
+   .etapa { display: none; animation: fade 0.4s; }
+   .etapa.ativa { display: block; }
+    @keyframes fade { from{opacity:0} to{opacity:1} }
+    h2 { color: var(--cor1); margin-bottom: 15px; text-align: center; }
+    label { display: block; margin: 10px 0 5px; font-weight: 600; }
+    select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #0d1117; color: #fff; margin-bottom: 15px; }
+   .botoes { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { padding: 12px 25px; border: none; border-radius: 8px; background: var(--cor1); color: #000; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+   .progresso { height: 6px; background: #333; border-radius: 5px; margin-bottom: 20px; }
+   .barra { height: 100%; background: var(--cor1); width: 10%; border-radius: 5px; transition: 0.3s; }
+
+    /* SITE MODELO */
+    #siteModelo { display: none; }
+    header { background: var(--cor1); padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { color: #000; }
+    nav a { color: #000; text-decoration: none; margin: 0 10px; font-weight: 600; }
+   .hero { padding: 60px 20px; text-align: center; background: linear-gradient(180deg, var(--cor1), var(--cor2)); }
+   .servicos { padding: 40px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+   .card { background: #1a1f2b; padding: 20px; border-radius: 10px; border: 1px solid var(--cor1); }
+   .card h3 { color: var(--cor1); margin-bottom: 10px; }
+    footer { background: #000; text-align: center; padding: 20px; font-size: 0.8rem; }
+   .btnWhats { background: #25D366; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<!-- TELA 1: EDITOR DE 10 ETAPAS -->
+<div id="editor">
+    <h2>KORVIL - Criador de Site Parceria</h2>
+    <div class="progresso"><div class="barra" id="barraProgresso"></div></div>
+
+    <!-- ETAPA 1 -->
+    <div class="etapa ativa" id="etapa1">
+        <h2>Etapa 1/10: Dados da Empresa</h2>
+        <label>Nome da Empresa/Profissional</label>
+        <input type="text" id="nomeEmpresa" placeholder="Ex: Academia Força Total">
+        <label>Frase de Efeito</label>
+        <input type="text" id="slogan" placeholder="Ex: Transforme seu corpo em 90 dias">
+    </div>
+
+    <!-- ETAPA 2 -->
+    <div class="etapa" id="etapa2">
+        <h2>Etapa 2/10: Escolha o Nicho/Área</h2>
+        <label>Área de Atuação</label>
+        <select id="area" onchange="carregarServicos()">
+            <option value="">Selecione...</option>
+            <option value="servicos">Serviços Gerais Profissionais</option>
+            <option value="educacao">Educação Física</option>
+            <option value="empreendedorismo">Empreendedorismo</option>
+            <option value="financas">Finanças</option>
+            <option value="saude">Saúde</option>
+            <option value="beleza">Beleza</option>
+        </select>
+    </div>
+
+    <!-- ETAPA 3 -->
+    <div class="etapa" id="etapa3">
+        <h2>Etapa 3/10: Escolha a Profissão/Serviço Principal</h2>
+        <label>Profissão</label>
+        <select id="servicoPrincipal"></select>
+    </div>
+
+    <!-- ETAPA 4 -->
+    <div class="etapa" id="etapa4">
+        <h2>Etapa 4/10: Tipo de Layout/Design</h2>
+        <select id="layout">
+            <option value="moderno">Moderno - Escuro com Neon</option>
+            <option value="clean">Clean - Branco e Minimalista</option>
+            <option value="corporativo">Corporativo - Azul e Profissional</option>
+        </select>
+    </div>
+
+    <!-- ETAPA 5 -->
+    <div class="etapa" id="etapa5">
+        <h2>Etapa 5/10: Paleta de Cores</h2>
+        <label>Cor Principal</label>
+        <input type="color" id="cor1" value="#00bfff">
+        <label>Cor de Fundo</label>
+        <input type="color" id="cor2" value="#0d1117">
+        <label>Cor do Texto</label>
+        <input type="color" id="cor3" value="#ffffff">
+    </div>
+
+    <!-- ETAPA 6 -->
+    <div class="etapa" id="etapa6">
+        <h2>Etapa 6/10: Menu e Abas do Site</h2>
+        <label>Marque o que terá no menu</label>
+        <input type="checkbox" id="menuHome" checked> <label for="menuHome" style="display:inline;">Início</label><br>
+        <input type="checkbox" id="menuServicos" checked> <label for="menuServicos" style="display:inline;">Serviços</label><br>
+        <input type="checkbox" id="menuSobre"> <label for="menuSobre" style="display:inline;">Sobre</label><br>
+        <input type="checkbox" id="menuContato" checked> <label for="menuContato" style="display:inline;">Contato</label>
+    </div>
+
+    <!-- ETAPA 7 -->
+    <div class="etapa" id="etapa7">
+        <h2>Etapa 7/10: Banner Principal</h2>
+        <label>Título do Banner</label>
+        <input type="text" id="tituloBanner" placeholder="O melhor serviço da cidade">
+        <label>Botão do Banner</label>
+        <input type="text" id="textoBotao" placeholder="Fale no WhatsApp">
+    </div>
+
+    <!-- ETAPA 8 -->
+    <div class="etapa" id="etapa8">
+        <h2>Etapa 8/10: 10 Serviços Específicos</h2>
+        <p>Já preenchemos 10 serviços pra você baseado na escolha. Edite se quiser.</p>
+        <div id="listaServicos"></div>
+    </div>
+
+    <!-- ETAPA 9 -->
+    <div class="etapa" id="etapa9">
+        <h2>Etapa 9/10: Contato e Atendimento</h2>
+        <label>WhatsApp</label>
+        <input type="text" id="whatsapp" placeholder="5513999999999">
+        <label>Chave PIX</label>
+        <input type="text" id="pix" placeholder="seuemail@pix.com">
+    </div>
+
+    <!-- ETAPA 10 -->
+    <div class="etapa" id="etapa10">
+        <h2>Etapa 10/10: Gerar Site</h2>
+        <p>Pronto! Clique abaixo pra visualizar o site do seu parceiro KORVIL.</p>
+        <button onclick="gerarSite()">GERAR SITE AGORA</button>
+    </div>
+
+    <div class="botoes">
+        <button onclick="voltarEtapa()" id="btnVoltar" disabled>Voltar</button>
+        <button onclick="proximaEtapa()" id="btnProximo">Próximo</button>
+    </div>
+</div>
+
+<!-- TELA 2: SITE GERADO -->
+<div id="siteModelo">
+    <header>
+        <h1 id="siteNome"></h1>
+        <nav id="siteMenu"></nav>
+    </header>
+    <section class="hero">
+        <h2 id="siteTituloBanner"></h2>
+        <a href="#" id="siteBotaoWhats" class="btnWhats" target="_blank"></a>
+    </section>
+    <section class="servicos" id="siteServicos"></section>
+    <footer>
+        <p>© 2026 <span id="siteNomeRodape"></span> - Site desenvolvido por KORVIL. Todos direitos reservados.</p>
+        <p>PIX: <span id="sitePix"></span></p>
+    </footer>
+</div>
+
+<script>
+let etapaAtual = 1;
+const totalEtapas = 10;
+
+// BANCO DE DADOS COM 10 ITENS EM CADA
+const BANCO = {
+    servicos: ["Manutenção de Celular","Eletricista","Carpinteiro","Confeiteira","Encanador","Pintor","Jardineiro","Mecânico","Diarista","Técnico de PC"],
+    educacao: ["Treinamento Personalizado","Crossfit","Musculação","Hyrox","Funcional","Boxe","Dança","Yoga","Pilates","Corrida"],
+    empreendedorismo: ["Consultoria","Mentoria","Plano de Negócios","Marketing Digital","Vendas","E-commerce","Gestão","Palestra","Treinamento","Franquia"],
+    financas: ["Consultoria Financeira","Mentoria de Investimentos","Contabilidade","Declaração IR","Planejamento","Empréstimo","Seguro","Aposentadoria","Criptomoedas","Educação Financeira"],
+    saude: ["Terapeuta Holístico","Massoterapeuta","Fisioterapeuta","Ortopedista","Clínico Geral","Dentista","Nutricionista","Psicólogo","Enfermeiro","Acupunturista"],
+    beleza: ["Barbeiro","Cabeleireiro Feminino","Cabeleireiro Masculino","Esteticista","Manicure","Pedicure","Maquiador","Designer de Sobrancelha","Depilação","Alongamento de Unhas"]
+};
+
+const SERVICOS_DETALHES = {
+    "Manutenção de Celular": ["Troca de Tela","Atualizar Software","Limpeza Interna","Troca de Bateria","Configurar Celular","Recuperação de Dados","Troca de Câmera","Desbloqueio","Troca de Conector","Formatação"],
+    "Eletricista": ["Instalação de Ar Cond.","Conserto de TV","Conserto de Ventilador","Instalação de Lâmpada","Quadro de Energia","Tomada e Interruptor","Chuveiro Elétrico","Cerca Elétrica","Portão Eletrônico","Aterramento"],
+    "Treinamento Personalizado": ["Avaliação Física","Plano de Treino","Acompanhamento 1x1","Treino em Casa","Treino na Academia","Foco em Hipertrofia","Foco em Emagrecimento","Treino para Idosos","Treino para Gestante","Treino Online"],
+    "Consultoria": ["Análise de Negócio","Plano Estratégico","Redução de Custos","Aumento de Vendas","Processos","RH","Jurídico","Fiscal","Expansão","Crise"],
+    "Terapeuta Holístico": ["Reiki","Florais","Cromoterapia","Aromaterapia","Massagem","Tarot","Constelação","Meditação","Cristais","Thetahealing"],
+    "Barbeiro": ["Corte Social","Degradê","Barba","Sobrancelha","Hidratação","Pigmentação","Luzes","Platinado","Corte Infantil","Corte na Tesoura"]
+};
+
+function proximaEtapa() {
+    if(etapaAtual < totalEtapas) {
+        document.getElementById('etapa'+etapaAtual).classList.remove('ativa');
+        etapaAtual++;
+        document.getElementById('etapa'+etapaAtual).classList.add('ativa');
+        document.getElementById('btnVoltar').disabled = false;
+        if(etapaAtual === totalEtapas) document.getElementById('btnProximo').style.display = 'none';
+        atualizarBarra();
+        if(etapaAtual === 8) preencher10Servicos();
+    }
+}
+function voltarEtapa() {
+    if(etapaAtual > 1) {
+        document.getElementById('etapa'+etapaAtual).classList.remove('ativa');
+        etapaAtual--;
+        document.getElementById('etapa'+etapaAtual).classList.add('ativa');
+        document.getElementById('btnProximo').style.display = 'block';
+        if(etapaAtual === 1) document.getElementById('btnVoltar').disabled = true;
+        atualizarBarra();
+    }
+}
+function atualizarBarra() {
+    document.getElementById('barraProgresso').style.width = (etapaAtual*10)+'%';
+}
+
+function carregarServicos() {
+    const area = document.getElementById('area').value;
+    const select = document.getElementById('servicoPrincipal');
+    select.innerHTML = '';
+    BANCO[area].forEach(s => {
+        select.innerHTML += `<option value="${s}">${s}</option>`;
+    });
+}
+
+function preencher10Servicos() {
+    const servico = document.getElementById('servicoPrincipal').value;
+    const div = document.getElementById('listaServicos');
+    div.innerHTML = '';
+    const lista = SERVICOS_DETALHES[servico] || Array.from({length:10}, (_,i) => `Serviço ${i+1} de ${servico}`);
+    lista.forEach((s,i) => {
+        div.innerHTML += `<input type="text" value="${s}" id="serv${i}">`;
+    });
+}
+
+function gerarSite() {
+    // Pega dados
+    const nome = document.getElementById('nomeEmpresa').value;
+    const cor1 = document.getElementById('cor1').value;
+    const cor2 = document.getElementById('cor2').value;
+    const cor3 = document.getElementById('cor3').value;
+    const whats = document.getElementById('whatsapp').value;
+    const pix = document.getElementById('pix').value;
+
+    // Aplica cores
+    document.documentElement.style.setProperty('--cor1', cor1);
+    document.documentElement.style.setProperty('--cor2', cor2);
+    document.documentElement.style.setProperty('--cor3', cor3);
+
+    // Monta Menu
+    let menu = '';
+    if(document.getElementById('menuHome').checked) menu += '<a href="#">Início</a>';
+    if(document.getElementById('menuServicos').checked) menu += '<a href="#servicos">Serviços</a>';
+    if(document.getElementById('menuSobre').checked) menu += '<a href="#">Sobre</a>';
+    if(document.getElementById('menuContato').checked) menu += '<a href="#contato">Contato</a>';
+
+    // Monta Serviços
+    let servs = '';
+    for(let i=0; i<10; i++) {
+        const nomeServ = document.getElementById('serv'+i).value;
+        servs += `<div class="card"><h3>${nomeServ}</h3><p>Descrição profissional do serviço ${nomeServ}. Entre em contato para orçamento.</p></div>`;
+    }
+
+    // Preenche Site
+    document.getElementById('siteNome').innerText = nome;
+    document.getElementById('siteNomeRodape').innerText = nome;
+    document.getElementById('siteMenu').innerHTML = menu;
+    document.getElementById('siteTituloBanner').innerText = document.getElementById('tituloBanner').value;
+    document.getElementById('siteBotaoWhats').innerText = document.getElementById('textoBotao').value;
+    document.getElementById('siteBotaoWhats').href = `https://wa.me/${whats}`;
+    document.getElementById('siteServicos').innerHTML = servs;
+    document.getElementById('sitePix').innerText = pix;
+
+    // Troca de tela
+    document.getElementById('editor').style.display = 'none';
+    document.getElementById('siteModelo').style.display = 'block';
+}
+</script>
+</body>
+</html>
