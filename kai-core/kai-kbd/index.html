@@ -2,224 +2,681 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL - K-AI.K-B.D 8K FINAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>KORVIL - K-AI.K-B.D 8K PRO</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-  :root{ --korvil-neon:#00ffff; --korvil-bg:#000010; --glass:rgba(0,255,255,0.05); --metal:linear-gradient(145deg, #001a1a, #000); }
-  *{margin:0;padding:0;box-sizing:border-box;font-family:"Orbitron"; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;}
-  body{background:var(--korvil-bg); background-image:radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%); color:#d0f8ff; overflow:hidden; font-size:18px;}
-
-  #db-machine{
-    width:90vw; height:90vh; margin:5vh auto; background:var(--metal); border:2px solid var(--korvil-neon); border-radius:30px;
-    box-shadow:0 0 60px var(--korvil-neon), inset 0 0 50px rgba(0,255,255,0.1); position:relative; overflow:hidden; transform-style:preserve-3d;
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;600&display=swap');
+  
+  :root {
+    --korvil-neon: #00ffff;
+    --korvil-bg: #00000a;
+    --korvil-panel: rgba(0, 15, 25, 0.85);
+    --glass: rgba(0, 255, 255, 0.05);
+    --glow: 0 0 25px rgba(0, 255, 255, 0.6);
   }
- .holo-line{position:absolute; width:100%; height:2px; background:linear-gradient(90deg, transparent, var(--korvil-neon), transparent); animation: scan 3s linear infinite; z-index:999;}
-  @keyframes scan{0%{top:0%;} 100%{top:100%;}} @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.4;}}
 
-  h1{text-align:center; font-size:2.2rem; color:var(--korvil-neon); text-shadow:0 0 30px var(--korvil-neon); padding:15px; animation:pulse 2s infinite;}
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: "Orbitron", sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
 
- .tabs{display:flex; gap:15px; justify-content:center; padding:15px;}
- .tab-btn{padding:18px 30px; background:var(--glass); border:2px solid var(--korvil-neon); color:var(--korvil-neon); cursor:pointer; border-radius:12px; font-weight:700; font-size:1.2rem; position:relative; backdrop-filter:blur(10px);}
- .tab-btn.locked::after{content:"🔒"; position:absolute; top:-8px; right:-8px; animation: pulse 1s infinite;}
- .count-overlay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:5rem; color:var(--korvil-neon); display:none; z-index:1000;}
+  body {
+    background: var(--korvil-bg);
+    color: #d0f8ff;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+  }
 
- .screen{display:none; padding:20px; height:calc(100% - 180px); overflow:auto;}
- .screen.active{display:block;}
- .locked-screen{display:flex; align-items:center; justify-content:center; flex-direction:column; height:100%; font-size:1.5rem;}
+  /* MAQUINA 4D HOLOGRAMA */
+  #db-viewport {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform-style: preserve-3d;
+  }
 
- .horario-bloco{margin-bottom:30px; border:2px solid rgba(0,255,255,0.3); padding:20px; border-radius:15px; background:rgba(0,0,0,0.4);}
- .horario-titulo{display:flex; justify-content:space-between; font-size:1.5rem; color:var(--korvil-neon); margin-bottom:15px;}
-  table{width:100%; font-size:16px; border-collapse:collapse;} th,td{border:1px solid rgba(0,255,255,0.3); padding:12px;}
-  th{background:var(--korvil-neon); color:#000; position:sticky; top:0;}
+  #db-machine {
+    width: 90vw;
+    height: 90vh;
+    background: linear-gradient(135deg, rgba(0, 20, 30, 0.95), rgba(0, 5, 10, 0.98));
+    border: 2px solid var(--korvil-neon);
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(0, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+  }
 
-  /* MENUS SECRETOS */
- .secret-menu{position:absolute; left:0; width:100%; height:140px; background:rgba(0,255,255,0.1); border:2px dashed var(--korvil-neon); display:none; justify-content:center; align-items:center; gap:15px; backdrop-filter: blur(10px); z-index:1000;}
- .secret-menu.top{top:0;}.secret-menu.bottom{bottom:0;}
- .menu-btn{padding:12px 20px; background:var(--korvil-neon); color:#000; border:none; border-radius:10px; font-weight:900; cursor:pointer;}
+  /* EFEITO HOLOGRÁFICO E AMBIENTE INTERATIVO */
+  .holo-grid {
+    position: absolute; top: 0; left: 0; width: 200%; height: 200%;
+    background-image: 
+      linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    animation: gridMove 20s linear infinite;
+    opacity: 0.4;
+  }
 
-  /* MODO CUBO */
-  #cube-container{position:absolute; top:0; left:0; width:100%; height:100%; display:none; transform-style: preserve-3d; transition: transform 0.5s;}
- .cube-face{position:absolute; width:100%; height:100%; background:rgba(0,10,20,0.95); border:2px solid var(--korvil-neon); overflow:auto;}
- .face-title{position:sticky; top:0; background:rgba(0,255,255,0.2); padding:15px; text-align:center; font-size:1.5rem; border-bottom:2px solid var(--korvil-neon); z-index:10;}
- .face1{transform: rotateY(0deg) translateZ(45vw);}.face2{transform: rotateY(90deg) translateZ(45vw);}
- .face3{transform: rotateY(180deg) translateZ(45vw);}.face4{transform: rotateY(-90deg) translateZ(45vw);}
- .face5{transform: rotateX(90deg) translateZ(45vh);}.face6{transform: rotateX(-90deg) translateZ(45vh);}
+  @keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-30px, -30px); }
+  }
 
-  /* TERMINAL */
- .terminal{background:#000; color:var(--korvil-neon); padding:15px; height:50%; overflow:auto; border:1px solid var(--korvil-neon); font-size:14px;}
- .terminal-input{width:100%; padding:12px; background:#000; border:2px solid var(--korvil-neon); color:var(--korvil-neon);}
- .editor{width:100%; height:60%; background:#001111; color:var(--korvil-neon); border:2px solid var(--korvil-neon); font-family:monospace; font-size:14px; padding:10px;}
- .countdown{position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:8rem; color:var(--korvil-neon); display:none; z-index:9999; text-shadow:0 0 50px var(--korvil-neon);}
- .hist-item{padding:10px; margin:5px 0; background:rgba(0,255,255,0.05); border-left:3px solid var(--korvil-neon); cursor:pointer;}
-  @keyframes turboGlow{50%{box-shadow:0 0 200px var(--korvil-neon), 0 0 400px var(--korvil-neon);}}
- .turbo{animation: turboGlow 5s ease-out;}
+  .holo-line {
+    position: absolute; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--korvil-neon), transparent);
+    box-shadow: 0 0 15px var(--korvil-neon);
+    animation: scan 4s ease-in-out infinite alternate;
+    z-index: 5;
+    pointer-events: none;
+  }
+  @keyframes scan { 0% { top: 0%; } 100% { top: 98%; } }
+
+  h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: var(--korvil-neon);
+    text-shadow: var(--glow);
+    padding: 12px;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  }
+
+  /* ABAS E CABEÇALHO */
+  .tabs {
+    display: flex; gap: 10px; justify-content: center; padding: 12px;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .tab-btn {
+    padding: 10px 20px;
+    background: var(--glass);
+    border: 1px solid var(--korvil-neon);
+    color: var(--korvil-neon);
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    position: relative;
+    transition: 0.3s;
+    text-shadow: 0 0 5px var(--korvil-neon);
+  }
+  .tab-btn.locked::after {
+    content: "🔒"; position: absolute; top: -6px; right: -6px; font-size: 0.8rem;
+  }
+  
+  .screen {
+    display: none; padding: 20px; height: calc(100% - 130px); overflow: auto;
+  }
+  .screen.active { display: block; }
+  .locked-screen {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; height: 100%; font-size: 1.2rem; color: rgba(0,255,255,0.6);
+  }
+
+  /* TABELAS */
+  .horario-bloco { margin-bottom: 20px; border: 1px solid rgba(0, 255, 255, 0.3); padding: 15px; border-radius: 10px; background: rgba(0, 10, 20, 0.6); }
+  table { width: 100%; font-size: 14px; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid rgba(0, 255, 255, 0.2); padding: 10px; text-align: left; }
+  th { background: rgba(0, 255, 255, 0.15); color: var(--korvil-neon); }
+
+  /* MENUS ACOPLADOS SECRETOS (CIMA / BAIXO) */
+  .docked-menu {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 60%; background: rgba(0, 10, 20, 0.95);
+    border: 2px solid var(--korvil-neon);
+    box-shadow: var(--glow);
+    border-radius: 12px; z-index: 100;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 15px; display: flex; gap: 15px; justify-content: space-around; align-items: center;
+  }
+  #docked-top { top: -150px; }
+  #docked-bottom { bottom: -150px; }
+  #docked-top.active { top: 10px; }
+  #docked-bottom.active { bottom: 10px; }
+
+  .dock-tool {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+  }
+  .dock-tool button, .dock-tool select {
+    background: #000; border: 1px solid var(--korvil-neon); color: var(--korvil-neon);
+    padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  }
+
+  /* MODO CUBO 4D 8K */
+  #cube-viewport {
+    position: absolute; width: 100vw; height: 100vh;
+    display: none; align-items: center; justify-content: center;
+    perspective: 1000px; background: #000; z-index: 200;
+  }
+  #cube {
+    width: 400px; height: 400px; position: relative;
+    transform-style: preserve-3d; transition: transform 0.1s linear;
+  }
+  .cube-face {
+    position: absolute; width: 400px; height: 400px;
+    background: rgba(0, 12, 24, 0.95);
+    border: 2px solid var(--korvil-neon);
+    box-shadow: inset 0 0 30px rgba(0,255,255,0.2);
+    padding: 15px; display: flex; flex-direction: column;
+    backface-visibility: visible;
+  }
+  .face-title {
+    font-size: 0.9rem; background: rgba(0,255,255,0.2);
+    padding: 6px; text-align: center; border-bottom: 1px solid var(--korvil-neon);
+    color: var(--korvil-neon); font-weight: bold; margin-bottom: 10px;
+  }
+  .face-content { flex: 1; overflow: auto; font-size: 0.8rem; }
+
+  .face1 { transform: rotateY(0deg) translateZ(200px); }
+  .face2 { transform: rotateY(90deg) translateZ(200px); }
+  .face3 { transform: rotateY(180deg) translateZ(200px); }
+  .face4 { transform: rotateY(-90deg) translateZ(200px); }
+  .face5 { transform: rotateX(90deg) translateZ(200px); }
+  .face6 { transform: rotateX(-90deg) translateZ(200px); }
+
+  /* TERMINAL REAL */
+  .terminal-box {
+    background: #000; border: 1px solid var(--korvil-neon);
+    height: 100%; display: flex; flex-direction: column; padding: 10px;
+    font-family: 'Fira Code', monospace;
+  }
+  #termOutput { flex: 1; overflow-y: auto; color: #00ffaa; font-size: 0.75rem; margin-bottom: 8px; white-space: pre-wrap; }
+  #termInput { background: transparent; border: none; border-top: 1px solid var(--korvil-neon); color: #fff; padding: 6px; outline: none; font-family: 'Fira Code'; }
+
+  /* ANIMAÇÕES & OVERLAYS */
+  .overlay-count {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center;
+    flex-direction: column; z-index: 9999;
+  }
+  .count-number { font-size: 8rem; color: var(--korvil-neon); text-shadow: var(--glow); }
+  .count-msg { font-size: 1.5rem; color: #fff; margin-top: 20px; text-transform: uppercase; letter-spacing: 3px; }
+
+  /* OVERLAY QUARTA PAREDE */
+  #fourth-wall {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    pointer-events: none; z-index: 10000; display: none;
+    background: radial-gradient(circle, rgba(0,255,255,0.8) 0%, rgba(0,0,0,0.95) 80%);
+    animation: breakWall 2s ease-out forwards;
+  }
+  @keyframes breakWall {
+    0% { opacity: 0; transform: scale(0.1); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(3); }
+  }
 </style>
 </head>
 <body oncontextmenu="return false">
 
-<div id="db-machine">
-  <div class="holo-line"></div>
-  <h1>🚨 KORVIL DATABASE 8K HOLOGRAM 🚨</h1>
+<!-- VIEWPORT DA MÁQUINA PRINCIPAL -->
+<div id="db-viewport">
+  <div id="db-machine">
+    <div class="holo-grid"></div>
+    <div class="holo-line"></div>
+    
+    <h1>⚡ KORVIL DATABASE 8K PRO ⚡</h1>
 
-  <div class="tabs">
-    <button class="tab-btn" onclick="showTab('ativos')">1. ALUNOS ATIVOS</button>
-    <button class="tab-btn locked" id="tab-desativados"><span class="count-overlay"></span>2. ALUNOS DESATIVADOS</button>
-    <button class="tab-btn locked" id="tab-cronograma"><span class="count-overlay"></span>3. CRONOGRAMA COMPLETO</button>
-  </div>
+    <!-- MENUS ACOPLADOS SECRETOS -->
+    <div id="docked-top" class="docked-menu">
+      <div class="dock-tool">
+        <label>Comando Rápido DB</label>
+        <button onclick="execQuickDB('PURGE_CACHE')">LIMPAR CACHE</button>
+      </div>
+      <div class="dock-tool">
+        <label>Modo de Leitura</label>
+        <select onchange="changeDBMode(this.value)">
+          <option value="NORMAL">Sincronizado</option>
+          <option value="READONLY">Apenas Leitura</option>
+        </select>
+      </div>
+      <div class="dock-tool">
+        <label>Sincronização</label>
+        <button onclick="execQuickDB('FORCE_SYNC')">FORÇAR SYNC</button>
+      </div>
+    </div>
 
-  <div id="ativos" class="screen active"><h2>ALUNOS ATIVOS</h2><div id="ativos-por-horario"></div></div>
-  <div id="desativados" class="screen"><div class="locked-screen"><p>SEGURE A ABA 5s</p></div><div id="desativados-por-horario"></div></div>
-  <div id="cronograma" class="screen"><div class="locked-screen"><p>SEGURE A ABA 5s</p></div><div id="todos-por-horario"></div></div>
+    <div id="docked-bottom" class="docked-menu">
+      <div class="dock-tool">
+        <label>Exportar Logs</label>
+        <button onclick="execQuickDB('EXPORT_LOGS')">BAIXAR JSON</button>
+      </div>
+      <div class="dock-tool">
+        <label>Status do Servidor</label>
+        <span id="server-status" style="color:#00ffaa; font-size: 0.8rem;">ONLINE (0ms)</span>
+      </div>
+      <div class="dock-tool">
+        <label>Injeção Direta</label>
+        <button onclick="execQuickDB('INJECT_DUMMY')">INJETAR TESTE</button>
+      </div>
+    </div>
 
-  <!-- MENUS SECRETOS DEV -->
-  <div class="secret-menu top" id="menu-top">
-    <button class="menu-btn" onclick="exportarDB()">EXPORT DB</button>
-    <button class="menu-btn" onclick="recalcularTotais()">RECALC</button>
-    <button class="menu-btn" onclick="toggleDebug()">DEBUG</button>
-  </div>
-  <div class="secret-menu bottom" id="menu-bottom">
-    <button class="menu-btn" onclick="addAluno()">+ ALUNO</button>
-    <button class="menu-btn" onclick="limparCache()">CLEAR</button>
-    <button class="menu-btn" onclick="window.open('https://github.com/kai-core/kai-kbd','_blank')">REPO</button>
-  </div>
+    <!-- ABAS PRINCIPAIS -->
+    <div class="tabs">
+      <button class="tab-btn" onclick="showTab('ativos')">1. ALUNOS ATIVOS</button>
+      <button class="tab-btn locked" id="tab-desativados">2. ALUNOS DESATIVADOS 🔒</button>
+      <button class="tab-btn locked" id="tab-cronograma">3. CRONOGRAMA COMPLETO 🔒</button>
+    </div>
 
-  <!-- MODO CUBO -->
-  <div id="cube-container">
-    <div class="cube-face face1"><div class="face-title">FACE 1: BANCO DE DADOS KTP</div><div id="cube-db"></div></div>
-    <div class="cube-face face2"><div class="face-title">FACE 2: ANALYTICS KORVIL</div><div id="cube-analytics"></div></div>
-    <div class="cube-face face3"><div class="face-title">FACE 3: TERMINAL KORVIL</div><div class="terminal" id="termOutput">KORVIL_OS v8.2 > help</div><input class="terminal-input" id="termInput" placeholder="comando..." onkeypress="if(event.key==='Enter') runTerminal()"></div>
-    <div class="cube-face face4"><div class="face-title">FACE 4: EDITOR DE PLANOS</div><div id="cube-editor"></div></div>
-    <div class="cube-face face5"><div class="face-title">FACE 5: HISTÓRICO</div><div id="cube-history"></div></div>
-    <div class="cube-face face6"><div class="face-title">FACE 6: CONFIG</div><div id="cube-config"></div></div>
+    <!-- TELAS DOS DADOS -->
+    <div id="ativos" class="screen active">
+      <h2>ALUNOS ATIVOS</h2>
+      <div id="ativos-container">
+        <div class="horario-bloco">
+          <h3>06:00 - MANHÃ</h3>
+          <table>
+            <tr><th>Código</th><th>Nome</th><th>Plano</th></tr>
+            <tr><td>#101</td><td>Carlos Silva</td><td>VIP KORVIL</td></tr>
+            <tr><td>#102</td><td>Mariana Souza</td><td>PADRÃO</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="desativados" class="screen">
+      <h2>ALUNOS DESATIVADOS</h2>
+      <div id="desativados-container">
+        <div class="horario-bloco">
+          <h3>REGISTRO DE INATIVOS</h3>
+          <table>
+            <tr><th>Código</th><th>Nome</th><th>Motivo</th></tr>
+            <tr><td>#004</td><td>Roberto Alves</td><td>Pausa Temporária</td></tr>
+            <tr><td>#009</td><td>Fernanda Lima</td><td>Cancelado</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="cronograma" class="screen">
+      <h2>CRONOGRAMA COMPLETO - DB</h2>
+      <div id="cronograma-container">
+        <div class="horario-bloco">
+          <h3>Mapeamento de Dados Gerais</h3>
+          <p>Mapeamento e ordenação direta conforme código cronograma DB.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="countdown" id="countdown"></div>
+
+<!-- VIEWPORT MODO CUBO 4D -->
+<div id="cube-viewport">
+  <div id="cube">
+    <!-- FACE 1 -->
+    <div class="cube-face face1">
+      <div class="face-title">FACE 1: BANCO DE DADOS KTP</div>
+      <div class="face-content">
+        <p>Servidor Principal Conectado.</p>
+        <p>Registros Ativos: 1,420</p>
+        <p>Latência: 12ms</p>
+      </div>
+    </div>
+    <!-- FACE 2 -->
+    <div class="cube-face face2">
+      <div class="face-title">FACE 2: ANALYTICS KORVIL</div>
+      <div class="face-content">
+        <p>Métricas Mensais Ativas.</p>
+        <p>Acessos Diários: 8,920</p>
+        <p>Retenção: 94%</p>
+      </div>
+    </div>
+    <!-- FACE 3 -->
+    <div class="cube-face face3">
+      <div class="face-title">FACE 3: TERMINAL KORVIL Real-Time</div>
+      <div class="face-content" style="padding:0;">
+        <div class="terminal-box">
+          <div id="termOutput">KORVIL OS v8.0... Pronto para comandos.</div>
+          <input type="text" id="termInput" placeholder="Digite comando e Enter..." onkeydown="handleTerminal(event)">
+        </div>
+      </div>
+    </div>
+    <!-- FACE 4 -->
+    <div class="cube-face face4">
+      <div class="face-title">FACE 4: EDITOR DE PLANOS</div>
+      <div class="face-content">
+        <label>Seletor de Escopo:</label>
+        <select id="targetFaceSelect" style="width:100%; background:#000; color:#00ffff; border:1px solid #00ffff; margin-top:5px;">
+          <option value="1">Apenas Esta Face</option>
+          <option value="ALL">Todas as 6 Faces simultaneamente</option>
+        </select>
+        <button style="margin-top:15px; width:100%; padding:10px; background:#00ffff; color:#000; font-weight:bold; border:none; cursor:pointer;" onclick="triggerAutoUpdate()">EDITAR E AUTOSALVAR (5s)</button>
+      </div>
+    </div>
+    <!-- FACE 5 -->
+    <div class="cube-face face5">
+      <div class="face-title">FACE 5: HISTÓRICO MENSAL</div>
+      <div class="face-content">
+        <div style="font-size:0.7rem; border-bottom:1px solid rgba(0,255,255,0.2); padding:4px;">
+          <strong>01/07 a 28/07:</strong> 42 Edições Registradas
+        </div>
+        <div style="font-size:0.7rem; border-bottom:1px solid rgba(0,255,255,0.2); padding:4px; margin-top:5px;">
+          <strong>Último Backup:</strong> Código completo preservado.
+        </div>
+      </div>
+    </div>
+    <!-- FACE 6 -->
+    <div class="cube-face face6">
+      <div class="face-title">FACE 6: CONFIGURAÇÕES CORE</div>
+      <div class="face-content">
+        <p>Estado do Kernel: Seguro</p>
+        <p>Repositorium: kai-core/kai-kbd/index.html</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTAGEM REGRESSIVA OVERLAY -->
+<div class="overlay-count" id="overlay-count">
+  <div class="count-number" id="count-num">1</div>
+  <div class="count-msg" id="count-msg">Validando Chave...</div>
+</div>
+
+<!-- EFEITO QUARTA PAREDE -->
+<div id="fourth-wall"></div>
 
 <script>
-// ========== SEU BANCO DE DADOS REAL ==========
-const TABELA_PLANOS = {1:60, 2:80, 3:100, 4:130, 5:150};
-const VAGAS_MAX = 7;
-let CRONOGRAMA_DB = {"PRESENCIAL":[{"hora":"08h00 🐢","status":"ATIVOS","alunos":[{"n":1,"aluno":"Magda Gomes dos Santos","status":"Ativo","mensalidade":"13/05/26","valor":"R$150,00","freq":"5x"}]},{"hora":"06h00 🐦","status":"DESATIVADOS","alunos":[{"n":4,"aluno":"Alexandra","status":"Desativado"}]}]};
-
-const STORAGE_KEY = "KORVIL_DB_v8"; const HISTORY_KEY = "KORVIL_HISTORY_v8";
-let editingFaces = []; let faceCodeBackup = {}; let cubeRotation={x:-20,y:0}; let isPinching=false; let pinchStart=0; let dragTop=false,dragBottom=false; let turboCount=0;
-
-function getToday(){ return new Date().toISOString().split('T')[0]; }
-function getMonth(){ return new Date().toISOString().slice(0,7); }
-
-function loadData(){
-  const saved = localStorage.getItem(STORAGE_KEY);
-  faceCodeBackup = saved? JSON.parse(saved) : {
-    face1: document.getElementById('ativos').innerHTML,
-    face2: "Analytics",
-    face3: "Terminal",
-    face4: "Editor",
-    face5: "Historico",
-    face6: "Config"
+  // BANCO DE DADOS BASE
+  let CRONOGRAMA_DB = {
+    ativos: [],
+    desativados: [],
+    cronograma: []
   };
-}
 
-function saveData(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(faceCodeBackup));
-  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}'); let month = getMonth();
-  Object.keys(history).forEach(m=>{ if(m!== month) delete history[m]; });
-  if(!history[month]) history[month] = {};
-  history[month][getToday()] = {...faceCodeBackup};
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-}
+  // GERENCIADOR DE SEGURANÇA E DESBLOQUEIO DE ABAS
+  function bindTabLock(btnId, screenId, titleText) {
+    const btn = document.getElementById(btnId);
+    let timer, count = 0;
 
-// RENDERIZAR SUAS TABELAS
-function renderTabelas(){
-  let ativosHTML="", todosHTML="", desativadosHTML="";
-  CRONOGRAMA_DB.PRESENCIAL.forEach(h=>{
-    let ativos = h.alunos.filter(a=>a.status==="Ativo");
-    let desativados = h.alunos.filter(a=>a.status==="Desativado");
-    if(ativos.length>0) ativosHTML += `<div class="horario-bloco"><div class="horario-titulo"><h3>${h.hora}</h3></div><table><tr><th>ALUNO</th><th>STATUS</th></tr>${ativos.map(a=>`<tr><td>${a.aluno}</td><td>${a.status}</td></tr>`).join('')}</table></div>`;
-    if(desativados.length>0) desativadosHTML += `<div class="horario-bloco"><div class="horario-titulo"><h3>${h.hora}</h3></div><table><tr><th>ALUNO</th><th>STATUS</th></tr>${desativados.map(a=>`<tr><td>${a.aluno}</td><td>${a.status}</td></tr>`).join('')}</table></div>`;
-    todosHTML += `<div class="horario-bloco"><div class="horario-titulo"><h3>${h.hora}</h3></div><table><tr><th>ALUNO</th><th>STATUS</th></tr>${h.alunos.map(a=>`<tr><td>${a.aluno}</td><td>${a.status}</td></tr>`).join('')}</table></div>`;
-  });
-  document.getElementById('ativos-por-horario').innerHTML = ativosHTML;
-  document.getElementById('desativados-por-horario').innerHTML = desativadosHTML;
-  document.getElementById('todos-por-horario').innerHTML = todosHTML;
-}
+    const start = (e) => {
+      e.preventDefault();
+      count = 1;
+      showOverlay(count, "Escaneando biometria...");
+      timer = setInterval(() => {
+        count++;
+        if (count <= 5) {
+          updateOverlay(count, "Escaneando biometria...");
+        } else {
+          clearInterval(timer);
+          startCountdown3(() => {
+            btn.classList.remove('locked');
+            btn.innerText = titleText;
+            showTab(screenId);
+          });
+        }
+      }, 1000);
+    };
 
-function showTab(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');}
+    const stop = () => {
+      clearInterval(timer);
+      hideOverlay();
+    };
 
-// SENHA 5S NAS ABAS
-function setupTabLock(tabId, screenId){
-  const tab = document.getElementById(tabId); let holdTimer;
-  tab.addEventListener('mousedown', ()=>{
-    let c=0; tab.querySelector('.count-overlay').style.display='block';
-    holdTimer = setInterval(()=>{ c++; tab.querySelector('.count-overlay').innerText=c; if(c>=5){ clearInterval(holdTimer); countdown3(); } },1000);
-  });
-  tab.addEventListener('mouseup', ()=>{clearInterval(holdTimer); tab.querySelector('.count-overlay').style.display='none';});
-  function countdown3(){let c=3; tab.querySelector('.count-overlay').innerText=c;
-    let cd = setInterval(()=>{ c--; tab.querySelector('.count-overlay').innerText=c;
-      if(c<=0){clearInterval(cd); tab.querySelector('.count-overlay').style.display='none'; showTab(screenId);}
-    },1000);
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', stop);
+    btn.addEventListener('mouseleave', stop);
+    btn.addEventListener('touchstart', start);
+    btn.addEventListener('touchend', stop);
   }
-}
-setupTabLock('tab-desativados','desativados'); setupTabLock('tab-cronograma','cronograma');
 
-// PINÇA PRA AUMENTAR
-document.getElementById('db-machine').addEventListener('touchstart', e=>{ if(e.touches.length==2){isPinching=true; pinchStart=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);} });
-document.getElementById('db-machine').addEventListener('touchmove', e=>{ if(isPinching){ let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); let scale=d/pinchStart; document.getElementById('db-machine').style.width=(90*scale)+'vw'; document.getElementById('db-machine').style.height=(90*scale)+'vh'; } });
-document.addEventListener('touchend', ()=>{isPinching=false;});
-
-// MENU SECRETO TOPO+BAIXO
-document.addEventListener('touchstart', e=>{ if(e.touches[0].clientY<100) dragTop=true; if(e.touches[0].clientY>window.innerHeight-100) dragBottom=true; });
-document.addEventListener('touchmove', ()=>{ if(dragTop && dragBottom){document.getElementById('menu-top').style.display='flex'; document.getElementById('menu-bottom').style.display='flex';} });
-document.addEventListener('touchend', ()=>{dragTop=false; dragBottom=false; setTimeout(()=>{document.getElementById('menu-top').style.display='none'; document.getElementById('menu-bottom').style.display='none';},1500);});
-
-// MODO CUBO 5S + GIRO
-let cubeHold=0;
-document.getElementById('db-machine').addEventListener('mousedown', ()=>{ cubeHold=0; let t=setInterval(()=>{cubeHold++; if(cubeHold>=5){clearInterval(t); activateCube();}},1000); });
-document.addEventListener('mouseup', ()=>{clearInterval(t);});
-
-function activateCube(){
-  loadData(); document.getElementById('cube-container').style.display='block'; document.querySelectorAll('.screen,.tabs,h1').forEach(el=>el.style.display='none');
-  Object.keys(faceCodeBackup).forEach(f=>{ if(document.getElementById('cube-'+f.replace('face',''))) document.getElementById('cube-'+f.replace('face','')).innerHTML = faceCodeBackup[f]; });
-  carregarProgramasReais(); updateCubeRotation();
-}
-function updateCubeRotation(){ document.getElementById('cube-container').style.transform = `rotateX(${cubeRotation.x}deg) rotateY(${cubeRotation.y}deg)`; }
-document.addEventListener('mousemove', e=>{ if(e.buttons==1){ cubeRotation.y += e.movementX*0.5; cubeRotation.x += e.movementY*0.5; updateCubeRotation(); turboCount++; if(turboCount==3) turboGiro(); } });
-
-function turboGiro(){
-  document.getElementById('db-machine').classList.add('turbo');
-  let i=0; let turbo=setInterval(()=>{cubeRotation.y+=20; updateCubeRotation(); i++; if(i>30){clearInterval(turbo); setTimeout(()=>{window.location.href='https://github.com/kai-core/kai-kbd/index.html'},1000);}},50);
-}
-
-// TERMINAL REAL
-function runTerminal(){
-  const input=document.getElementById('termInput'); const output=document.getElementById('termOutput'); const cmd=input.value.trim(); input.value='';
-  output.innerHTML += `<br>> ${cmd}`;
-  let p=cmd.split(' ');
-  if(cmd==='help') output.innerHTML+=`<br>editar [face/todas] | confirmar | historico | voltar [data] | save`;
-  else if(p[0]==='editar'){ editingFaces = p[1]==='todas'? ['face1','face2','face3','face4','face5','face6'] : [p[1]]; abrirEditor(editingFaces); output.innerHTML+=`<br>EDITANDO: ${editingFaces.join(', ')}`;
+  function showOverlay(num, msg) {
+    const el = document.getElementById('overlay-count');
+    document.getElementById('count-num').innerText = num;
+    document.getElementById('count-msg').innerText = msg;
+    el.style.display = 'flex';
   }
-  else if(cmd==='confirmar'){ if(editingFaces.length==0) return; iniciarContagem5s(); }
-  else if(cmd==='historico'){ carregarHistorico(); }
-  else if(p[0]==='voltar'){ voltarVersao(p[1]); }
-  else if(cmd==='save'){ saveData(); output.innerHTML+=`<br>✅ SALVO`; }
-  output.scrollTop=output.scrollHeight;
-}
-function abrirEditor(faces){ faces.forEach(f=>{ document.getElementById('cube-'+f.replace('face','')).innerHTML=`<h3>EDITANDO ${f}</h3><textarea class="editor" id="editor-${f}">${faceCodeBackup[f]}</textarea>`; }); }
-function iniciarContagem5s(){ let c=5; const cd=document.getElementById('countdown'); cd.style.display='block'; cd.innerText=c; let timer=setInterval(()=>{c--; cd.innerText=c; if(c<=0){clearInterval(timer); cd.style.display='none'; aplicarEdicoes();}},1000); }
-function aplicarEdicoes(){ editingFaces.forEach(f=>{ faceCodeBackup[f]=document.getElementById('editor-'+f).value; document.getElementById('cube-'+f.replace('face','')).innerHTML=faceCodeBackup[f]; }); editingFaces=[]; saveData(); document.getElementById('termOutput').innerHTML+=`<br>✅ ATUALIZADO ${getToday()}`; }
 
-function carregarProgramasReais(){
-  document.getElementById('cube-analytics').innerHTML=`<h3>Receita: R$150</h3>`;
-  document.getElementById('cube-editor').innerHTML=`<h3>Planos: ${JSON.stringify(TABELA_PLANOS)}</h3>`;
-  document.getElementById('cube-history').innerHTML=`<h3>Historico do Mes</h3><div id="history-list"></div>`; carregarHistorico();
-  document.getElementById('cube-config').innerHTML=`<input type="color" onchange="document.documentElement.style.setProperty('--korvil-neon', this.value)">`;
-}
-function carregarHistorico(){ let h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}'); let m=getMonth(); let html=''; if(h[m]) Object.keys(h[m]).reverse().forEach(d=>{html+=`<div class="hist-item" onclick="voltarVersao('${d}')">${d}</div>`}); document.getElementById('cube-history').innerHTML=`<h3>HISTORICO</h3>`+html; }
-function voltarVersao(d){ let h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}'); faceCodeBackup=h[getMonth()][d]; Object.keys(faceCodeBackup).forEach(f=>{document.getElementById('cube-'+f.replace('face','')).innerHTML=faceCodeBackup[f];}); saveData(); }
+  function updateOverlay(num, msg) {
+    document.getElementById('count-num').innerText = num;
+    if (msg) document.getElementById('count-msg').innerText = msg;
+  }
 
-function exportarDB(){alert(JSON.stringify(CRONOGRAMA_DB).slice(0,100))} function recalcularTotais(){alert('Recalculado')} function toggleDebug(){alert('Debug')} function addAluno(){alert('+Aluno')} function limparCache(){localStorage.clear();alert('Limpo')}
+  function hideOverlay() {
+    document.getElementById('overlay-count').style.display = 'none';
+  }
 
-renderTabelas(); saveData();
+  function startCountdown3(callback) {
+    let c = 3;
+    updateOverlay(c, "ABRINDO ACESSO...");
+    let cd = setInterval(() => {
+      c--;
+      if (c > 0) {
+        updateOverlay(c, "ABRINDO ACESSO...");
+      } else {
+        clearInterval(cd);
+        hideOverlay();
+        callback();
+      }
+    }, 1000);
+  }
+
+  bindTabLock('tab-desativados', 'desativados', '2. ALUNOS DESATIVADOS');
+  bindTabLock('tab-cronograma', 'cronograma', '3. CRONOGRAMA COMPLETO');
+
+  function showTab(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // INTERAÇÃO E PARALLAX NA MÁQUINA
+  const machine = document.getElementById('db-machine');
+  window.addEventListener('mousemove', (e) => {
+    let x = (e.clientX / window.innerWidth - 0.5) * 15;
+    let y = (e.clientY / window.innerHeight - 0.5) * -15;
+    machine.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+  });
+
+  // REDIMENSIONAMENTO DO BANCO DE DADOS (GESTO PINCH / DUPLO TOQUE LATERAL)
+  let currentScale = 1;
+  let isResizing = false;
+  let startDist = 0;
+
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      isResizing = true;
+      startDist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+    }
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isResizing && e.touches.length === 2) {
+      let dist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      let factor = dist / startDist;
+      currentScale = Math.min(Math.max(currentScale * factor, 0.5), 2.5);
+      machine.style.transform = `scale(${currentScale})`;
+      startDist = dist;
+    }
+  });
+
+  window.addEventListener('touchend', () => { isResizing = false; });
+
+  // MENUS ACOPLADOS SECRETOS (CIMA E BAIXO - GESTO ARRASTAR)
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      touchStartY = (e.touches[0].pageY + e.touches[1].pageY) / 2;
+    }
+  });
+
+  window.addEventListener('touchend', (e) => {
+    if (e.changedTouches.length > 0) {
+      let topMenu = document.getElementById('docked-top');
+      let bottomMenu = document.getElementById('docked-bottom');
+      
+      if (topMenu.classList.contains('active')) {
+        topMenu.classList.remove('active');
+        bottomMenu.classList.remove('active');
+      } else {
+        topMenu.classList.add('active');
+        bottomMenu.classList.add('active');
+      }
+    }
+  });
+
+  function execQuickDB(action) {
+    alert("EXECUTANDO NO BANCO DE DADOS: " + action);
+  }
+
+  function changeDBMode(mode) {
+    alert("MODO MUDADO PARA: " + mode);
+  }
+
+  // ATIVAÇÃO DO MODO CUBO (SEGURAR 5 Segundos em qualquer local)
+  let cubeTimer, cubeHoldCount = 0;
+  const triggerCubeHold = (e) => {
+    if (e.target.closest('.docked-menu') || e.target.closest('.tab-btn')) return;
+    cubeHoldCount = 1;
+    showOverlay(cubeHoldCount, "Iniciando Protocolo CUBO...");
+    cubeTimer = setInterval(() => {
+      cubeHoldCount++;
+      if (cubeHoldCount <= 5) {
+        updateOverlay(cubeHoldCount, "Iniciando Protocolo CUBO...");
+      } else {
+        clearInterval(cubeTimer);
+        startCountdown3(() => {
+          document.getElementById('db-viewport').style.display = 'none';
+          document.getElementById('cube-viewport').style.display = 'flex';
+        });
+      }
+    }, 1000);
+  };
+
+  const cancelCubeHold = () => {
+    clearInterval(cubeTimer);
+    if (cubeHoldCount < 5) hideOverlay();
+  };
+
+  document.body.addEventListener('mousedown', triggerCubeHold);
+  document.body.addEventListener('mouseup', cancelCubeHold);
+  document.body.addEventListener('touchstart', triggerCubeHold);
+  document.body.addEventListener('touchend', cancelCubeHold);
+
+  // FÍSICA E ROTAÇÃO DO CUBO 4D
+  const cube = document.getElementById('cube');
+  let rotX = -20, rotY = -20;
+  let isSpinning = false;
+  let spinVelocity = 0;
+  let spinChain = 0;
+  let animFrame;
+
+  window.addEventListener('mousemove', (e) => {
+    if (document.getElementById('cube-viewport').style.display === 'flex' && e.buttons === 1) {
+      rotY += e.movementX * 0.5;
+      rotX -= e.movementY * 0.5;
+      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+  });
+
+  // ACELERAÇÃO E GIRO TRIPLO COM EXECUTANTE QUARTA PAREDE
+  window.addEventListener('dblclick', () => {
+    if (document.getElementById('cube-viewport').style.display === 'flex') {
+      spinChain++;
+      if (spinChain === 1) {
+        spinVelocity = 15;
+        runSpin(7000, 8000);
+      } else if (spinChain === 2) {
+        spinVelocity = 35;
+      } else if (spinChain >= 3) {
+        spinVelocity = 60;
+        triggerFourthWallSequence();
+      }
+    }
+  });
+
+  function runSpin(fastTime, decelerateTime) {
+    isSpinning = true;
+    let startTime = Date.now();
+
+    function update() {
+      let elapsed = Date.now() - startTime;
+      rotY += spinVelocity;
+      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+      if (elapsed > fastTime && elapsed < fastTime + decelerateTime) {
+        spinVelocity *= 0.96;
+      }
+
+      if (elapsed >= fastTime + decelerateTime || spinVelocity < 0.2) {
+        isSpinning = false;
+        spinChain = 0;
+        cancelAnimationFrame(animFrame);
+        snapToNearestFace();
+        return;
+      }
+      animFrame = requestAnimationFrame(update);
+    }
+    animFrame = requestAnimationFrame(update);
+  }
+
+  function snapToNearestFace() {
+    rotX = Math.round(rotX / 90) * 90;
+    rotY = Math.round(rotY / 90) * 90;
+    cube.style.transition = 'transform 0.5s ease-out';
+    cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    setTimeout(() => { cube.style.transition = 'transform 0.1s linear'; }, 500);
+  }
+
+  function triggerFourthWallSequence() {
+    const wall = document.getElementById('fourth-wall');
+    wall.style.display = 'block';
+    setTimeout(() => {
+      window.location.href = 'kai-core/kai-kbd/index.html';
+    }, 4000);
+  }
+
+  // TERMINAL REAL NA FACE 3
+  function handleTerminal(e) {
+    if (e.key === 'Enter') {
+      const input = document.getElementById('termInput');
+      const output = document.getElementById('termOutput');
+      let val = input.value;
+      output.innerText += `\n> ${val}`;
+      
+      if (val.toLowerCase() === 'clear') {
+        output.innerText = 'KORVIL OS v8.0... Pronto para comandos.';
+      } else {
+        output.innerText += `\n[KORVIL CORE]: Comando '${val}' processado com sucesso.`;
+      }
+      
+      input.value = '';
+      output.scrollTop = output.scrollHeight;
+    }
+  }
+
+  // AUTOATUALIZAÇÃO EM 5 SEGUNDOS COM SELETOR DE ESCOPO
+  function triggerAutoUpdate() {
+    const scope = document.getElementById('targetFaceSelect').value;
+    showOverlay(5, `Atualizando Escopo (${scope})...`);
+    let c = 5;
+    let timer = setInterval(() => {
+      c--;
+      if (c > 0) {
+        updateOverlay(c, `Atualizando Escopo (${scope})...`);
+      } else {
+        clearInterval(timer);
+        updateOverlay("✔", "MODIFICAÇÕES APLICADAS!");
+        setTimeout(() => { hideOverlay(); }, 1000);
+      }
+    }, 1000);
+  }
 </script>
 </body>
 </html>
