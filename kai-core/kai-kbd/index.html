@@ -1,151 +1,235 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL - BANCO ATIVOS 8K</title>
+<title>Painel DZ - Alunos Ativos</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-  :root{
-    --korvil-neon:#00ffff; --korvil-neon2:#00d4ff; --korvil-bg:#000010;
-    --metal: linear-gradient(145deg, #001a1a 0%, #000000 50%, #002222 100%);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;font-family:"Orbitron"; -webkit-user-select: none; user-select: none;}
-  body{
-    background:var(--korvil-bg);
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(0,255,255,0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 50%, rgba(0,212,255,0.15) 0%, transparent 50%);
-    min-height:100vh; padding:20px; overflow-x:hidden;
-  }
+    :root {
+        --metal-dark: #2a2e35;
+        --metal-light: #d1d5db;
+        --metal-shine: #ffffff;
+        --accent: #00bfff;
+        --bg: #0d1117;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", "Segoe UI", sans-serif; }
 
-  /* MAQUINA 4D METALICA */
-  #korvil-machine{
-    max-width:1400px; margin:0 auto; padding:30px;
-    background:var(--metal);
-    border:3px solid var(--korvil-neon);
-    border-radius:40px;
-    box-shadow:
-      0 0 80px var(--korvil-neon),
-      0 0 120px rgba(0,255,255,0.3),
-      inset 0 0 60px rgba(0,255,255,0.1);
-    position:relative; overflow:hidden;
-    animation: float 4s ease-in-out infinite;
-  }
-  @keyframes float{0%,100%{transform:translateY(0px);} 50%{transform:translateY(-10px);}}
+    body {
+        background: radial-gradient(circle at top, #1a1f2b 0%, var(--bg) 100%);
+        color: var(--metal-light);
+        padding: 30px 15px;
+        min-height: 100vh;
+    }
 
-.holo-scan{position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg, transparent, var(--korvil-neon), transparent); animation: scan 2.5s linear infinite; box-shadow:0 0 20px var(--korvil-neon);}
-  @keyframes scan{0%{top:0%;} 100%{top:100%;}}
+   .container { max-width: 1100px; margin: auto; }
 
-  h1{
-    text-align:center; font-size:3rem; font-weight:900;
-    color:var(--korvil-neon); text-shadow:0 0 30px var(--korvil-neon);
-    margin-bottom:30px; animation: pulse 2s infinite;
-  }
-  @keyframes pulse{0%,100%{opacity:1; text-shadow:0 0 30px var(--korvil-neon);} 50%{opacity:0.7; text-shadow:0 0 60px var(--korvil-neon2);}}
+   .logo-topo {
+        text-align: center;
+        margin-bottom: 20px;
+        animation: fadeUp 0.8s ease;
+    }
+   .logo-topo img {
+        max-width: 280px;
+        width: 100%;
+        filter: drop-shadow(0 0 15px rgba(0,191,255,0.4));
+    }
 
-  /* CARDS FINANCEIROS */
-.finance-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:40px;}
-.finance-card{
-    background:rgba(0,255,255,0.05); border:2px solid var(--korvil-neon);
-    border-radius:20px; padding:25px; text-align:center;
-    box-shadow:0 0 30px rgba(0,255,255,0.2); backdrop-filter: blur(10px);
-    animation: glow 3s infinite;
-  }
-  @keyframes glow{0%,100%{box-shadow:0 0 30px rgba(0,255,255,0.2);} 50%{box-shadow:0 0 50px rgba(0,255,255,0.4);}}
-.finance-card h3{color:var(--korvil-neon); font-size:1.1rem; margin-bottom:10px;}
-.finance-card.valor{font-size:2.5rem; font-weight:900; color:#fff; text-shadow:0 0 20px var(--korvil-neon);}
-.finance-card.dz{border-color:#00ff88;}.finance-card.dz.valor{color:#00ff88; text-shadow:0 0 20px #00ff88;}
+    header {
+        background: linear-gradient(145deg, var(--metal-dark), #1c1f24);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(0,191,255,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+        animation: shine 4s infinite linear;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    @keyframes shine {
+        0% { box-shadow: 0 0 20px rgba(0,191,255,0.1); }
+        50% { box-shadow: 0 0 40px rgba(0,191,255,0.4); }
+        100% { box-shadow: 0 0 20px rgba(0,191,255,0.1); }
+    }
+    header h1 { font-size: 1.8rem; letter-spacing: 1.5px; background: linear-gradient(90deg, var(--metal-shine), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-  /* TABELA 3D */
-.table-container{border:2px solid var(--korvil-neon); border-radius:20px; overflow:hidden; box-shadow:0 0 40px rgba(0,255,255,0.3);}
-  table{width:100%; border-collapse:collapse; font-size:16px; background:rgba(0,0,0,0.6);}
-  thead{background:linear-gradient(90deg, var(--korvil-neon), var(--korvil-neon2)); color:#000;}
-  th{padding:18px; text-align:left; font-weight:900; font-size:1.1rem;}
-  td{padding:15px; border-bottom:1px solid rgba(0,255,255,0.2); color:#d0f8ff;}
-  tbody tr:hover{background:rgba(0,255,255,0.1); box-shadow:inset 0 0 20px rgba(0,255,255,0.2);}
- .status-ativo{color:#00ff88; font-weight:700; text-shadow:0 0 10px #00ff88;}
+   .btn-pdf {
+        position: absolute;
+        right: 25px;
+        top: 25px;
+        background: linear-gradient(145deg, var(--accent), #0088cc);
+        color: #000;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(0,191,255,0.3);
+    }
+   .btn-pdf:hover { transform: scale(1.05); }
+
+   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+   .card {
+        background: rgba(30,34,40,0.7);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 18px;
+        backdrop-filter: blur(8px);
+        transition: 0.3s;
+        animation: fadeUp 0.6s ease;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+   .card:hover { border-color: var(--accent); transform: translateY(-4px); }
+   .card h4 { font-size: 0.85rem; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; }
+   .card.valor { font-size: 1.6rem; font-weight: 700; color: var(--metal-shine); }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(30,34,40,0.7);
+        border-radius: 14px;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.08);
+        animation: fadeUp 0.8s ease;
+    }
+    thead { background: linear-gradient(90deg, var(--metal-dark), #333); }
+    th, td { padding: 14px 12px; text-align: center; font-size: 0.9rem; }
+    th { color: var(--metal-shine); font-weight: 600; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tbody tr:hover { background: rgba(0,191,255,0.05); }
+
+   .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: linear-gradient(145deg, #444, #222); }
+   .ok { color: #00ff88; font-weight: 700; }
+   .alert { color: #ffb700; font-weight: 700; }
+   .urgent { color: #ff3b3b; font-weight: 700; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0.4; } }
+
+    footer { text-align: center; margin-top: 25px; font-size: 0.8rem; color: #666; }
 </style>
 </head>
-<body oncontextmenu="return false">
-
-<div id="korvil-machine">
-  <div class="holo-scan"></div>
-  <h1>🚨 KORVIL - BANCO DE ALUNOS ATIVOS 🚨</h1>
-
-  <!-- CARDS FINANCEIROS -->
-  <div class="finance-grid">
-    <div class="finance-card">
-      <h3>TOTAL BRUTO MENSAL</h3>
-      <div class="valor" id="total-bruto">R$ 0,00</div>
+<body>
+<div class="container" id="areaPDF">
+    <!-- LOGO GRANDE NO TOPO -->
+    <div class="logo-topo">
+        <img src="sections/ktp/images/logoprojetotransformacao.png" alt="Logo Projeto Transformação">
     </div>
-    <div class="finance-card dz">
-      <h3>50% DZ</h3>
-      <div class="valor" id="total-dz">R$ 0,00</div>
-    </div>
-    <div class="finance-card">
-      <h3>TOTAL ALUNOS ATIVOS</h3>
-      <div class="valor" id="total-alunos">0</div>
-    </div>
-  </div>
 
-  <!-- TABELA DE ATIVOS -->
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>ALUNO</th><th>HORÁRIO</th><th>PLANO</th><th>VALOR</th><th>VENCIMENTO</th><th>STATUS</th>
-        </tr>
-      </thead>
-      <tbody id="tabela-ativos"></tbody>
+    <header>
+        <h1>DZ TREINAMENTO - GESTÃO FINANCEIRA</h1>
+        <button class="btn-pdf" onclick="baixarPDF()">⬇ BAIXAR PDF</button>
+    </header>
+
+    <div class="cards" id="cardsResumo"></div>
+
+    <table id="tabela">
+        <thead>
+            <tr>
+                <th>Aluno</th>
+                <th>Plano</th>
+                <th>Valor Mensal</th>
+                <th>Dias da Semana</th>
+                <th>Horário</th>
+                <th>Data Venc.</th>
+                <th>Dias Restantes</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr style="background: rgba(0,191,255,0.1); font-weight: bold;">
+                <td colspan="2">TOTAL GERAL MENSAL</td>
+                <td id="totalGeral" colspan="5"></td>
+            </tr>
+        </tfoot>
     </table>
-  </div>
+
+    <footer>Atualizado automaticamente • DZ 2026</footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-// ========== SEU CRONOGRAMA_DB ==========
-const TABELA_PLANOS = {1:60, 2:80, 3:100, 4:130, 5:150}; // 1x a 5x
-let CRONOGRAMA_DB = {
-  "PRESENCIAL":[
-    {"hora":"08h00 🐢","status":"ATIVOS","alunos":[{"n":1,"aluno":"Magda Gomes dos Santos","status":"Ativo","mensalidade":"13/05/26","freq":"5x"}]},
-    {"hora":"09h00 🐢","status":"ATIVOS","alunos":[{"n":2,"aluno":"João Silva","status":"Ativo","mensalidade":"20/05/26","freq":"3x"}]},
-    {"hora":"06h00 🐦","status":"DESATIVADOS","alunos":[{"n":4,"aluno":"Alexandra","status":"Desativado","freq":"1x"}]}
-  ]
-};
+    const TABELA_VALORES = { "1x": 30.00, "2x": 40.00, "3x": 50.00, "4x": 60.00, "5x": 70.00 };
 
-function renderAtivos(){
-  let html = ""; let totalBruto = 0; let totalAlunos = 0;
+    const ALUNOS = [
+        { nome: "Gonzaga", plano: "3x", dias: "Seg / Qua / Sex", horario: "19:00 às 20:00", vencimento: "2026-08-10" },
+        { nome: "Carla", plano: "2x", dias: "Ter / Qui", horario: "18:00 às 19:00", vencimento: "2026-08-05" },
+        { nome: "Hellem", plano: "5x", dias: "Seg a Sex", horario: "07:00 às 08:00", vencimento: "2026-08-01" },
+        { nome: "Katia", plano: "1x", dias: "Sábado", horario: "09:00 às 10:00", vencimento: "2026-08-16" },
+        { nome: "Edna", plano: "4x", dias: "Seg / Ter / Qui / Sex", horario: "20:00 às 21:00", vencimento: "2026-07-29" }
+    ];
 
-  CRONOGRAMA_DB.PRESENCIAL.forEach(h=>{
-    h.alunos.filter(a=>a.status==="Ativo").forEach(a=>{
-      totalAlunos++;
-      let planoVezes = parseInt(a.freq.replace('x',''));
-      let valor = TABELA_PLANOS[planoVezes] || 0;
-      totalBruto += valor;
+    function diasRestantes(data) {
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        const venc = new Date(data); venc.setHours(23,59,59,999);
+        return Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+    }
 
-      html += `
-        <tr>
-          <td>${a.n}</td>
-          <td>${a.aluno}</td>
-          <td>${h.hora}</td>
-          <td>${a.freq}</td>
-          <td>R$ ${valor.toFixed(2)}</td>
-          <td>${a.mensalidade}</td>
-          <td class="status-ativo">${a.status}</td>
-        </tr>
-      `;
-    });
-  });
+    function moeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    function dataBR(d) { return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR'); }
 
-  let totalDZ = totalBruto * 0.5; // 50% DZ
+    function statusDias(d) {
+        if (d < 0) return `VENCIDO`;
+        if (d <= 3) return `${d} dias`;
+        if (d <= 7) return `${d} dias`;
+        return `${d} dias`;
+    }
 
-  document.getElementById('tabela-ativos').innerHTML = html;
-  document.getElementById('total-bruto').innerText = `R$ ${totalBruto.toFixed(2)}`;
-  document.getElementById('total-dz').innerText = `R$ ${totalDZ.toFixed(2)}`;
-  document.getElementById('total-alunos').innerText = totalAlunos;
-}
+    function montarPainel() {
+        let totalGeral = 0;
+        let qtdPorPlano = { "1x": 0, "2x": 0, "3x": 0, "4x": 0, "5x": 0 };
+        let tbody = "";
 
-renderAtivos();
+        ALUNOS.forEach(a => {
+            const valor = TABELA_VALORES[a.plano];
+            const dias = diasRestantes(a.vencimento);
+            totalGeral += valor;
+            qtdPorPlano[a.plano]++;
+
+            tbody += `
+            <tr>
+                <td><b>${a.nome}</b></td>
+                <td><span class="badge">${a.plano}</span></td>
+                <td>${moeda(valor)}</td>
+                <td>${a.dias}</td>
+                <td>${a.horario}</td>
+                <td>${dataBR(a.vencimento)}</td>
+                <td class="${dias<0?'urgent':dias<=3?'urgent':dias<=7?'alert':'ok'}">${statusDias(dias)}</td>
+            </tr>`;
+        });
+
+        document.querySelector("#tabela tbody").innerHTML = tbody;
+        document.getElementById("totalGeral").innerText = moeda(totalGeral);
+
+        let cards = `<div class="card"><h4>Total Mensal</h4><div class="valor">${moeda(totalGeral)}</div></div>`;
+        for (let p in qtdPorPlano) {
+            if(qtdPorPlano[p] > 0) {
+                cards += `<div class="card"><h4>Plano ${p} - ${moeda(TABELA_VALORES[p])}</h4><div class="valor">${qtdPorPlano[p]} Aluno(s)</div></div>`;
+            }
+        }
+        document.getElementById("cardsResumo").innerHTML = cards;
+    }
+
+    async function baixarPDF() {
+        const { jsPDF } = window.jspdf;
+        const area = document.getElementById('areaPDF');
+
+        document.querySelector('.btn-pdf').style.display = 'none';
+
+        const canvas = await html2canvas(area, { scale: 2, backgroundColor: '#0d1117', useCORS: true });
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Cronograma_DZ_${new Date().toLocaleDateString('pt-BR')}.pdf`);
+
+        document.querySelector('.btn-pdf').style.display = 'block';
+    }
+
+    montarPainel();
 </script>
 </body>
 </html>
