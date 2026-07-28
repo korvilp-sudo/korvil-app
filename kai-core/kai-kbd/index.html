@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>KORVIL - TERMINAL + HISTORICO 8K</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+  :root{ --korvil-neon:#00ffff; --korvil-bg:#000010; }
+  *{font-family:"Orbitron"; box-sizing:border-box;}
+  body{background:var(--korvil-bg); color:var(--korvil-neon); overflow:hidden;}
+
+  #db-machine{width:90vw; height:90vh; margin:5vh auto; border:2px solid var(--korvil-neon); border-radius:30px; box-shadow:0 0 60px var(--korvil-neon); position:relative;}
+
+  #cube-container{position:absolute; top:0; left:0; width:100%; height:100%; display:none; transform-style: preserve-3d; transition: transform 1s;}
+.cube-face{position:absolute; width:100%; height:100%; background:rgba(0,10,20,0.9); border:2px solid var(--korvil-neon); backface-visibility: hidden;}
+.face-title{position:absolute; top:0; width:100%; background:rgba(0,255,255,0.1); padding:15px; text-align:center; font-size:1.5rem; border-bottom:2px solid var(--korvil-neon); z-index:10;}
+.face-content{padding:70px 20px 20px 20px; height:100%; overflow:auto;}
+.face1{transform: rotateY(0deg) translateZ(45vw);}
+.face2{transform: rotateY(90deg) translateZ(45vw);}
+.face3{transform: rotateY(180deg) translateZ(45vw);}
+.face4{transform: rotateY(-90deg) translateZ(45vw);}
+.face5{transform: rotateX(90deg) translateZ(45vh);}
+.face6{transform: rotateX(-90deg) translateZ(45vh);}
+
+  /* TERMINAL */
+.terminal{background:#000; color:var(--korvil-neon); padding:15px; height:55%; overflow:auto; border:1px solid var(--korvil-neon); font-size:14px;}
+.terminal-input{width:100%; padding:12px; background:#000; border:2px solid var(--korvil-neon); color:var(--korvil-neon); font-size:16px;}
+.editor{width:100%; height:70%; background:#001111; color:var(--korvil-neon); border:2px solid var(--korvil-neon); font-family:monospace; font-size:14px; padding:10px;}
+.countdown{position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:8rem; color:var(--korvil-neon); text-shadow:0 0 50px var(--korvil-neon); display:none; z-index:9999;}
+.hist-item{padding:8px; margin:5px 0; background:rgba(0,255,255,0.05); border-left:3px solid var(--korvil-neon); cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="db-machine">
+  <button onclick="activateCube()" style="position:absolute; top:10px; right:10px; z-index:100;">ATIVAR CUBO 5S</button>
+
+  <div id="cube-container">
+    <div class="cube-face face1"><div class="face-title">FACE 1: BANCO DE DADOS KTP</div><div class="face-content" id="content-face1"></div></div>
+    <div class="cube-face face2"><div class="face-title">FACE 2: ANALYTICS KORVIL</div><div class="face-content" id="content-face2"></div></div>
+    <div class="cube-face face3"><div class="face-title">FACE 3: TERMINAL KORVIL</div><div class="face-content" id="content-face3"></div></div>
+    <div class="cube-face face4"><div class="face-title">FACE 4: EDITOR DE PLANOS</div><div class="face-content" id="content-face4"></div></div>
+    <div class="cube-face face5"><div class="face-title">FACE 5: HISTÓRICO KORVIL</div><div class="face-content" id="content-face5"></div></div>
+    <div class="cube-face face6"><div class="face-title">FACE 6: CONFIG KORVIL</div><div class="face-content" id="content-face6"></div></div>
+  </div>
+</div>
+
+<div class="countdown" id="countdown"></div>
+
+<script>
+let editingFaces = [];
+let faceCodeBackup = {};
+const STORAGE_KEY = "KORVIL_DB_v8";
+const HISTORY_KEY = "KORVIL_HISTORY_v8";
+
+// CONTEUDO INICIAL
+const initialFaces = {
+  face1: `<h3>Alunos:</h3><p>Magda Gomes - Ativo</p><p>Alexandra - Desativado</p>`,
+  face2: `<h3>Analytics</h3><p>Receita: R$ 600.00</p>`,
+  face3: `<div class="terminal" id="termOutput">KORVIL_OS v8.1 > digite help</div><input class="terminal-input" id="termInput" onkeypress="if(event.key==='Enter') runTerminal()">`,
+  face4: `<h3>Planos</h3><p>3x: R$100</p>`,
+  face5: `<h3>HISTÓRICO DO MÊS</h3><div id="history-list">Carregando...</div>`,
+  face6: `<h3>Config</h3><p>Senha: quando</p>`
+};
+
+function getToday(){ return new Date().toISOString().split('T')[0]; }
+function getMonth(){ return new Date().toISOString().slice(0,7); } // 2026-07
+
+function loadData(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){ faceCodeBackup = JSON.parse(saved); }
+  else { faceCodeBackup = {...initialFaces}; saveData(); }
+}
+
+function saveData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(faceCodeBackup));
+  addToHistory(); // salva no histórico do dia
+}
+
+function addToHistory(){
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}');
+  let month = getMonth();
+  if(!history[month]) history[month] = {};
+
+  // Limpa meses antigos
+  Object.keys(history).forEach(m=>{ if(m!== month) delete history[m]; });
+
+  history[month][getToday()] = {...faceCodeBackup}; // salva snapshot do dia
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+function activateCube(){
+  loadData();
+  document.getElementById('cube-container').style.display='block';
+  Object.keys(faceCodeBackup).forEach(f=>{document.getElementById('content-'+f).innerHTML = faceCodeBackup[f];});
+  updateCubeRotation(); carregarHistorico();
+}
+
+let cubeRotation = {x: -20, y: 0};
+function updateCubeRotation(){ document.getElementById('cube-container').style.transform = `rotateX(${cubeRotation.x}deg) rotateY(${cubeRotation.y}deg)`; }
+let isDragging=false, lastX, lastY;
+document.addEventListener('mousedown', e=>{isDragging=true; lastX=e.clientX; lastY=e.clientY;});
+document.addEventListener('mouseup', ()=>{isDragging=false;});
+document.addEventListener('mousemove', e=>{if(isDragging){cubeRotation.y += (e.clientX-lastX)*0.5; cubeRotation.x += (e.clientY-lastY)*0.5; updateCubeRotation(); lastX=e.clientX; lastY=e.clientY;}});
+
+// ========== TERMINAL REAL ==========
+function runTerminal(){
+  const input = document.getElementById('termInput');
+  const output = document.getElementById('termOutput');
+  const cmd = input.value.trim(); input.value = '';
+  output.innerHTML += `<br>> ${cmd}`;
+
+  let partes = cmd.split(' ');
+
+  if(cmd === 'help'){
+    output.innerHTML += `<br>Comandos: editar [face/todas], confirmar, historico, voltar [YYYY-MM-DD], diff, save`;
+  }
+  else if(partes[0] === 'editar'){
+    let alvo = partes[1];
+    if(alvo === 'todas') editingFaces = ['face1','face2','face3','face4','face5','face6'];
+    else if(alvo.startsWith('face')) editingFaces = [alvo];
+    else {output.innerHTML += `<br>ERRO: face invalida`; return;}
+    abrirEditor(editingFaces);
+    output.innerHTML += `<br>EDITANDO: ${editingFaces.join(', ')}. Edite e digite 'confirmar'`;
+  }
+  else if(cmd === 'confirmar'){
+    if(editingFaces.length === 0){output.innerHTML += `<br>Nada para confirmar`; return;}
+    iniciarContagem5s();
+  }
+  else if(cmd === 'historico'){
+    carregarHistorico();
+    output.innerHTML += `<br>Histórico atualizado na FACE 5`;
+  }
+  else if(partes[0] === 'voltar'){
+    let data = partes[1];
+    voltarVersao(data);
+    output.innerHTML += `<br>Restaurado versão de ${data}`;
+  }
+  else if(cmd === 'save'){ saveData(); output.innerHTML += `<br>✅ Salvo no localStorage`; }
+  else {output.innerHTML += `<br>Comando nao reconhecido`;}
+  output.scrollTop = output.scrollHeight;
+}
+
+function abrirEditor(faces){
+  faces.forEach(f=>{
+    document.getElementById('content-'+f).innerHTML = `
+      <h3>EDITANDO ${f.toUpperCase()}</h3>
+      <textarea class="editor" id="editor-${f}">${faceCodeBackup[f]}</textarea>
+      <p>Digite 'confirmar' no terminal para salvar</p>
+    `;
+  });
+}
+
+function iniciarContagem5s(){
+  let c = 5; const cd = document.getElementById('countdown'); cd.style.display='block'; cd.innerText = c;
+  let timer = setInterval(()=>{ c--; cd.innerText = c;
+    if(c<=0){ clearInterval(timer); cd.style.display='none'; aplicarEdicoes(); }
+  },1000);
+}
+
+function aplicarEdicoes(){
+  editingFaces.forEach(f=>{
+    let novoCodigo = document.getElementById('editor-'+f).value;
+    faceCodeBackup[f] = novoCodigo;
+    document.getElementById('content-'+f).innerHTML = novoCodigo;
+  });
+  editingFaces = [];
+  saveData(); // SALVA + HISTORICO
+  document.getElementById('termOutput').innerHTML += `<br>✅ ATUALIZADO E SALVO! Versão: ${getToday()}`;
+}
+
+function carregarHistorico(){
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}');
+  let month = getMonth();
+  let html = `<h4>Mês: ${month}</h4>`;
+  if(history[month]){
+    Object.keys(history[month]).sort().reverse().forEach(data=>{
+      html += `<div class="hist-item" onclick="voltarVersao('${data}')">📅 ${data} - Clique para restaurar</div>`;
+    });
+  }
+  document.getElementById('content-face5').innerHTML = `<h3>HISTÓRICO DO MÊS</h3>${html}`;
+}
+
+function voltarVersao(data){
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}');
+  let month = getMonth();
+  if(history[month] && history[month][data]){
+    faceCodeBackup = history[month][data];
+    Object.keys(faceCodeBackup).forEach(f=>{document.getElementById('content-'+f).innerHTML = faceCodeBackup[f];});
+    saveData();
+    alert(`Restaurado para ${data}`);
+  }
+}
+</script>
+</body>
+</html>
