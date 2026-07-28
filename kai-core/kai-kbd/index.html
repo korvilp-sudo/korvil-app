@@ -67,7 +67,7 @@
     }
    .btn-pdf:hover { transform: scale(1.05); }
 
-   .tabela-planos, .pix-box {
+   .tabela-planos, .pix-box, #avisosVencimento {
         margin-bottom: 25px;
         background: rgba(30,34,40,0.7);
         padding: 18px;
@@ -75,7 +75,8 @@
         border: 1px solid rgba(255,255,255,0.08);
         animation: fadeUp 0.6s ease;
    }
-   .tabela-planos h3, .pix-box h3 { text-align: center; margin-bottom: 10px; color: var(--accent); }
+   .tabela-planos h3, .pix-box h3, #avisosVencimento h3 { text-align: center; margin-bottom: 10px; color: var(--accent); }
+   #avisosVencimento h3 { color: #ffb700; }
    .tabela-planos table { width: 100%; text-align: center; }
    .tabela-planos td { padding: 6px; }
    .pix-box p { text-align: center; font-size: 1.1rem; }
@@ -162,7 +163,7 @@
                 <th>50% DZ</th>
                 <th>Dias da Semana</th>
                 <th>Horário</th>
-                <th>Data Mensalidade</th>
+                <th>Dia Mensalidade</th>
                 <th>Dias Restantes</th>
             </tr>
         </thead>
@@ -174,6 +175,12 @@
             </tr>
         </tfoot>
     </table>
+
+    <!-- AVISO DE VENCIMENTO AUTOMATICO -->
+    <div id="avisosVencimento" style="display: none;">
+        <h3>⚠️ Aviso de vencimento:</h3>
+        <div id="listaAvisos"></div>
+    </div>
 
     <!-- BOX PIX -->
     <div class="pix-box">
@@ -197,33 +204,58 @@
         { nome: "Katia", plano: "3x", valorProjeto: 100.00, dias: "Terça / Quinta / Sexta", horario: "17:00", vencimento: "2026-07-27" }
     ];
 
-    function diasRestantes(data) {
-        const hoje = new Date(); hoje.setHours(0,0,0,0);
-        const venc = new Date(data); venc.setHours(23,59,59,999);
-        const diff = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
-        return diff;
+    // NOVA LÓGICA: CALCULA SÓ PELO NÚMERO DO DIA
+    function diasRestantesApenasDia(diaVencimento) {
+        const hoje = new Date();
+        const diaHoje = hoje.getDate(); // só pega o número do dia
+
+        let dias = diaVencimento - diaHoje;
+
+        // Se já passou o dia, considera que é do mês que vem
+        if (dias < 0) {
+            const ultimoDiaMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+            dias = (ultimoDiaMes - diaHoje) + diaVencimento;
+        }
+        return dias;
+    }
+
+    function statusDiasApenasDia(dias) {
+        if (dias === 0) return `HOJE`;
+        if (dias < 0) return `VENCIDO`;
+        return `${dias} dias`;
     }
 
     function moeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
-    function dataBR(d) { return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR'); }
-
-    function statusDias(d) {
-        if (d < 0) return `VENCIDO`;
-        if (d <= 3) return `${d} dias`;
-        if (d <= 7) return `${d} dias`;
-        return `${d} dias`;
-    }
 
     function montarPainel() {
         let totalProjeto = 0;
         let totalDZ = 0;
         let tbody = "";
+        let avisos = []; // array pra guardar os avisos
 
         ALUNOS.forEach(a => {
             const valorDZ = a.valorProjeto / 2; // 50%
-            const dias = diasRestantes(a.vencimento);
+            const diaVenc = new Date(a.vencimento + 'T12:00:00').getDate(); // pega SÓ o número do dia
+            const dias = diasRestantesApenasDia(diaVenc);
+            
             totalProjeto += a.valorProjeto;
             totalDZ += valorDZ;
+
+            // LÓGICA DOS AVISOS
+            // 1. Se faltar 15 dias até 1 dia antes
+            if (dias > 0 && dias <= 15) {
+                avisos.push(`A mensalidade do aluno <b>${a.nome}</b> está prestes a vencer.<br>Faltam <b>${dias} dias</b>. - Vence dia ${diaVenc}`);
+            }
+            // 2. Se for o dia ou até 5 dias depois
+            if (dias >= -5 && dias <= 0) {
+                const status = dias === 0 ? "vence HOJE" : `venceu há ${Math.abs(dias)} dia(s)`;
+                avisos.push(`A mensalidade do aluno <b>${a.nome}</b> ${status}.<br>Valor: <b>${moeda(valorDZ)}</b> - Vence dia ${diaVenc}`);
+            }
+
+            let classeStatus = 'ok';
+            if (dias < 0) classeStatus = 'urgent';
+            else if (dias <= 3) classeStatus = 'urgent';
+            else if (dias <= 7) classeStatus = 'alert';
 
             tbody += `
             <tr>
@@ -233,13 +265,23 @@
                 <td><b>${moeda(valorDZ)}</b></td>
                 <td>${a.dias}</td>
                 <td>${a.horario}</td>
-                <td>${dataBR(a.vencimento)}</td>
-                <td class="${dias<0?'urgent':dias<=3?'urgent':dias<=7?'alert':'ok'}">${statusDias(dias)}</td>
+                <td>Dia ${diaVenc}</td> <!-- Mostra só o dia -->
+                <td class="${classeStatus}">${statusDiasApenasDia(dias)}</td>
             </tr>`;
         });
 
         document.querySelector("#tabela tbody").innerHTML = tbody;
         document.getElementById("totalDZ").innerText = moeda(totalDZ);
+
+        // MOSTRAR OS AVISOS
+        const divAvisos = document.getElementById('avisosVencimento');
+        const listaAvisos = document.getElementById('listaAvisos');
+        if (avisos.length > 0) {
+            divAvisos.style.display = 'block';
+            listaAvisos.innerHTML = avisos.join('<hr style="border-color:rgba(255,183,0,0.3); margin:8px 0;">');
+        } else {
+            divAvisos.style.display = 'none';
+        }
 
         // CARD DE RESUMO COM CONTA
         document.getElementById("cardsResumo").innerHTML = `
