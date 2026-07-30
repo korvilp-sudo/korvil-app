@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>KORVIL - Holograma 4D Fases</title>
+<title>KORVIL - Zoom Hiperespaço 4D</title>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <style>
@@ -10,83 +10,60 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
   body { background: radial-gradient(circle at center, #000020, #000); color: #00f0ff; overflow: hidden; }
 .container { display: flex; height: 100vh; gap: 8px; padding: 8px; }
-.panel-left { width: 28%; background: rgba(0,10,30,0.5); backdrop-filter: blur(15px); border: 1px solid #00f0ff; border-radius: 15px; padding: 10px; overflow-y: auto; box-shadow: 0 0 40px #00f0ff88; }
-.panel-right { width: 72%; display: flex; flex-direction: column; gap: 8px; }
+.panel-left { width: 26%; background: rgba(0,10,30,0.5); backdrop-filter: blur(15px); border: 1px solid #00f0ff; border-radius: 15px; padding: 10px; overflow-y: auto; }
+.panel-right { width: 74%; display: flex; flex-direction: column; gap: 8px; }
 
 .tabs { display: flex; gap: 5px; }
-.tab { flex: 1; padding: 10px; background: rgba(0,20,40,0.8); border: 1px solid #00f0ff; border-radius: 10px; cursor: pointer; text-align: center; font-size: 11px; transition: 0.3s; }
-.tab.active { background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; font-weight: bold; box-shadow: 0 0 25px #00f0ff; }
+.tab { flex: 1; padding: 10px; background: rgba(0,20,40,0.8); border: 1px solid #00f0ff; border-radius: 10px; cursor: pointer; text-align: center; font-size: 11px; }
+.tab.active { background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; font-weight: bold; }
 .tab-content { display: none; flex: 1; }
 .tab-content.active { display: flex; flex-direction: column; }
 
-.panel-chart { flex: 1; border: 2px solid #00f0ff; border-radius: 15px; box-shadow: 0 0 40px #00f0ffaa; position: relative; overflow: hidden; background: radial-gradient(circle, rgba(0,240,255,0.05), transparent); }
-.panel-actions { height: 55px; display: flex; gap: 8px; }
-.btn-download { flex: 1; padding: 12px; background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 12px; }
-.btn-download:hover { box-shadow: 0 0 25px #ff00ff; transform: scale(1.05); }
-.panel-kpi { height: 33%; background: rgba(0,10,30,0.5); backdrop-filter: blur(15px); border: 1px solid #00f0ff; border-radius: 15px; padding: 10px; box-shadow: 0 0 40px #00f0ff88; overflow-y: auto; }
-
-  select, button.add { width: 100%; padding: 9px; margin-bottom: 6px; background: #001828; color: #00f0ff; border: 1px solid #00f0ff; border-radius: 8px; font-size: 12px; }
-  button.add { background: #00f0ff; color: #000; font-weight: bold; }
-  table { width: 100%; border-collapse: collapse; font-size: 10px; }
-  th, td { border: 1px solid #00f0ff44; padding: 4px; text-align: center; }
-  th { background: #002244; position: sticky; top: 0; }
-  input[type="number"] { width: 40px; background: #000; color: #00f0ff; border: 1px solid #00f0ff44; text-align: center; }
+.panel-chart { flex: 1; border: 2px solid #00f0ff; border-radius: 15px; box-shadow: 0 0 40px #00f0ffaa; position: relative; overflow: hidden; }
+.btn-voltar { position: absolute; top: 10px; left: 10px; z-index: 10; padding: 8px 15px; background: #ff00ff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
+.panel-actions { height: 110px; display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-download { flex: 1 1 30%; padding: 10px; background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
   canvas { width: 100%!important; height: 100%!important; border-radius: 15px; }
-.title { text-align: center; margin-bottom: 6px; font-size: 14px; text-shadow: 0 0 20px #00f0ff; }
-.legend-fases { display: flex; gap: 5px; font-size: 9px; justify-content: center; margin-bottom: 5px; }
-.fase-tag { padding: 3px 6px; border-radius: 5px; }
-.kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; font-size: 10px; }
-.kpi-card { background: rgba(0,20,40,0.8); border: 1px solid #00f0ff55; padding: 5px; border-radius: 8px; }
-.kpi-bar { height: 4px; background: #002244; border-radius: 4px; overflow: hidden; margin-top: 2px; }
-.kpi-fill { height: 100%; background: linear-gradient(90deg, #00f0ff, #ff00ff); transition: width 0.5s; }
-.relatorio { margin-top: 6px; font-size: 10px; }
-.bom { color: #00ff88; }.ruim { color: #ff4466; }.orienta { color: #ffdd00; }
+  input[type="number"] { width: 40px; background: #000; color: #00f0ff; border: 1px solid #00f0ff44; text-align: center; }
+.warp { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(circle, rgba(0,240,255,0.8), transparent 70%); opacity: 0; transition: opacity 0.5s; }
 </style>
 </head>
 <body>
+<audio id="somWarp" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_8b6c1b6c3d.mp3"></audio>
+
 <div class="container">
   <div class="panel-left">
-    <div class="title">⚡ KORVIL HOLOGRAMA 4D ⚡</div>
-    <div class="legend-fases">
-      <div class="fase-tag" style="background:#ff0000">F1 Jan-Fev</div>
-      <div class="fase-tag" style="background:#ff8800">F2 Mar-Mai</div>
-      <div class="fase-tag" style="background:#ffff00; color:#000">F3 Jun-Ago</div>
-      <div class="fase-tag" style="background:#00ff00; color:#000">F4 Set-Nov</div>
-      <div class="fase-tag" style="background:#ff00ff">Dez</div>
-    </div>
+    <div class="title">⚡ KORVIL ZOOM 4D ⚡</div>
     <select id="setor" onchange="carregarServicos()"></select>
     <select id="area" onchange="carregarServicos()"></select>
     <select id="servico"></select>
-    <button class="add" onclick="adicionarLinha()">+ Adicionar Serviço</button>
+    <button onclick="adicionarLinha()">+ Adicionar Serviço</button>
 
-    <table id="tabela">
-      <thead><tr><th>Serviço</th><th>J-N</th><th>Dez</th><th>Total</th><th>X</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <table id="tabela"><thead><tr><th>Serviço</th><th>J-N</th><th>Dez</th><th>Total</th><th>X</th></tr></thead><tbody></tbody></table>
   </div>
 
   <div class="panel-right">
     <div class="tabs">
       <div class="tab active" onclick="trocarAba('combinado')">4D COMBINADO</div>
-      <div class="tab" onclick="trocarAba('separado')">4D SEPARADO</div>
-      <div class="tab" onclick="trocarAba('timeline')">TIMELINE 4D</div>
+      <div class="tab" onclick="trocarAba('timeline')">TIMELINE CLICÁVEL</div>
     </div>
 
-    <div id="aba-combinado" class="tab-content active"><div class="panel-chart"><canvas id="canvas3d"></canvas></div></div>
-    <div id="aba-separado" class="tab-content"><div class="panel-chart"><canvas id="canvasSeparado"></canvas></div></div>
-    <div id="aba-timeline" class="tab-content"><div class="panel-chart"><canvas id="canvasTimeline"></canvas></div></div>
+    <div id="aba-combinado" class="tab-content active">
+      <div class="panel-chart">
+        <button class="btn-voltar" id="btnVoltar" onclick="voltarZoom()">← VOLTAR VISÃO GERAL</button>
+        <div class="warp" id="warp"></div>
+        <canvas id="canvas3d"></canvas>
+      </div>
+    </div>
+    <div id="aba-timeline" class="tab-content">
+      <div class="panel-chart"><canvas id="canvasTimeline"></canvas></div>
+    </div>
 
     <div class="panel-actions">
-      <button class="btn-download" onclick="baixarRelatorio()">📄 RELATÓRIO</button>
-      <button class="btn-download" onclick="baixarGrafico()">🖼️ GRÁFICO 8K</button>
-      <button class="btn-download" onclick="baixarDados()">💾 DADOS JSON</button>
-    </div>
-
-    <div class="panel-kpi">
-      <div class="title">RESULTADOS 4D + IA</div>
-      <div class="kpi-grid" id="kpiGrid"></div>
-      <div class="relatorio" id="relatorio"></div>
+      <button class="btn-download" onclick="gravarVideo()">🎥 GRAVAR VÍDEO</button>
+      <button class="btn-download" onclick="iniciarTimeline()">⏯️ PLAY TIMELINE</button>
+      <button class="btn-download" onclick="baixarGrafico()">🖼️ BAIXAR 8K</button>
     </div>
   </div>
 </div>
@@ -96,40 +73,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez*'];
-// CORES DAS 4 FASES + DEZ
-const CORES_FASE = {
-  0: 0xff0000, 1: 0xff0000, // F1 Vermelho
-  2: 0xff8800, 3: 0xff8800, 4: 0xff8800, // F2 Laranja
- 5: 0xffff00, 6: 0xffff00, 7: 0xffff00, // F3 Amarelo
-  8: 0x00ff00, 9: 0x00ff00, 10: 0x00ff00, // F4 Verde
-  11: 0xff00ff // Dez Violeta
-};
+const CORES_FASE = {0:0xff0000,1:0xff0000,2:0xff8800,3:0xff8800,4:0xff8800,5:0xffff00,6:0xffff00,7:0xffff00,8:0x00ff00,9:0x00ff00,10:0x00ff00,11:0xff00ff};
+const DB = {"Sistema K": {"Serviços Gerais": ["Eletricista", "Carpinteiro"]},"K-TP": {"Educação Física": ["Treino Personalizado"]}};
 
-const DB = {
-  "Sistema K": {"Serviços Gerais": ["Eletricista", "Carpinteiro", "Faxineira", "Pintor", "Encanador", "Jardineiro", "Montador Móveis", "Técnico PC", "Diarista", "Pedreiro"],"Tecnologia": ["Dev FrontEnd", "Dev BackEnd", "UX/UI Design", "Tráfego Pago", "Social Media", "Editor Vídeo", "Suporte TI", "SEO", "Copywriter", "Gestor Tráfego"]},
-  "K-TP": {"Educação Física": ["Treinamento Personalizado", "Consultoria Online", "Plano Alimentar", "Avaliação Física", "Treino Funcional", "Musculação", "Cross Training", "Corrida", "Yoga", "Pilates"]},
-  "K-AFORTUNADO": {"Empreendedorismo": ["Consultoria Negócios", "Mentoria 1:1", "Plano de Negócio", "Gestão Financeira", "Marketing Digital", "Vendas", "Branding", "E-commerce", "Palestra", "Workshop"],"Finanças": ["Consultoria Investimentos", "Mentoria Financeira", "Planejamento Orçamento", "Controle Gastos", "Educação Financeira", "Renda Extra", "Trading", "Cripto", "Impostos", "Aposentadoria"]},
-  "K-ALMA": {"Saúde": ["Terapeuta Holístico", "Massoterapeuta", "Dentista", "Fisioterapeuta", "Nutricionista", "Psicólogo", "Acupuntura", "Reiki", "Florais", "Pilates Clínico"],"Beleza": ["Cabeleireiro Unissex", "Barbeiro", "Manicore", "Pedicure", "Designer Sobrancelhas", "Maquiador", "Estética Facial", "Estética Corporal", "Depilação", "Alongamento Unhas"]}
-};
-
-let data = {}; let metaMeta = 10000;
-let scene, camera, renderer, controls, bars = [];
-let sceneSep, cameraSep, rendererSep, barsSep = [];
-
-// ABAS
-function trocarAba(aba){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  document.querySelector(`[onclick="trocarAba('${aba}')"]`).classList.add('active');
-  document.getElementById(`aba-${aba}`).classList.add('active');
-}
-window.trocarAba = trocarAba;
+let data = {}; let scene, camera, renderer, controls, bars = [];
+let cameraPosOriginal = {x:18, y:12, z:25}; let zoomAtivo = false; let mesZoom = 0;
+const somWarp = document.getElementById('somWarp');
 
 // INIT
 function init() {
   const setorSel = document.getElementById('setor');
   Object.keys(DB).forEach(s => setorSel.innerHTML += `<option value="${s}">${s}</option>`);
-  carregarServicos(); initThree(); initThreeSep(); animate();
+  carregarServicos(); initThree(); animate();
 }
 function carregarServicos() {
   const setor = document.getElementById('setor').value;
@@ -140,7 +95,7 @@ function carregarServicos() {
   DB[setor][area].forEach(s => servSel.innerHTML += `<option value="${s}">${s}</option>`);
 }
 
-// TABELA - MESMO MODELO PRA TODOS
+// TABELA
 function adicionarLinha() {
   const serv = document.getElementById('servico').value;
   if(data[serv]) return alert('Serviço já adicionado!');
@@ -155,187 +110,120 @@ function adicionarLinha() {
 function updateData(serv, mes, val) {
   data[serv][mes] = parseFloat(val) || 0;
   const soma = data[serv].slice(0,11).reduce((a,b)=>a+b,0);
-  const media = soma / 11;
-  data[serv][11] = Math.round(media * 1.15); // Dez Conclusão
+  data[serv][11] = Math.round(soma / 11 * 1.15);
   document.getElementById(`dez-${serv}`).innerText = data[serv][11];
   document.getElementById(`total-${serv}`).innerText = soma + data[serv][11];
   updateAll();
 }
 function remover(serv) { delete data[serv]; document.getElementById(`row-${serv}`).remove(); updateAll(); }
 
-// KPIs + RELATORIO
-function calcularKPIs() {
-  let totalGeral = 0;
-  Object.values(data).forEach(arr => totalGeral += arr.reduce((a,b)=>a+b,0));
-  const desempenho = Math.min(100, Math.round(totalGeral / metaMeta * 100));
-  const educacao = Math.min(100, Object.keys(data).length * 10);
-  const consistencia = Math.min(100, Object.values(data).flat().filter(v=>v>0).length / (Object.keys(data).length*12 || 1) * 100);
-  const crescimento = desempenho > 70? 85 : desempenho > 40? 60 : 30;
-  const satisfacao = Math.min(100, desempenho * 0.9 + 10);
-  return {totalGeral, desempenho, educacao, consistencia, crescimento, satisfacao};
-}
-
-function gerarRelatorio(k) {
-  return `
-    <h4 class="bom">✅ BONS</h4> <div>• Desempenho: ${k.desempenho}% | Total: R$${k.totalGeral}</div>
-    <h4 class="ruim">⚠️ RUINS</h4> <div>• Consistência: ${Math.round(k.consistencia)}% | Educação: ${k.educacao}%</div>
-    <h4 class="orienta">🚀 MELHORIAS</h4> <div>• Focar F4 Verde. • Meta Dez Violeta: R$${Math.round(k.totalGeral*1.15)}</div>
-    <h4>📈 CONCLUSÃO DEZ</h4> <div>• Projeção final +15% vs média Jan-Nov</div>
-  `;
-}
-
-function updateKPIs() {
-  const k = calcularKPIs();
-  document.getElementById('kpiGrid').innerHTML = `
-    <div class="kpi-card"><b>Total R$</b><div>${k.totalGeral}</div></div>
-    <div class="kpi-card"><b>% Total</b><div>${k.desempenho}%</div><div class="kpi-bar"><div class="kpi-fill" style="width:${k.desempenho}%"></div></div></div>
-    <div class="kpi-card"><b>Desempenho</b><div>${k.desempenho}%</div><div class="kpi-bar"><div class="kpi-fill" style="width:${k.desempenho}%"></div></div></div>
-    <div class="kpi-card"><b>Educação</b><div>${k.educacao}%</div><div class="kpi-bar"><div class="kpi-fill" style="width:${k.educacao}%"></div></div></div>
-    <div class="kpi-card"><b>Consistência</b><div>${Math.round(k.consistencia)}%</div><div class="kpi-bar"><div class="kpi-fill" style="width:${k.consistencia}%"></div></div></div>
-    <div class="kpi-card"><b>Crescimento</b><div>${k.crescimento}%</div><div class="kpi-bar"><div class="kpi-fill" style="width:${k.crescimento}%"></div></div></div>
-  `;
-  document.getElementById('relatorio').innerHTML = gerarRelatorio(k);
-}
-
-// 3D COMBINADO HOLOGRAMA 4D
+// 3D
 function initThree() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x000010);
-  camera = new THREE.PerspectiveCamera(60, window.innerWidth*0.72 / (window.innerHeight*0.67), 0.1, 1000);
-  camera.position.set(18, 12, 25);
+  scene = new THREE.Scene(); scene.background = new THREE.Color(0x000010);
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth*0.74 / (window.innerHeight*0.6), 0.1, 1000);
+  camera.position.set(cameraPosOriginal.x, cameraPosOriginal.y, cameraPosOriginal.z);
   renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas3d'), antialias: true, preserveDrawingBuffer: true});
-  renderer.setSize(window.innerWidth*0.72, window.innerHeight*0.67);
-  renderer.setPixelRatio(window.devicePixelRatio * 2); // 8K
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.autoRotate = true; controls.autoRotateSpeed = 0.8;
-
-  scene.add(new THREE.PointLight(0x00f0ff, 4, 100).position.set(15,15,15)); // Luz Ciano Neon Externa
+  renderer.setSize(window.innerWidth*0.74, window.innerHeight*0.6);
+  renderer.setPixelRatio(window.devicePixelRatio * 2);
+  controls = new OrbitControls(camera, renderer.domElement); controls.autoRotate = true; controls.autoRotateSpeed = 0.8;
+  scene.add(new THREE.PointLight(0x00f0ff, 4, 100).position.set(15,15,15));
   scene.add(new THREE.AmbientLight(0x004488));
-  const grid = new THREE.GridHelper(50, 50, 0x00f0ff, 0x00f0ff);
-  grid.material.opacity = 0.4; grid.material.transparent = true; scene.add(grid);
 }
 function updateGraphCombinado() {
   bars.forEach(b => scene.remove(b)); bars = [];
   let servIdx = 0;
   Object.keys(data).forEach((serv) => {
     data[serv].forEach((val, mes) => {
-      const height = val / 80 + 0.3;
-      const geo = new THREE.BoxGeometry(0.7, height, 0.7);
-      // COR INTERNA = FASE | COR EXTERNA = CIANO NEON
-      const mat = new THREE.MeshPhongMaterial({
-        color: 0x00f0ff, // Externo Ciano Neon
-        emissive: CORES_FASE[mes], // Interno cor da fase
-        transparent: true, opacity: 0.7, wireframe: false
-      });
+      if(zoomAtivo && mes!== mesZoom) return; // 2.2 SÓ MOSTRA O MÊS DO ZOOM
+      const targetHeight = val / 80 + 0.3;
+      const geo = new THREE.BoxGeometry(0.7, 0.1, 0.7);
+      const mat = new THREE.MeshPhongMaterial({color: 0x00f0ff, emissive: CORES_FASE[mes], transparent: true, opacity: 0.8});
       const bar = new THREE.Mesh(geo, mat);
-      bar.position.set(mes*1.2 - 6.5, height/2, servIdx*2.2);
+      bar.position.set(0, 0.05, servIdx*2.2); // centraliza no zoom
+      bar.userData.targetHeight = targetHeight;
       scene.add(bar); bars.push(bar);
     });
     servIdx++;
   });
 }
 
-// 3D SEPARADO HOLOGRAMA 4D
-function initThreeSep() {
-  sceneSep = new THREE.Scene(); sceneSep.background = new THREE.Color(0x000010);
-  cameraSep = new THREE.PerspectiveCamera(60, window.innerWidth*0.72 / (window.innerHeight*0.67), 0.1, 1000);
-  cameraSep.position.set(18, 12, 25);
-  rendererSep = new THREE.WebGLRenderer({canvas: document.getElementById('canvasSeparado'), antialias: true, preserveDrawingBuffer: true});
-  rendererSep.setSize(window.innerWidth*0.72, window.innerHeight*0.67);
-  rendererSep.setPixelRatio(window.devicePixelRatio * 2);
-}
-function updateGraphSeparado() {
-  barsSep.forEach(b => sceneSep.remove(b)); barsSep = [];
-  let servIdx = 0;
-  Object.keys(data).forEach((serv) => {
-    data[serv].forEach((val, mes) => {
-      const height = val / 80 + 0.3;
-      const geo = new THREE.CylinderGeometry(0.5, 0.5, height, 24); // Mesmo modelo pra todos
-      const mat = new THREE.MeshPhongMaterial({
-        color: 0x00f0ff, // Externo Ciano
-        emissive: CORES_FASE[mes], // Interno Fase
-        transparent: true, opacity: 0.8
-      });
-      const bar = new THREE.Mesh(geo, mat);
-      bar.position.set(mes*1.4 - 7.5, height/2, servIdx*3);
-      sceneSep.add(bar); barsSep.push(bar);
-    });
-    servIdx++;
-  });
-}
+// 2.2 ZOOM HIPERESPAÇO
+function fazerZoom(mes) {
+  zoomAtivo = true; mesZoom = mes;
+  document.getElementById('btnVoltar').style.display = 'block';
+  document.getElementById('warp').style.opacity = '1';
+  somWarp.play();
 
-// TIMELINE 4D
+  const posX = mes*1.2 - 6.5; // posição do mês
+  const gsap = { // animação manual
+    t: 0,
+    animate: function(){
+      this.t += 0.02;
+      if(this.t < 1){
+        camera.position.x = cameraPosOriginal.x + (posX - cameraPosOriginal.x) * this.t;
+        camera.position.z = cameraPosOriginal.z + (-5 - cameraPosOriginal.z) * this.t;
+        camera.position.y = cameraPosOriginal.y + (8 - cameraPosOriginal.y) * this.t;
+        requestAnimationFrame(()=>this.animate());
+      } else {
+        document.getElementById('warp').style.opacity = '0';
+        controls.autoRotate = false;
+      }
+    }
+  };
+  gsap.animate();
+  updateAll();
+}
+function voltarZoom() {
+  zoomAtivo = false;
+  document.getElementById('btnVoltar').style.display = 'none';
+  controls.autoRotate = true;
+  camera.position.set(cameraPosOriginal.x, cameraPosOriginal.y, cameraPosOriginal.z);
+  updateAll();
+}
+window.voltarZoom = voltarZoom;
+
+// TIMELINE CLICÁVEL
 function desenharTimeline() {
   const canvas = document.getElementById('canvasTimeline');
   const ctx = canvas.getContext('2d');
   canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle = '#00f0ff'; ctx.lineWidth = 4; ctx.shadowBlur = 25; ctx.shadowColor = '#00f0ff';
-  ctx.beginPath(); ctx.moveTo(60, canvas.height/2); ctx.lineTo(canvas.width-60, canvas.height/2); ctx.stroke();
+  ctx.strokeStyle = '#00f0ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(60, canvas.height/2); ctx.lineTo(canvas.width-60, canvas.height/2); ctx.stroke();
 
   MESES.forEach((m,i)=>{
     const x = 60 + (i * (canvas.width-120)/11);
     const cor = CORES_FASE[i];
     ctx.fillStyle = `#${cor.toString(16).padStart(6,'0')}`;
-    ctx.shadowBlur = 20; ctx.shadowColor = `#${cor.toString(16).padStart(6,'0')}`;
     ctx.beginPath(); ctx.arc(x, canvas.height/2, 14, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#00f0ff'; ctx.font = '12px Orbitron'; ctx.shadowBlur = 0;
+    ctx.fillStyle = '#00f0ff'; ctx.font = '12px Orbitron';
     ctx.fillText(m, x-15, canvas.height/2 + 35);
+
+    // AREA CLICAVEL
+    canvas.onclick = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      if(Math.abs(mx - x) < 20){ trocarAba('combinado'); fazerZoom(i); }
+    }
   });
 }
 
-// BOTOES DOWNLOAD
-function baixarGrafico() {
-  const canvas = document.querySelector('.tab-content.active canvas');
-  const link = document.createElement('a');
-  link.download = 'korvil_holograma_8k.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-}
-function baixarDados() {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const link = document.createElement('a');
-  link.download = 'korvil_dados_fases.json';
-  link.href = URL.createObjectURL(blob);
-  link.click();
-}
-function baixarRelatorio() {
-  const k = calcularKPIs();
-  const texto = `RELATORIO KORVIL 4D\nTotal: ${k.totalGeral}\nDesempenho: ${k.desempenho}%\n${document.getElementById('relatorio').innerText}`;
-  const blob = new Blob([texto], {type: 'text/plain'});
-  const link = document.createElement('a');
-  link.download = 'korvil_relatorio_fases.txt';
-  link.href = URL.createObjectURL(blob);
-  link.click();
-}
-window.baixarGrafico = baixarGrafico;
-window.baixarDados = baixarDados;
-window.baixarRelatorio = baixarRelatorio;
+function gravarVideo() { const canvas = document.getElementById('canvas3d'); const stream = canvas.captureStream(30); const recorder = new MediaRecorder(stream); const chunks = []; recorder.ondataavailable = e => chunks.push(e.data); recorder.onstop = () => { const blob = new Blob(chunks); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'korvil_zoom.webm'; a.click(); }; recorder.start(); setTimeout(()=>recorder.stop(), 5000); }
+function baixarGrafico() { const canvas = document.getElementById('canvas3d'); const link = document.createElement('a'); link.download = 'korvil_8k.png'; link.href = canvas.toDataURL('image/png'); link.click(); }
+window.gravarVideo = gravarVideo; window.baixarGrafico = baixarGrafico;
 
-function updateAll(){
-  updateGraphCombinado();
-  updateGraphSeparado();
-  desenharTimeline();
-  updateKPIs();
-}
+function updateAll(){ updateGraphCombinado(); desenharTimeline(); }
 
 function animate() {
   requestAnimationFrame(animate);
   const time = Date.now() * 0.001;
-
-  // ROTACAO 360 AUTOMATICA 4D
   bars.forEach((b,i) => {
+    if(b.scale.y < b.userData.targetHeight){ b.scale.y += 0.05; }
+    b.position.y = b.scale.y/2;
     b.rotation.y += 0.006;
-    b.position.y = (b.geometry.parameters.height/2) + Math.sin(time + i*0.5)*0.1; // efeito holograma flutuante
+    b.position.y += Math.sin(time + i)*0.05;
   });
-  barsSep.forEach((b,i) => {
-    b.rotation.y += 0.006;
-    b.scale.set(1 + Math.sin(time + i)*0.05, 1, 1); // pulso 4D
-  });
-
   if(controls) controls.update();
   renderer.render(scene, camera);
-  rendererSep.render(sceneSep, cameraSep);
 }
 
 window.onload = init;
@@ -343,6 +231,12 @@ window.carregarServicos = carregarServicos;
 window.adicionarLinha = adicionarLinha;
 window.updateData = updateData;
 window.remover = remover;
+window.trocarAba = function(aba){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`[onclick="trocarAba('${aba}')"]`).classList.add('active');
+  document.getElementById(`aba-${aba}`).classList.add('active');
+}
 </script>
 </body>
 </html>
