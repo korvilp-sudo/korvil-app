@@ -1,1 +1,152 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>KORVIL K-AI 4D PANEL</title>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
+  body { background: #000510; color: #00f0ff; overflow: hidden; }
+
+.top { position: absolute; bottom: 20px; width: 100%; text-align: center; z-index: 10; }
+.top h1 { font-size: 24px; color: #00f0ff; text-shadow: 0 0 20px #00f0ff; }
+.top p { font-size: 12px; color: #ff00ff; }
+
+.hud { position: absolute; top: 20px; left: 20px; width: 280px; background: rgba(0,10,30,0.8); border: 2px solid #00f0ff; border-radius: 12px; padding: 15px; backdrop-filter: blur(10px); box-shadow: 0 0 30px #00f0ff55; }
+.hud h2 { font-size: 14px; color: #ff00ff; margin-bottom: 10px; border-bottom: 1px solid #00f0ff; padding-bottom: 5px; }
+.hud-item { margin-bottom: 8px; font-size: 11px; }
+.bar { width: 100%; height: 6px; background: #001828; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #00f0ff, #ff00ff); width: 0%; animation: load 2s forwards; }
+@keyframes load { to { width: 85%; } }
+@keyframes scan { 0%{background-position:0 0} 100%{background-position:0 100%} }
+.scan-line { position: absolute; width: 100%; height: 100%; background: linear-gradient(transparent, #00f0ff44, transparent); background-size: 100% 10px; animation: scan 3s linear infinite; pointer-events: none; }
+  canvas { width: 100%; height: 100vh; display: block; }
+</style>
+</head>
+<body>
+<div class="scan-line"></div>
+
+<div class="hud">
+  <h2>KORVIL K-AI SYSTEM</h2>
+  <div class="hud-item">SETOR: SISTEMA K <div class="bar"><div class="bar-fill"></div></div></div>
+  <div class="hud-item">ÁREA: TECNOLOGIA <div class="bar"><div class="bar-fill" style="animation-delay:0.3s"></div></div></div>
+  <div class="hud-item">SERVIÇO: IA 4D <div class="bar"><div class="bar-fill" style="animation-delay:0.6s"></div></div></div>
+  <div class="hud-item">PROFISSIONAL: K-RAVEN <div class="bar"><div class="bar-fill" style="animation-delay:0.9s"></div></div></div>
+</div>
+
+<div class="top">
+  <h1>KORVIL</h1>
+  <p>DESENVOLVIMENTO QUE TRANSFORMA</p>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script type="module">
+import * as THREE from 'three';
+
+let scene, camera, renderer, octa, ravenGroup, panelGroup;
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000510);
+  scene.fog = new THREE.Fog(0x000510, 10, 50);
+
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 2, 10);
+
+  renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // LUZES HOLOGRAFICAS
+  scene.add(new THREE.AmbientLight(0x001133));
+  const light = new THREE.PointLight(0x00f0ff, 3, 50); light.position.set(0,3,5); scene.add(light);
+  const light2 = new THREE.PointLight(0xff00ff, 2, 50); light2.position.set(-3,2,-3); scene.add(light2);
+
+  // 1. OCTAEDRO 4D CENTRAL GIRANDO
+  const octaGeo = new THREE.OctahedronGeometry(1.5, 0);
+  const octaMat = new THREE.MeshPhongMaterial({color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 1, wireframe: true, transparent: true, opacity: 0.7});
+  octa = new THREE.Mesh(octaGeo, octaMat);
+  octa.position.set(0, 1, 0);
+  scene.add(octa);
+
+  // ANEL DE ENERGIA
+  const ringGeo = new THREE.RingGeometry(1.8, 2.2, 64);
+  const ringMat = new THREE.MeshBasicMaterial({color: 0x00f0ff, side: THREE.DoubleSide, transparent: true, opacity: 0.3});
+  const ring = new THREE.Mesh(ringGeo, ringMat); ring.rotation.x = Math.PI/2; ring.position.y = -0.5;
+  scene.add(ring);
+
+  // 2. CORVO K-AI AVATAR - FEITO COM FORMAS
+  ravenGroup = new THREE.Group();
+  const bodyMat = new THREE.MeshPhongMaterial({color: 0x050510, emissive: 0x001122});
+  const neonMat = new THREE.MeshPhongMaterial({color: 0x00f0ff, emissive: 0x00f0ff});
+
+  // Corpo
+  const body = new THREE.SphereGeometry(0.8, 16, 16);
+  const bodyMesh = new THREE.Mesh(body, bodyMat); bodyMesh.scale.y = 1.3; ravenGroup.add(bodyMesh);
+
+  // Cabeça
+  const head = new THREE.SphereGeometry(0.5, 16, 16);
+  const headMesh = new THREE.Mesh(head, bodyMat); headMesh.position.y = 1.1; ravenGroup.add(headMesh);
+
+  // Olhos V
+  const eyeGeo = new THREE.ConeGeometry(0.1, 0.2, 3);
+  const eyeL = new THREE.Mesh(eyeGeo, neonMat); eyeL.position.set(-0.15, 1.15, 0.4); eyeL.rotation.z = Math.PI/4; ravenGroup.add(eyeL);
+  const eyeR = new THREE.Mesh(eyeGeo, neonMat); eyeR.position.set(0.15, 1.15, 0.4); eyeR.rotation.z = -Math.PI/4; ravenGroup.add(eyeR);
+
+  // Octaedro na testa
+  const miniOcta = new THREE.Mesh(new THREE.OctahedronGeometry(0.1), neonMat);
+  miniOcta.position.set(0, 1.35, 0); ravenGroup.add(miniOcta);
+
+  // Peitoral K-AI
+  const chest = new THREE.BoxGeometry(1, 0.6, 0.1);
+  const chestMesh = new THREE.Mesh(chest, bodyMat); chestMesh.position.y = 0.3; ravenGroup.add(chestMesh);
+
+  // Texto K-AI
+  const canvas = document.createElement('canvas'); canvas.width=256; canvas.height=128;
+  const ctx = canvas.getContext('2d'); ctx.fillStyle='#00f0ff'; ctx.font='bold 60px Orbitron'; ctx.textAlign='center'; ctx.fillText('K-AI',128,80);
+  const textMat = new THREE.MeshBasicMaterial({map: new THREE.CanvasTexture(canvas), transparent: true});
+  const textMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.8,0.4), textMat); textMesh.position.set(0,0.3,0.11); ravenGroup.add(textMesh);
+
+  ravenGroup.position.set(-3, 0, 0); scene.add(ravenGroup);
+
+  // 3. PAINEL HUD 4D
+  panelGroup = new THREE.Group();
+  for(let i=0; i<4; i++){
+    const panel = new THREE.Mesh(new THREE.PlaneGeometry(2,1), new THREE.MeshBasicMaterial({color:0x00f0ff, wireframe:true, transparent:true, opacity:0.4}));
+    const angle = i * Math.PI/2;
+    panel.position.set(Math.sin(angle)*4, 0, Math.cos(angle)*4);
+    panel.lookAt(0,0,0);
+    panelGroup.add(panel);
+  }
+  scene.add(panelGroup);
+
+  // PARTICULAS
+  const particles = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(Array(500).fill().map(()=> (Math.random()-0.5)*20), 3)), new THREE.PointsMaterial({color:0x00f0ff, size:0.05}));
+  scene.add(particles);
+
+  window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight)});
+  animate();
+}
+
+let time = 0;
+function animate() {
+  requestAnimationFrame(animate); time += 0.01;
+
+  // GIRA TUDO 360 - EFEITO 4D
+  octa.rotation.y += 0.01;
+  octa.position.y = 1 + Math.sin(time)*0.2; // flutuar
+
+  ravenGroup.rotation.y += 0.005;
+  ravenGroup.children[4].material.emissiveIntensity = 1 + Math.sin(time*3)*0.5; // K-AI pulsando
+
+  panelGroup.rotation.y += 0.008;
+
+  renderer.render(scene, camera);
+}
+init();
+</script>
+</body>
+</html>
