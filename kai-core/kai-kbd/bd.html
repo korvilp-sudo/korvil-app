@@ -2,169 +2,218 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>KORVIL CUBO 4D FORMULARIOS</title>
+<title>KORVIL CUBO DB + MONTADOR</title>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
-  body { background: radial-gradient(circle, #000020, #000); color: #00f0ff; overflow: hidden; }
+  body { background: #000510; color: #00f0ff; overflow-x: hidden; }
 
-.top { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 18px; font-weight: 900; text-shadow: 0 0 20px #00f0ff; z-index: 10; }
-.hint { position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 11px; z-index: 10; }
+ .top { position: fixed; top: 0; width: 100%; height: 50px; background: rgba(0,20,40,0.95); border-bottom: 2px solid #00f0ff; text-align: center; line-height: 50px; font-weight: 900; z-index: 100; }
 
-.form-overlay { position: absolute; width: 280px; height: 320px; background: rgba(0,10,30,0.9); backdrop-filter: blur(15px); border: 2px solid #00f0ff; border-radius: 15px; padding: 15px; box-shadow: 0 0 40px #00f0ffaa; display: none; z-index: 20; }
-.form-overlay h3 { text-align: center; color: #ff00ff; margin-bottom: 10px; font-size: 14px; }
-.form-overlay input,.form-overlay select,.form-overlay button { width: 100%; padding: 10px; margin-bottom: 8px; background: #000; color: #00f0ff; border: 1px solid #00f0ff; border-radius: 6px; font-size: 12px; }
-.form-overlay button { background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; font-weight: 900; cursor: pointer; }
-  canvas { width: 100%; height: 100vh; display: block; }
+ .container { padding-top: 60px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* CUBO PARADO */
+.cubo-area { height: 400px; position: relative; border-bottom: 2px solid #00f0ff; }
+  canvas { width: 100%; height: 100%; }
+
+  /* 6 FORMULARIOS */
+.forms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+.form-box { background: rgba(0,10,30,0.9); border: 2px solid #00f0ff; border-radius: 12px; padding: 12px; box-shadow: 0 0 20px #00f0ff44; }
+.form-box h3 { font-size: 12px; color: #ff00ff; text-align: center; margin-bottom: 8px; }
+.form-box input,.form-box select,.form-box button { width: 100%; padding: 8px; margin-bottom: 6px; background: #000; color: #00f0ff; border: 1px solid #00f0ff; border-radius: 6px; font-size: 11px; }
+.form-box button { background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; font-weight: 900; cursor: pointer; }
+
+  /* MONTADOR QUEBRA CABECA */
+.montador { padding: 10px; background: rgba(0,10,30,0.9); border-top: 2px solid #00f0ff; }
+.montador h2 { text-align: center; font-size: 14px; margin-bottom: 10px; color: #ff00ff; }
+.pecas { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
+.peca { padding: 10px 15px; background: #001828; border: 2px dashed #00f0ff; border-radius: 8px; cursor: grab; font-size: 11px; min-width: 120px; text-align: center; }
+.peca.dragging { opacity: 0.5; }
+.slots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.slot { width: 150px; height: 60px; background: #000; border: 2px solid #00f0ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.slot.over { background: #00f0ff33; }
+.btn-montar { width: 100%; padding: 12px; margin-top: 10px; background: #00ff00; color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
 </style>
 </head>
 <body>
-<div class="top">⚡ KORVIL CUBO 4D - 6 FORMULARIOS ⚡</div>
-<div class="hint">SEGURE E ARRASTE PARA GIRAR | CLIQUE NO LADO PARA ABRIR FORMULARIO</div>
+<div class="top">⚡ KORVIL CUBO DB + MONTADOR LÓGICO ⚡</div>
 
-<div id="form1" class="form-overlay">
-  <h3>LADO 1: CADASTRO CLIENTE</h3>
-  <input type="text" placeholder="Nome do Cliente">
-  <input type="tel" placeholder="Telefone WhatsApp">
-  <input type="email" placeholder="Email">
-  <select><option>Tipo: PF</option><option>Tipo: PJ</option></select>
-  <button onclick="salvar(1)">SALVAR CLIENTE</button>
+<div class="container">
+  <div class="cubo-area">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="forms-grid">
+    <div class="form-box">
+      <h3>LADO 1: SETOR</h3>
+      <input id="nomeSetor" placeholder="Nome do Setor: Sistema K">
+      <input id="descSetor" placeholder="Descrição">
+      <button onclick="salvarDB('setor')">SALVAR NO BANCO</button>
+    </div>
+    <div class="form-box">
+      <h3>LADO 2: ÁREA</h3>
+      <select id="setorArea"><option>Selecione Setor</option></select>
+      <input id="nomeArea" placeholder="Nome da Área: Tecnologia">
+      <button onclick="salvarDB('area')">SALVAR NO BANCO</button>
+    </div>
+    <div class="form-box">
+      <h3>LADO 3: SERVIÇO</h3>
+      <select id="areaServico"><option>Selecione Área</option></select>
+      <input id="nomeServico" placeholder="Nome do Serviço: Dev Front">
+      <input type="number" id="precoServico" placeholder="Preço R$">
+      <button onclick="salvarDB('servico')">SALVAR NO BANCO</button>
+    </div>
+    <div class="form-box">
+      <h3>LADO 4: PROFISSIONAL</h3>
+      <select id="servicoProf"><option>Selecione Serviço</option></select>
+      <input id="nomeProf" placeholder="Nome Profissional">
+      <input id="telProf" placeholder="WhatsApp">
+      <button onclick="salvarDB('prof')">SALVAR NO BANCO</button>
+    </div>
+    <div class="form-box">
+      <h3>LADO 5: CLIENTE</h3>
+      <input id="nomeCli" placeholder="Nome Cliente">
+      <input id="telCli" placeholder="WhatsApp Cliente">
+      <select id="tipoCli"><option>PF</option><option>PJ</option></select>
+      <button onclick="salvarDB('cliente')">SALVAR NO BANCO</button>
+    </div>
+    <div class="form-box">
+      <h3>LADO 6: VENDA</h3>
+      <select id="clienteVenda"><option>Selecione Cliente</option></select>
+      <select id="profVenda"><option>Selecione Profissional</option></select>
+      <input type="date" id="dataVenda">
+      <button onclick="salvarDB('venda')">LANÇAR VENDA</button>
+    </div>
+  </div>
+
+  <div class="montador">
+    <h2>🧩 MONTADOR LÓGICO KORVIL - ARRASTE NA ORDEM</h2>
+    <div class="pecas" id="pecas">
+      <div class="peca" draggable="true" data-tipo="setor">SETOR</div>
+      <div class="peca" draggable="true" data-tipo="area">ÁREA</div>
+      <div class="peca" draggable="true" data-tipo="servico">SERVIÇO</div>
+      <div class="peca" draggable="true" data-tipo="prof">PROFISSIONAL</div>
+      <div class="peca" draggable="true" data-tipo="cliente">CLIENTE</div>
+    </div>
+    <div class="slots">
+      <div class="slot" data-ordem="1">1. SETOR</div>
+      <div class="slot" data-ordem="2">2. ÁREA</div>
+      <div class="slot" data-ordem="3">3. SERVIÇO</div>
+      <div class="slot" data-ordem="4">4. PROFISSIONAL</div>
+      <div class="slot" data-ordem="5">5. CLIENTE</div>
+    </div>
+    <button class="btn-montar" onclick="validarMontagem()">VALIDAR ESTRUTURA</button>
+    <div id="resultadoMontagem" style="text-align:center; margin-top:10px; font-size:12px;"></div>
+  </div>
 </div>
-
-<div id="form2" class="form-overlay">
-  <h3>LADO 2: CADASTRO SERVIÇO</h3>
-  <select><option>Eletricista</option><option>Carpinteiro</option><option>Dev</option></select>
-  <input type="number" placeholder="Preço Base R$">
-  <input type="text" placeholder="Descrição">
-  <select><option>Ativo</option><option>Inativo</option></select>
-  <button onclick="salvar(2)">SALVAR SERVIÇO</button>
-</div>
-
-<div id="form3" class="form-overlay">
-  <h3>LADO 3: LANÇAR VENDA</h3>
-  <input type="date">
-  <select><option>Cliente 1</option><option>Cliente 2</option></select>
-  <input type="number" placeholder="Valor R$">
-  <select><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select>
-  <button onclick="salvar(3)">LANÇAR VENDA</button>
-</div>
-
-<div id="form4" class="form-overlay">
-  <h3>LADO 4: META MENSAL</h3>
-  <select><option>Janeiro</option><option>Fevereiro</option><option>Dezembro</option></select>
-  <input type="number" placeholder="Meta R$">
-  <input type="number" placeholder="Meta de Vendas">
-  <input type="text" placeholder="Observação">
-  <button onclick="salvar(4)">SALVAR META</button>
-</div>
-
-<div id="form5" class="form-overlay">
-  <h3>LADO 5: ANÁLISE IA</h3>
-  <select><option>Analisar Mês</option><option>Analisar Serviço</option></select>
-  <input type="text" placeholder="Pergunta para IA">
-  <textarea placeholder="Resultado aparecerá aqui" style="height:80px; background:#000; color:#00f0ff; border:1px solid #00f0ff"></textarea>
-  <button onclick="salvar(5)">GERAR ANÁLISE</button>
-</div>
-
-<div id="form6" class="form-overlay">
-  <h3>LADO 6: CONFIG 4D</h3>
-  <select><option>Tema: Cyberpunk</option><option>Tema: Matrix</option></select>
-  <input type="number" placeholder="Velocidade Rotação">
-  <select><option>Som: ON</option><option>Som: OFF</option></select>
-  <input type="text" placeholder="Nome do Dashboard">
-  <button onclick="salvar(6)">APLICAR CONFIG</button>
-</div>
-
-<canvas id="canvas"></canvas>
 
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-let scene, camera, renderer, controls, cube;
-const forms = [document.getElementById('form1'),document.getElementById('form2'),document.getElementById('form3'),document.getElementById('form4'),document.getElementById('form5'),document.getElementById('form6')];
-const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
+// BANCO DE DADOS EM MEMORIA
+const DB = {setores:[], areas:[], servicos:[], profs:[], clientes:[], vendas:[]};
+const OS_5_SETORES = ["Sistema K","K-TP","K-AFORTUNADO","K-ALMA","K-GESTAO"];
 
-function init() {
+// CUBO PARADO
+let scene, camera, renderer, cube;
+function initCubo() {
   scene = new THREE.Scene(); scene.background = new THREE.Color(0x000010);
-  camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0, 8);
-
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth / 400, 0.1, 1000);
+  camera.position.set(0, 0, 5);
   renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(window.innerWidth, 400);
 
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true; controls.dampingFactor = 0.05;
-
-  // LUZ HOLOGRAFICA
-  scene.add(new THREE.AmbientLight(0x002244));
-  const light = new THREE.PointLight(0x00f0ff, 3, 50); light.position.set(5,5,5); scene.add(light);
-
-  // CUBO 4D = 6 LADOS COM TEXTURA DIFERENTE
-  const geometry = new THREE.BoxGeometry(3, 3, 3);
+  const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
   const materials = [];
   const cores = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-  const textos = ['CLIENTE','SERVIÇO','VENDA','META','IA','CONFIG'];
+  const textos = ['SETOR','ÁREA','SERVIÇO','PROF','CLIENTE','VENDA'];
 
   for(let i=0; i<6; i++){
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = `#${cores[i].toString(16).padStart(6,'0')}`;
-    ctx.fillRect(0,0,512,512);
-    ctx.fillStyle = '#000'; ctx.font = 'bold 80px Orbitron'; ctx.textAlign = 'center';
+    ctx.fillStyle = `#${cores[i].toString(16).padStart(6,'0')}`; ctx.fillRect(0,0,512,512);
+    ctx.fillStyle = '#000'; ctx.font = 'bold 70px Orbitron'; ctx.textAlign = 'center';
     ctx.fillText(textos[i], 256, 256);
-    const texture = new THREE.CanvasTexture(canvas);
-    materials.push(new THREE.MeshPhongMaterial({map: texture, emissive: cores[i], emissiveIntensity: 0.5, transparent: true, opacity: 0.85}));
+    materials.push(new THREE.MeshBasicMaterial({map: new THREE.CanvasTexture(canvas)}));
   }
-
   cube = new THREE.Mesh(geometry, materials);
   scene.add(cube);
-
-  window.addEventListener('resize', onResize);
-  window.addEventListener('click', onClick);
-  animate();
+  renderer.render(scene, camera); // PARADO
 }
 
-function onResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-// CLIQUE NO LADO = ABRE FORMULARIO
-function onClick(event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObject(cube);
-
-  if(intersects.length > 0){
-    const faceIndex = intersects[0].face.materialIndex;
-    forms.forEach(f=>f.style.display='none');
-    const form = forms[faceIndex];
-    form.style.display = 'block';
-    form.style.left = event.clientX + 10 + 'px';
-    form.style.top = event.clientY - 100 + 'px';
+// SALVAR NO BANCO
+function salvarDB(tipo){
+  if(tipo==='setor'){
+    DB.setores.push({nome: nomeSetor.value, desc: descSetor.value});
+    atualizarSelects();
+    alert('Setor salvo!');
+  }
+  if(tipo==='area'){
+    DB.areas.push({setor: setorArea.value, nome: nomeArea.value});
+    atualizarSelects();
+    alert('Área salva!');
+  }
+  if(tipo==='servico'){
+    DB.servicos.push({area: areaServico.value, nome: nomeServico.value, preco: precoServico.value});
+    atualizarSelects();
+    alert('Serviço salvo!');
+  }
+  if(tipo==='prof'){
+    DB.profs.push({servico: servicoProf.value, nome: nomeProf.value, tel: telProf.value});
+    atualizarSelects();
+    alert('Profissional salvo!');
+  }
+  if(tipo==='cliente'){
+    DB.clientes.push({nome: nomeCli.value, tel: telCli.value, tipo: tipoCli.value});
+    atualizarSelects();
+    alert('Cliente salvo!');
+  }
+  if(tipo==='venda'){
+    DB.vendas.push({cliente: clienteVenda.value, prof: profVenda.value, data: dataVenda.value});
+    alert('Venda lançada!');
+    console.log(DB);
   }
 }
+window.salvarDB = salvarDB;
 
-function salvar(n){
-  alert(`Dados do Lado ${n} salvos!`);
-  forms[n-1].style.display='none';
-}
-window.salvar = salvar;
-
-function animate() {
-  requestAnimationFrame(animate);
-  cube.rotation.x += 0.002;
-  cube.rotation.y += 0.003;
-  controls.update();
-  renderer.render(scene, camera);
+function atualizarSelects(){
+  setorArea.innerHTML = '<option>Selecione Setor</option>' + DB.setores.map(s=>`<option>${s.nome}</option>`).join('');
+  areaServico.innerHTML = '<option>Selecione Área</option>' + DB.areas.map(a=>`<option>${a.nome}</option>`).join('');
+  servicoProf.innerHTML = '<option>Selecione Serviço</option>' + DB.servicos.map(s=>`<option>${s.nome}</option>`).join('');
+  clienteVenda.innerHTML = '<option>Selecione Cliente</option>' + DB.clientes.map(c=>`<option>${c.nome}</option>`).join('');
+  profVenda.innerHTML = '<option>Selecione Profissional</option>' + DB.profs.map(p=>`<option>${p.nome}</option>`).join('');
 }
 
-init();
+// MONTADOR QUEBRA CABECA
+let ordemCorreta = ['setor','area','servico','prof','cliente'];
+document.querySelectorAll('.peca').forEach(p=>{
+  p.addEventListener('dragstart', e=>{ e.dataTransfer.setData('tipo', p.dataset.tipo); p.classList.add('dragging'); });
+  p.addEventListener('dragend', ()=>p.classList.remove('dragging'));
+});
+document.querySelectorAll('.slot').forEach(s=>{
+  s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over'); });
+  s.addEventListener('dragleave', ()=>s.classList.remove('over'));
+  s.addEventListener('drop', e=>{
+    e.preventDefault(); s.classList.remove('over');
+    const tipo = e.dataTransfer.getData('tipo');
+    s.innerText = tipo.toUpperCase(); s.dataset.valor = tipo;
+  });
+});
+
+function validarMontagem(){
+  let ok = true; let txt = 'ORDEM: ';
+  document.querySelectorAll('.slot').forEach((s,i)=>{
+    if(s.dataset.valor!== ordemCorreta[i]) ok = false;
+    txt += s.dataset.valor + ' > ';
+  });
+  resultadoMontagem.innerText = ok? txt + '✅ ESTRUTURA KORVIL CORRETA!' : txt + '❌ ORDEM ERRADA';
+  resultadoMontagem.style.color = ok? '#00ff00' : '#ff0000';
+}
+window.validarMontagem = validarMontagem;
+
+initCubo();
 </script>
 </body>
 </html>
