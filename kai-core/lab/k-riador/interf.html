@@ -2,26 +2,34 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-BRACELETE JARVIS</title>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JARVIS HOLO</title>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "@mediapipe/hands": "https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js",
+    "@mediapipe/camera_utils": "https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+  }
+}
+</script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#000;overflow:hidden}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;touch-action:none}
 
-  /* MATA A CÂMERA VISUAL */
-  #camera{position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0}
+  /* CAMERA FICA ATRÁS INVISÍVEL MAS RODANDO */
+  #camera{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0.01;pointer-events:none}
 
-  #cena{position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(ellipse at center, #001a2e 0%, #000 100%)}
+  /* HOLOGRAMA FICA NA FRENTE */
+  #cena{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;background:radial-gradient(ellipse at center, #001a2e 0%, #000 100%)}
 
-  /* TERRENO OCUPA TELA TODA */
- .grid{position:fixed;bottom:0;width:100vw;height:100vh;background-image:linear-gradient(rgba(0,247,255,0.18) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.18) 1px, transparent 1px);background-size:45px 45px;transform:perspective(1000px) rotateX(75deg)}
+ .grid{position:fixed;bottom:0;width:100%;height:100%;background-image:linear-gradient(rgba(0,247,255,0.15) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.15) 1px, transparent 1px);background-size:50px 50px;transform:perspective(1000px) rotateX(75deg);z-index:2}
 
- .hud{position:fixed;top:15px;width:100%;text-align:center;color:#00f7ff;font-family:monospace;font-size:14px;text-shadow:0 0 15px #00f7ff}
- .lixeira{position:fixed;bottom:8%;left:5%;width:70px;height:70px;border-radius:50%;border:3px dashed #ff0044;box-shadow:0 0 25px #ff0044}
- .lixeira.on{border-color:#ffaa00;box-shadow:0 0 60px #ffaa00;transform:scale(1.4)}
+ .hud{position:fixed;top:20px;width:100%;text-align:center;color:#00f7ff;font-family:monospace;font-size:15px;z-index:3;text-shadow:0 0 10px #00f7ff}
+
+ .lixeira{position:fixed;bottom:10%;left:6%;width:80px;height:80px;border:4px dashed #ff0044;border-radius:50%;z-index:3;transition:0.2s}
+ .lixeira.on{border-color:#ffaa00;box-shadow:0 0 50px #ffaa00;transform:scale(1.3)}
 </style>
 </head>
 <body>
@@ -30,22 +38,26 @@
 <div id="cena"></div>
 <div class="grid"></div>
 <div class="lixeira" id="lixeira"></div>
-<div class="hud">JARVIS v5.5 | <span id="status">PERMITA A CÂMERA</span></div>
+<div class="hud">JARVIS v6.0 | <span id="status">TOQUE PARA PERMITIR CÂMERA</span></div>
 
-<script>
-// THREE
+<script type="module">
+import * as THREE from 'three';
+import { Hands } from '@mediapipe/hands';
+import { Camera } from '@mediapipe/camera_utils';
+
+// ===== 1. THREE TELA CHEIA =====
 const scene=new THREE.Scene();
-const cam=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000);
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setSize(innerWidth,innerHeight);
 document.getElementById('cena').appendChild(renderer.domElement);
-cam.position.set(0,2.5,5);cam.lookAt(0,0,0);
-scene.add(new THREE.AmbientLight(0x00f7ff,0.8));
+camera.position.set(0,2,5);camera.lookAt(0,0,0);
+scene.add(new THREE.AmbientLight(0x00f7ff,1));
 
-// BRACELETE CENTRO TERRENO
+// BRACELETE NO CENTRO DO CHÃO
 const bracelete=new THREE.Group();bracelete.position.set(0,0,0);scene.add(bracelete);
-bracelete.add(new THREE.Mesh(new THREE.TorusGeometry(1.4,0.14,12,100),new THREE.MeshPhongMaterial({color:0x00f7ff,wireframe:true})));
-const pecas=[];[-1.4,0,1.4].forEach((x,i)=>{
+bracelete.add(new THREE.Mesh(new THREE.TorusGeometry(1.5,0.15,16,100),new THREE.MeshPhongMaterial({color:0x00f7ff,wireframe:true})));
+const pecas=[];[-1.5,0,1.5].forEach((x,i)=>{
   const geo=i===1?new THREE.BoxGeometry(0.3,0.4,0.15):new THREE.CylinderGeometry(0.25,0.25,0.15,6);
   const p=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:0x00ff88,emissive:0x00ff88}));
   p.position.set(x,0,0);bracelete.add(p);pecas.push(p);
@@ -55,55 +67,69 @@ const pecas=[];[-1.4,0,1.4].forEach((x,i)=>{
 const cubo=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.5,0.5),new THREE.MeshPhongMaterial({color:0xffaa00,emissive:0xffaa00}));
 cubo.position.set(2.5,0.25,0);scene.add(cubo);
 
-// LIXEIRA 3D
-const lix3d=new THREE.Group();lix3d.position.set(-3,0,-2);scene.add(lix3d);
-lix3d.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.25,0.5,16),new THREE.MeshPhongMaterial({color:0xff0044})));
-const circulo=new THREE.Mesh(new THREE.RingGeometry(1.8,2,32),new THREE.MeshBasicMaterial({color:0xff0044,transparent:true,opacity:0.1,side:2}));
-circulo.rotation.x=-1.57;lix3d.add(circulo);
+// LIXEIRA
+const lix=new THREE.Group();lix.position.set(-3,0,-2);scene.add(lix);
+lix.add(new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.3,0.6,16),new THREE.MeshPhongMaterial({color:0xff0044})));
+const circulo=new THREE.Mesh(new THREE.RingGeometry(2,2.2,32),new THREE.MeshBasicMaterial({color:0xff0044,transparent:true,opacity:0.1,side:2}));
+circulo.rotation.x=-1.57;lix.add(circulo);
 
-// CAMERA INVISIVEL
+// ===== 2. CÂMERA + MÃOS =====
 const video=document.getElementById('camera');
 let maoDir=null, segurando=null;
 
-navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(s=>{
-  video.srcObject=s;video.play();
-  document.getElementById('status').innerText='CÂMERA OK';
-  
+async function start(){
+  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+  video.srcObject=stream;
+  document.getElementById('status').innerText='CÂMERA OK - USE A MÃO DIREITA';
+
   const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-  hands.setOptions({maxNumHands:2});
-  hands.onResults(r=>{
-    if(!r.multiHandLandmarks) return;
-    r.multiHandLandmarks.forEach((lm,i)=>{
-      if(r.multiHandedness[i].label==='Right') maoDir=lm;
-    });
-    
-    if(maoDir){
-      const pos=new THREE.Vector3((maoDir[8].x-0.5)*8,(0.5-maoDir[8].y)*6,maoDir[8].z*4);
-      const punho=Math.hypot(maoDir[4].x-maoDir[8].x,maoDir[4].y-maoDir[8].y)<0.05;
-      const aberta=Math.hypot(maoDir[4].x-maoDir[8].x,maoDir[4].y-maoDir[8].y)>0.15;
+  hands.setOptions({maxNumHands:1, minDetectionConfidence:0.7});
+  hands.onResults(onResults);
+  new Camera(video,{onFrame:async()=>{await hands.send({image:video})},width:640,height:480}).start();
+}
 
-      // PEGAR
-      if(punho &&!segurando){
-        if(cubo.position.distanceTo(pos)<0.6){segurando=cubo;document.getElementById('status').innerText='SEGURANDO CUBO'}
-        pecas.forEach(p=>{if(p.position.clone().add(bracelete.position).distanceTo(pos)<0.5){segurando=p;scene.add(p)}})
-      }
-      // ARRASTAR
-      if(segurando){
-        segurando.position.copy(pos);segurando.rotation.x+=0.05;segurando.rotation.y+=0.05;
-        const d=segurando.position.distanceTo(lix3d.position);
-        if(d<2){document.getElementById('lixeira').classList.add('on');circulo.material.opacity=0.4;
-          if(aberta){const dir=lix3d.position.clone().sub(segurando.position).normalize();segurando.position.add(dir.multiplyScalar(0.2));
-            if(d<0.5){if(segurando===cubo){cubo.position.set(2.5,0.25,0)}else{scene.remove(segurando)}segurando=null;document.getElementById('status').innerText='DESCARTADO'}
-          }
-        }else{document.getElementById('lixeira').classList.remove('on');circulo.material.opacity=0.1}
-        if(aberta && d>2){segurando=null;document.getElementById('status').innerText='SOLTO'}
-      }
-    }
-  });
-  new Camera(video,{onFrame:async()=>{await hands.send({image:video})}}).start();
-});
+// PRECISA DE TOQUE NO CELULAR PRA LIGAR A CAMERA
+document.body.addEventListener('click',start,{once:true});
 
-function animate(){requestAnimationFrame(animate);bracelete.rotation.y+=0.002;renderer.render(scene,cam)}
+function get3D(lm){return new THREE.Vector3((lm.x-0.5)*10,(0.5-lm.y)*7,lm.z*5)}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+
+function onResults(res){
+  if(!res.multiHandLandmarks) return;
+  maoDir=res.multiHandLandmarks[0];
+
+  const pos=get3D(maoDir[8]);
+  const punho=dist(maoDir[4],maoDir[8])<0.06;
+  const aberta=dist(maoDir[4],maoDir[8])>0.18;
+
+  // PEGAR
+  if(punho &&!segurando){
+    if(cubo.position.distanceTo(pos)<0.7){segurando=cubo;document.getElementById('status').innerText='SEGURANDO CUBO'}
+    pecas.forEach(p=>{if(p.position.clone().add(bracelete.position).distanceTo(pos)<0.6){segurando=p;scene.add(p)}})
+  }
+
+  // ARRASTAR
+  if(segurando){
+    segurando.position.copy(pos);segurando.position.y=0.25;
+    segurando.rotation.x+=0.05;segurando.rotation.y+=0.05;
+
+    const d=segurando.position.distanceTo(lix.position);
+    if(d<2.2){document.getElementById('lixeira').classList.add('on');circulo.material.opacity=0.4;
+      if(aberta){
+        const dir=lix.position.clone().sub(segurando.position).normalize();
+        segurando.position.add(dir.multiplyScalar(0.25));
+        if(d<0.6){
+          if(segurando===cubo){cubo.position.set(2.5,0.25,0)}else{scene.remove(segurando)}
+          segurando=null;document.getElementById('status').innerText='DESCARTADO'
+        }
+      }
+    }else{document.getElementById('lixeira').classList.remove('on');circulo.material.opacity=0.1}
+
+    if(aberta && d>2.2){segurando=null;document.getElementById('status').innerText='SOLTO'}
+  }
+}
+
+function animate(){requestAnimationFrame(animate);bracelete.rotation.y+=0.002;renderer.render(scene,camera)}
 animate();
 </script>
 </body>
