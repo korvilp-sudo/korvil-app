@@ -2,187 +2,187 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>KORVIL K-AI v4.2 - FEEDBACK NEON</title>
+<title>KORVIL K-AI v5.1 - HOLOGRAMAS 4D</title>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#000;overflow:hidden;font-family:'Orbitron',monospace;color:#00f7ff}
+  body{
+    background: radial-gradient(circle at 50% 50%, #001a2e 0%, #000 100%);
+    overflow:hidden;font-family:'Orbitron',monospace;color:#00f7ff;perspective:1000px;
+  }
+
   #camera,#canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
   #camera{z-index:1} #canvas{z-index:2;pointer-events:none;transform:scaleX(-1)}
 
-.neon-green{color:#00ff88;text-shadow:0 0 5px #00ff88,0 0 15px #00ff88;animation:pulseGreen 1s infinite}
-.neon-red{color:#ff0044;text-shadow:0 0 5px #ff0044,0 0 15px #ff0044;animation:flashRed 0.3s}
-  @keyframes pulseGreen{0%,100%{opacity:1;filter:drop-shadow(0 0 10px #00ff88)}50%{opacity:0.4;filter:drop-shadow(0 0 20px #00ff88)}}
-  @keyframes flashRed{0%{opacity:1}100%{opacity:0}}
+  /* PAINÉIS 4D */
+.panel{position:absolute;z-index:3;border:2px solid #00f7ff;background:rgba(0,247,255,0.04);backdrop-filter:blur(12px);color:#00f7ff;padding:14px 18px;border-radius:12px;font-size:13px;font-weight:700;transform:translateZ(20px);box-shadow:0 0 30px rgba(0,247,255,0.3)}
+.panel.active{border-color:#00ff88;box-shadow:0 0 50px #00ff88;transform:translateZ(40px)}
+.panel.alert{border-color:#ff0044;box-shadow:0 0 50px #ff0044;animation:flash 0.4s}
+  @keyframes flash{50%{transform:translateZ(60px) scale(1.05)}}
 
-.panel{position:absolute;z-index:3;border:1px solid #00f7ff;background:rgba(0,247,255,0.05);backdrop-filter:blur(5px);padding:8px;border-radius:6px;font-size:11px;transition:0.3s}
-.panel.active{border-color:#00ff88;box-shadow:0 0 20px #00ff88;background:rgba(0,255,136,0.1)}
-.panel.inactive{border-color:#ff0044;box-shadow:0 0 20px #ff0044;animation:flashRed 0.5s}
+ .top{top:4%}.left{left:2.5%}.right{right:2.5%}.bottom{bottom:3%}
 
-#pointer{position:absolute;width:24px;height:24px;z-index:4;pointer-events:none;display:none}
-.octa-pointer{width:100%;height:100%;border:2px solid #00ff88;transform:rotate(45deg);box-shadow:0 0 20px #00ff88;animation:spin 0.8s linear infinite}
-@keyframes spin{100%{transform:rotate(405deg)}}
+  /* PONTEIRO */
+  #pointer{position:absolute;width:28px;height:28px;z-index:4;display:none}
+.octa{width:100%;height:100%;border:2.5px solid #00f7ff;transform:rotateX(45deg) rotateY(45deg) rotateZ(45deg);box-shadow:0 0 25px #00f7ff;animation:float 3s infinite}
+  @keyframes float{50%{transform:rotateX(45deg) rotateY(225deg) rotateZ(45deg) translateZ(15px)}}
 
-#miniMenu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;background:rgba(0,10,20,0.9);border:2px solid #00f7ff;padding:15px;border-radius:10px;display:none;transition:0.3s}
-#miniMenu.active{border-color:#00ff88;box-shadow:0 0 30px #00ff88}
-#miniMenu div{padding:8px;margin:5px 0;border:1px solid #00f7ff;cursor:pointer}
-#miniMenu div:hover{background:rgba(0,255,136,0.2)}
+  /* MENU */
+  #menu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) translateZ(80px);z-index:5;background:rgba(0,5,15,0.85);border:2px solid #00f7ff;display:none;padding:25px;border-radius:15px;backdrop-filter:blur(20px)}
+  #menu.active{border-color:#00ff88;box-shadow:0 0 80px #00ff88}
 
-#tutorial{position:absolute;bottom:10%;left:2%;z-index:3;width:35%;font-size:10px;background:rgba(0,0,0,0.7);padding:10px}
+  #log{position:absolute;bottom:3%;left:2.5%;z-index:3;width:60%;font-size:12px;background:rgba(0,0,0,0.5);border:1.5px solid #00f7ff;padding:12px;border-radius:10px;backdrop-filter:blur(10px)}
 
-#btnRecord{position:absolute;bottom:2%;right:3%;z-index:4;background:rgba(0,247,255,0.15);border:2px solid #00f7ff;color:#00f7ff;padding:10px 18px;border-radius:50px;box-shadow:0 0 20px #00f7ff}
-#btnRecord.rec{border-color:#00ff88;background:rgba(0,255,136,0.2);box-shadow:0 0 25px #00ff88}
+  /* ============ HOLOGRAMAS 4D NAS 4 BORDAS ============ */
+.holo{position:absolute;z-index:2;pointer-events:none}
+
+  /* 1. TOPO: BARRA DE ENERGIA PULSANDO */
+.holo-top{top:0;left:0;width:100%;height:60px;background:linear-gradient(90deg, transparent, #00f7ff, transparent);animation:energy 2s linear infinite}
+  @keyframes energy{
+    0%{background-position:-100% 0;opacity:0.3}
+    50%{opacity:1;box-shadow:0 0 40px #00f7ff}
+    100%{background-position:200% 0;opacity:0.3}
+  }
+ .holo-top.active{background:linear-gradient(90deg, transparent, #00ff88, transparent)}
+ .holo-top.alert{background:linear-gradient(90deg, transparent, #ff0044, transparent)}
+
+  /* 2. DIREITA: OCTAEDROS GIRANDO EM COLUNA */
+.holo-right{top:0;right:0;width:60px;height:100%;display:flex;flex-direction:column;justify-content:space-around;align-items:center}
+.holo-octa{width:25px;height:25px;border:2px solid #00f7ff;transform:rotate(45deg);animation:spinHolo 4s linear infinite}
+  @keyframes spinHolo{100%{transform:rotate(405deg)}}
+ .holo-octa:nth-child(2){animation-delay:0.5s}
+ .holo-octa:nth-child(3){animation-delay:1s}
+ .holo-octa:nth-child(4){animation-delay:1.5s}
+
+  /* 3. BAIXO: ONDAS DE SCAN */
+.holo-bottom{bottom:0;left:0;width:100%;height:50px;overflow:hidden}
+.holo-wave{width:200%;height:100%;background:repeating-linear-gradient(90deg,#00f7ff00 0px,#00f7ff 2px,#00f7ff00 4px);animation:scanWave 3s linear infinite}
+  @keyframes scanWave{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* 4. ESQUERDA: MATRIZ DE DADOS CAINDO */
+.holo-left{top:0;left:0;width:50px;height:100%;overflow:hidden}
+.holo-matrix{font-size:10px;color:#00f7ff;line-height:14px;animation:matrix 8s linear infinite}
+  @keyframes matrix{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+
+  /* QUANDO ATIVO MUDA COR DOS HOLOGRAMAS */
+.active-holo.holo-octa{border-color:#00ff88;box-shadow:0 0 20px #00ff88}
+.active-holo.holo-matrix{color:#00ff88;text-shadow:0 0 10px #00ff88}
+.active-holo.holo-wave{background:repeating-linear-gradient(90deg,#00ff8800 0px,#00ff88 2px,#00ff8800 4px)}
+.alert-holo.holo-octa{border-color:#ff0044;box-shadow:0 0 20px #ff0044;animation:flash 0.4s}
+.alert-holo.holo-matrix{color:#ff0044}
 </style>
 </head>
 <body>
+<div id="bodyWrap">
 
 <video id="camera" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
-<div id="pointer"><div class="octa-pointer"></div></div>
+<div id="pointer"><div class="octa"></div></div>
 
-<div id="miniMenu">
-  <div class="neon-green">K-AI MENU</div>
-  <div onclick="alert('ARMAS ATIVAS')">1. ARMAS</div>
-  <div onclick="alert('ESCUDO ATIVO')">2. ESCUDO</div>
-  <div onclick="alert('SCANNING...')">3. SCAN</div>
-  <div onclick="menu.style.display='none'">4. SAIR</div>
+<!-- 4 HOLOGRAMAS NAS BORDAS -->
+<div class="holo holo-top"></div>
+<div class="holo holo-right">
+  <div class="holo-octa"></div><div class="holo-octa"></div>
+  <div class="holo-octa"></div><div class="holo-octa"></div>
+</div>
+<div class="holo holo-bottom"><div class="holo-wave"></div></div>
+<div class="holo holo-left"><div class="holo-matrix">010101<br>110010<br>101101<br>011100<br>100011<br>111000</div></div>
+
+<div id="menu">
+  <div style="font-weight:900;font-size:16px">K-AI MENU</div>
+  <div>1. ARMAS</div><div>2. ESCUDO</div><div>3. SAIR</div>
 </div>
 
-<div id="panelStatus" class="panel top left">
-  <div class="neon-green">KORVIL K-AI v4.2</div>
-  <div>STATUS: <span id="status">INICIANDO</span></div>
-  <div>CONTROLE: <span id="control">DESATIVADO</span></div>
+<div id="p1" class="panel top left">
+  <div style="font-weight:900">KORVIL K-AI v5.1</div>
+  <div>STATUS: <span id="status">STANDBY</span></div>
+  <div>MOUSE: <span id="mouse">OFF</span></div>
 </div>
 
-<div id="panelGesture" class="panel top right">
-  <div class="neon-green">ANÁLISE</div>
-  <div>GESTO: <span id="gesture">NENHUM</span></div>
+<div id="p2" class="panel top right">
+  <div style="font-weight:900">SISTEMA NEURAL</div>
+  <div>COMANDO: <span id="cmd">NENHUM</span></div>
 </div>
 
-<div id="tutorial">
-  <div class="neon-green">TUTORIAL K-AI</div>
-  <div>👁️ Piscar 1x ESQ: Ativar Mouse</div>
-  <div>👁️ Piscar 2x ESQ: CLIQUE</div>
-  <div>🙂 2 Sobrancelhas: MENU</div>
-</div>
-
-<div id="panelBottom" class="panel bottom">
-  <div>K-AI: <span id="aiMsg">Aguardando comandos...</span></div>
-</div>
-
-<button id="btnRecord">● GRAVAR HUD</button>
+<div id="log">Protocolos holográficos ativos</div>
 
 <script>
+const bodyWrap=document.getElementById('bodyWrap');
 const video=document.getElementById('camera'), canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
-const pointer=document.getElementById('pointer'), menu=document.getElementById('miniMenu');
-const panelStatus=document.getElementById('panelStatus'), panelGesture=document.getElementById('panelGesture'), panelBottom=document.getElementById('panelBottom');
-let recorder, chunks=[], angle=0;
-let mouseActive=false, lastBlinkL=0, lastBlinkR=0, lastBrow=0, clickCooldown=0;
+let mouseOn=false, menuOn=false;
+let lastEyeL=0, lastBrow=0;
 
-// FUNÇÃO FEEDBACK COR
-function setActive(el, active){
-  if(active){el.classList.add('active');el.classList.remove('inactive')}
-  else{el.classList.remove('active');el.classList.add('inactive');setTimeout(()=>el.classList.remove('inactive'),500)}
-}
+navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:3840}, height:{ideal:2160}}}).then(s=>video.srcObject=s);
 
-// 1. CÂMERA + GRAVAÇÃO
-navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(stream=>{
-  video.srcObject=stream;
-  const outStream=canvas.captureStream(30);
-  recorder=new MediaRecorder(outStream);
-  recorder.ondataavailable=e=>chunks.push(e.data);
-  recorder.onstop=()=>{const blob=new Blob(chunks,{type:'video/webm'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`KORVIL_KAI_${Date.now()}.webm`;a.click()}
-});
-btnRecord.onclick=()=>{if(recorder.state==='inactive'){recorder.start();chunks=[];btnRecord.innerText='■ PARAR';btnRecord.classList.add('rec');setActive(panelStatus,true)}else{recorder.stop();btnRecord.innerText='● GRAVAR HUD';btnRecord.classList.remove('rec');setActive(panelStatus,false)}};
-
-// 2. FACE MESH
 const faceMesh=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
-faceMesh.setOptions({maxNumFaces:1,refineLandmarks:true});
+faceMesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.75});
 faceMesh.onResults(onResults);
-new Camera(video,{onFrame:async()=>await faceMesh.send({image:video}),width:1280,height:720}).start();
+new Camera(video,{onFrame:async()=>await faceMesh.send({image:video})}).start();
 
-function drawOcta(x,y,size,rot=0,color='#00ff88',active=true){
-  ctx.save();ctx.translate(x,y);ctx.rotate(rot);
-  ctx.strokeStyle=color;ctx.lineWidth=active?2.5:1.5;
-  ctx.shadowBlur=active?20:5;ctx.shadowColor=color;
-  ctx.beginPath();ctx.moveTo(0,-size);ctx.lineTo(size,0);ctx.lineTo(0,size);ctx.lineTo(-size,0);ctx.closePath();
-  ctx.moveTo(0,-size);ctx.lineTo(0,size);ctx.moveTo(-size,0);ctx.lineTo(size,0);ctx.stroke();ctx.restore();
+function feedback(type, msg){
+  const els = [document.getElementById('p1'),document.getElementById('p2'),document.getElementById('log')];
+  const holoTop = document.querySelector('.holo-top');
+  bodyWrap.classList.remove('active-holo','alert-holo');
+  els.forEach(el=>{el.classList.remove('active','alert')});
+
+  if(type==='on'){
+    els.forEach(el=>el.classList.add('active'));
+    bodyWrap.classList.add('active-holo');
+    holoTop.classList.add('active');
+  }
+  if(type==='off'){
+    els.forEach(el=>el.classList.add('alert'));
+    bodyWrap.classList.add('alert-holo');
+    holoTop.classList.add('alert');
+    setTimeout(()=>{holoTop.classList.remove('active','alert')},400);
+  }
+  document.getElementById('cmd').innerText = msg;
+  document.getElementById('log').innerText = msg;
 }
 
-// 3. DETECÇÃO COM FEEDBACK
-function detectGestures(lm){
-  const now=Date.now();
-  const eyeRightPerson=lm[145]; // Olho esq da tela
-  const eyeLeftPerson=lm[374]; // Olho dir da tela
-  const browL=lm[105], browR=lm[334];
-  const mouth=lm[13];
-
-  // 1.1 PISCAR OLHO ESQUERDO = ATIVA MOUSE
-  if(eyeRightPerson.y - lm[159].y < 0.012 && now - lastBlinkL > 500){
-    lastBlinkL=now;
-    if(!mouseActive && now-clickCooldown>300){
-      mouseActive=true;pointer.style.display='block';document.getElementById('control').innerText='MOUSE ATIVO';
-      document.getElementById('aiMsg').innerText='Mouse ocular: ATIVADO';setActive(panelStatus,true);setActive(panelGesture,true)
-    }else if(mouseActive && now-clickCooldown>300){ // 1.2 CLIQUE
-      document.elementFromPoint(pointer.offsetLeft, pointer.offsetTop)?.click();
-      clickCooldown=now;document.getElementById('aiMsg').innerText='CLIQUE!';setActive(panelGesture,true)
-    }
-  }
-
-  // DESATIVAR MOUSE COM PISCADA LONGA
-  if(eyeRightPerson.y - lm[159].y < 0.012 && now - lastBlinkL > 1200){
-    mouseActive=false;pointer.style.display='none';document.getElementById('control').innerText='DESATIVADO';
-    document.getElementById('aiMsg').innerText='Mouse ocular: DESATIVADO';setActive(panelStatus,false);setActive(panelGesture,false)
-  }
-
-  // 2 SOBRANCELHAS = MENU
-  if(browL.y < lm[52].y - 0.02 && browR.y < lm[282].y - 0.02 && now-lastBrow>800){
-    lastBrow=now;
-    const isOpen = menu.style.display==='block';
-    menu.style.display = isOpen?'none':'block';menu.classList.toggle('active',!isOpen);
-    document.getElementById('aiMsg').innerText=!isOpen?'Menu: ABERTO':'Menu: FECHADO';
-    setActive(panelBottom,!isOpen)
-  }
-
-  if(mouth.y - lm[14].y > 0.04){document.getElementById('gesture').innerText='BOCA ABERTA';setActive(panelGesture,true)}
+function drawOcta(x,y,size,active){
+  ctx.strokeStyle='#00f7ff';ctx.lineWidth=active?3:2;
+  ctx.shadowBlur=active?35:12;ctx.shadowColor=active?'#00ff88':'#00f7ff';
+  ctx.beginPath();ctx.moveTo(x,y-size);ctx.lineTo(x+size,y);ctx.lineTo(x,y+size);ctx.lineTo(x-size,y);ctx.closePath();
+  ctx.moveTo(x,y-size);ctx.lineTo(x,y+size);ctx.moveTo(x-size,y);ctx.lineTo(x+size,y);ctx.stroke();
 }
 
 function onResults(res){
-  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-  ctx.clearRect(0,0,canvas.width,canvas.height);angle+=0.015;
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!res.multiFaceLandmarks?.length){feedback('off',"BUSCANDO ROSTO");return}
+  const lm=res.multiFaceLandmarks[0];const now=Date.now();
 
-  if(res.multiFaceLandmarks?.length>0){
-    document.getElementById('status').innerText='ONLINE';
-    const lm=res.multiFaceLandmarks[0];
-    detectGestures(lm);
+  const eyeL=lm[145];const browL=lm[70];const browR=lm[300];const eyeTopL=lm[159];
 
-    // COR MUDA: VERDE ATIVO / CIANO INATIVO
-    const mouseColor = mouseActive?'#00ff88':'#00f7ff';
+  // PISCAR OLHO ESQ = MOUSE
+  if(eyeL.y - eyeTopL.y < 0.008 && now - lastEyeL > 550){
+    lastEyeL = now;mouseOn =!mouseOn;
+    document.getElementById('mouse').innerText = mouseOn? 'ON' : 'OFF';
+    document.getElementById('status').innerText = mouseOn? 'ONLINE' : 'STANDBY';
+    feedback(mouseOn? 'on':'off', mouseOn? "MOUSE OCULAR ATIVADO" : "MOUSE DESATIVADO");
+    pointer.style.display = mouseOn? 'block' : 'none';
+  }
 
-    // MOUSE PELO OLHO ESQUERDO
-    if(mouseActive){
-      const eye=lm[468];
-      const x=(1-eye.x)*canvas.width;
-      const y=eye.y*canvas.height;
-      pointer.style.left=x-12+'px';pointer.style.top=y-12+'px';
-      drawOcta(x,y,22,angle*2,mouseColor,true);
-    }
+  // 2 SOBRANCELHAS = MENU
+  let browUpL = lm[52].y - browL.y;let browUpR = lm[282].y - browR.y;
+  if(browUpL > 0.032 && browUpR > 0.032 && now - lastBrow > 700){
+    lastBrow = now;menuOn =!menuOn;
+    document.getElementById('menu').style.display = menuOn? 'block' : 'none';
+    document.getElementById('menu').classList.toggle('active',menuOn);
+    feedback(menuOn? 'on':'off', menuOn? "MENU HOLOGRÁFICO ABERTO" : "MENU FECHADO");
+  }
 
-    // OCTAEDROS NAS BORDAS - PULSANDO VERDE QUANDO ATIVO
-    drawOcta(90,100,45,angle,mouseColor,mouseActive);
-    drawOcta(canvas.width-90,130,40,-angle*1.3,mouseColor,mouseActive);
-    drawOcta(110,canvas.height-110,42,angle*0.7,mouseColor,mouseActive);
-    drawOcta(canvas.width-110,canvas.height-90,38,-angle,mouseColor,mouseActive);
-
-    // LINHAS HUD VERDES QUANDO ATIVO
-    ctx.strokeStyle=mouseActive?'rgba(0,255,136,0.4)':'rgba(0,247,255,0.2)';
-    ctx.lineWidth=mouseActive?2:1;
-    ctx.beginPath();ctx.moveTo(0,canvas.height*0.2);ctx.lineTo(canvas.width,canvas.height*0.2);ctx.stroke();
-
-  }else{document.getElementById('status').innerText='BUSCANDO ROSTO...';setActive(panelStatus,false)}
-  requestAnimationFrame(()=>faceMesh.send({image:video}));
+  // MOUSE
+  if(mouseOn){
+    const eye=lm[468];const x=(1-eye.x)*canvas.width;const y=eye.y*canvas.height;
+    pointer.style.left=x-14+'px';pointer.style.top=y-14+'px';
+    document.querySelector('.octa').style.borderColor = '#00ff88';
+    drawOcta(x,y,24,true);
+  }
 }
 </script>
+</div>
 </body>
 </html>
