@@ -50,7 +50,7 @@ nav a{color:var(--ciano);margin-left:20px;text-decoration:none;font-weight:600;c
 .vakinha-card img{width:130px;height:130px;border-radius:10px;object-fit:cover;border:2px solid var(--ciano)}
 footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;font-size:12px}
 
-/* FOTO E VIDEO TAMANHO IGUAL */
+/* FOTO E VIDEO TAMANHO IGUAL GRANDE */
 .midias-hurley{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -59,8 +59,8 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
 }
 .midias-hurley img,.midias-hurley video{
   width:100%;
-  height:420px;
-  object-fit:cover;
+  height:500px; /* TAMANHO GRANDE IGUAL */
+  object-fit:cover; /* Corta pra ficar igual */
   border-radius:15px;
   border:2px solid var(--ciano);
   box-shadow:0 0 20px var(--ciano);
@@ -70,7 +70,7 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
 .vakinha-card{flex-direction:column}
   nav{display:none}
 .midias-hurley{grid-template-columns:1fr}
-.midias-hurley img,.midias-hurley video{height:320px}
+.midias-hurley img,.midias-hurley video{height:380px} /* Mobile também grande */
 }
 
 /* SOS */
@@ -163,7 +163,7 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
     <div class="grid-2">
       <div class="card-3d" style="padding:20px">
         <h3>HURLEY 🐶</h3>
-        <img src="WA_1785438279265.jpeg" alt="Hurley" class="media-box">
+        <img src="IMG_20180211_115516776.jpg" alt="Hurley" class="media-box">
       </div>
       <div class="card-3d" style="padding:20px">
         <h3>NOSSA HISTÓRIA</h3>
@@ -179,7 +179,7 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
   <div class="container">
     <h2 style="text-align:center;margin-bottom:40px">SOS PETs ATIVOS 🐾</h2>
     <div class="card-3d vakinha-card" onclick="mostrar('hurley')">
-      <img src="WA_1785438279265.jpeg" alt="Hurley">
+      <img src="IMG_20180211_115516776.jpg" alt="Hurley">
       <div style="flex:1">
         <h3>HURLEY - CIRURGIA URGENTE</h3>
         <p>Clique para ver detalhes, laudos e doar. Labrador de 12 anos precisando de tratamento.</p>
@@ -201,9 +201,10 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
     <div class="sos-card">
       <h1>🚨 CASO URGENTE - HURLEY 🚨</h1>
 
+      <!-- FOTO E VIDEO TAMANHO IGUAL GRANDE -->
       <div class="midias-hurley">
-        <img src="WA_1785438279265.jpeg" alt="Hurley">
-        <img src="IMG_20180211_115516776.jpg" alt="Hurley 2">
+        <img src="IMG_20180211_115516776.jpg" alt="Hurley">
+        <video src="VID-20190223-WA0004.mp4" controls></video>
       </div>
 
       <div class="texto-urgencia">
@@ -307,7 +308,7 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
 <!-- POPUP URGENTE CORACAO -->
 <div class="popup-urgente" id="popupUrgente">
   <div class="popup-urgente-conteudo">
-    <img src="WA_1785438279265.jpeg" alt="Hurley Urgente">
+    <img src="IMG_20180211_115516776.jpg" alt="Hurley Urgente">
     <p><strong>POR FAVOR</strong><br>Ajude de alguma forma que puder,<br><strong>URGENTE</strong> 🐾</p>
   </div>
 </div>
@@ -317,24 +318,18 @@ const SEU_WHATS = "55139997690898";
 const LINK_ASAAS = "https://www.asaas.com/c/dphgwwbozfc8hptl";
 const LINK_CAMPANHA = "https://korvilp-sudo.github.io/korvil-app/kai-core/lab/k-riador/vk.html#";
 let opcaoAtual = 'doar';
-let timerPopup = null; // para controlar o timer
+let timerPopup = null;
 
 function mostrar(id){
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
-  
-  // LIMPA TIMER ANTERIOR SE EXISTIR
   clearTimeout(timerPopup);
-
   if(id === 'hurley'){
-    // POPUP APARECE DEPOIS DE 10 SEGUNDOS
     timerPopup = setTimeout(() => {
       document.getElementById('popupUrgente').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('popupUrgente').style.display = 'none'
-      }, 13000); // some depois de 13s
-    }, 10000); // 10 segundos para aparecer
+      setTimeout(() => {document.getElementById('popupUrgente').style.display = 'none'}, 13000);
+    }, 10000);
   }
 }
 
@@ -347,10 +342,8 @@ function setOpcao(opcao){
   opcaoAtual = opcao;
   document.querySelectorAll('.opcao-btn').forEach(b => b.classList.remove('ativo'));
   event.target.classList.add('ativo');
-
   document.getElementById('campos-doar').classList.add('oculto');
   document.getElementById('campos-compartilhar').classList.add('oculto');
-  
   if(opcao === 'doar'){
     document.getElementById('campos-doar').classList.remove('oculto');
     document.getElementById('valor').required = true;
@@ -363,7 +356,6 @@ function setOpcao(opcao){
     document.getElementById('forma').required = false;
     document.getElementById('pix_devolucao').required = false;
     document.getElementById('comprovante').required = false;
-    
     copiarTexto(LINK_CAMPANHA);
     document.getElementById('aviso-copiado').style.display = 'block';
     setTimeout(() => {document.getElementById('aviso-copiado').style.display = 'none'}, 3000);
@@ -387,7 +379,6 @@ function enviarWhatsInvisivel(dados, tipo){
   if(dados.valor) msg += `%0AValor: R$ ${dados.valor}%0APagamento: ${dados.forma}%0APix Devolução: ${dados.pix}`;
   if(dados.redes) msg += `%0A%0AREDES SELECIONADAS:%0A${dados.redes}`;
   msg += `%0ALink: ${LINK_CAMPANHA}`;
-  
   window.open(`https://wa.me/${SEU_WHATS}?text=${msg}`, '_blank');
 }
 
@@ -409,15 +400,12 @@ document.getElementById('formAjuda').addEventListener('submit', function(e){
     pix: document.getElementById('pix_devolucao').value,
     arquivo: arquivo? arquivo.name : 'Nenhum'
   };
-
   let msgSucesso = '';
-  
   if(opcaoAtual === 'doar'){
     enviarWhatsInvisivel(dados, 'DOAÇÃO');
     document.getElementById('iframeAsaas').src = LINK_ASAAS;
     document.getElementById('popupPagamento').style.display = 'flex';
     msgSucesso = "🙏 OBRIGADO POR DOAR! 🙏<br>Dados enviados invisível. Tela de pagamento aberta.";
-    
   } else if(opcaoAtual === 'compartilhar'){
     let redes = '';
     document.querySelectorAll('#tabelaRedes tr').forEach(tr => {
@@ -428,21 +416,16 @@ document.getElementById('formAjuda').addEventListener('submit', function(e){
       }
     });
     dados.redes = redes;
-
     enviarWhatsInvisivel(dados, 'COMPARTILHAMENTO');
-
     let msgCompartilhar = `🚨 URGENTE - AJUDE O HURLEY 🚨%0A%0A`;
     msgCompartilhar += `Por favor ajude de alguma forma que puder, urgente.%0A%0A${LINK_CAMPANHA}`;
     window.open(`https://wa.me/?text=${msgCompartilhar}`, '_blank');
-
     msgSucesso = "📲 PRONTO! 🙏<br>Link já está copiado.<br>Whats aberto com mensagem. Cole nos status.<br>Recebemos seus dados aqui.";
-    
   } else if(opcaoAtual === 'copiar'){
     copiarTexto(LINK_CAMPANHA);
     enviarWhatsInvisivel(dados, 'COPIA DE LINK');
     msgSucesso = "📋 LINK COPIADO! 🙏<br>Dados enviados invisível.";
   }
-
   document.getElementById('msg-sucesso').innerHTML = msgSucesso;
   document.getElementById('msg-sucesso').style.display = 'block';
   this.reset();
