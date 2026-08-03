@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OH PEIXÃO | Vakinha e Site Oficial</title>
+<meta name="description" content="OH PEIXÃO - Acessórios e produtos para Pets. Entre na Vakinha ou visite o site oficial.">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ciano:#00f7ff;
+  --azul:#00aaff;
+  --preto:#030303;
+  --vidro:rgba(0,247,255,0.05);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--preto);
+  color:#e0e0e0;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(0,247,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0,170,255,0.08) 0%, transparent 50%);
+}
+h1{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 15px var(--ciano);font-size:42px}
+p{margin:15px 0;font-size:18px}
+
+/* CARD 3D VIDRO */
+.card-3d{
+  background:var(--vidro);backdrop-filter:blur(12px);
+  border:1px solid rgba(0,247,255,0.3);border-radius:20px;
+  box-shadow:0 0 30px rgba(0,247,255,0.2);
+  transform:perspective(1000px) rotateX(5deg);
+  padding:50px 30px;max-width:500px;width:90%;
+  animation:flutuar 4s ease-in-out infinite;
+}
+@keyframes flutuar{0%,100%{transform:perspective(1000px) rotateX(5deg) translateY(0)}50%{transform:perspective(1000px) rotateX(0deg) translateY(-10px)}}
+
+/* BOTÕES NEON */
+.btn-neon{
+  background:transparent;border:2px solid var(--ciano);color:var(--ciano);
+  padding:16px 36px;border-radius:10px;font-weight:700;font-size:18px;
+  animation:pulsar 2s infinite;box-shadow:0 0 10px var(--ciano);font-family:'Orbitron';
+  display:block;width:100%;margin:15px 0;text-decoration:none;transition:0.3s
+}
+@keyframes pulsar{0%,100%{box-shadow:0 0 10px var(--ciano)}50%{box-shadow:0 0 40px var(--ciano)}}
+.btn-neon:hover{background:var(--ciano);color:var(--preto);transform:scale(1.05)}
+
+/* GRID HOLOGRAFICO */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:linear-gradient(rgba(0,247,255,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.03) 1px, transparent 1px);
+  background-size:50px 50px;z-index:-1;animation:scrollGrid 20s linear infinite;
+}
+@keyframes scrollGrid{100%{background-position:50px 50px}}
+
+footer{position:fixed;bottom:10px;font-size:11px;color:#555}
+.icone{font-size:30px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="card-3d">
+  <div class="icone">🐾</div>
+  <h1>OH PEIXÃO</h1>
+  <p>Tudo para seu Pet com amor e tecnologia KORVIL</p>
+
+  <!-- LINK 1: ENTRADA / VAKINHA -->
+  <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon">
+    ENTRAR NA VAKINHA 🎯
+  </a>
+
+  <!-- LINK 2: SITE OFICIAL -->
+  <a href="http://www.ohpeixao.com.br/" target="_blank" class="btn-neon">
+    SITE OFICIAL 🛒
+  </a>
+
+  <p style="font-size:14px;color:#aaa">Escolha onde quer acessar</p>
+</div>
+
+<footer>
+  © 2026 OH PEIXÃO | Desenvolvido com tecnologia KORVIL.AI
+</footer>
+
+</body>
+</html>
