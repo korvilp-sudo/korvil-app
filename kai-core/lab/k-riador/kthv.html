@@ -1,0 +1,25 @@
+<!-- BOTÃO DE PAGAMENTO ASAAS -->
+<script src="https://asaas.com/assets/js/asaas-checkout.js"></script>
+
+<button class="btn-neon" onclick="abrirCheckout()">
+  PAGAR CURSO K-TH R$ 1.164
+</button>
+
+<script>
+function abrirCheckout(){
+  AsaasCheckout.open({
+    value: 1164.00,
+    name: "Curso K-TH KORVIL",
+    description: "Formação Completa Terapia Holística",
+    externalReference: "KTH_" + Date.now(), // ID do aluno
+    customer: {
+      name: "", // ASAAS vai pedir
+      email: "", 
+      cpfCnpj: ""
+    },
+    paymentMethods: ["PIX", "CREDIT_CARD", "DEBIT_CARD", "BOLETO"],
+    successUrl: "https://seusite.com/obrigado",
+    webhookUrl: "https://seusite.com/webhook-asaas" // aqui recebe a confirmação
+  });
+}
+</script>
