@@ -317,14 +317,24 @@ const SEU_WHATS = "55139997690898";
 const LINK_ASAAS = "https://www.asaas.com/c/dphgwwbozfc8hptl";
 const LINK_CAMPANHA = "https://korvilp-sudo.github.io/korvil-app/kai-core/lab/k-riador/vk.html#";
 let opcaoAtual = 'doar';
+let timerPopup = null; // para controlar o timer
 
 function mostrar(id){
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  
+  // LIMPA TIMER ANTERIOR SE EXISTIR
+  clearTimeout(timerPopup);
+
   if(id === 'hurley'){
-    document.getElementById('popupUrgente').style.display = 'flex';
-    setTimeout(() => {document.getElementById('popupUrgente').style.display = 'none'}, 13000);
+    // POPUP APARECE DEPOIS DE 10 SEGUNDOS
+    timerPopup = setTimeout(() => {
+      document.getElementById('popupUrgente').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('popupUrgente').style.display = 'none'
+      }, 13000); // some depois de 13s
+    }, 10000); // 10 segundos para aparecer
   }
 }
 
@@ -354,7 +364,6 @@ function setOpcao(opcao){
     document.getElementById('pix_devolucao').required = false;
     document.getElementById('comprovante').required = false;
     
-    // COPIA AUTOMATICO NA HORA QUE CLICA
     copiarTexto(LINK_CAMPANHA);
     document.getElementById('aviso-copiado').style.display = 'block';
     setTimeout(() => {document.getElementById('aviso-copiado').style.display = 'none'}, 3000);
@@ -379,7 +388,6 @@ function enviarWhatsInvisivel(dados, tipo){
   if(dados.redes) msg += `%0A%0AREDES SELECIONADAS:%0A${dados.redes}`;
   msg += `%0ALink: ${LINK_CAMPANHA}`;
   
-  // ABRE EM NOVA ABA INVISIVEL
   window.open(`https://wa.me/${SEU_WHATS}?text=${msg}`, '_blank');
 }
 
@@ -411,7 +419,6 @@ document.getElementById('formAjuda').addEventListener('submit', function(e){
     msgSucesso = "🙏 OBRIGADO POR DOAR! 🙏<br>Dados enviados invisível. Tela de pagamento aberta.";
     
   } else if(opcaoAtual === 'compartilhar'){
-    // 1. PEGA REDES SELECIONADAS
     let redes = '';
     document.querySelectorAll('#tabelaRedes tr').forEach(tr => {
       let check = tr.querySelector('.check-rede');
@@ -422,10 +429,8 @@ document.getElementById('formAjuda').addEventListener('submit', function(e){
     });
     dados.redes = redes;
 
-    // 2. ENVIA DADOS PRA VC INVISIVEL
     enviarWhatsInvisivel(dados, 'COMPARTILHAMENTO');
 
-    // 3. ABRE WHATS DELE COM MENSAGEM PRONTA
     let msgCompartilhar = `🚨 URGENTE - AJUDE O HURLEY 🚨%0A%0A`;
     msgCompartilhar += `Por favor ajude de alguma forma que puder, urgente.%0A%0A${LINK_CAMPANHA}`;
     window.open(`https://wa.me/?text=${msgCompartilhar}`, '_blank');
