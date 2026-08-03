@@ -3,91 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>K-RIADOR v1.0</title>
+<title>K-AI SYSTEM v2.0</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Orbitron',monospace}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Courier New',monospace}
 
-  /* 1. VIDEO DE FUNDO FULLSCREEN */
+  /* VIDEO COM SOM NORMAL */
   #bgvideo{
-    position:fixed;
-    top:0;left:0;
+    position:fixed;top:0;left:0;
     width:100%;height:100%;
-    object-fit:cover;
-    z-index:1;
-    filter:brightness(0.7) contrast(1.2);
+    object-fit:contain; /* Encaixa vídeo inteiro */
+    background:#000;z-index:1;
   }
 
-  /* 2. CAMADA DO HUD POR CIMA */
-  #hud{
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    z-index:2;
+  /* CAMADA K-AI POR CIMA */
+  #overlay{
+    position:fixed;top:0;left:0;
+    width:100%;height:100%;z-index:2;
     pointer-events:none;
   }
 
-  /* 3. TEXTOS PISCANDO */
-  .texto{
-    position:absolute;
-    color:#00f7ff;
-    font-size:14px;
-    text-shadow:0 0 10px #00f7ff, 0 0 20px #00f7ff;
-    animation:piscar 2s infinite;
-    white-space:nowrap;
+  /* TEXTOS K-AI PISCANDO */
+  .ktext{
+    position:absolute;color:#00ffaa;font-size:11px;
+    text-shadow:0 0 5px #00ffaa;
+    animation:fade 3s infinite;
   }
-  @keyframes piscar{
-    0%,100%{opacity:1}
-    50%{opacity:0.1}
-  }
+  @keyframes fade{0%,100%{opacity:1}50%{opacity:0.2}}
 
-  /* GRID SCI-FI */
-  .grid{
-    position:absolute;
-    bottom:0;width:100%;height:100%;
-    background-image:linear-gradient(rgba(0,247,255,0.08) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.08) 1px, transparent 1px);
-    background-size:40px 40px;
-    transform:perspective(1000px) rotateX(70deg);
-  }
+  /* DIGITANDO */
+  .type{border-right:2px solid #00ffaa;animation:blink 0.7s infinite}
+  @keyframes blink{50%{border-color:transparent}}
 
-  /* TITULO */
-  .titulo{
-    position:absolute;top:5%;width:100%;text-align:center;
-    color:#00f7ff;font-size:20px;letter-spacing:3px;
-    text-shadow:0 0 20px #00f7ff;
-  }
+  /* HOLOGRAMA BRACELETE 3D */
+  #cena3d{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:300px;height:300px}
+  
+  /* ALERTA */
+  .alerta{position:absolute;top:10%;left:50%;transform:translateX(-50%);
+    color:#ff0044;font-size:16px;text-shadow:0 0 10px #ff0044;
+    animation:alerta 1s infinite}
+  @keyframes alerta{0%,100%{opacity:1}50%{opacity:0}}
 </style>
 </head>
 <body>
 
-<!-- VIDEO DE FUNDO -->
-<video id="bgvideo" autoplay loop muted playsinline>
-  <source src="YTDown.com_YouTube_Sci-Fi-Interface-Hi-Tech-UI-Sound-Effect_Media_HrmSJj-EgxY_001_1080p.mp4" type="video/mp4">
+<!-- VIDEO BASE COM SOM -->
+<video id="bgvideo" autoplay loop playsinline>
+  <source src="k-ai-hud.mp4" type="video/mp4">
 </video>
 
-<!-- HUD POR CIMA -->
-<div id="hud">
-  <div class="grid"></div>
-  <div class="titulo">K-RIADOR SYSTEM ONLINE</div>
+<!-- OVERLAY K-AI -->
+<div id="overlay">
+  <div class="alerta" id="alerta">K-AI ONLINE</div>
   
-  <!-- 10 TEXTOS DE 50 CARACTERES PISCANDO -->
-  <div class="texto" style="top:20%;left:5%;animation-delay:0s">> INICIANDO PROTOCOLO K-BRACELETE v6.0..........</div>
-  <div class="texto" style="top:25%;left:60%;animation-delay:0.3s">> CONEXAO NEURAL: ESTAVEL - LATENCIA: 2ms........</div>
-  <div class="texto" style="top:35%;left:10%;animation-delay:0.6s">> SCANEANDO AMBIENTE: 360 GRAUS - 12 OBJETOS....</div>
-  <div class="texto" style="top:45%;right:5%;animation-delay:0.9s">> ARMA PRINCIPAL: PLASMA CANNON - CARGA: 87%....</div>
-  <div class="texto" style="top:55%;left:15%;animation-delay:1.2s">> ESCUDO DEFLETOR: ATIVO - RESISTENCIA: MAXIMA..</div>
-  <div class="texto" style="top:65%;right:10%;animation-delay:1.5s">> RADAR TATICO: 3 INIMIGOS DETECTADOS A 50M.....</div>
-  <div class="texto" style="top:75%;left:8%;animation-delay:0.2s">> ENERGIA DO NUCLEO: 92% - REATOR ESTAVEL........</div>
-  <div class="texto" style="top:30%;right:15%;animation-delay:0.5s">> MODO FURTIVO: DESATIVADO - VISIVEL NO RADAR...</div>
-  <div class="texto" style="top:80%;left:50%;transform:translateX(-50%);animation-delay:0.8s">> JARVIS: AGUARDANDO COMANDOS DO OPERADOR........</div>
-  <div class="texto" style="top:50%;left:50%;transform:translateX(-50%);font-size:18px;animation-delay:0s">> ACESSO LIBERADO: BEM VINDO SAY KORVIL <</div>
+  <!-- TEXTOS PERSONALIZADOS -->
+  <div class="ktext" style="top:12%;left:8%">> K-AI CORE: INICIANDO NEURAL NET........</div>
+  <div class="ktext type" style="top:17%;right:10%;animation-delay:0.5s">> OPERADOR: SAY KORVIL DETECTADO</div>
+  <div class="ktext" style="top:82%;left:5%;animation-delay:1s">> MÓDULO LINGUAGEM: PT-BR ATIVO..............</div>
+  <div class="ktext" style="top:87%;right:7%;animation-delay:1.5s">> PROCESSAMENTO: 14.7 TFlops - ESTAVEL.......</div>
+  <div class="ktext" style="top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;animation-delay:0s">> K-AI: PRONTO PARA COMANDOS</div>
+
+  <!-- HOLOGRAMA 3D -->
+  <div id="cena3d"></div>
 </div>
 
 <script>
-  // FORÇA O VIDEO RODAR NO CELULAR APOS TOQUE
-  document.body.addEventListener('click',()=>{
-    document.getElementById('bgvideo').play();
-  },{once:true});
+// TIRA MUTED PRA TER SOM
+const video=document.getElementById('bgvideo');
+video.volume=0.6; // Volume do som do vídeo
+
+// 3D BRACELETE FLUTUANDO POR CIMA DO CÍRCULO DO VÍDEO
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,300/300,0.1,1000);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(300,300);
+document.getElementById('cena3d').appendChild(renderer.domElement);
+camera.position.set(0,0,4);
+
+scene.add(new THREE.AmbientLight(0x00ffaa,1.5));
+const bracelete=new THREE.Group();scene.add(bracelete);
+bracelete.add(new THREE.Mesh(new THREE.TorusGeometry(1.2,0.1,16,100),new THREE.MeshPhongMaterial({color:0x00ffaa,wireframe:true})));
+[-1.2,0,1.2].forEach((x,i)=>{const geo=i===1?new THREE.BoxGeometry(0.25,0.35,0.1):new THREE.CylinderGeometry(0.2,0.2,0.1,6);
+  bracelete.add(new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:0x00ffaa,emissive:0x00ffaa})))});
+
+function animate(){
+  requestAnimationFrame(animate);
+  bracelete.rotation.y+=0.01; // Gira sincronizado com o vídeo
+  renderer.render(scene,camera);
+}
+animate();
+
+// MUDA TEXTO ALEATÓRIO
+setInterval(()=>{
+  const frases=["> SCANEANDO AMEAÇAS: NENHUMA........","> ATUALIZANDO DRIVERS K-AI v9.3........","> CONEXÃO QUANTICA: ESTAVEL..............","> MODO COMBATE: STANDBY.................."];
+  document.getElementById('alerta').innerText=frases[Math.floor(Math.random()*frases.length)];
+},4000);
 </script>
 
 </body>
