@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-ANINO | Vakinha Pets - Hurley e Amigos</title>
+<title>K-ANINO PETS | Vakinha Oficial - Ajude o Hurley e Amigos</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://asaas.com/assets/js/asaas-checkout.js"></script>
 <style>
 :root{
   --ciano:#00f7ff;
   --azul:#00aaff;
+  --verde:#00ff88;
   --preto:#030303;
   --vidro:rgba(0,247,255,0.05);
 }
@@ -27,10 +29,8 @@ h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ci
   background:var(--vidro);backdrop-filter:blur(10px);
   border:1px solid rgba(0,247,255,0.3);border-radius:15px;
   box-shadow:0 0 20px rgba(0,247,255,0.2);
-  transform:perspective(1000px) rotateX(5deg);
   transition:0.4s;
 }
-.card-3d:hover{transform:perspective(1000px) rotateX(0deg) scale(1.03);box-shadow:0 0 40px var(--ciano)}
 .btn-neon{
   background:transparent;border:2px solid var(--ciano);color:var(--ciano);
   padding:14px 32px;border-radius:8px;font-weight:700;font-size:16px;
@@ -41,102 +41,193 @@ h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ci
 .container{max-width:1200px;margin:0 auto;padding:20px}
 section{padding:80px 20px;min-height:100vh;display:none}
 section.active{display:block}
-header{padding:20px;border-bottom:1px solid var(--ciano);background:rgba(3,3,3,0.8);backdrop-filter:blur(10px)}
+header{padding:20px;border-bottom:1px solid var(--ciano);background:rgba(3,3,3,0.9);backdrop-filter:blur(10px);position:fixed;width:100%;z-index:1000}
 .logo{font-family:'Orbitron';font-size:28px;font-weight:900;color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
+nav a{color:var(--ciano);margin-left:20px;text-decoration:none;font-weight:600;cursor:pointer}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
 .media-box{width:100%;border-radius:15px;border:2px solid var(--ciano);box-shadow:0 0 20px var(--ciano)}
-.vakinha-card{display:flex;gap:20px;align-items:center;padding:20px;margin:20px 0}
-.vakinha-card img{width:120px;height:120px;border-radius:10px;object-fit:cover;border:2px solid var(--ciano)}
+.vakinha-card{display:flex;gap:20px;align-items:flex-start;padding:25px;margin:20px 0;cursor:pointer}
+.vakinha-card img{width:130px;height:130px;border-radius:10px;object-fit:cover;border:2px solid var(--ciano)}
 footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;font-size:12px}
-@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr} .vakinha-card{flex-direction:column} nav{display:none}}
+
+/* CSS DO SOS PET SOLIDARIO - ADAPTADO */
+.sos-body{background:#0a0a0a;color:#fff}
+.sos-header{background:#00c8ff;color:#000;text-align:center;padding:25px}
+.sos-hero{text-align:center;padding:30px}
+.sos-hero h1{color:#00c8ff;margin-bottom:15px}
+.sos-card{max-width:900px;margin:auto;background:#111;border:2px solid #00c8ff;border-radius:15px;padding:20px}
+.sos-meta{font-size:25px;color:#00ff88;margin:15px 0}
+.sos-progress{width:100%;height:30px;background:#333;border-radius:20px;overflow:hidden}
+.sos-bar{width:35%;height:100%;background:#00ff88;transition:width 1s ease}
+.sos-btn{display:inline-block;padding:15px 25px;margin:10px;border-radius:10px;text-decoration:none;font-weight:bold}
+.sos-pix{background:#00ff88;color:#000}
+.sos-vakinha{background:#00c8ff;color:#000}
+.sos-section{padding:30px}
+.sos-h2{color:#00c8ff;margin-bottom:15px}
+.sos-table{width:100%;border-collapse:collapse}
+.sos-th,.sos-td{border:1px solid #00c8ff;padding:10px;text-align:center}
+.sos-footer{text-align:center;padding:20px;background:#111}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="container">
-    <div class="logo">K-ANINO<span style="color:var(--azul)">.PET</span></div>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <div class="logo" onclick="mostrar('home')" style="cursor:pointer">K-ANINO<span style="color:var(--azul)">.PETS</span></div>
+    <nav>
+      <a onclick="mostrar('home')">HOME</a>
+      <a onclick="mostrar('vakinha')">VAKINHAS</a>
+      <a onclick="mostrar('doar')">DOAR AGORA</a>
+    </nav>
   </div>
 </header>
 
 <!-- PAGINA 1: HOME -->
-<section id="home" class="active">
+<section id="home" class="active" style="padding-top:140px">
   <div class="container" style="text-align:center">
-    <h1 style="font-size:42px">AJUDE OS PETS DO K-ANINO</h1>
-    <p style="font-size:18px;margin:20px 0">Cada vida importa. Conheça o Hurley e outros anjinhos que precisam de você.</p>
-
-    <!-- IMAGEM E VIDEO LADO A LADO -->
+    <h1 style="font-size:42px">K-ANINO PETS</h1>
+    <p style="font-size:18px;margin:20px 0">Resgate. Cuidado. Amor. Ajude quem não tem voz.</p>
     <div class="grid-2">
       <div class="card-3d" style="padding:20px">
-        <h3>FOTO DO HURLEY</h3>
+        <h3>HURLEY 🐶</h3>
         <img src="WA_1785438279265.jpeg" alt="Hurley" class="media-box">
-        <p style="margin-top:10px;font-size:14px">Hurley - Nosso guerreiro</p>
+        <p style="margin-top:10px;font-size:14px">Nosso guerreiro em recuperação</p>
       </div>
       <div class="card-3d" style="padding:20px">
-        <h3>VIDEO ESPECIAL</h3>
+        <h3>NOSSA HISTÓRIA</h3>
         <video src="VID-20190223-WA0004.mp4" controls class="media-box"></video>
-        <p style="margin-top:10px;font-size:14px">Momentos que tocam o coração</p>
+        <p style="margin-top:10px;font-size:14px">Cada vida importa</p>
       </div>
     </div>
-
-    <a href="#" onclick="mostrar('vakinha')" class="btn-neon" style="margin-top:40px">ENTRAR NAS VAKINHAS PETS</a>
+    <a onclick="mostrar('vakinha')" class="btn-neon" style="margin-top:40px">VER TODAS AS VAKINHAS</a>
   </div>
 </section>
 
-<!-- PAGINA 2: K-ANINO VAKINHAS -->
-<section id="vakinha">
+<!-- PAGINA 2: LISTA DE VAKINHAS -->
+<section id="vakinha" style="padding-top:140px">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:40px">VAKINHAS K-ANINO 🐾</h2>
-    <p style="text-align:center;margin-bottom:30px">Ajude com qualquer valor. Toda doação vai direto para ração, remédios e cuidados.</p>
+    <h2 style="text-align:center;margin-bottom:40px">VAKINHAS ATIVAS 🐾</h2>
 
-    <!-- VAKINHA 1: HURLEY PRIMEIRO -->
-    <div class="card-3d vakinha-card">
+    <!-- VAKINHA HURLEY - CLICA E ABRE SOS -->
+    <div class="card-3d vakinha-card" onclick="mostrar('hurley')">
       <img src="WA_1785438279265.jpeg" alt="Hurley">
       <div style="flex:1">
-        <h3>HURLEY - TRATAMENTO URGENTE</h3>
-        <p>Hurley foi resgatado com fratura. Precisamos de R$ 2.500 para cirurgia e pós operatório.</p>
-        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA O HURLEY</a>
+        <h3>HURLEY - CIRURGIA URGENTE</h3>
+        <p>Clique para ver detalhes e doar. Labrador de 12 anos precisando de tratamento.</p>
+        <span class="btn-neon" style="margin-top:10px">VER VAKINHA COMPLETA</span>
       </div>
     </div>
 
-    <!-- LISTA DE OUTROS PETS -->
+    <!-- OUTRAS VAKINHAS -->
     <div class="card-3d vakinha-card">
       <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4c?q=80&w=200" alt="Luna">
       <div style="flex:1">
-        <h3>LUNA - RAÇÃO E VACINAS</h3>
-        <p>Luna tem 4 filhotes. Meta: R$ 800 para 2 meses de ração.</p>
-        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA A LUNA</a>
+        <h3>LUNA + 4 FILHOTES</h3>
+        <p>Ração, vacinas e vermífugo para 2 meses.</p>
+        <button class="btn-neon" onclick="doar('Luna', 50)">DOAR R$50</button>
       </div>
-    </div>
-
-    <div class="card-3d vakinha-card">
-      <img src="https://images.unsplash.com/photo-1552053831-71594a2b7a42?q=80&w=200" alt="Thor">
-      <div style="flex:1">
-        <h3>THOR - MEDICAMENTOS</h3>
-        <p>Thor está com problema de pele. Precisamos de R$ 450 para tratamento.</p>
-        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA O THOR</a>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:40px">
-      <a href="#" onclick="mostrar('home')" class="btn-neon">VOLTAR PARA HOME</a>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="container">
-    <p>© 2026 K-ANINO. Todos os direitos reservados. Lei 9.610/98</p>
-    <p>Desenvolvido com tecnologia <strong style="color:var(--ciano)">KORVIL.AI</strong></p>
+<!-- PAGINA 3: VAKINHA DO HURLEY - SOS PET SOLIDARIO -->
+<section id="hurley" class="sos-body" style="padding-top:100px">
+  <header class="sos-header">
+    <h1>SOS PET SOLIDÁRIO</h1>
+    <p>Hoje pelo Hurley. Amanhã por quem precisar.</p>
+    <button onclick="mostrar('vakinha')" style="margin-top:10px;padding:8px 15px;background:#000;color:#00c8ff;border:1px solid #00c8ff;border-radius:5px;cursor:pointer">← VOLTAR</button>
+  </header>
+
+  <div class="sos-hero">
+    <div class="sos-card">
+      <h1>🚨 CASO URGENTE - HURLEY 🚨</h1>
+      <img src="WA_1785438279265.jpeg" style="width:100%;max-width:400px;border-radius:10px;margin:15px 0">
+      <p>Labrador de 12 anos precisando de tratamento veterinário. Ajude a salvar uma vida.</p>
+      <div class="sos-meta">Meta: R$ <span id="hurley_meta_sos">8000</span></div>
+      <div class="sos-progress"><div class="sos-bar" id="hurley_barra_sos"></div></div>
+      <p style="margin-top:10px;">Arrecadado: R$ <span id="hurley_arrecadado_sos">2800</span></p>
+      <br>
+      <a href="#" onclick="doar('Hurley', 100)" class="sos-btn sos-pix">DOAR VIA PIX</a>
+      <a href="#" onclick="doar('Hurley', 100)" class="sos-btn sos-vakinha">DOAR NA VAKINHA</a>
+    </div>
   </div>
-</footer>
+
+  <section class="sos-section">
+    <h2 class="sos-h2">🐾 FILA OFICIAL DE CASOS</h2>
+    <table class="sos-table">
+      <tr><th class="sos-th">Posição</th><th class="sos-th">Pet</th><th class="sos-th">Urgência</th><th class="sos-th">Meta</th></tr>
+      <tr><td class="sos-td">1</td><td class="sos-td">Hurley</td><td class="sos-td">Alta</td><td class="sos-td">R$ 8.000</td></tr>
+      <tr><td class="sos-td">2</td><td class="sos-td">Disponível</td><td class="sos-td">-</td><td class="sos-td">-</td></tr>
+      <tr><td class="sos-td">3</td><td class="sos-td">Disponível</td><td class="sos-td">-</td><td class="sos-td">-</td></tr>
+    </table>
+  </section>
+
+  <section class="sos-section">
+    <h2 class="sos-h2">🏆 TOP DOADORES</h2>
+    <table class="sos-table">
+      <tr><th class="sos-th">Nome</th><th class="sos-th">Total Doado</th></tr>
+      <tr><td class="sos-td">Maria</td><td class="sos-td">R$ 500</td></tr>
+      <tr><td class="sos-td">João</td><td class="sos-td">R$ 300</td></tr>
+    </table>
+  </section>
+
+  <section class="sos-section">
+    <h2 class="sos-h2">📢 TOP COMPARTILHADORES</h2>
+    <table class="sos-table">
+      <tr><th class="sos-th">Nome</th><th class="sos-th">Compartilhamentos</th></tr>
+      <tr><td class="sos-td">Carlos</td><td class="sos-td">150</td></tr>
+      <tr><td class="sos-td">Ana</td><td class="sos-td">95</td></tr>
+    </table>
+  </section>
+
+  <section class="sos-section">
+    <h2 class="sos-h2">📋 CADASTRAR NOVO CASO</h2>
+    <form onsubmit="alert('Caso enviado!');return false">
+      <input type="text" placeholder="Nome do Pet" style="width:100%;padding:10px;margin:5px 0;background:#222;border:1px solid #00c8ff;color:#fff">
+      <input type="text" placeholder="Nome do Tutor" style="width:100%;padding:10px;margin:5px 0;background:#222;border:1px solid #00c8ff;color:#fff">
+      <input type="number" placeholder="Valor Necessário" style="width:100%;padding:10px;margin:5px 0;background:#222;border:1px solid #00c8ff;color:#fff">
+      <textarea placeholder="Descrição do Caso" style="width:100%;height:120px;padding:10px;margin:5px 0;background:#222;border:1px solid #00c8ff;color:#fff"></textarea>
+      <button style="width:100%;padding:15px;background:#00c8ff;border:none;font-weight:bold;cursor:pointer">ENVIAR CASO</button>
+    </form>
+  </section>
+
+  <footer class="sos-footer">
+    SOS PET SOLIDÁRIO © 2026
+  </footer>
+</section>
+
+<!-- PAGINA 4: DOAR AGORA -->
+<section id="doar" style="padding-top:140px">
+  <div class="container" style="max-width:600px;text-align:center">
+    <h2>DOAÇÃO GERAL K-ANINO</h2>
+    <button class="btn-neon" onclick="doar('Geral', 50)">DOAR R$50</button>
+    <p style="margin-top:20px"><strong>PIX DIRETO:</strong> k-anino.pets@gmail.com</p>
+  </div>
+</section>
 
 <script>
-// TROCA DE PAGINAS DENTRO DO MESMO SITE
 function mostrar(id){
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  if(id=='hurley') atualizarBarraHurley();
+}
+
+function doar(pet, valor){
+  AsaasCheckout.open({
+    value: valor,
+    name: "Doação K-ANINO - " + pet,
+    description: "Doação para " + pet,
+    paymentMethods: ["PIX", "CREDIT_CARD", "BOLETO"]
+  });
+}
+
+function atualizarBarraHurley(){
+  let arrecadado = parseFloat(document.getElementById('hurley_arrecadado_sos').innerText);
+  let meta = parseFloat(document.getElementById('hurley_meta_sos').innerText);
+  let percent = Math.min((arrecadado / meta) * 100, 100).toFixed(0);
+  document.getElementById('hurley_barra_sos').style.width = percent + '%';
 }
 </script>
 
