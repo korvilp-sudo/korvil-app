@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OH PEIXÃO | Acessórios e Produtos para Pets</title>
-<meta name="description" content="OH PEIXÃO - Loja oficial de acessórios, rações e produtos para seu Pet. Qualidade e Amor.">
+<title>K-ANINO | Vakinha Pets - Hurley e Amigos</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -23,13 +22,6 @@ body{
     radial-gradient(circle at 20% 20%, rgba(0,247,255,0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(0,170,255,0.08) 0%, transparent 50%);
 }
-
-/* HEADER */
-header{padding:20px;border-bottom:1px solid var(--ciano);position:fixed;width:100%;background:rgba(3,3,3,0.8);backdrop-filter:blur(10px);z-index:1000}
-.logo{font-family:'Orbitron';font-size:28px;font-weight:900;color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
-nav a{color:var(--ciano);margin-left:20px;text-decoration:none;font-weight:600}
-
-/* EFEITOS KORVIL */
 h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
 .card-3d{
   background:var(--vidro);backdrop-filter:blur(10px);
@@ -39,7 +31,6 @@ h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ci
   transition:0.4s;
 }
 .card-3d:hover{transform:perspective(1000px) rotateX(0deg) scale(1.03);box-shadow:0 0 40px var(--ciano)}
-
 .btn-neon{
   background:transparent;border:2px solid var(--ciano);color:var(--ciano);
   padding:14px 32px;border-radius:8px;font-weight:700;font-size:16px;
@@ -47,107 +38,107 @@ h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ci
 }
 @keyframes pulsar{0%,100%{box-shadow:0 0 10px var(--ciano)}50%{box-shadow:0 0 40px var(--ciano)}}
 .btn-neon:hover{background:var(--ciano);color:var(--preto)}
-
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background-image:linear-gradient(rgba(0,247,255,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.03) 1px, transparent 1px);
-  background-size:50px 50px;z-index:-1;animation:scrollGrid 20s linear infinite;
-}
-@keyframes scrollGrid{100%{background-position:50px 50px}}
-
-.container{max-width:1200px;margin:0 auto;padding:0 20px}
-section{padding:100px 20px}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;margin-top:40px}
-
-/* FOOTER COPYRIGHT */
-footer{padding:40px 20px;border-top:1px solid var(--ciano);background:rgba(0,0,0,0.5)}
-.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;text-align:left}
-footer h4{color:var(--ciano);margin-bottom:15px}
-footer p,footer a{font-size:13px;color:#aaa;text-decoration:none}
-footer a:hover{color:var(--ciano)}
-.copy{border-top:1px solid rgba(0,247,255,0.2);margin-top:30px;padding-top:20px;text-align:center;font-size:12px}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+section{padding:80px 20px;min-height:100vh;display:none}
+section.active{display:block}
+header{padding:20px;border-bottom:1px solid var(--ciano);background:rgba(3,3,3,0.8);backdrop-filter:blur(10px)}
+.logo{font-family:'Orbitron';font-size:28px;font-weight:900;color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
+.media-box{width:100%;border-radius:15px;border:2px solid var(--ciano);box-shadow:0 0 20px var(--ciano)}
+.vakinha-card{display:flex;gap:20px;align-items:center;padding:20px;margin:20px 0}
+.vakinha-card img{width:120px;height:120px;border-radius:10px;object-fit:cover;border:2px solid var(--ciano)}
+footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;font-size:12px}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
-  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
-    <div class="logo">OH PEIXÃO<span style="color:var(--azul)">.PET</span></div>
-    <nav>
-      <a href="#produtos">PRODUTOS</a>
-      <a href="#sobre">SOBRE</a>
-      <a href="https://linktr.ee/OhPeixao" target="_blank">VAKINHA</a>
-    </nav>
+  <div class="container">
+    <div class="logo">K-ANINO<span style="color:var(--azul)">.PET</span></div>
   </div>
 </header>
 
-<!-- HERO -->
-<section style="padding-top:140px;text-align:center">
-  <div class="container">
-    <h1 style="font-size:52px">OH PEIXÃO</h1>
-    <p style="font-size:20px;margin:20px auto;max-width:700px">Tudo para o seu Pet com qualidade, amor e tecnologia. Rações, acessórios e muito carinho.</p>
-    <a href="#produtos" class="btn-neon">VER PRODUTOS</a>
+<!-- PAGINA 1: HOME -->
+<section id="home" class="active">
+  <div class="container" style="text-align:center">
+    <h1 style="font-size:42px">AJUDE OS PETS DO K-ANINO</h1>
+    <p style="font-size:18px;margin:20px 0">Cada vida importa. Conheça o Hurley e outros anjinhos que precisam de você.</p>
+
+    <!-- IMAGEM E VIDEO LADO A LADO -->
+    <div class="grid-2">
+      <div class="card-3d" style="padding:20px">
+        <h3>FOTO DO HURLEY</h3>
+        <img src="WA_1785438279265.jpeg" alt="Hurley" class="media-box">
+        <p style="margin-top:10px;font-size:14px">Hurley - Nosso guerreiro</p>
+      </div>
+      <div class="card-3d" style="padding:20px">
+        <h3>VIDEO ESPECIAL</h3>
+        <video src="VID-20190223-WA0004.mp4" controls class="media-box"></video>
+        <p style="margin-top:10px;font-size:14px">Momentos que tocam o coração</p>
+      </div>
+    </div>
+
+    <a href="#" onclick="mostrar('vakinha')" class="btn-neon" style="margin-top:40px">ENTRAR NAS VAKINHAS PETS</a>
   </div>
 </section>
 
-<!-- PRODUTOS -->
-<section id="produtos">
+<!-- PAGINA 2: K-ANINO VAKINHAS -->
+<section id="vakinha">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:40px">NOSSOS DESTAQUES</h2>
-    <div class="grid-3">
-      <div class="card-3d" style="padding:30px;text-align:center">
-        <div style="font-size:50px">🦴</div><h3>RAÇÕES PREMIUM</h3><p>As melhores marcas para nutrição completa do seu Pet.</p>
+    <h2 style="text-align:center;margin-bottom:40px">VAKINHAS K-ANINO 🐾</h2>
+    <p style="text-align:center;margin-bottom:30px">Ajude com qualquer valor. Toda doação vai direto para ração, remédios e cuidados.</p>
+
+    <!-- VAKINHA 1: HURLEY PRIMEIRO -->
+    <div class="card-3d vakinha-card">
+      <img src="WA_1785438279265.jpeg" alt="Hurley">
+      <div style="flex:1">
+        <h3>HURLEY - TRATAMENTO URGENTE</h3>
+        <p>Hurley foi resgatado com fratura. Precisamos de R$ 2.500 para cirurgia e pós operatório.</p>
+        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA O HURLEY</a>
       </div>
-      <div class="card-3d" style="padding:30px;text-align:center">
-        <div style="font-size:50px">🎾</div><h3>ACESSÓRIOS</h3><p>Coleiras, brinquedos, caminhas e tudo para o conforto.</p>
+    </div>
+
+    <!-- LISTA DE OUTROS PETS -->
+    <div class="card-3d vakinha-card">
+      <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4c?q=80&w=200" alt="Luna">
+      <div style="flex:1">
+        <h3>LUNA - RAÇÃO E VACINAS</h3>
+        <p>Luna tem 4 filhotes. Meta: R$ 800 para 2 meses de ração.</p>
+        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA A LUNA</a>
       </div>
-      <div class="card-3d" style="padding:30px;text-align:center">
-        <div style="font-size:50px">🛁</div><h3>HIGIENE E BELEZA</h3><p>Shampoos, perfumes e cuidados especiais.</p>
+    </div>
+
+    <div class="card-3d vakinha-card">
+      <img src="https://images.unsplash.com/photo-1552053831-71594a2b7a42?q=80&w=200" alt="Thor">
+      <div style="flex:1">
+        <h3>THOR - MEDICAMENTOS</h3>
+        <p>Thor está com problema de pele. Precisamos de R$ 450 para tratamento.</p>
+        <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:10px">DOAR PARA O THOR</a>
       </div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px">
+      <a href="#" onclick="mostrar('home')" class="btn-neon">VOLTAR PARA HOME</a>
     </div>
   </div>
 </section>
 
-<!-- SOBRE -->
-<section id="sobre">
-  <div class="container">
-    <div class="card-3d" style="padding:40px;text-align:center">
-      <h2>SOBRE O OH PEIXÃO</h2>
-      <p style="margin-top:15px">Nascemos do amor pelos animais. Nossa missão é oferecer produtos de qualidade para que seu melhor amigo tenha a vida que ele merece. Atendimento humanizado e entrega rápida.</p>
-      <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:20px">ACESSAR VAKINHA</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER COPYRIGHT ADAPTADO KORVIL -->
 <footer>
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <h4>OH PEIXÃO</h4>
-        <p>Loja oficial de produtos para Pets. Qualidade e amor em cada detalhe.</p>
-      </div>
-      <div>
-        <h4>LINKS RÁPIDOS</h4>
-        <a href="#produtos">Produtos</a><br>
-        <a href="#sobre">Sobre Nós</a><br>
-        <a href="https://linktr.ee/OhPeixao" target="_blank">Vakinha</a>
-      </div>
-      <div>
-        <h4>CONTATO</h4>
-        <p>Atendimento: WhatsApp</p>
-        <p>Email: contato@ohpeixao.com.br</p>
-      </div>
-    </div>
-
-    <div class="copy">
-      <p>© 2026 OH PEIXÃO. Todos os direitos reservados.</p>
-      <p>Conteúdo, Marca OH PEIXÃO, Logomarca, Imagens e Layout são propriedade intelectual de OH PEIXÃO. Reprodução proibida. Lei 9.610/98.</p>
-      <p>Desenvolvido com tecnologia <strong style="color:var(--ciano)">KORVIL.AI</strong> | Site adaptado com sistema 3D NEON</p>
-    </div>
+    <p>© 2026 K-ANINO. Todos os direitos reservados. Lei 9.610/98</p>
+    <p>Desenvolvido com tecnologia <strong style="color:var(--ciano)">KORVIL.AI</strong></p>
   </div>
 </footer>
+
+<script>
+// TROCA DE PAGINAS DENTRO DO MESMO SITE
+function mostrar(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
 
 </body>
 </html>
