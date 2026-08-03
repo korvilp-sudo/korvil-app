@@ -52,26 +52,28 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
 .opcao-btn{padding:12px;border:2px solid var(--ciano);background:#000;color:var(--ciano);border-radius:8px;font-weight:700;cursor:pointer;font-family:'Orbitron'}
 .opcao-btn.ativo{background:var(--ciano);color:#000}
 .oculto{display:none}
-.tabela-redes{width:100%;margin:15px 0;border:1px solid var(--ciano);border-radius:8px;overflow:hidden}
-.tabela-redes tr{border-bottom:1px solid #333}
-.tabela-redes td{padding:12px;background:#000}
-.tabela-redes td:first-child{width:40px;text-align:center}
-.tabela-redes input[type="text"]{background:#111;border:1px solid #444}
-.add-rede{background:transparent;border:1px dashed var(--ciano);color:var(--ciano);padding:8px;width:100%;border-radius:5px;cursor:pointer;margin-top:10px}
-.aviso-copiado{color:var(--verde);font-size:12px;margin-top:5px;display:none}
 
 /* CAIXA PAGAMENTO ASAAS */
 .box-pagamento{display:none;margin-top:20px;border:2px solid var(--verde);border-radius:10px;overflow:hidden}
 .box-pagamento iframe{width:100%;height:650px;border:none;background:#fff}
 .titulo-pagamento{background:var(--verde);color:#000;padding:12px;font-weight:900;text-align:center;font-family:'Orbitron'}
 
-/* TEXTO EM ESTROFES COM FADE */
-.box-texto-hurley{margin:30px 0;padding:25px;background:#0a0a0a;border:2px solid var(--ciano);border-radius:15px;min-height:250px;position:relative;overflow:hidden}
-.estrofe{position:absolute;width:calc(100% - 20px);opacity:0;transition:opacity 1.5s ease-in-out;font-size:16px;line-height:1.8;text-align:left}
-.estrofe.ativa{opacity:1}
-.estrofe strong{color:var(--verde)}
-.estrofe h3{color:var(--laranja);font-size:22px;margin-bottom:15px;text-align:center}
-.estrofe.urgente{color:var(--vermelho);font-weight:900;font-size:18px;text-align:center}
+/* ESTROFES PREMIUM */
+.box-texto-hurley{margin:30px 0;padding:0;background:linear-gradient(135deg,#0a0a0a 0%, #111 100%);border:2px solid var(--ciano);border-radius:20px;min-height:280px;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(0,247,255,0.2)}
+.barra-progresso{height:4px;background:#222;border-radius:0 0 20px 20px;overflow:hidden}
+.barra-progresso-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--ciano),var(--verde));transition:width 10s linear}
+.estrofe{position:absolute;width:100%;height:100%;opacity:0;transform:translateX(50px);transition:all 1.2s ease-in-out;padding:25px;display:flex;flex-direction:column;justify-content:center}
+.estrofe.ativa{opacity:1;transform:translateX(0)}
+.estrofe.sai{opacity:0;transform:translateX(-50px)}
+.icone-estrofe{font-size:40px;margin-bottom:10px;text-align:center}
+.titulo-estrofe{color:var(--laranja);font-size:24px;margin-bottom:15px;text-align:center;font-family:'Orbitron';text-shadow:0 0 15px var(--laranja)}
+.texto-estrofe{font-size:17px;line-height:1.9;text-align:center}
+.destaque-verde{color:var(--verde);font-weight:900}
+.destaque-vermelho{color:var(--vermelho);font-weight:900;font-size:20px}
+.destaque-laranja{color:var(--laranja);font-weight:900}
+.indicadores{display:flex;justify-content:center;gap:8px;margin-top:15px}
+.indicador{width:10px;height:10px;border-radius:50%;background:#333;border:1px solid var(--ciano);transition:all 0.3s}
+.indicador.ativo{background:var(--ciano);box-shadow:0 0 10px var(--ciano);transform:scale(1.3)}
 
 .popup-urgente{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;z-index:10000;animation:fadeIn 0.5s}
 .popup-urgente-conteudo{width:90%;max-width:380px;background:#111;border-radius:20px;padding:25px;text-align:center;border:4px solid var(--vermelho);box-shadow:0 0 30px var(--vermelho);animation:pulsoCoracao 1s infinite;position:relative}
@@ -83,18 +85,23 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
 .fechar-urgente{position:absolute;top:-12px;right:-12px;background:#ff0000;color:#fff;border:none;font-size:22px;cursor:pointer;border-radius:50%;width:35px;height:35px;font-weight:bold;box-shadow:0 0 10px #ff0000}
 .fechar-urgente:hover{background:#cc0000}
 
+/* VIDEO INVISIVEL SOMENTE AUDIO */
+.video-som-escondido{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+
 /* BOTAO SOM */
 .btn-som{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--ciano);color:#000;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;box-shadow:0 0 15px var(--ciano)}
-@media(max-width:768px){.opcoes-ajuda{grid-template-columns:1fr}.box-pagamento iframe{height:700px}}
+.aviso-autoplay{position:fixed;top:120px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);border:2px solid var(--ciano);padding:12px 20px;border-radius:10px;color:var(--ciano);font-weight:700;z-index:10001;display:none;animation:pulsar 1s infinite}
+@media(max-width:768px){.opcoes-ajuda{grid-template-columns:1fr}.box-pagamento iframe{height:700px}.titulo-estrofe{font-size:20px}}
 </style>
 </head>
 <body>
 
-<!-- SOM DE FUNDO HURLEY.OPUS -->
-<audio id="somFundo" loop>
-  <source src="Hurley.opus" type="audio/opus">
-</audio>
-<button id="btnSom" class="btn-som" onclick="toggleSom()">🔊</button>
+<!-- VIDEO HURLEYY.MP4 ESCONDIDO - SÓ PRA PEGAR O SOM -->
+<video id="somFundo" class="video-som-escondido" loop preload="auto" muted playsinline>
+  <source src="Hurleyy.mp4" type="video/mp4">
+</video>
+<button id="btnSom" class="btn-som" onclick="toggleSom()">🔇</button>
+<div id="avisoAutoplay" class="aviso-autoplay">🔊 TOQUE NA TELA PARA ATIVAR O SOM</div>
 
 <header>
   <div class="container" style="display:flex;justify-content:space-between;align-items:center">
@@ -132,14 +139,16 @@ footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;fon
       <div class="midias-hurley"><img src="IMG_20180211_115516776.jpg" alt="Hurley"><video src="VID-20190223-WA0004.mp4" controls></video></div>
 
       <div class="box-texto-hurley" id="boxTextoHurley">
-        <div class="estrofe ativa"><h3>O CASO DO HURLEY</h3>Hurley é um Labrador de 12 anos. Ele é mais que um pet, é da família.<br><br><span class="urgente">ESTADO GRAVE: Pressão 7h b mmHg</span><br><br>Hoje ele está lutando pela vida e precisa muito da nossa ajuda. Os exames mostram que a situação é delicada.</div>
-        <div class="estrofe"><strong>NOSSA META: R$ 6.390</strong><br><br>Esse valor vai cobrir todo o tratamento, cirurgia, medicamentos, exames, internação e pós operatório.<br><br>Cada valor, cada compartilhamento salva vidas.</div>
-        <div class="estrofe"><h3>SOBRE O SOS PET SOLIDÁRIO</h3>O SOS PET SOLIDÁRIO nasce a partir da luta do Hurley, mas seu propósito vai muito além de um único caso.<br><br>A ideia é criar um site onde tutores possam cadastrar seus pets que necessitam de ajuda veterinária, arrecadação solidária ou divulgação de casos urgentes.</div>
-        <div class="estrofe"><strong>NOSSO OBJETIVO</strong><br><br>Unir pessoas que amam os animais e acreditam que nenhuma vida deve ser esquecida por falta de recursos.<br><br>Cada pet terá sua própria página com fotos, descrição do caso, exames, laudos, metas de arrecadação e atualizações do tratamento.</div>
-        <div class="estrofe"><strong>TRANSPARÊNCIA TOTAL</strong><br><br>Os casos serão organizados em uma fila transparente, respeitando a ordem de entrada e a gravidade comprovada de cada situação.<br><br>Além das vaquinhas, vamos incentivar os cuidados preventivos e conscientizar sobre a importância do acompanhamento veterinário.</div>
-        <div class="estrofe"><strong>RECONHECIMENTO</strong><br><br>O site contará com um sistema de reconhecimento para doadores e compartilhadores, valorizando quem contribui para salvar vidas e fortalecer a causa animal.</div>
-        <div class="estrofe"><h3>NOSSA MISSÃO</h3>Criar uma grande corrente de solidariedade, onde pessoas possam ajudar hoje e também encontrar apoio quando precisarem no futuro.<br><br><span class="urgente">O Hurley é o primeiro passo desta iniciativa.</span></div>
-        <div class="estrofe"><strong>O VERDADEIRO OBJETIVO</strong><br><br>Ajudar muitos outros cães, gatos e animais que ainda precisarão de uma oportunidade para continuar vivendo ao lado de quem os ama.<br><br><span class="urgente">SOS PET SOLIDÁRIO<br>Hoje pelo Hurley. Amanhã por todos os pets que precisarem de ajuda</span> 🐾</div>
+        <div class="estrofe ativa"><div class="icone-estrofe">🐶</div><div class="titulo-estrofe">O CASO DO HURLEY</div><div class="texto-estrofe">Hurley é um <span class="destaque-verde">Labrador de 12 anos</span>. Ele é mais que um pet, é da família.<br><br><span class="destaque-vermelho">ESTADO GRAVE: Pressão 7h b mmHg</span><br><br>Hoje ele está <span class="destaque-vermelho">lutando pela vida</span> e precisa muito da nossa ajuda.</div></div>
+        <div class="estrofe"><div class="icone-estrofe">🎯</div><div class="titulo-estrofe">NOSSA META</div><div class="texto-estrofe"><span class="destaque-laranja">R$ 6.390</span><br><br>Esse valor vai cobrir <span class="destaque-verde">cirurgia, medicamentos, exames e internação</span>.<br><br><span class="destaque-verde">Cada valor, cada compartilhamento salva vidas.</span></div></div>
+        <div class="estrofe"><div class="icone-estrofe">🚨</div><div class="titulo-estrofe">SOBRE O SOS PET SOLIDÁRIO</div><div class="texto-estrofe">O <span class="destaque-laranja">SOS PET SOLIDÁRIO</span> nasce a partir da luta do Hurley.<br><br>A ideia é criar um site onde tutores possam cadastrar pets que necessitam de <span class="destaque-verde">ajuda veterinária</span>.</div></div>
+        <div class="estrofe"><div class="icone-estrofe">🤝</div><div class="titulo-estrofe">NOSSO OBJETIVO</div><div class="texto-estrofe">Unir pessoas que <span class="destaque-verde">am os animais</span> e acreditam que nenhuma vida deve ser esquecida.<br><br>Cada pet terá sua página com <span class="destaque-laranja">fotos, laudos e atualizações</span>.</div></div>
+        <div class="estrofe"><div class="icone-estrofe">📊</div><div class="titulo-estrofe">TRANSPARÊNCIA TOTAL</div><div class="texto-estrofe">Casos organizados em <span class="destaque-verde">fila transparente</span>, respeitando gravidade.<br><br>Vamos incentivar <span class="destaque-laranja">cuidados preventivos</span> e conscientizar sobre saúde animal.</div></div>
+        <div class="estrofe"><div class="icone-estrofe">🏆</div><div class="titulo-estrofe">RECONHECIMENTO</div><div class="texto-estrofe">Sistema de reconhecimento para <span class="destaque-verde">doadores e compartilhadores</span>.<br><br>Valorizando quem contribui para <span class="destaque-laranja">salvar vidas</span>.</div></div>
+        <div class="estrofe"><div class="icone-estrofe">❤️</div><div class="titulo-estrofe">NOSSA MISSÃO</div><div class="texto-estrofe">Criar uma <span class="destaque-verde">grande corrente de solidariedade</span>.<br><br><span class="destaque-vermelho">O Hurley é o primeiro passo desta iniciativa.</span></div></div>
+        <div class="estrofe"><div class="icone-estrofe">🌍</div><div class="titulo-estrofe">O VERDADEIRO OBJETIVO</div><div class="texto-estrofe">Ajudar <span class="destaque-verde">cães, gatos e animais</span> que precisam de uma oportunidade.<br><br><span class="destaque-laranja">SOS PET SOLIDÁRIO</span><br><span class="destaque-vermelho">Hoje pelo Hurley. Amanhã por todos os pets</span> 🐾</div></div>
+        <div class="barra-progresso"><div class="barra-progresso-fill" id="barraProgresso"></div></div>
+        <div class="indicadores" id="indicadores"></div>
       </div>
 
       <button onclick="mostrarLaudo()" class="btn-neon" style="width:100%;margin:20px 0">📄 VER LAUDO E TRATAMENTOS</button>
@@ -192,34 +201,61 @@ let timerPopup = null;
 let indiceEstrofe = 0;
 let intervaloTexto = null;
 
-// SOM
+// SOM DO VIDEO HURLEYY.MP4
 const somFundo = document.getElementById('somFundo');
-somFundo.volume = 0.7; // VOLUME MEDIO ALTO 70%
-let somLigado = true;
+somFundo.volume = 0.7; // 70% VOLUME MEDIO ALTO
+somFundo.loop = true;
+somFundo.muted = false; // desmuta quando tocar
+let somLigado = false;
+let paginaHurley = false;
 
 function tocarSom(){
-  somFundo.play().catch(() => {
-    // Se bloquear, toca no primeiro clique
-    document.addEventListener('click', () => somFundo.play(), {once:true});
+  somFundo.muted = false;
+  somFundo.play().then(() => {
+    document.getElementById('btnSom').innerText = '🔊';
+    somLigado = true;
+    document.getElementById('avisoAutoplay').style.display = 'none';
+  }).catch(() => {
+    document.getElementById('avisoAutoplay').style.display = 'block';
   });
 }
 
 function pararSom(){
   somFundo.pause();
   somFundo.currentTime = 0;
+  document.getElementById('btnSom').innerText = '🔇';
+  somLigado = false;
 }
 
 function toggleSom(){
-  if(somLigado){pararSom();document.getElementById('btnSom').innerText='🔇';somLigado=false;}
-  else{tocarSom();document.getElementById('btnSom').innerText='🔊';somLigado=true;}
+  if(somLigado){pararSom();}else{tocarSom();}
+}
+
+// REFORÇO LOOP
+somFundo.addEventListener('ended', () => {
+  somFundo.currentTime = 0;
+  somFundo.play();
+});
+
+function criarIndicadores(){
+  const container = document.getElementById('indicadores');
+  const total = document.querySelectorAll('#boxTextoHurley.estrofe').length;
+  container.innerHTML = '';
+  for(let i=0; i<total; i++){
+    const dot = document.createElement('div');
+    dot.className = 'indicador' + (i===0? ' ativo' : '');
+    container.appendChild(dot);
+  }
+}
+
+function atualizarIndicadores(){
+  document.querySelectorAll('.indicador').forEach((d,i) => d.classList.toggle('ativo', i===indiceEstrofe));
+  document.getElementById('barraProgresso').style.width = '0%';
+  setTimeout(() => {document.getElementById('barraProgresso').style.width = '100%'}, 50);
 }
 
 function mostrar(id){
-  // PARA O SOM SE SAIR DA PAGINA HURLEY
-  if(document.getElementById('hurley').classList.contains('active')){
-    pararSom();
-  }
-
+  if(paginaHurley){ pararSom(); }
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -227,20 +263,27 @@ function mostrar(id){
   clearInterval(intervaloTexto);
 
   if(id === 'hurley'){
-    tocarSom(); // LIGA O SOM AUTOMATICO
+    paginaHurley = true;
+    tocarSom(); // TENTA TOCAR AUTO
+    criarIndicadores();
     iniciarTransicaoTexto();
     timerPopup = setTimeout(() => {document.getElementById('popupUrgente').style.display = 'flex';setTimeout(() => {document.getElementById('popupUrgente').style.display = 'none'}, 13000)}, 10000);
-  }
+  } else { paginaHurley = false; }
 }
 
 function iniciarTransicaoTexto(){
   let estrofes = document.querySelectorAll('#boxTextoHurley.estrofe');
   indiceEstrofe = 0;
   estrofes.forEach((e,i) => e.classList.toggle('ativa', i===0));
+  atualizarIndicadores();
+
   intervaloTexto = setInterval(() => {
     estrofes[indiceEstrofe].classList.remove('ativa');
+    estrofes[indiceEstrofe].classList.add('sai');
     indiceEstrofe = (indiceEstrofe + 1) % estrofes.length;
+    estrofes[indiceEstrofe].classList.remove('sai');
     estrofes[indiceEstrofe].classList.add('ativa');
+    atualizarIndicadores();
   }, 10000);
 }
 
@@ -269,10 +312,14 @@ function enviarWhatsInvisivel(dados, tipo){
 
 function copiarTexto(texto){navigator.clipboard.writeText(texto);}
 
+// LIBERA SOM NO PRIMEIRO TOQUE
+document.addEventListener('click', () => { if(paginaHurley &&!somLigado){ tocarSom(); } }, {capture:true});
+document.addEventListener('touchstart', () => { if(paginaHurley &&!somLigado){ tocarSom(); } }, {capture:true});
+
 document.getElementById('formAjuda').addEventListener('submit', function(e){
   e.preventDefault();
   let arquivo = document.getElementById('comprovante').files[0];
-  let dados = {nome: document.getElementById('nome').value,cpf: document.getElementById('cpf').value,email: document.getElementById('email').value,whatsapp: document.getElementById('whatsapp').value,endereco: document.getElementById('endereco').value,valor: document.getElementById('valor').value,forma: document.getElementById('forma').value,pix: document.getElementById('pix_devolucao').value,arquivo: arquivo? arquivo.name : 'Nenhum'};
+  let dados = {nome: document.getElementById('nome').value,cpf: document.getElementById('cpf')..value,email: document.getElementById('email').value,whatsapp: document.getElementById('whatsapp').value,endereco: document.getElementById('endereco').value,valor: document.getElementById('valor').value,forma: document.getElementById('forma').value,pix: document.getElementById('pix_devolucao').value,arquivo: arquivo? arquivo.name : 'Nenhum'};
   let msgSucesso = '';
   if(opcaoAtual === 'doar'){enviarWhatsInvisivel(dados, 'DOAÇÃO');document.getElementById('iframeAsaas').src = LINK_ASAAS;document.getElementById('box-pagamento').style.display = 'block';msgSucesso = "🙏 OBRIGADO DE CORAÇÃO! 🙏<br>Dados recebidos. Complete o pagamento abaixo.";document.getElementById('box-pagamento').scrollIntoView({behavior: 'smooth'});}
   else if(opcaoAtual === 'compartilhar'){enviarWhatsInvisivel(dados, 'COMPARTILHAMENTO');let msgCompartilhar = `🚨 POR FAVOR AJUDE DE ALGUMA FORMA, URGENTE 🚨%0A%0A`;msgCompartilhar += `O HURLEY PRECISA DA GENTE! 🐶%0A`;msgCompartilhar += `LINK DA CAMPANHA: ${LINK_CAMPANHA}%0A%0A`;msgCompartilhar += `#SOSHurley #KAninoPets`;window.open(`https://wa.me/?text=${msgCompartilhar}`, '_blank');msgSucesso = "📲 PRONTO! 🙏<br>1. Recebemos seus dados aqui<br>2. Whats abriu com mensagem pronta<br>3. Cole no seu Status pra ajudar o Hurley";}
