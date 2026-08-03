@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OH PEIXÃO | Vakinha e Site Oficial</title>
-<meta name="description" content="OH PEIXÃO - Acessórios e produtos para Pets. Entre na Vakinha ou visite o site oficial.">
+<title>OH PEIXÃO | Acessórios e Produtos para Pets</title>
+<meta name="description" content="OH PEIXÃO - Loja oficial de acessórios, rações e produtos para seu Pet. Qualidade e Amor.">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -14,41 +14,40 @@
   --vidro:rgba(0,247,255,0.05);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
   font-family:'Poppins',sans-serif;
   background:var(--preto);
   color:#e0e0e0;
-  display:flex;align-items:center;justify-content:center;
-  min-height:100vh;text-align:center;
   background-image:
     radial-gradient(circle at 20% 20%, rgba(0,247,255,0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(0,170,255,0.08) 0%, transparent 50%);
 }
-h1{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 15px var(--ciano);font-size:42px}
-p{margin:15px 0;font-size:18px}
 
-/* CARD 3D VIDRO */
+/* HEADER */
+header{padding:20px;border-bottom:1px solid var(--ciano);position:fixed;width:100%;background:rgba(3,3,3,0.8);backdrop-filter:blur(10px);z-index:1000}
+.logo{font-family:'Orbitron';font-size:28px;font-weight:900;color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
+nav a{color:var(--ciano);margin-left:20px;text-decoration:none;font-weight:600}
+
+/* EFEITOS KORVIL */
+h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
 .card-3d{
-  background:var(--vidro);backdrop-filter:blur(12px);
-  border:1px solid rgba(0,247,255,0.3);border-radius:20px;
-  box-shadow:0 0 30px rgba(0,247,255,0.2);
+  background:var(--vidro);backdrop-filter:blur(10px);
+  border:1px solid rgba(0,247,255,0.3);border-radius:15px;
+  box-shadow:0 0 20px rgba(0,247,255,0.2);
   transform:perspective(1000px) rotateX(5deg);
-  padding:50px 30px;max-width:500px;width:90%;
-  animation:flutuar 4s ease-in-out infinite;
+  transition:0.4s;
 }
-@keyframes flutuar{0%,100%{transform:perspective(1000px) rotateX(5deg) translateY(0)}50%{transform:perspective(1000px) rotateX(0deg) translateY(-10px)}}
+.card-3d:hover{transform:perspective(1000px) rotateX(0deg) scale(1.03);box-shadow:0 0 40px var(--ciano)}
 
-/* BOTÕES NEON */
 .btn-neon{
   background:transparent;border:2px solid var(--ciano);color:var(--ciano);
-  padding:16px 36px;border-radius:10px;font-weight:700;font-size:18px;
-  animation:pulsar 2s infinite;box-shadow:0 0 10px var(--ciano);font-family:'Orbitron';
-  display:block;width:100%;margin:15px 0;text-decoration:none;transition:0.3s
+  padding:14px 32px;border-radius:8px;font-weight:700;font-size:16px;
+  animation:pulsar 2s infinite;box-shadow:0 0 10px var(--ciano);font-family:'Orbitron';cursor:pointer;text-decoration:none;display:inline-block
 }
 @keyframes pulsar{0%,100%{box-shadow:0 0 10px var(--ciano)}50%{box-shadow:0 0 40px var(--ciano)}}
-.btn-neon:hover{background:var(--ciano);color:var(--preto);transform:scale(1.05)}
+.btn-neon:hover{background:var(--ciano);color:var(--preto)}
 
-/* GRID HOLOGRAFICO */
 body::before{
   content:'';position:fixed;top:0;left:0;width:100%;height:100%;
   background-image:linear-gradient(rgba(0,247,255,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.03) 1px, transparent 1px);
@@ -56,32 +55,98 @@ body::before{
 }
 @keyframes scrollGrid{100%{background-position:50px 50px}}
 
-footer{position:fixed;bottom:10px;font-size:11px;color:#555}
-.icone{font-size:30px;margin-bottom:10px}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+section{padding:100px 20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;margin-top:40px}
+
+/* FOOTER COPYRIGHT */
+footer{padding:40px 20px;border-top:1px solid var(--ciano);background:rgba(0,0,0,0.5)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;text-align:left}
+footer h4{color:var(--ciano);margin-bottom:15px}
+footer p,footer a{font-size:13px;color:#aaa;text-decoration:none}
+footer a:hover{color:var(--ciano)}
+.copy{border-top:1px solid rgba(0,247,255,0.2);margin-top:30px;padding-top:20px;text-align:center;font-size:12px}
 </style>
 </head>
 <body>
 
-<div class="card-3d">
-  <div class="icone">🐾</div>
-  <h1>OH PEIXÃO</h1>
-  <p>Tudo para seu Pet com amor e tecnologia KORVIL</p>
+<!-- HEADER -->
+<header>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <div class="logo">OH PEIXÃO<span style="color:var(--azul)">.PET</span></div>
+    <nav>
+      <a href="#produtos">PRODUTOS</a>
+      <a href="#sobre">SOBRE</a>
+      <a href="https://linktr.ee/OhPeixao" target="_blank">VAKINHA</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- LINK 1: ENTRADA / VAKINHA -->
-  <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon">
-    ENTRAR NA VAKINHA 🎯
-  </a>
+<!-- HERO -->
+<section style="padding-top:140px;text-align:center">
+  <div class="container">
+    <h1 style="font-size:52px">OH PEIXÃO</h1>
+    <p style="font-size:20px;margin:20px auto;max-width:700px">Tudo para o seu Pet com qualidade, amor e tecnologia. Rações, acessórios e muito carinho.</p>
+    <a href="#produtos" class="btn-neon">VER PRODUTOS</a>
+  </div>
+</section>
 
-  <!-- LINK 2: SITE OFICIAL -->
-  <a href="http://www.ohpeixao.com.br/" target="_blank" class="btn-neon">
-    SITE OFICIAL 🛒
-  </a>
+<!-- PRODUTOS -->
+<section id="produtos">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:40px">NOSSOS DESTAQUES</h2>
+    <div class="grid-3">
+      <div class="card-3d" style="padding:30px;text-align:center">
+        <div style="font-size:50px">🦴</div><h3>RAÇÕES PREMIUM</h3><p>As melhores marcas para nutrição completa do seu Pet.</p>
+      </div>
+      <div class="card-3d" style="padding:30px;text-align:center">
+        <div style="font-size:50px">🎾</div><h3>ACESSÓRIOS</h3><p>Coleiras, brinquedos, caminhas e tudo para o conforto.</p>
+      </div>
+      <div class="card-3d" style="padding:30px;text-align:center">
+        <div style="font-size:50px">🛁</div><h3>HIGIENE E BELEZA</h3><p>Shampoos, perfumes e cuidados especiais.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <p style="font-size:14px;color:#aaa">Escolha onde quer acessar</p>
-</div>
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="container">
+    <div class="card-3d" style="padding:40px;text-align:center">
+      <h2>SOBRE O OH PEIXÃO</h2>
+      <p style="margin-top:15px">Nascemos do amor pelos animais. Nossa missão é oferecer produtos de qualidade para que seu melhor amigo tenha a vida que ele merece. Atendimento humanizado e entrega rápida.</p>
+      <a href="https://linktr.ee/OhPeixao" target="_blank" class="btn-neon" style="margin-top:20px">ACESSAR VAKINHA</a>
+    </div>
+  </div>
+</section>
 
+<!-- FOOTER COPYRIGHT ADAPTADO KORVIL -->
 <footer>
-  © 2026 OH PEIXÃO | Desenvolvido com tecnologia KORVIL.AI
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>OH PEIXÃO</h4>
+        <p>Loja oficial de produtos para Pets. Qualidade e amor em cada detalhe.</p>
+      </div>
+      <div>
+        <h4>LINKS RÁPIDOS</h4>
+        <a href="#produtos">Produtos</a><br>
+        <a href="#sobre">Sobre Nós</a><br>
+        <a href="https://linktr.ee/OhPeixao" target="_blank">Vakinha</a>
+      </div>
+      <div>
+        <h4>CONTATO</h4>
+        <p>Atendimento: WhatsApp</p>
+        <p>Email: contato@ohpeixao.com.br</p>
+      </div>
+    </div>
+
+    <div class="copy">
+      <p>© 2026 OH PEIXÃO. Todos os direitos reservados.</p>
+      <p>Conteúdo, Marca OH PEIXÃO, Logomarca, Imagens e Layout são propriedade intelectual de OH PEIXÃO. Reprodução proibida. Lei 9.610/98.</p>
+      <p>Desenvolvido com tecnologia <strong style="color:var(--ciano)">KORVIL.AI</strong> | Site adaptado com sistema 3D NEON</p>
+    </div>
+  </div>
 </footer>
 
 </body>
