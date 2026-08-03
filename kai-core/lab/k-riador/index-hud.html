@@ -2,36 +2,37 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>KORVIL K-AI v4.0 - CONTROLE FACIAL</title>
+<title>KORVIL K-AI v4.2 - FEEDBACK NEON</title>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:#000;overflow:hidden;font-family:'Orbitron',monospace;color:#00f7ff}
-  #camera,#canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-  #camera{z-index:1} #canvas{z-index:2;pointer-events:none}
+  #camera,#canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+  #camera{z-index:1} #canvas{z-index:2;pointer-events:none;transform:scaleX(-1)}
 
-.neon{color:#00f7ff;text-shadow:0 0 5px #00f7ff,0 0 15px #00f7ff;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.neon-green{color:#00ff88;text-shadow:0 0 5px #00ff88,0 0 15px #00ff88;animation:pulseGreen 1s infinite}
+.neon-red{color:#ff0044;text-shadow:0 0 5px #ff0044,0 0 15px #ff0044;animation:flashRed 0.3s}
+  @keyframes pulseGreen{0%,100%{opacity:1;filter:drop-shadow(0 0 10px #00ff88)}50%{opacity:0.4;filter:drop-shadow(0 0 20px #00ff88)}}
+  @keyframes flashRed{0%{opacity:1}100%{opacity:0}}
 
-.panel{position:absolute;z-index:3;border:1px solid #00f7ff;background:rgba(0,247,255,0.05);backdrop-filter:blur(5px);padding:8px;border-radius:6px;font-size:11px}
-.top{top:3%}.left{left:2%}.right{right:2%}.bottom{bottom:2%}
+.panel{position:absolute;z-index:3;border:1px solid #00f7ff;background:rgba(0,247,255,0.05);backdrop-filter:blur(5px);padding:8px;border-radius:6px;font-size:11px;transition:0.3s}
+.panel.active{border-color:#00ff88;box-shadow:0 0 20px #00ff88;background:rgba(0,255,136,0.1)}
+.panel.inactive{border-color:#ff0044;box-shadow:0 0 20px #ff0044;animation:flashRed 0.5s}
 
-  /* PONTEIRO DO OLHO */
-  #pointer{position:absolute;width:20px;height:20px;z-index:4;pointer-events:none;display:none}
- .octa-pointer{width:100%;height:100%;border:2px solid #00f7ff;transform:rotate(45deg);box-shadow:0 0 15px #00f7ff;animation:spin 1s linear infinite}
-  @keyframes spin{100%{transform:rotate(405deg)}}
+#pointer{position:absolute;width:24px;height:24px;z-index:4;pointer-events:none;display:none}
+.octa-pointer{width:100%;height:100%;border:2px solid #00ff88;transform:rotate(45deg);box-shadow:0 0 20px #00ff88;animation:spin 0.8s linear infinite}
+@keyframes spin{100%{transform:rotate(405deg)}}
 
-  /* MINI MENU */
-  #miniMenu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;background:rgba(0,10,20,0.9);border:2px solid #00f7ff;padding:15px;border-radius:10px;display:none}
-  #miniMenu div{padding:8px;margin:5px 0;border:1px solid #00f7ff;cursor:pointer}
-  #miniMenu div:hover{background:rgba(0,247,255,0.2)}
+#miniMenu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;background:rgba(0,10,20,0.9);border:2px solid #00f7ff;padding:15px;border-radius:10px;display:none;transition:0.3s}
+#miniMenu.active{border-color:#00ff88;box-shadow:0 0 30px #00ff88}
+#miniMenu div{padding:8px;margin:5px 0;border:1px solid #00f7ff;cursor:pointer}
+#miniMenu div:hover{background:rgba(0,255,136,0.2)}
 
-  /* TUTORIAL */
-  #tutorial{position:absolute;bottom:10%;left:2%;z-index:3;width:35%;font-size:10px;background:rgba(0,0,0,0.7);padding:10px}
+#tutorial{position:absolute;bottom:10%;left:2%;z-index:3;width:35%;font-size:10px;background:rgba(0,0,0,0.7);padding:10px}
 
-  #btnRecord{position:absolute;bottom:2%;right:3%;z-index:4;background:rgba(0,247,255,0.15);border:2px solid #00f7ff;color:#00f7ff;padding:10px 18px;border-radius:50px;box-shadow:0 0 20px #00f7ff}
-  #btnRecord.rec{border-color:#ff0044;box-shadow:0 0 20px #ff0044}
+#btnRecord{position:absolute;bottom:2%;right:3%;z-index:4;background:rgba(0,247,255,0.15);border:2px solid #00f7ff;color:#00f7ff;padding:10px 18px;border-radius:50px;box-shadow:0 0 20px #00f7ff}
+#btnRecord.rec{border-color:#00ff88;background:rgba(0,255,136,0.2);box-shadow:0 0 25px #00ff88}
 </style>
 </head>
 <body>
@@ -40,38 +41,33 @@
 <canvas id="canvas"></canvas>
 <div id="pointer"><div class="octa-pointer"></div></div>
 
-<!-- MINI MENU -->
 <div id="miniMenu">
-  <div class="neon">K-AI MENU</div>
-  <div onclick="alert('ARMA ATIVADA')">1. ARMAS</div>
-  <div onclick="alert('ESCUDO ATIVADO')">2. ESCUDO</div>
+  <div class="neon-green">K-AI MENU</div>
+  <div onclick="alert('ARMAS ATIVAS')">1. ARMAS</div>
+  <div onclick="alert('ESCUDO ATIVO')">2. ESCUDO</div>
   <div onclick="alert('SCANNING...')">3. SCAN</div>
-  <div onclick="alert('SAIR')">4. SAIR</div>
+  <div onclick="menu.style.display='none'">4. SAIR</div>
 </div>
 
-<!-- PAINÉIS HUD -->
-<div class="panel top left">
-  <div class="neon">KORVIL K-AI v4.0</div>
+<div id="panelStatus" class="panel top left">
+  <div class="neon-green">KORVIL K-AI v4.2</div>
   <div>STATUS: <span id="status">INICIANDO</span></div>
   <div>CONTROLE: <span id="control">DESATIVADO</span></div>
 </div>
 
-<div class="panel top right">
-  <div class="neon">ANÁLISE</div>
+<div id="panelGesture" class="panel top right">
+  <div class="neon-green">ANÁLISE</div>
   <div>GESTO: <span id="gesture">NENHUM</span></div>
 </div>
 
 <div id="tutorial">
-  <div class="neon">TUTORIAL K-AI</div>
-  <div>👁️ Piscar 1x Olho Esq: Ativar/Desativar Mouse</div>
-  <div>👁️ Piscar 2x Rápido: CLIQUE</div>
-  <div>🙂 Levantar 2 Sobrancelhas: ABRIR/FECHAR MENU</div>
-  <div>😮 Boca Aberta: ZOOM</div>
-  <div>😠 Franzir Testa: ALERTA</div>
-  <div>👉 Piscar Olho Direito: TIRAR FOTO</div>
+  <div class="neon-green">TUTORIAL K-AI</div>
+  <div>👁️ Piscar 1x ESQ: Ativar Mouse</div>
+  <div>👁️ Piscar 2x ESQ: CLIQUE</div>
+  <div>🙂 2 Sobrancelhas: MENU</div>
 </div>
 
-<div class="panel bottom">
+<div id="panelBottom" class="panel bottom">
   <div>K-AI: <span id="aiMsg">Aguardando comandos...</span></div>
 </div>
 
@@ -80,8 +76,15 @@
 <script>
 const video=document.getElementById('camera'), canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
 const pointer=document.getElementById('pointer'), menu=document.getElementById('miniMenu');
+const panelStatus=document.getElementById('panelStatus'), panelGesture=document.getElementById('panelGesture'), panelBottom=document.getElementById('panelBottom');
 let recorder, chunks=[], angle=0;
 let mouseActive=false, lastBlinkL=0, lastBlinkR=0, lastBrow=0, clickCooldown=0;
+
+// FUNÇÃO FEEDBACK COR
+function setActive(el, active){
+  if(active){el.classList.add('active');el.classList.remove('inactive')}
+  else{el.classList.remove('active');el.classList.add('inactive');setTimeout(()=>el.classList.remove('inactive'),500)}
+}
 
 // 1. CÂMERA + GRAVAÇÃO
 navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(stream=>{
@@ -91,7 +94,7 @@ navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(stream=>{
   recorder.ondataavailable=e=>chunks.push(e.data);
   recorder.onstop=()=>{const blob=new Blob(chunks,{type:'video/webm'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`KORVIL_KAI_${Date.now()}.webm`;a.click()}
 });
-btnRecord.onclick=()=>{if(recorder.state==='inactive'){recorder.start();chunks=[];btnRecord.innerText='■ PARAR';btnRecord.classList.add('rec')}else{recorder.stop();btnRecord.innerText='● GRAVAR HUD';btnRecord.classList.remove('rec')}};
+btnRecord.onclick=()=>{if(recorder.state==='inactive'){recorder.start();chunks=[];btnRecord.innerText='■ PARAR';btnRecord.classList.add('rec');setActive(panelStatus,true)}else{recorder.stop();btnRecord.innerText='● GRAVAR HUD';btnRecord.classList.remove('rec');setActive(panelStatus,false)}};
 
 // 2. FACE MESH
 const faceMesh=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
@@ -99,79 +102,85 @@ faceMesh.setOptions({maxNumFaces:1,refineLandmarks:true});
 faceMesh.onResults(onResults);
 new Camera(video,{onFrame:async()=>await faceMesh.send({image:video}),width:1280,height:720}).start();
 
-// 3. FUNÇÃO OCTAEDRO 3D
-function drawOcta(x,y,size,rot=0){
+function drawOcta(x,y,size,rot=0,color='#00ff88',active=true){
   ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+  ctx.strokeStyle=color;ctx.lineWidth=active?2.5:1.5;
+  ctx.shadowBlur=active?20:5;ctx.shadowColor=color;
   ctx.beginPath();ctx.moveTo(0,-size);ctx.lineTo(size,0);ctx.lineTo(0,size);ctx.lineTo(-size,0);ctx.closePath();
   ctx.moveTo(0,-size);ctx.lineTo(0,size);ctx.moveTo(-size,0);ctx.lineTo(size,0);ctx.stroke();ctx.restore();
 }
 
-// 4. DETECÇÃO DE GESTOS
+// 3. DETECÇÃO COM FEEDBACK
 function detectGestures(lm){
   const now=Date.now();
-  const eyeL=lm[145], eyeR=lm[374]; // pontos de piscada
+  const eyeRightPerson=lm[145]; // Olho esq da tela
+  const eyeLeftPerson=lm[374]; // Olho dir da tela
   const browL=lm[105], browR=lm[334];
   const mouth=lm[13];
 
-  // PISCADA OLHO ESQUERDO - ATIVA MOUSE
-  if(eyeL.y - lm[159].y < 0.01 && now - lastBlinkL > 500){
+  // 1.1 PISCAR OLHO ESQUERDO = ATIVA MOUSE
+  if(eyeRightPerson.y - lm[159].y < 0.012 && now - lastBlinkL > 500){
     lastBlinkL=now;
-    if(!mouseActive && now-clickCooldown>300){ // 1.1 ativa mouse
+    if(!mouseActive && now-clickCooldown>300){
       mouseActive=true;pointer.style.display='block';document.getElementById('control').innerText='MOUSE ATIVO';
-      document.getElementById('aiMsg').innerText='Mouse ocular ativado';
-    }else if(mouseActive && now-clickCooldown>300){ // 1.2 clique duplo
+      document.getElementById('aiMsg').innerText='Mouse ocular: ATIVADO';setActive(panelStatus,true);setActive(panelGesture,true)
+    }else if(mouseActive && now-clickCooldown>300){ // 1.2 CLIQUE
       document.elementFromPoint(pointer.offsetLeft, pointer.offsetTop)?.click();
-      clickCooldown=now;document.getElementById('aiMsg').innerText='CLIQUE!';
+      clickCooldown=now;document.getElementById('aiMsg').innerText='CLIQUE!';setActive(panelGesture,true)
     }
   }
 
-  // PISCADA OLHO DIREITO - FOTO
-  if(eyeR.y - lm[386].y < 0.01 && now - lastBlinkR > 500){
-    lastBlinkR=now;document.getElementById('aiMsg').innerText='FOTO CAPTURADA';
+  // DESATIVAR MOUSE COM PISCADA LONGA
+  if(eyeRightPerson.y - lm[159].y < 0.012 && now - lastBlinkL > 1200){
+    mouseActive=false;pointer.style.display='none';document.getElementById('control').innerText='DESATIVADO';
+    document.getElementById('aiMsg').innerText='Mouse ocular: DESATIVADO';setActive(panelStatus,false);setActive(panelGesture,false)
   }
 
-  // LEVANTAR 2 SOBRANCELHAS - MENU
+  // 2 SOBRANCELHAS = MENU
   if(browL.y < lm[52].y - 0.02 && browR.y < lm[282].y - 0.02 && now-lastBrow>800){
-    lastBrow=now;menu.style.display = menu.style.display==='block'?'none':'block';
-    document.getElementById('aiMsg').innerText=menu.style.display==='block'?'Menu Aberto':'Menu Fechado';
+    lastBrow=now;
+    const isOpen = menu.style.display==='block';
+    menu.style.display = isOpen?'none':'block';menu.classList.toggle('active',!isOpen);
+    document.getElementById('aiMsg').innerText=!isOpen?'Menu: ABERTO':'Menu: FECHADO';
+    setActive(panelBottom,!isOpen)
   }
 
-  // BOCA ABERTA - ZOOM
-  if(mouth.y - lm[14].y > 0.04){document.getElementById('gesture').innerText='BOCA ABERTA - ZOOM'}
-
-  // FRANZIR TESTA
-  if(lm[70].y < lm[105].y){document.getElementById('gesture').innerText='ALERTA - TESTA FRANZIDA'}
+  if(mouth.y - lm[14].y > 0.04){document.getElementById('gesture').innerText='BOCA ABERTA';setActive(panelGesture,true)}
 }
 
 function onResults(res){
   canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#00f7ff';angle+=0.015;
+  ctx.clearRect(0,0,canvas.width,canvas.height);angle+=0.015;
 
   if(res.multiFaceLandmarks?.length>0){
     document.getElementById('status').innerText='ONLINE';
     const lm=res.multiFaceLandmarks[0];
     detectGestures(lm);
 
-    // MOUSE PELO OLHO ESQUERDO - landmark 468
+    // COR MUDA: VERDE ATIVO / CIANO INATIVO
+    const mouseColor = mouseActive?'#00ff88':'#00f7ff';
+
+    // MOUSE PELO OLHO ESQUERDO
     if(mouseActive){
       const eye=lm[468];
-      const x=eye.x*canvas.width, y=eye.y*canvas.height;
-      pointer.style.left=x-10+'px';pointer.style.top=y-10+'px';
-      drawOcta(x,y,20,angle*2); // octaedro seguindo olho
+      const x=(1-eye.x)*canvas.width;
+      const y=eye.y*canvas.height;
+      pointer.style.left=x-12+'px';pointer.style.top=y-12+'px';
+      drawOcta(x,y,22,angle*2,mouseColor,true);
     }
 
-    // OCTAEDROS NAS BORDAS - NÃO TAMPAM O ROSTO
-    drawOcta(90,100,45,angle);
-    drawOcta(canvas.width-90,130,40,-angle*1.3);
-    drawOcta(110,canvas.height-110,42,angle*0.7);
-    drawOcta(canvas.width-110,canvas.height-90,38,-angle);
+    // OCTAEDROS NAS BORDAS - PULSANDO VERDE QUANDO ATIVO
+    drawOcta(90,100,45,angle,mouseColor,mouseActive);
+    drawOcta(canvas.width-90,130,40,-angle*1.3,mouseColor,mouseActive);
+    drawOcta(110,canvas.height-110,42,angle*0.7,mouseColor,mouseActive);
+    drawOcta(canvas.width-110,canvas.height-90,38,-angle,mouseColor,mouseActive);
 
-    // LINHAS DE CIRCUITO
-    ctx.strokeStyle='rgba(0,247,255,0.2)';
+    // LINHAS HUD VERDES QUANDO ATIVO
+    ctx.strokeStyle=mouseActive?'rgba(0,255,136,0.4)':'rgba(0,247,255,0.2)';
+    ctx.lineWidth=mouseActive?2:1;
     ctx.beginPath();ctx.moveTo(0,canvas.height*0.2);ctx.lineTo(canvas.width,canvas.height*0.2);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(canvas.width*0.85,0);ctx.lineTo(canvas.width*0.85,canvas.height);ctx.stroke();
 
-  }else{document.getElementById('status').innerText='BUSCANDO ROSTO...'}
+  }else{document.getElementById('status').innerText='BUSCANDO ROSTO...';setActive(panelStatus,false)}
   requestAnimationFrame(()=>faceMesh.send({image:video}));
 }
 </script>
