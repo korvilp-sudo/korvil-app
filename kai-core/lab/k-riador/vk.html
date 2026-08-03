@@ -9,82 +9,159 @@
 <style>
 :root{--ciano:#00f7ff;--azul:#00aaff;--verde:#00ff88;--preto:#030303;--vidro:rgba(0,247,255,0.05)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Poppins',sans-serif;background:var(--preto);color:#e0e0e0}
-h1,h2,h3{font-family:'Orbitron';color:var(--ciano)}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:var(--preto);color:#e0e0e0;background-image:radial-gradient(circle at 20% 20%, rgba(0,247,255,0.08) 0%, transparent 50%),radial-gradient(circle at 80% 80%, rgba(0,170,255,0.08) 0%, transparent 50%)}
+h1,h2,h3{font-family:'Orbitron';color:var(--ciano);text-shadow:0 0 10px var(--ciano)}
+.card-3d{background:var(--vidro);backdrop-filter:blur(10px);border:1px solid rgba(0,247,255,0.3);border-radius:15px;box-shadow:0 0 20px rgba(0,247,255,0.2)}
+.btn-neon{background:transparent;border:2px solid var(--ciano);color:var(--ciano);padding:14px 32px;border-radius:8px;font-weight:700;font-size:16px;animation:pulsar 2s infinite;box-shadow:0 0 10px var(--ciano);font-family:'Orbitron';cursor:pointer;text-decoration:none;display:inline-block}
+@keyframes pulsar{0%,100%{box-shadow:0 0 10px var(--ciano)}50%{box-shadow:0 0 40px var(--ciano)}}
+.btn-neon:hover{background:var(--ciano);color:var(--preto)}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+section{padding:80px 20px;min-height:100vh;display:none}
+section.active{display:block}
+header{padding:20px;border-bottom:1px solid var(--ciano);background:rgba(3,3,3,0.9);backdrop-filter:blur(10px);position:fixed;width:100%;z-index:1000}
+.logo{font-family:'Orbitron';font-size:28px;font-weight:900;color:var(--ciano);text-shadow:0 0 10px var(--ciano);cursor:pointer}
+nav a{color:var(--ciano);margin-left:20px;text-decoration:none;font-weight:600;cursor:pointer}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
+.media-box{width:100%;border-radius:15px;border:2px solid var(--ciano);box-shadow:0 0 20px var(--ciano)}
+.vakinha-card{display:flex;gap:20px;align-items:flex-start;padding:25px;margin:20px 0;cursor:pointer}
+.vakinha-card img{width:130px;height:130px;border-radius:10px;object-fit:cover;border:2px solid var(--ciano)}
+footer{padding:40px 20px;border-top:1px solid var(--ciano);text-align:center;font-size:12px}
+
+/* CSS SOS */
 .sos-body{background:#0a0a0a;color:#fff}
 .sos-header{background:#00c8ff;color:#000;text-align:center;padding:25px}
+.sos-hero{text-align:center;padding:30px}
 .sos-card{max-width:900px;margin:auto;background:#111;border:2px solid #00c8ff;border-radius:15px;padding:20px}
 .sos-meta{font-size:25px;color:#00ff88;margin:15px 0}
 .sos-progress{width:100%;height:30px;background:#333;border-radius:20px;overflow:hidden}
 .sos-bar{width:35%;height:100%;background:#00ff88;transition:width 1s ease}
-.sos-btn{padding:15px 25px;margin:10px;border-radius:10px;font-weight:bold;cursor:pointer;border:none;font-size:16px}
+.sos-btn{display:inline-block;padding:15px 25px;margin:10px;border-radius:10px;font-weight:bold;cursor:pointer;border:none;font-size:16px}
 .sos-pix{background:#00ff88;color:#000}
+.sos-laudo{background:#ffaa00;color:#000}
+.sos-texto{background:#111;border-left:4px solid #00c8ff;padding:20px;margin:30px auto;max-width:900px;line-height:1.8;font-size:15px}
+.sos-texto strong{color:#00ff88}
+.laudo-box{margin:20px 0;padding:15px;background:#222;border-radius:10px;border:1px solid #00c8ff}
+.laudo-box img{width:100%;border-radius:8px;margin-top:10px}
 .alerta-reembolso{background:rgba(255,170,0,0.15);border:2px solid #ffaa00;border-radius:10px;padding:15px;margin:20px 0;text-align:center;font-size:14px}
+.alerta-reembolso strong{color:#ffaa00}
 
-/* FORMULARIO NOVO */
-.form-doacao{background:#222;border:1px solid #00c8ff;border-radius:10px;padding:20px;margin:20px 0}
+/* FORM */
+.form-doacao{background:#222;border:1px solid #00c8ff;border-radius:10px;padding:20px;margin:20px 0;text-align:left}
 .form-doacao input, .form-doacao select{width:100%;padding:12px;margin:8px 0;background:#000;border:1px solid #00c8ff;border-radius:5px;color:#fff;font-size:15px}
 .form-doacao label{font-size:13px;color:#00c8ff;margin-top:10px;display:block}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-@media(max-width:768px){.form-grid{grid-template-columns:1fr}}
 .msg-sucesso{display:none;background:#00ff88;color:#000;padding:15px;border-radius:10px;margin:15px 0;font-weight:bold;text-align:center}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr} .vakinha-card{flex-direction:column} nav{display:none} .form-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<header>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <div class="logo" onclick="mostrar('home')">K-ANINO<span style="color:var(--azul)">.PETS</span></div>
+    <nav>
+      <a onclick="mostrar('home')">HOME</a>
+      <a onclick="mostrar('vakinha')">SOS PETs</a>
+      <a onclick="mostrar('doar')">DOAR AGORA</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="active" style="padding-top:140px">
+  <div class="container" style="text-align:center">
+    <h1 style="font-size:42px">K-ANINO PETS</h1>
+    <p style="font-size:18px;margin:20px 0">Resgate. Cuidado. Amor. Ajude quem não tem voz.</p>
+    <div class="grid-2">
+      <div class="card-3d" style="padding:20px">
+        <h3>HURLEY 🐶</h3>
+        <img src="WA_1785438279265.jpeg" alt="Hurley" class="media-box">
+      </div>
+      <div class="card-3d" style="padding:20px">
+        <h3>NOSSA HISTÓRIA</h3>
+        <video src="VID-20190223-WA0004.mp4" controls class="media-box"></video>
+      </div>
+    </div>
+    <a onclick="mostrar('vakinha')" class="btn-neon" style="margin-top:40px">ENTRAR NO SOS PETs</a>
+  </div>
+</section>
+
+<!-- LISTA -->
+<section id="vakinha" style="padding-top:140px">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:40px">SOS PETs ATIVOS 🐾</h2>
+    <div class="card-3d vakinha-card" onclick="mostrar('hurley')">
+      <img src="WA_1785438279265.jpeg" alt="Hurley">
+      <div style="flex:1">
+        <h3>HURLEY - CIRURGIA URGENTE</h3>
+        <p>Clique para ver detalhes, laudos e doar. Labrador de 12 anos precisando de tratamento.</p>
+        <span class="btn-neon" style="margin-top:10px">VER CASO COMPLETO</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGINA HURLEY -->
 <section id="hurley" class="sos-body" style="padding-top:100px">
   <header class="sos-header">
     <h1>SOS PET SOLIDÁRIO</h1>
     <p>Hoje pelo Hurley. Amanhã por todos os pets que precisarem de ajuda.</p>
+    <button onclick="mostrar('vakinha')" style="margin-top:10px;padding:8px 15px;background:#000;color:#00c8ff;border:1px solid #00c8ff;border-radius:5px;cursor:pointer">← VOLTAR</button>
   </header>
 
-  <div style="padding:30px">
+  <div class="sos-hero">
     <div class="sos-card">
       <h1>🚨 CASO URGENTE - HURLEY 🚨</h1>
-      <img src="WA_1785438279265.jpeg" style="width:100%;max-width:400px;border-radius:10px;margin:15px 0">
+      
+      <!-- FOTO E VIDEO LADO A LADO -->
+      <div class="grid-2">
+        <img src="WA_1785438279265.jpeg" style="width:100%;border-radius:10px;margin:15px 0">
+        <video src="VID-20190223-WA0004.mp4" controls class="media-box" style="margin:15px 0"></video>
+      </div>
+
+      <p>Labrador de 12 anos precisando de tratamento veterinário. Ajude a salvar uma vida.</p>
       
       <div class="alerta-reembolso">
         ⚠️ <strong>GARANTIA SOS PETs:</strong> Caso a meta de R$ 8.000 não seja atingida até <strong>30/09/2026</strong>, 
         100% do valor será devolvido no Pix que você cadastrar abaixo em até 5 dias úteis.
       </div>
 
+      <!-- BOTÕES LAUDO -->
+      <div class="laudo-box">
+        <h3 style="color:#00c8ff">📄 DOCUMENTOS DO CASO</h3>
+        <button class="sos-btn sos-laudo" onclick="abrirLaudo('laudo1')">VER LAUDO</button>
+        <button class="sos-btn sos-laudo" onclick="abrirLaudo('laudo2')">PLANO DE TRATAMENTO</button>
+        <div id="laudo1" style="display:none">
+          <img src="Plano de tratamento - Maria Angélica dos Santos - 15894 (1).pdf" alt="Laudo">
+          <p><a href="Plano de tratamento - Maria Angélica dos Santos - 15894 (1).pdf" target="_blank" style="color:#00c8ff">Baixar PDF</a></p>
+        </div>
+        <div id="laudo2" style="display:none">
+          <img src="documento_imprimir.php.pdf" alt="Plano">
+          <p><a href="documento_imprimir.php.pdf" target="_blank" style="color:#00c8ff">Baixar PDF</a></p>
+        </div>
+      </div>
+
       <div class="sos-meta">Meta: R$ <span id="hurley_meta_sos">8000</span></div>
       <div class="sos-progress"><div class="sos-bar" id="hurley_barra_sos"></div></div>
       <p>Arrecadado: R$ <span id="hurley_arrecadado_sos">2800</span></p>
 
-      <!-- FORMULÁRIO DOADOR -->
+      <!-- FORM DOADOR -->
       <div class="form-doacao">
         <h3 style="color:#00ff88;margin-bottom:15px">PREENCHA SEUS DADOS PARA DOAR</h3>
-        <div id="msg-sucesso" class="msg-sucesso">MUITO OBRIGADO PELO SEU APOIO! 🙏<br>Queremos que tudo dê certo logo. Mesmo se não arrecadarmos o valor total, você receberá sua doação de volta no seu Pix cadastrado.</div>
+        <div id="msg-sucesso" class="msg-sucesso">MUITO OBRIGADO PELO SEU APOIO! 🙏<br>Queremos que tudo dê certo logo. Mesmo se não arrecadarmos o valor total você receberá sua doação de volta no seu Pix cadastrado.</div>
         
         <form id="formDoacao">
           <div class="form-grid">
-            <div>
-              <label>Nome Completo *</label>
-              <input type="text" id="nome" required>
-            </div>
-            <div>
-              <label>CPF *</label>
-              <input type="text" id="cpf" placeholder="000.000.000-00" required>
-            </div>
+            <div><label>Nome Completo *</label><input type="text" id="nome" required></div>
+            <div><label>CPF *</label><input type="text" id="cpf" required></div>
           </div>
-          
-          <label>Email *</label>
-          <input type="email" id="email" required>
-          
-          <label>WhatsApp *</label>
-          <input type="tel" id="whatsapp" placeholder="(13) 99999-9999" required>
-          
-          <label>Endereço Completo</label>
-          <input type="text" id="endereco" placeholder="Rua, Numero, Bairro, Cidade - UF">
-          
+          <label>Email *</label><input type="email" id="email" required>
+          <label>WhatsApp *</label><input type="tel" id="whatsapp" required>
+          <label>Endereço Completo</label><input type="text" id="endereco">
           <div class="form-grid">
-            <div>
-              <label>Valor da Doação R$ *</label>
-              <input type="number" id="valor" placeholder="50" min="5" required>
-            </div>
-            <div>
-              <label>Forma de Pagamento *</label>
+            <div><label>Valor R$ *</label><input type="number" id="valor" min="5" required></div>
+            <div><label>Pagamento *</label>
               <select id="forma" required>
                 <option value="">Selecione</option>
                 <option value="PIX">Pix</option>
@@ -94,25 +171,62 @@ h1,h2,h3{font-family:'Orbitron';color:var(--ciano)}
               </select>
             </div>
           </div>
-
-          <label>Chave Pix para Devolução *</label>
-          <input type="text" id="pix_devolucao" placeholder="Seu CPF, Email ou Chave Pix" required>
-          
+          <label>Chave Pix para Devolução *</label><input type="text" id="pix_devolucao" required>
           <button type="submit" class="sos-btn sos-pix" style="width:100%;margin-top:15px">DOAR AGORA PARA O HURLEY</button>
         </form>
       </div>
     </div>
   </div>
+
+  <!-- TEXTO URGENTE SOS PETs -->
+  <div class="sos-texto">
+    <h2 style="text-align:center;margin-bottom:20px;color:#00ff88">SOBRE O SOS PETs</h2>
+    <p>O <strong>SOS PET SOLIDÁRIO</strong> nasce a partir da luta do Hurley, mas seu propósito vai muito além de um único caso.</p>
+    <br>
+    <p>A ideia é criar um site onde tutores possam cadastrar seus pets que necessitam de ajuda veterinária, arrecadação solidária ou divulgação de casos urgentes. O objetivo é unir pessoas que amam os animais e acreditam que nenhuma vida deve ser esquecida por falta de recursos.</p>
+    <br>
+    <p>Cada pet terá sua própria página com fotos, descrição do caso, exames, laudos, metas de arrecadação e atualizações do tratamento. Os casos serão organizados em uma fila transparente, respeitando a ordem de entrada e a gravidade comprovada de cada situação.</p>
+    <br>
+    <p>Além das doações, o projeto pretende incentivar os cuidados preventivos, divulgar informações sobre saúde animal e conscientizar a população sobre a importância do acompanhamento veterinário.</p>
+    <br>
+    <p>O site também contará com um sistema de reconhecimento para doadores e compartilhadores, valorizando quem contribui para salvar vidas e fortalecer a causa animal.</p>
+    <br>
+    <p>Nossa missão é criar uma grande corrente de solidariedade, onde pessoas possam ajudar hoje e também encontrar apoio quando precisarem no futuro.</p>
+    <br>
+    <p><strong>O Hurley é o primeiro passo desta iniciativa.</strong></p>
+    <br>
+    <p>Mas o verdadeiro objetivo é ajudar muitos outros cães, gatos e animais que ainda precisarão de uma oportunidade para continuar vivendo ao lado de quem os ama.</p>
+    <br>
+    <p style="text-align:center;font-size:18px;color:#00c8ff"><strong>SOS PETs<br>Hoje pelo Hurley. Amanhã por todos os pets que precisarem de ajuda.</strong></p>
+  </div>
+
+  <footer class="sos-footer">SOS PET SOLIDÁRIO © 2026</footer>
+</section>
+
+<!-- DOAR -->
+<section id="doar" style="padding-top:140px">
+  <div class="container" style="max-width:600px;text-align:center">
+    <h2>DOAÇÃO GERAL SOS PETs</h2>
+  </div>
 </section>
 
 <script>
-const SEU_WHATS = "5513997690898"; // SEU NUMERO
-const ASAAS_KEY = "SUA_CHAVE_ASAAS"; // COLA SUA CHAVE AQUI
+const SEU_WHATS = "55139997690898";
+
+function mostrar(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id=='hurley') atualizarBarraHurley();
+}
+
+function abrirLaudo(id){
+  let el = document.getElementById(id);
+  el.style.display = el.style.display == 'none' ? 'block' : 'none';
+}
 
 document.getElementById('formDoacao').addEventListener('submit', function(e){
   e.preventDefault();
-  
-  // 1. PEGAR DADOS
   let dados = {
     nome: document.getElementById('nome').value,
     cpf: document.getElementById('cpf').value,
@@ -121,41 +235,25 @@ document.getElementById('formDoacao').addEventListener('submit', function(e){
     endereco: document.getElementById('endereco').value,
     valor: document.getElementById('valor').value,
     forma: document.getElementById('forma').value,
-    pix: document.getElementById('pix_devolucao').value,
-    pet: "HURLEY"
+    pix: document.getElementById('pix_devolucao').value
   };
-
-  // 2. ENVIAR PRO SEU WHATSAPP
-  let msg = `🚨 NOVA DOAÇÃO SOS PETs - HURLEY 🚨%0A%0A`;
-  msg += `Nome: ${dados.nome}%0A`;
-  msg += `CPF: ${dados.cpf}%0A`;
-  msg += `Email: ${dados.email}%0A`;
-  msg += `Whats: ${dados.whatsapp}%0A`;
-  msg += `Endereço: ${dados.endereco}%0A`;
-  msg += `Pix Devolução: ${dados.pix}%0A`;
-  msg += `Valor: R$ ${dados.valor}%0A`;
-  msg += `Pagamento: ${dados.forma}`;
   
+  let msg = `🚨 NOVA DOAÇÃO SOS PETs - HURLEY 🚨%0A%0A`;
+  msg += `Nome: ${dados.nome}%0ACPF: ${dados.cpf}%0AEmail: ${dados.email}%0AWhats: ${dados.whatsapp}%0AEnd: ${dados.endereco}%0APix Devolução: ${dados.pix}%0AValor: R$ ${dados.valor}%0APagamento: ${dados.forma}`;
   window.open(`https://wa.me/${SEU_WHATS}?text=${msg}`, '_blank');
 
-  // 3. ABRIR CHECKOUT ASAAS COM OS DADOS
   AsaasCheckout.open({
     value: dados.valor,
     name: dados.nome,
     email: dados.email,
-    phone: dados.whatsapp,
     cpfCnpj: dados.cpf,
-    address: dados.endereco,
-    description: "Doação SOS PETs - Hurley. Pix devolução: " + dados.pix,
-    externalReference: "HURLEY_" + Date.now(), // ID único
-    paymentMethods: [dados.forma],
-    successUrl: window.location.href
+    description: "Doação SOS PETs - Hurley",
+    externalReference: "HURLEY_" + Date.now(),
+    paymentMethods: [dados.forma]
   });
 
-  // 4. MOSTRAR MENSAGEM DE GRATIDÃO
   document.getElementById('msg-sucesso').style.display = 'block';
   document.getElementById('formDoacao').reset();
-  window.scrollTo(0,0);
 });
 
 function atualizarBarraHurley(){
@@ -164,7 +262,6 @@ function atualizarBarraHurley(){
   let percent = Math.min((arrecadado / meta) * 100, 100).toFixed(0);
   document.getElementById('hurley_barra_sos').style.width = percent + '%';
 }
-window.onload = atualizarBarraHurley;
 </script>
 
 </body>
