@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>KORVIL HOLOGRAM DESK</title>
+<style>
+  body { margin:0; background:#000; overflow:hidden; }
+  canvas { display:block; }
+  #info {
+    position:absolute; top:20px; width:100%; text-align:center;
+    color:#00ffff; font-family:'Arial'; font-size:18px;
+    text-shadow: 0 0 10px #00ffff;
+  }
+  #gesture {
+    position:absolute; bottom:20px; width:100%; text-align:center;
+    color:#00ffaa; font-family:'Arial'; font-size:16px;
+  }
+</style>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+    "@mediapipe/hands": "https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js",
+    "@mediapipe/camera_utils": "https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="info">KORVIL HOLOGRAM DESK - Mostre a mão pra câmera</div>
+<div id="gesture">Gesto: Aguardando...</div>
+<video id="video" style="display:none;"></video>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Hands } from '@mediapipe/hands';
+import { Camera } from '@mediapipe/camera_utils';
+
+// CENA 3D
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x001a33, 0.02);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.set(0, 2, 5);
+
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000, 0);
+document.body.appendChild(renderer.domElement);
+
+// LUZES NEON AZUL CIANO
+const light1 = new THREE.PointLight(0x00ffff, 2, 10);
+light1.position.set(0, 2, 2);
+scene.add(light1);
+scene.add(new THREE.AmbientLight(0x004444));
+
+// MESA HOLOGRAFICA COM GRID
+const grid = new THREE.GridHelper(10, 50, 0x00ffff, 0x004444);
+grid.material.opacity = 0.3;
+grid.material.transparent = true;
+scene.add(grid);
+
+// ANEIS PULSANTES DA MESA
+const ringGeo = new THREE.RingGeometry(0.5, 0.7, 64);
+const ringMat = new THREE.MeshBasicMaterial({color:0x00ffff, side:THREE.DoubleSide, transparent:true, opacity:0.6});
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = -Math.PI/2;
+scene.add(ring);
+
+// CAPACETE HOMEM DE FERRO LOW-POLY HOLOGRAFICO
+const helmetGroup = new THREE.Group();
+const helmetMat = new THREE.MeshPhongMaterial({
+  color:0x00ffff,
+  transparent:true,
+  opacity:0.4,
+  emissive:0x00aaff,
+  emissiveIntensity:0.8,
+  wireframe:false
+});
+
+// Corpo do capacete - esfera achatada
+const headGeo = new THREE.SphereGeometry(0.8, 32, 24);
+headGeo.scale(1, 0.8, 1.1);
+const head = new THREE.Mesh(headGeo, helmetMat);
+helmetGroup.add(head);
+
+// Visor
+const visorGeo = new THREE.BoxGeometry(1.2, 0.3, 0.1);
+const visor = new THREE.Mesh(visorGeo, helmetMat);
+visor.position.set(0, 0.1, 0.75);
+helmetGroup.add(visor);
+
+helmetGroup.position.y = 2;
+scene.add(helmetGroup);
+
+// OCTAEDROS FLUTUANTES KORVIL
+const octahedrons = [];
+for(let i=0; i<8; i++){
+  const geo = new THREE.OctahedronGeometry(0.15, 0);
+  const mat = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.7});
+  const octa = new THREE.Mesh(geo, mat);
+  octa.position.set(Math.sin(i)*1.5, 2 + Math.sin(i*2), Math.cos(i)*1.5);
+  octahedrons.push(octa);
+  scene.add(octa);
+}
+
+// CONTROLE DE GESTOS COM MEDIA PIPE
+let handX = 0, handY = 2, handZ = 0;
+let isPinching = false;
+
+const videoElement = document.getElementById('video');
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
+});
+
+hands.onResults((results) => {
+  if(results.multiHandLandmarks.length > 0){
+    const landmarks = results.multiHandLandmarks[0];
+    // Pega posição da ponta do dedo indicador
+    handX = (landmarks[8].x - 0.5) * 4;
+    handY = 2 - (landmarks[8].y - 0.5) * 3;
+    handZ = -landmarks[8].z * 3;
+
+    // Detecta "pinça" polegar + indicador pra girar
+    const dist = Math.hypot(landmarks[4].x - landmarks[8].x, landmarks[4].y - landmarks[8].y);
+    isPinching = dist < 0.05;
+    document.getElementById('gesture').innerText = isPinching? 'Gesto: GIRANDO' : 'Gesto: MOVENDO';
+  }
+});
+
+const cam = new Camera(videoElement, {
+  onFrame: async () => { await hands.send({image: videoElement}); },
+  width: 640, height: 480
+});
+cam.start();
+
+// ANIMAÇÃO
+function animate(){
+  requestAnimationFrame(animate);
+
+  // Move capacete com a mão
+  helmetGroup.position.x += (handX - helmetGroup.position.x) * 0.1;
+  helmetGroup.position.y += (handY - helmetGroup.position.y) * 0.1;
+  helmetGroup.position.z += (handZ - helmetGroup.position.z) * 0.1;
+
+  // Gira se estiver em pinça
+  if(isPinching) helmetGroup.rotation.y += 0.02;
+
+  // Anima octaedros
+  octahedrons.forEach((octa, i) => {
+    octa.rotation.x += 0.01;
+    octa.rotation.y += 0.015;
+    octa.position.y = 2 + Math.sin(Date.now()*0.001 + i)*0.2;
+  });
+
+  // Pulsa anel da mesa
+  ring.scale.set(1 + Math.sin(Date.now()*0.002)*0.1, 1, 1 + Math.sin(Date.now()*0.002)*0.1);
+  ringMat.opacity = 0.4 + Math.sin(Date.now()*0.003)*0.2;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
