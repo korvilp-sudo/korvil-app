@@ -2,179 +2,108 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>K-BRACELETE + CUBO TESTE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-BRACELETE JARVIS</title>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#000;overflow:hidden;font-family:'Orbitron',monospace}
+  body{background:#000;overflow:hidden}
 
-  #camera{position:absolute;top:0;right:0;width:20%;height:20%;opacity:0.3;border:2px solid #00f7ff;z-index:10;transform:scaleX(-1)}
-  #canvas{position:absolute;top:0;right:0;width:20%;height:20%;z-index:11;transform:scaleX(-1);pointer-events:none}
+  /* MATA A CÂMERA VISUAL */
+  #camera{position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0}
 
-  #cena{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, #001a2e 0%, #000 100%)}
-.grid{position:absolute;bottom:0;width:100%;height:70%;background-image:linear-gradient(rgba(0,247,255,0.25) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.25) 1px, transparent 1px);background-size:40px 40px;transform:perspective(1000px) rotateX(70deg)}
+  #cena{position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(ellipse at center, #001a2e 0%, #000 100%)}
 
-  #lixeira{position:absolute;bottom:6%;left:4%;width:90px;height:90px;border:3px dashed #ff0044;border-radius:50%;box-shadow:0 0 30px #ff0044;display:flex;align-items:center;justify-content:center;color:#ff0044;font-size:10px}
-  #lixeira.magnet{border-color:#ffaa00;box-shadow:0 0 80px #ffaa00;transform:scale(1.5);color:#ffaa00}
+  /* TERRENO OCUPA TELA TODA */
+ .grid{position:fixed;bottom:0;width:100vw;height:100vh;background-image:linear-gradient(rgba(0,247,255,0.18) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.18) 1px, transparent 1px);background-size:45px 45px;transform:perspective(1000px) rotateX(75deg)}
 
-.jarvis{position:absolute;top:4%;left:50%;transform:translateX(-50%);color:#00f7ff;background:rgba(0,0,0,0.9);padding:14px 24px;border:2px solid #00f7ff;border-radius:10px;font-size:13px;text-align:center}
+ .hud{position:fixed;top:15px;width:100%;text-align:center;color:#00f7ff;font-family:monospace;font-size:14px;text-shadow:0 0 15px #00f7ff}
+ .lixeira{position:fixed;bottom:8%;left:5%;width:70px;height:70px;border-radius:50%;border:3px dashed #ff0044;box-shadow:0 0 25px #ff0044}
+ .lixeira.on{border-color:#ffaa00;box-shadow:0 0 60px #ffaa00;transform:scale(1.4)}
 </style>
 </head>
 <body>
 
 <video id="camera" autoplay playsinline muted></video>
-<canvas id="canvas"></canvas>
 <div id="cena"></div>
 <div class="grid"></div>
-<div id="lixeira">LIXEIRA</div>
-
-<div class="jarvis">
-  <b>JARVIS v5.3</b><br>
-  STATUS: <span id="status">APROXIME A MÃO</span><br>
-  OBJETO: <span id="objeto">NENHUM</span>
-</div>
+<div class="lixeira" id="lixeira"></div>
+<div class="hud">JARVIS v5.5 | <span id="status">PERMITA A CÂMERA</span></div>
 
 <script>
-// ===== 1. THREE.JS =====
+// THREE
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,1000);
+const cam=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setSize(innerWidth,innerHeight);
 document.getElementById('cena').appendChild(renderer.domElement);
-camera.position.set(0,3,6);camera.lookAt(0,0,0);
-scene.add(new THREE.AmbientLight(0x00f7ff,0.6));
+cam.position.set(0,2.5,5);cam.lookAt(0,0,0);
+scene.add(new THREE.AmbientLight(0x00f7ff,0.8));
 
-// ===== 2. BRACELETE FIXO NO CENTRO =====
-const braceleteGroup=new THREE.Group();
-braceleteGroup.position.set(0,0.1,0);
-scene.add(braceleteGroup);
-braceleteGroup.add(new THREE.Mesh(
-  new THREE.TorusGeometry(1.4,0.14,12,120),
-  new THREE.MeshPhongMaterial({color:0x00f7ff,wireframe:true})
-));
-
-// 3 PEÇAS DO BRACELETE
-const pecasBracelete=[];
-[-1.4,0,1.4].forEach((x,i)=>{
-  const geo=i===1?new THREE.BoxGeometry(0.28,0.38,0.14):new THREE.CylinderGeometry(0.24,0.24,0.14,6);
-  const peca=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:0x00ff88,emissive:0x00ff88}));
-  peca.position.set(x,0,0);peca.userData={tipo:'bracelete'};
-  braceleteGroup.add(peca);pecasBracelete.push(peca);
+// BRACELETE CENTRO TERRENO
+const bracelete=new THREE.Group();bracelete.position.set(0,0,0);scene.add(bracelete);
+bracelete.add(new THREE.Mesh(new THREE.TorusGeometry(1.4,0.14,12,100),new THREE.MeshPhongMaterial({color:0x00f7ff,wireframe:true})));
+const pecas=[];[-1.4,0,1.4].forEach((x,i)=>{
+  const geo=i===1?new THREE.BoxGeometry(0.3,0.4,0.15):new THREE.CylinderGeometry(0.25,0.25,0.15,6);
+  const p=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:0x00ff88,emissive:0x00ff88}));
+  p.position.set(x,0,0);bracelete.add(p);pecas.push(p);
 });
 
-// ===== 3. CUBO DE TESTE SOLTO NO TERRENO =====
-const cuboTeste=new THREE.Mesh(
-  new THREE.BoxGeometry(0.4,0.4,0.4),
-  new THREE.MeshPhongMaterial({color:0xffaa00,emissive:0xffaa00,emissiveIntensity:0.8})
-);
-cuboTeste.position.set(2,0.2,1); // Do lado do bracelete
-cuboTeste.userData={tipo:'cubo',noChao:true};
-scene.add(cuboTeste);
+// CUBO TESTE
+const cubo=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.5,0.5),new THREE.MeshPhongMaterial({color:0xffaa00,emissive:0xffaa00}));
+cubo.position.set(2.5,0.25,0);scene.add(cubo);
 
-// ===== 4. LÓGICA GESTOS =====
+// LIXEIRA 3D
+const lix3d=new THREE.Group();lix3d.position.set(-3,0,-2);scene.add(lix3d);
+lix3d.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.25,0.5,16),new THREE.MeshPhongMaterial({color:0xff0044})));
+const circulo=new THREE.Mesh(new THREE.RingGeometry(1.8,2,32),new THREE.MeshBasicMaterial({color:0xff0044,transparent:true,opacity:0.1,side:2}));
+circulo.rotation.x=-1.57;lix3d.add(circulo);
+
+// CAMERA INVISIVEL
 const video=document.getElementById('camera');
-const canvas=document.getElementById('canvas');
-const ctx=canvas.getContext('2d');
-let maoEsq=null, maoDir=null, objetoSegurando=null;
+let maoDir=null, segurando=null;
 
-navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(s=>{video.srcObject=s;video.play()});
-
-const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands:2});
-hands.onResults(onResults);
-video.onloadeddata=()=>{canvas.width=video.videoWidth;canvas.height=video.videoHeight;new Camera(video,{onFrame:async()=>{await hands.send({image:video})}}).start()}
-
-function get3D(lm){return new THREE.Vector3((lm.x-0.5)*6,(0.5-lm.y)*4.5,lm.z*3)}
-function dist(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2)}
-
-function onResults(res){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!res.multiHandLandmarks) return;
-
-  maoEsq=null;maoDir=null;
-  res.multiHandLandmarks.forEach((lm,i)=>{
-    drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:'#00ff88'});
-    drawLandmarks(ctx,lm,{color:'#ff0000'});
-    if(res.multiHandedness[i].label==='Left') maoEsq=lm; else maoDir=lm;
-  });
-
-  const posDir=maoDir?get3D(maoDir[8]):null;
-  const punhoDir=maoDir?dist(maoDir[4],maoDir[8])<0.05:false;
-  const abertaDir=maoDir?dist(maoDir[4],maoDir[8])>0.15:false;
-
-  // ===== PEGAR OBJETO COM MÃO DIREITA =====
-  if(punhoDir && posDir &&!objetoSegurando){
-    // 1. Testa peças do bracelete
-    pecasBracelete.forEach(p=>{
-      const worldPos=p.position.clone().add(braceleteGroup.position);
-      if(worldPos.distanceTo(posDir)<0.45){
-        objetoSegurando=p;
-        scene.add(p);
-        document.getElementById('status').innerText='PEÇA DO BRACELETE SEGURA';
-        document.getElementById('objeto').innerText='PEÇA BRACELETE';
-        p.material.emissiveIntensity=1.8;
-      }
+navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(s=>{
+  video.srcObject=s;video.play();
+  document.getElementById('status').innerText='CÂMERA OK';
+  
+  const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+  hands.setOptions({maxNumHands:2});
+  hands.onResults(r=>{
+    if(!r.multiHandLandmarks) return;
+    r.multiHandLandmarks.forEach((lm,i)=>{
+      if(r.multiHandedness[i].label==='Right') maoDir=lm;
     });
+    
+    if(maoDir){
+      const pos=new THREE.Vector3((maoDir[8].x-0.5)*8,(0.5-maoDir[8].y)*6,maoDir[8].z*4);
+      const punho=Math.hypot(maoDir[4].x-maoDir[8].x,maoDir[4].y-maoDir[8].y)<0.05;
+      const aberta=Math.hypot(maoDir[4].x-maoDir[8].x,maoDir[4].y-maoDir[8].y)>0.15;
 
-    // 2. Testa CUBO DE TESTE
-    if(cuboTeste.position.distanceTo(posDir)<0.45){
-      objetoSegurando=cuboTeste;
-      document.getElementById('status').innerText='CUBO DE TESTE SEGURADO';
-      document.getElementById('objeto').innerText='CUBO';
-      cuboTeste.material.emissiveIntensity=1.8;
-    }
-  }
-
-  // ===== ARRASTAR OBJETO =====
-  if(objetoSegurando && posDir){
-    objetoSegurando.position.copy(posDir);
-    objetoSegurando.position.y=0.2; // Mantém no chão
-    objetoSegurando.rotation.x+=0.05;objetoSegurando.rotation.y+=0.05;
-
-    // LIXEIRA MAGNÉTICA
-    const lixeiraPos=new THREE.Vector3(-2.8,-2,0);
-    const distLix=objetoSegurando.position.distanceTo(lixeiraPos);
-    if(distLix<2){
-      document.getElementById('lixeira').classList.add('magnet');
-      document.getElementById('status').innerText='APROXIME DA LIXEIRA';
-      if(abertaDir){
-        const dir=lixeiraPos.clone().sub(objetoSegurando.position).normalize();
-        objetoSegurando.position.add(dir.multiplyScalar(0.18));
-        if(distLix<0.4){
-          // Se for cubo, respawna. Se for peça, deleta
-          if(objetoSegurando.userData.tipo==='cubo'){
-            objetoSegurando.position.set(2,0.2,1); // Volta pro lugar
-            document.getElementById('status').innerText='CUBO RESETADO';
-          }else{
-            scene.remove(objetoSegurando);
-            document.getElementById('status').innerText='PEÇA DESCARTADA';
-          }
-          objetoSegurando=null;
-          document.getElementById('lixeira').classList.remove('magnet');
-          document.getElementById('objeto').innerText='NENHUM';
-        }
+      // PEGAR
+      if(punho &&!segurando){
+        if(cubo.position.distanceTo(pos)<0.6){segurando=cubo;document.getElementById('status').innerText='SEGURANDO CUBO'}
+        pecas.forEach(p=>{if(p.position.clone().add(bracelete.position).distanceTo(pos)<0.5){segurando=p;scene.add(p)}})
       }
-    }else{document.getElementById('lixeira').classList.remove('magnet')}
-  }
+      // ARRASTAR
+      if(segurando){
+        segurando.position.copy(pos);segurando.rotation.x+=0.05;segurando.rotation.y+=0.05;
+        const d=segurando.position.distanceTo(lix3d.position);
+        if(d<2){document.getElementById('lixeira').classList.add('on');circulo.material.opacity=0.4;
+          if(aberta){const dir=lix3d.position.clone().sub(segurando.position).normalize();segurando.position.add(dir.multiplyScalar(0.2));
+            if(d<0.5){if(segurando===cubo){cubo.position.set(2.5,0.25,0)}else{scene.remove(segurando)}segurando=null;document.getElementById('status').innerText='DESCARTADO'}
+          }
+        }else{document.getElementById('lixeira').classList.remove('on');circulo.material.opacity=0.1}
+        if(aberta && d>2){segurando=null;document.getElementById('status').innerText='SOLTO'}
+      }
+    }
+  });
+  new Camera(video,{onFrame:async()=>{await hands.send({image:video})}}).start();
+});
 
-  // ===== SOLTAR OBJETO =====
-  if(abertaDir && objetoSegurando){
-    objetoSegurando.material.emissiveIntensity=0.8;
-    objetoSegurando=null;
-    document.getElementById('status').innerText='OBJETO SOLTO';
-    document.getElementById('objeto').innerText='NENHUM';
-  }
-}
-
-function animate(){
-  requestAnimationFrame(animate);
-  braceleteGroup.rotation.y+=0.002;
-  renderer.render(scene,camera);
-}
+function animate(){requestAnimationFrame(animate);bracelete.rotation.y+=0.002;renderer.render(scene,cam)}
 animate();
 </script>
 </body>
