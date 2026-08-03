@@ -2,79 +2,39 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KORVIL K-AI v3.0</title>
+<title>KORVIL K-AI v4.1 - GUIA</title>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  body{
-    background:#000;overflow:hidden;font-family:'Orbitron',monospace;color:#00f7ff
-  }
+  body{background:#000;overflow:hidden;font-family:'Orbitron',monospace;color:#00f7ff}
 
-  /* VIDEO E CANVAS */
-  #camera,#canvas{
-    position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
-    transform:scaleX(-1); /* espelhar */
-    background:#000;
-  }
-  #camera{z-index:1}
-  #canvas{z-index:2;pointer-events:none}
+  #camera,#canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#000}
+  #camera{z-index:1} #canvas{z-index:2;pointer-events:none}
 
-  /* PAINÉIS 3D SIMPLES */
-.panel{
-    position:absolute;z-index:3;
-    border:2px solid #00f7ff;
-    background:rgba(0,0,0,0.7);
-    backdrop-filter:blur(8px);
-    color:#00f7ff;
-    padding:12px 16px;
-    border-radius:8px;
-    font-size:12px;
-    font-weight:700;
-    box-shadow:0 0 20px rgba(0,247,255,0.4);
-    transition:0.3s;
-  }
-.panel.active{
-    border-color:#00ff88;
-    box-shadow:0 0 30px #00ff88;
-  }
-.panel.alert{
-    border-color:#ff0044;
-    box-shadow:0 0 30px #ff0044;
-    animation:flash 0.3s;
-  }
-  @keyframes flash{50%{opacity:0.5}}
-
+ .panel{position:absolute;z-index:3;border:2px solid #00f7ff;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);color:#00f7ff;padding:10px 14px;border-radius:8px;font-size:11px;font-weight:700;box-shadow:0 0 20px rgba(0,247,255,0.4)}
+.panel.active{border-color:#00ff88;box-shadow:0 0 30px #00ff88}
 .top{top:3%}.left{left:2%}.right{right:2%}
-.bottom{bottom:3%}
 
-  /* PONTEIRO OCTA */
-  #pointer{
-    position:absolute;width:24px;height:24px;z-index:4;display:none;
-  }
-.octa{
-    width:100%;height:100%;
-    border:2px solid #00f7ff;
-    transform:rotate(45deg);
-    box-shadow:0 0 15px #00f7ff;
-  }
+  #pointer{position:absolute;width:24px;height:24px;z-index:4;display:none}
+.octa{width:100%;height:100%;border:2px solid #00f7ff;transform:rotate(45deg);box-shadow:0 0 15px #00f7ff}
 
-  /* MENU */
-  #menu{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    z-index:5;background:rgba(0,0,0,0.9);border:2px solid #00f7ff;
-    color:#00f7ff;display:none;padding:20px;border-radius:10px;
-    text-align:center;font-size:14px
-  }
-  #menu.active{border-color:#00ff88}
+  /* GUIA INFERIOR */
+  #guia{position:absolute;bottom:0;left:0;width:100%;z-index:5;background:rgba(0,0,0,0.9);border-top:2px solid #00f7ff}
+.tabs{display:flex}
+.tab{flex:1;padding:10px;text-align:center;cursor:pointer;border-right:1px solid #00334d;font-size:12px}
+.tab.active{background:#00f7ff;color:#000}
+.tab:hover{background:#00334d}
 
-  #log{
-    position:absolute;bottom:3%;left:2%;z-index:3;width:70%;
-    font-size:11px;background:rgba(0,0,0,0.7);border:1px solid #00f7ff;
-    padding:10px;border-radius:6px
-  }
+.comandos{display:none;padding:10px;max-height:180px;overflow-y:auto}
+.comandos.active{display:block}
+.cmd-btn{width:100%;background:rgba(0,247,255,0.1);border:1px solid #00f7ff;color:#00f7ff;padding:8px;margin:4px 0;text-align:left;cursor:pointer;border-radius:5px;font-size:11px;font-family:'Orbitron'}
+.cmd-btn:hover{background:rgba(0,247,255,0.3)}
+.cmd-btn.tipo{font-size:9px;opacity:0.7;float:right}
+
+  #log{position:absolute;bottom:220px;left:2%;z-index:3;width:75%;font-size:11px;background:rgba(0,0,0,0.8);border:1px solid #00f7ff;padding:10px;border-radius:6px}
+  #instrucao{color:#00ff88;font-weight:900;margin-bottom:5px}
 </style>
 </head>
 <body>
@@ -83,106 +43,167 @@
 <canvas id="canvas"></canvas>
 <div id="pointer"><div class="octa"></div></div>
 
-<div id="menu">
-  <div style="font-weight:900;margin-bottom:8px">K-AI MENU</div>
-  <div>1. ARMAS</div><div>2. ESCUDO</div><div>3. SAIR</div>
-</div>
+<div id="p1" class="panel top left"><div>KORVIL K-AI v4.1</div><div>STATUS: <span id="status">STANDBY</span></div><div>MOUSE: <span id="mouse">OFF</span></div></div>
+<div id="p2" class="panel top right"><div>CMD: <span id="cmd">AGUARDANDO</span></div></div>
+<div id="log"><div id="instrucao">SELECIONE UMA ABAIXO</div>Clique no comando pra ver como fazer</div>
 
-<div id="p1" class="panel top left">
-  <div>KORVIL K-AI v3.0</div>
-  <div>STATUS: <span id="status">STANDBY</span></div>
-  <div>MOUSE: <span id="mouse">OFF</span></div>
-</div>
+<!-- GUIA DE COMANDOS -->
+<div id="guia">
+  <div class="tabs">
+    <div class="tab active" onclick="mostrarAba('olhos')">OLHOS</div>
+    <div class="tab" onclick="mostrarAba('sobrancelhas')">SOBRANCELHAS</div>
+    <div class="tab" onclick="mostrarAba('boca')">BOCA</div>
+    <div class="tab" onclick="mostrarAba('cabeca')">CABEÇA</div>
+  </div>
 
-<div id="p2" class="panel top right">
-  <div>COMANDO: <span id="cmd">AGUARDANDO</span></div>
-</div>
+  <!-- ABA OLHOS -->
+  <div id="olhos" class="comandos active">
+    <button class="cmd-btn" onclick="mostrarInstrucao('PISCA OLHO ESQ', 'Pisque 1x com SEU olho esquerdo. Lado direito da tela. <b>Ação:</b> Liga/Desliga Mouse')">
+      Piscar Olho Esquerdo <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('PISCA OLHO DIR', 'Pisque 1x com SEU olho direito. Lado esquerdo da tela. <b>Ação:</b> Tirar Print')">
+      Piscar Olho Direito <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('PISCA OS 2 OLHOS', 'Pisque com os 2 olhos juntos. <b>Ação:</b> Ativa/Desativa Modo Foco')">
+      Piscar Os 2 Olhos <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('OLHAR PRA CIMA', 'Olhe pra cima e segure 2 segundos. <b>Ação:</b> Ativa Scanner')">
+      Olhar pra Cima 2s <span class="tipo">DIRECIONAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('PISCA 2X ESQ', 'Pisque 2x seguidas com olho esquerdo. <b>Ação:</b> Modo Combate ON/OFF')">
+      Piscar 2x Esquerdo <span class="tipo">UNILATERAL</span>
+    </button>
+  </div>
 
-<div id="log">Iniciando câmera...</div>
+  <!-- ABA SOBRANCELHAS -->
+  <div id="sobrancelhas" class="comandos">
+    <button class="cmd-btn" onclick="mostrarInstrucao('2 SOBRANCELHAS', 'Levante as 2 sobrancelhas ao mesmo tempo. <b>Ação:</b> Abrir/Fechar Menu')">
+      Levantar 2 Sobrancelhas <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('SOBRANCELHA ESQ', 'Levante só a sobrancelha do SEU lado esquerdo. <b>Ação:</b> Painel Armas')">
+      Levantar Sobrancelha Esq <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('SOBRANCELHA DIR', 'Levante só a sobrancelha do SEU lado direito. <b>Ação:</b> Painel Escudo')">
+      Levantar Sobrancelha Dir <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('FRANZIR', 'Franza as 2 sobrancelhas. <b>Ação:</b> Modo Stealth ON/OFF')">
+      Franzir as 2 <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('PISCA SOBRANCELHA', 'Levante e baixe as 2 sobrancelhas 2x rapido. <b>Ação:</b> Trocar Tema')">
+      Piscar Sobrancelha 2x <span class="tipo">BILATERAL</span>
+    </button>
+  </div>
+
+  <!-- ABA BOCA -->
+  <div id="boca" class="comandos">
+    <button class="cmd-btn" onclick="mostrarInstrucao('BOCA ABERTA', 'Abra a boca. <b>Ação:</b> Zoom 2x no HUD')">
+      Abrir a Boca <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('SORRIR', 'Dê um sorriso grande. <b>Ação:</b> Tirar Foto')">
+      Sorrir <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('BOCA O', 'Faça boca em formato de O. <b>Ação:</b> Gravar Comando de Voz')">
+      Boca em "O" <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('MORDER LABIO', 'Morda o lábio inferior. <b>Ação:</b> Pausar/Continuar')">
+      Morder Lábio <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('ESTALAR LINGUA', 'Sorria e abra um pouco a boca. <b>Ação:</b> Som ON/OFF')">
+      Estalar Língua <span class="tipo">BILATERAL</span>
+    </button>
+  </div>
+
+  <!-- ABA CABEÇA -->
+  <div id="cabeca" class="comandos">
+    <button class="cmd-btn" onclick="mostrarInstrucao('CABEÇA ESQ', 'Incline a cabeça pro SEU lado esquerdo. <b>Ação:</b> Painel Esquerdo')">
+      Inclinar Cabeça Esq <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('CABEÇA DIR', 'Incline a cabeça pro SEU lado direito. <b>Ação:</b> Painel Direito')">
+      Inclinar Cabeça Dir <span class="tipo">UNILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('CABEÇA SIM', 'Balançe a cabeça como se dissesse SIM. <b>Ação:</b> Confirmar')">
+      Balançar Cabeça "SIM" <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('CABEÇA NÃO', 'Balançe a cabeça como se dissesse NÃO. <b>Ação:</b> Cancelar')">
+      Balançar Cabeça "NÃO" <span class="tipo">BILATERAL</span>
+    </button>
+    <button class="cmd-btn" onclick="mostrarInstrucao('OLHAR BAIXO', 'Olhe para baixo e segure 2 segundos. <b>Ação:</b> Teclado Holográfico')">
+      Olhar pra Baixo 2s <span class="tipo">DIRECIONAL</span>
+    </button>
+  </div>
+</div>
 
 <script>
 const video=document.getElementById('camera'), canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
-let mouseOn=false, menuOn=false;
-let lastEyeL=0, lastBrow=0;
+let mouseOn=false, lastCmd=0;
 
-// LIGAR CÂMERA
-navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}})
-.then(s=>{video.srcObject=s;document.getElementById('log').innerText="Câmera OK. Piscar olho E para mouse."})
-.catch(e=>{document.getElementById('log').innerText="ERRO CÂMERA: "+e.message});
+navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(s=>video.srcObject=s);
 
-// FACE MESH
 const faceMesh=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
 faceMesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.6});
 faceMesh.onResults(onResults);
 new Camera(video,{onFrame:async()=>{await faceMesh.send({image:video})}}).start();
 
-function feedback(type, msg){
-  const els = [document.getElementById('p1'),document.getElementById('p2'),document.getElementById('log')];
-  els.forEach(el=>{el.classList.remove('active','alert')});
-  if(type==='on') els.forEach(el=>el.classList.add('active'));
-  if(type==='off') els.forEach(el=>el.classList.add('alert'));
-  document.getElementById('cmd').innerText = msg;
-  document.getElementById('log').innerText = msg;
+function mostrarAba(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.comandos').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
 }
 
-function drawOcta(x,y,active){
-  ctx.strokeStyle=active?'#00ff88':'#00f7ff';
-  ctx.lineWidth=3;ctx.shadowBlur=20;ctx.shadowColor=active?'#00ff88':'#00f7ff';
-  ctx.beginPath();
-  ctx.moveTo(x,y-12);ctx.lineTo(x+12,y);ctx.lineTo(x,y+12);ctx.lineTo(x-12,y);ctx.closePath();
-  ctx.moveTo(x,y-12);ctx.lineTo(x,y+12);
-  ctx.moveTo(x-12,y);ctx.lineTo(x+12,y);
-  ctx.stroke();
+function mostrarInstrucao(titulo, texto){
+  document.getElementById('instrucao').innerText = "TESTE AGORA: " + titulo;
+  document.getElementById('log').innerHTML = `<div id="instrucao">TESTE AGORA: ${titulo}</div>${texto}`;
+}
+
+function feedback(msg){
+  if(Date.now()-lastCmd<700) return;
+  lastCmd=Date.now();
+  document.getElementById('cmd').innerText=msg;
+  document.getElementById('p1').classList.add('active');
+  setTimeout(()=>document.getElementById('p1').classList.remove('active'),500);
 }
 
 function onResults(res){
-  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  if(!res.multiFaceLandmarks?.length){
-    feedback('off',"ROSTO NÃO DETECTADO");return
-  }
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!res.multiFaceLandmarks?.length) return;
   const lm=res.multiFaceLandmarks[0];
-  const now=Date.now();
 
-  // LANDMARKS
-  const eyeL=lm[145]; // pálpebra inf esq
-  const eyeTopL=lm[159]; // pálpebra sup esq
-  const browL=lm[70];const browR=lm[300];
-  const eyeR=lm[374];const eyeTopR=lm[386];
+  const eyeL=lm[145], eyeTopL=lm[159]; // SEU OLHO ESQ
+  const eyeR=lm[374], eyeTopR=lm[386]; // SEU OLHO DIR
+  const browL=lm[70], browR=lm[300];
+  const mouthOpen=lm[14].y-lm[13].y;
+  const headX=lm[1].x;
 
-  // COMANDO 1: PISCAR OLHO ESQUERDO = LIGA/DESLIGA MOUSE
-  let blinkL = eyeL.y - eyeTopL.y; // quanto menor, mais fechado
-  if(blinkL < 0.005 && now - lastEyeL > 600){
-    lastEyeL = now;
-    mouseOn =!mouseOn;
-    document.getElementById('mouse').innerText = mouseOn? 'ON' : 'OFF';
-    document.getElementById('status').innerText = mouseOn? 'ONLINE' : 'STANDBY';
-    feedback(mouseOn? 'on':'off', mouseOn? "MOUSE ATIVADO" : "MOUSE DESATIVADO");
-    document.getElementById('pointer').style.display = mouseOn? 'block' : 'none';
-  }
+  let blinkL=eyeL.y-eyeTopL.y, blinkR=eyeR.y-eyeTopR.y;
+  let browUpL=lm[52].y-browL.y, browUpR=lm[282].y-browR.y;
 
-  // COMANDO 2: LEVANTAR 2 SOBRANCELHAS = MENU
-  let browUpL = lm[52].y - browL.y; // testa - sobrancelha
-  let browUpR = lm[282].y - browR.y;
-  if(browUpL > 0.025 && browUpR > 0.025 && now - lastBrow > 800){
-    lastBrow = now;
-    menuOn =!menuOn;
-    document.getElementById('menu').style.display = menuOn? 'block' : 'none';
-    document.getElementById('menu').classList.toggle('active',menuOn);
-    feedback(menuOn? 'on':'off', menuOn? "MENU ABERTO" : "MENU FECHADO");
-  }
+  // OLHOS
+  if(blinkL<0.005){mouseOn=!mouseOn;document.getElementById('mouse').innerText=mouseOn?'ON':'OFF';document.getElementById('status').innerText=mouseOn?'ONLINE':'STANDBY';feedback(mouseOn?"MOUSE ATIVADO":"MOUSE DESATIVADO");document.getElementById('pointer').style.display=mouseOn?'block':'none';}
+  if(blinkR<0.005){feedback("PRINT SALVO");}
+  if(blinkL<0.005 && blinkR<0.005){feedback("MODO FOCO");}
+  if(lm[1].y<0.3){feedback("SCANNER ATIVO");}
 
-  // MOUSE SEGUE OLHO
+  // SOBRANCELHAS
+  if(browUpL>0.025 && browUpR>0.025){feedback("MENU");}
+  if(browUpL>0.025 && browUpR<0.015){feedback("PAINEL ARMAS");}
+  if(browUpR>0.025 && browUpL<0.015){feedback("PAINEL ESCUDO");}
+  if(browUpL<0.005 && browUpR<0.005){feedback("STEALTH");}
+
+  // BOCA
+  if(mouthOpen>0.04){canvas.style.transform='scaleX(-1) scale(1.2)'}else{canvas.style.transform='scaleX(-1)'}
+  if(mouthOpen>0.12){feedback("FOTO")}
+
+  // CABEÇA
+  if(headX<0.45){feedback("PAINEL ESQUERDO");}
+  if(headX>0.55){feedback("PAINEL DIREITO");}
+
+  // MOUSE
   if(mouseOn){
-    const eye=lm[468]; // iris
-    const x=(1-eye.x)*canvas.width;
-    const y=eye.y*canvas.height;
-    document.getElementById('pointer').style.left=(x-12)+'px';
-    document.getElementById('pointer').style.top=(y-12)+'px';
-    drawOcta(x,y,true);
-  } else {
-    drawOcta(canvas.width/2,canvas.height/2,false);
+    const eye=lm[468]; const x=(1-eye.x)*canvas.width; const y=eye.y*canvas.height;
+    document.getElementById('pointer').style.left=(x-12)+'px';document.getElementById('pointer').style.top=(y-12)+'px';
+    ctx.strokeStyle='#00ff88';ctx.lineWidth=3;ctx.shadowBlur=20;ctx.shadowColor='#00ff88';
+    ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+12,y);ctx.lineTo(x,y+12);ctx.lineTo(x-12,y);ctx.closePath();ctx.stroke();
   }
 }
 </script>
