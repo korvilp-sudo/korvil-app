@@ -2,8 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-HOLOGRAM BRACELETE v3.0</title>
+<title>K-BRACELETE JARVIS v5.0</title>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
@@ -13,18 +12,18 @@
   body{background:#000;overflow:hidden;font-family:'Orbitron',monospace}
 
   #camera{position:absolute;opacity:0;width:1px;height:1px}
-  #cena{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, #001122 0%, #000 100%)}
+  #cena{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, #001a2e 0%, #000 100%)}
 
-  /* TERRENO GRID IGUAL IMAGEM */
-.grid{position:absolute;bottom:0;width:100%;height:60%;background-image:linear-gradient(rgba(0,255,136,0.3) 1px, transparent 1px),linear-gradient(90deg, rgba(0,255,136,0.3) 1px, transparent 1px);background-size:50px 50px;transform:perspective(1000px) rotateX(65deg);box-shadow:0 -20px 100px rgba(0,255,136,0.2)}
+  /* TERRENO HOLO */
+.grid{position:absolute;bottom:0;width:100%;height:65%;background-image:linear-gradient(rgba(0,247,255,0.2) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.2) 1px, transparent 1px);background-size:35px 35px;transform:perspective(1200px) rotateX(70deg);animation:gridMove 20s linear infinite}
+  @keyframes gridMove{100%{background-position:0 35px}}
 
-  /* LIXEIRA INFERIOR ESQUERDA */
-  #lixeira{position:absolute;bottom:5%;left:3%;width:70px;height:70px;border:2px solid #ff0044;border-radius:50%;box-shadow:0 0 20px #ff0044;transition:0.4s}
-  #lixeira.magnet{border-color:#ffaa00;box-shadow:0 0 60px #ffaa00;transform:scale(1.4)}
+  /* LIXEIRA MAGNÉTICA INFERIOR ESQUERDA IGUAL PEDIU */
+  #lixeira{position:absolute;bottom:6%;left:4%;width:90px;height:90px;border:3px dashed #ff0044;border-radius:50%;box-shadow:0 0 30px #ff0044;transition:0.3s;display:flex;align-items:center;justify-content:center;color:#ff0044;font-size:10px}
+  #lixeira.magnet{border-color:#ffaa00;box-shadow:0 0 80px #ffaa00;transform:scale(1.5);color:#ffaa00}
 
-  /* HUD IGUAL IMAGEM */
-.hud{position:absolute;bottom:5%;right:3%;color:#00ff88;background:rgba(0,0,0,0.7);padding:10px 15px;border:1px solid #00ff88;border-radius:4px;font-size:10px;line-height:1.6}
-.hud b{color:#00ff88}
+  /* HUD JARVIS */
+.jarvis{position:absolute;top:4%;left:50%;transform:translateX(-50%);color:#00f7ff;background:rgba(0,247,255,0.05);padding:14px 24px;border:2px solid #00f7ff;border-radius:10px;font-size:13px;text-align:center;box-shadow:0 0 40px rgba(0,247,255,0.5)}
 </style>
 </head>
 <body>
@@ -32,60 +31,57 @@
 <video id="camera" autoplay playsinline muted></video>
 <div id="cena"></div>
 <div class="grid"></div>
-<div id="lixeira"></div>
+<div id="lixeira">LIXEIRA</div>
 
-<div class="hud">
-  <b>K-HOLOGRAM BRACELETE v3.0</b><br>
-  STATUS: <span id="status">ESCANEANDO</span><br>
-  PEÇA: <span id="peca">NENHUMA</span><br>
-  GESTO: <span id="gesto">AGUARDANDO</span>
+<div class="jarvis">
+  <b>JARVIS K-BRACELETE v5.0</b><br>
+  STATUS: <span id="status">AGUARDANDO VESTIR</span><br>
+  MÃO ESQ: <span id="maoEsq">LIVRE</span> | MÃO DIR: <span id="maoDir">LIVRE</span>
 </div>
 
 <script>
 // ===== 1. THREE.JS =====
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,1000);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setSize(innerWidth,innerHeight);
 document.getElementById('cena').appendChild(renderer.domElement);
-camera.position.set(0,2,5);
+camera.position.set(0,2.5,5.5);
 
-scene.add(new THREE.AmbientLight(0x00ff88,0.5));
+scene.add(new THREE.AmbientLight(0x00f7ff,0.5));
+const pointLight=new THREE.PointLight(0x00f7ff,2,30);pointLight.position.set(0,3,3);scene.add(pointLight);
 
-// ===== 2. BRACELETE IGUAL IMAGEM =====
-const braceleteGroup=new THREE.Group();scene.add(braceleteGroup);
-const pecas=[];
+// ===== 2. BRACELETE TONY STARK NO CENTRO =====
+const braceleteGroup=new THREE.Group();
+braceleteGroup.position.set(0,0.6,0);
+scene.add(braceleteGroup);
 
-// Base wireframe do bracelete - IGUAL IMAGEM
-const baseGeo=new THREE.TorusGeometry(1.5,0.12,8,100);
-const baseMat=new THREE.MeshBasicMaterial({color:0x00ff88,wireframe:true,transparent:true,opacity:0.6});
+// Base wireframe grossa
+const baseGeo=new THREE.TorusGeometry(1.4,0.14,12,120);
+const baseMat=new THREE.MeshPhongMaterial({color:0x00f7ff,wireframe:true,transparent:true,opacity:0.8});
 const base=new THREE.Mesh(baseGeo,baseMat);braceleteGroup.add(base);
 
-// PEÇAS VERDES IGUAL IMAGEM: 2 hexágonos + 1 retângulo
-const formatos=[
-  new THREE.CylinderGeometry(0.25,0.25,0.15,6), // Hexágono esq
-  new THREE.BoxGeometry(0.3,0.4,0.15), // Retângulo meio
-  new THREE.CylinderGeometry(0.25,0.25,0.15,6) // Hexágono dir
+// 3 PEÇAS MODULARES IGUAL FILME
+const pecas=[];
+const pecasConfig=[
+  {type:'hex', pos:-1.4, color:0x00ff88},
+  {type:'rect', pos:0, color:0x00f7ff},
+  {type:'hex', pos:1.4, color:0xff00ff}
 ];
-const posicoes=[-1.5,0,1.5];
 
-formatos.forEach((geo,i)=>{
-  const mat=new THREE.MeshPhongMaterial({color:0x00ff88,emissive:0x00ff88,emissiveIntensity:0.6});
+pecasConfig.forEach(cfg=>{
+  let geo = cfg.type==='hex'? new THREE.CylinderGeometry(0.24,0.24,0.14,6) : new THREE.BoxGeometry(0.28,0.38,0.14);
+  const mat=new THREE.MeshPhongMaterial({color:cfg.color,emissive:cfg.color,emissiveIntensity:0.8});
   const peca=new THREE.Mesh(geo,mat);
-  peca.position.set(posicoes[i],0,0);
-  peca.userData={id:i,noBracelete:true};
+  peca.position.set(cfg.pos,0,0);
+  peca.userData={noBracelete:true,originalPos:peca.position.clone()};
   braceleteGroup.add(peca);pecas.push(peca);
 });
 
-// Pontas do bracelete
-[-1.8,1.8].forEach(x=>{
-  const ponta=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,0.2),baseMat);
-  ponta.position.set(x,0,0);braceleteGroup.add(ponta);
-})
-
-// ===== 3. CONTROLE POR GESTOS =====
+// ===== 3. CONTROLE JARVIS - 2 MÃOS =====
 const video=document.getElementById('camera');
-let maoEsq=null, maoDir=null, pecaSegurando=null;
+let maoEsq=null, maoDir=null;
+let braceleteVestido=false, pecaSegurando=null;
 
 navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(s=>video.srcObject=s);
 
@@ -94,7 +90,7 @@ hands.setOptions({maxNumHands:2});
 hands.onResults(onHands);
 new Camera(video,{onFrame:async()=>{await hands.send({image:video})}}).start();
 
-function get3DPos(lm){return new THREE.Vector3((lm.x-0.5)*6,(0.5-lm.y)*4,lm.z*3)}
+function get3D(lm){return new THREE.Vector3((lm.x-0.5)*6,(0.5-lm.y)*4.5,lm.z*3)}
 function dist(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2)}
 
 function onHands(res){
@@ -104,63 +100,93 @@ function onHands(res){
     if(res.multiHandedness[i].label==='Left') maoEsq=lm; else maoDir=lm;
   });
 
-  const posDir=maoDir?get3DPos(maoDir[8]):null;
-  const punho=maoDir?dist(maoDir[4],maoDir[8])<0.05:false;
-  const maoAberta=maoDir?dist(maoDir[4],maoDir[8])>0.15:false;
+  const posEsq=maoEsq?get3D(maoEsq[0]):null;
+  const posDir=maoDir?get3D(maoDir[8]):null;
+  const punhoEsq=maoEsq?dist(maoEsq[4],maoEsq[8])<0.05:false;
+  const punhoDir=maoDir?dist(maoDir[4],maoDir[8])<0.05:false;
+  const abertaEsq=maoEsq?dist(maoEsq[4],maoEsq[8])>0.15:false;
+  const abertaDir=maoDir?dist(maoDir[4],maoDir[8])>0.15:false;
 
-  // 1. PASSAR MÃO DENTRO = BRILHA SEM ESTRAGAR
-  if(posDir){
-    pecas.forEach(p=>{
-      if(posDir.distanceTo(p.position)<0.4){
-        p.material.emissiveIntensity=1.5;
-        setTimeout(()=>p.material.emissiveIntensity=0.6,150);
-      }
-    });
+  // ===== 1. VESTIR BRACELETE - PASSAR BRAÇO POR DENTRO =====
+  if(posEsq &&!braceleteVestido){
+    if(posEsq.distanceTo(braceleteGroup.position)<1.3){
+      braceleteVestido=true;
+      document.getElementById('status').innerText='BRACELETE VESTIDO';
+      baseMat.color.set(0x00ffff);
+      document.getElementById('maoEsq').innerText='VESTINDO';
+    }
   }
 
-  // 2. SEGURAR PEÇA E TIRAR DO BRACELETE
-  if(punho &&!pecaSegurando && posDir){
+  // ===== 2. MOVER BRACELETE COM MÃO ESQUERDA =====
+  if(braceleteVestido && posEsq){
+    braceleteGroup.position.copy(posEsq);
+    braceleteGroup.position.y+=0.6;
+    document.getElementById('maoEsq').innerText='MOVENDO';
+  }
+
+  // ===== 3. ROTACIONAR BRACELETE COM 2 MÃOS =====
+  if(maoEsq && maoDir && abertaEsq && abertaDir){
+    const dx=posDir.x-posEsq.x;
+    const dy=posDir.y-posEsq.y;
+    braceleteGroup.rotation.z=dx*1.8;
+    braceleteGroup.rotation.x=dy*1.8;
+    document.getElementById('status').innerText='ROTACIONANDO';
+  }
+
+  // ===== 4. MÃO DIREITA: PEGAR PEÇA E JOGAR FORA =====
+  if(punhoDir && posDir && braceleteVestido &&!pecaSegurando){
     pecas.forEach(p=>{
-      if(p.userData.noBracelete && posDir.distanceTo(p.position)<0.5){
+      const worldPos=p.position.clone().add(braceleteGroup.position);
+      if(worldPos.distanceTo(posDir)<0.45){
         pecaSegurando=p;
+        scene.add(p); // TIRA DO BRACELETE
         p.userData.noBracelete=false;
-        scene.add(p); // Tira do grupo
-        document.getElementById('status').innerText='PEÇA SEGURADA';
-        document.getElementById('peca').innerText='PEÇA '+p.userData.id;
-        document.getElementById('gesto').innerText='ARRARSTAR';
+        document.getElementById('maoDir').innerText='SEGURANDO';
+        document.getElementById('status').innerText='PEÇA REMOVIDA';
+        p.material.emissiveIntensity=1.8;
       }
     });
   }
 
-  // 3. ARRASTAR PEÇA
+  // ARRASTAR PEÇA
   if(pecaSegurando && posDir){
     pecaSegurando.position.copy(posDir);
-    pecaSegurando.rotation.x+=0.03; pecaSegurando.rotation.y+=0.03; // Gira 360
+    pecaSegurando.rotation.x+=0.05;pecaSegurando.rotation.y+=0.05; // Gira 360
 
     // LIXEIRA MAGNÉTICA
-    const lixeiraPos=new THREE.Vector3(-3,-2,0);
+    const lixeiraPos=new THREE.Vector3(-2.8,-2,0);
     const distLix=pecaSegurando.position.distanceTo(lixeiraPos);
-    if(distLix<1.8){
+    if(distLix<2){
       document.getElementById('lixeira').classList.add('magnet');
-      document.getElementById('gesto').innerText='SOLTE PRA JOGAR FORA';
-      if(maoAberta){
+      if(abertaDir){ // SOLTA E PUXA SOZINHA
         const dir=lixeiraPos.clone().sub(pecaSegurando.position).normalize();
-        pecaSegurando.position.add(dir.multiplyScalar(0.15));
+        pecaSegurando.position.add(dir.multiplyScalar(0.18));
+        document.getElementById('status').innerText='DESCARTANDO...';
         if(distLix<0.4){
           scene.remove(pecaSegurando);
           pecaSegurando=null;
-          document.getElementById('status').innerText='PEÇA DESCARTADA';
           document.getElementById('lixeira').classList.remove('magnet');
+          document.getElementById('status').innerText='PEÇA DESCARTADA';
+          document.getElementById('maoDir').innerText='LIVRE';
         }
       }
     }else{document.getElementById('lixeira').classList.remove('magnet')}
   }
 
-  // 4. SOLTAR PEÇA NO AR
-  if(maoAberta && pecaSegurando){
+  // SOLTAR PEÇA NO AR
+  if(abertaDir && pecaSegurando && distLix>2){
     pecaSegurando=null;
-    document.getElementById('gesto').innerText='SOLTO';
-    document.getElementById('peca').innerText='NENHUMA';
+    document.getElementById('maoDir').innerText='LIVRE';
+    document.getElementById('status').innerText='BRACELETE VESTIDO';
+  }
+
+  // ===== 5. TIRAR BRACELETE =====
+  if(braceleteVestido && posEsq && posEsq.y<-2.5){
+    braceleteVestido=false;
+    braceleteGroup.position.set(0,0.6,0);
+    baseMat.color.set(0x00f7ff);
+    document.getElementById('status').innerText='AGUARDANDO VESTIR';
+    document.getElementById('maoEsq').innerText='LIVRE';
   }
 }
 
@@ -168,13 +194,17 @@ function onHands(res){
 function animate(){
   requestAnimationFrame(animate);
 
-  // BRACELETE SEGUE MÃO ESQUERDA = VESTIR
-  if(maoEsq){
-    const posPulso=get3DPos(maoEsq[0]);
-    braceleteGroup.position.copy(posPulso);
-    braceleteGroup.rotation.z+=0.01; // Gira 360 automático
+  // Passar a mão dentro = brilho
+  if(maoDir){
+    const pos=get3D(maoDir[8]);
+    pecas.forEach(p=>{
+      const wp=p.position.clone().add(braceleteGroup.position);
+      if(wp.distanceTo(pos)<0.5) p.material.emissiveIntensity=1.5;
+      else p.material.emissiveIntensity=0.8;
+    });
   }
 
+  if(!pecaSegurando) braceleteGroup.rotation.y+=0.003;
   renderer.render(scene,camera);
 }
 animate();
