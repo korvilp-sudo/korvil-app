@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>K-RIADOR v1.0</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Orbitron',monospace}
+
+  /* 1. VIDEO DE FUNDO FULLSCREEN */
+  #bgvideo{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    object-fit:cover;
+    z-index:1;
+    filter:brightness(0.7) contrast(1.2);
+  }
+
+  /* 2. CAMADA DO HUD POR CIMA */
+  #hud{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:2;
+    pointer-events:none;
+  }
+
+  /* 3. TEXTOS PISCANDO */
+  .texto{
+    position:absolute;
+    color:#00f7ff;
+    font-size:14px;
+    text-shadow:0 0 10px #00f7ff, 0 0 20px #00f7ff;
+    animation:piscar 2s infinite;
+    white-space:nowrap;
+  }
+  @keyframes piscar{
+    0%,100%{opacity:1}
+    50%{opacity:0.1}
+  }
+
+  /* GRID SCI-FI */
+  .grid{
+    position:absolute;
+    bottom:0;width:100%;height:100%;
+    background-image:linear-gradient(rgba(0,247,255,0.08) 1px, transparent 1px),linear-gradient(90deg, rgba(0,247,255,0.08) 1px, transparent 1px);
+    background-size:40px 40px;
+    transform:perspective(1000px) rotateX(70deg);
+  }
+
+  /* TITULO */
+  .titulo{
+    position:absolute;top:5%;width:100%;text-align:center;
+    color:#00f7ff;font-size:20px;letter-spacing:3px;
+    text-shadow:0 0 20px #00f7ff;
+  }
+</style>
+</head>
+<body>
+
+<!-- VIDEO DE FUNDO -->
+<video id="bgvideo" autoplay loop muted playsinline>
+  <source src="YTDown.com_YouTube_Sci-Fi-Interface-Hi-Tech-UI-Sound-Effect_Media_HrmSJj-EgxY_001_1080p.mp4" type="video/mp4">
+</video>
+
+<!-- HUD POR CIMA -->
+<div id="hud">
+  <div class="grid"></div>
+  <div class="titulo">K-RIADOR SYSTEM ONLINE</div>
+  
+  <!-- 10 TEXTOS DE 50 CARACTERES PISCANDO -->
+  <div class="texto" style="top:20%;left:5%;animation-delay:0s">> INICIANDO PROTOCOLO K-BRACELETE v6.0..........</div>
+  <div class="texto" style="top:25%;left:60%;animation-delay:0.3s">> CONEXAO NEURAL: ESTAVEL - LATENCIA: 2ms........</div>
+  <div class="texto" style="top:35%;left:10%;animation-delay:0.6s">> SCANEANDO AMBIENTE: 360 GRAUS - 12 OBJETOS....</div>
+  <div class="texto" style="top:45%;right:5%;animation-delay:0.9s">> ARMA PRINCIPAL: PLASMA CANNON - CARGA: 87%....</div>
+  <div class="texto" style="top:55%;left:15%;animation-delay:1.2s">> ESCUDO DEFLETOR: ATIVO - RESISTENCIA: MAXIMA..</div>
+  <div class="texto" style="top:65%;right:10%;animation-delay:1.5s">> RADAR TATICO: 3 INIMIGOS DETECTADOS A 50M.....</div>
+  <div class="texto" style="top:75%;left:8%;animation-delay:0.2s">> ENERGIA DO NUCLEO: 92% - REATOR ESTAVEL........</div>
+  <div class="texto" style="top:30%;right:15%;animation-delay:0.5s">> MODO FURTIVO: DESATIVADO - VISIVEL NO RADAR...</div>
+  <div class="texto" style="top:80%;left:50%;transform:translateX(-50%);animation-delay:0.8s">> JARVIS: AGUARDANDO COMANDOS DO OPERADOR........</div>
+  <div class="texto" style="top:50%;left:50%;transform:translateX(-50%);font-size:18px;animation-delay:0s">> ACESSO LIBERADO: BEM VINDO SAY KORVIL <</div>
+</div>
+
+<script>
+  // FORÇA O VIDEO RODAR NO CELULAR APOS TOQUE
+  document.body.addEventListener('click',()=>{
+    document.getElementById('bgvideo').play();
+  },{once:true});
+</script>
+
+</body>
+</html>
