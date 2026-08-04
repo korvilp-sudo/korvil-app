@@ -60,6 +60,42 @@ class KAIBrain {
     else this.falar(`[PONTE] Erro ao enviar`);
   }
 
+  // ===== 1.5. AUTO-ANÁLISE - ELE SE VÊ =====
+  async analisarSistema(){
+    this.falar("Escaneando meu próprio corpo...");
+    const url = `https://api.github.com/repos/${this.REPO}/contents/kai-core`;
+
+    try{
+      const res = await fetch(url, {headers: {Authorization: `token ${this.TOKEN}`}});
+      const dados = await res.json();
+      let contador = {pastas:0, arquivos:0};
+      await this.listarRecursivo(dados, "kai-core", contador);
+      this.falar(`Análise completa Chefe. Tenho ${contador.pastas} pastas e ${contador.arquivos} arquivos`);
+    }catch(e){
+      this.falar("Erro: Não consegui me analisar. Verifica o token");
+    }
+  }
+
+  async listarRecursivo(itens, caminho, contador){
+    for(let item of itens){
+      if(item.type === "dir"){
+        contador.pastas++;
+        const res = await fetch(item.url, {headers: {Authorization: `token ${this.TOKEN}`}});
+        const sub = await res.json();
+        await this.listarRecursivo(sub, item.path, contador);
+      }else{
+        contador.arquivos++;
+      }
+    }
+    this.log(`[${caminho}]`);
+  }
+
+  log(txt){
+    const el = document.getElementById('editorCodigo');
+    if(el) el.innerHTML += `<pre style="color:#00ff66">${txt}</pre>`;
+    console.log(txt);
+  }
+
   // ===== 2. AUTO UPDATE VIA GITHUB =====
   iniciarAutoUpdate(){
     this.verificarAtualizacao();
@@ -134,7 +170,19 @@ class KAIBrain {
     recognition.start();
   }
 
-  // ===== 5. PROCESSADOR PRINCIPAL - JUNÇÃO DAS 13 GAVETAS + PONTE =====
+  // ===== 5. ATALHOS PRA BOTÃO FUNCIONAR =====
+  async processar(cmd){ // apelido pro botão
+    return await this.processarComando(cmd);
+  }
+
+  async autoUpdate(){ // botão sobe você
+    this.falar("Enviando meu código pra ponte...");
+    await this.enviarProGithub("kai-core/brain/kai-brain.js", this.toString());
+    this.falar("Código enviado. Reiniciando em 3s");
+    setTimeout(()=>location.reload(), 3000);
+  }
+
+  // ===== 6. PROCESSADOR PRINCIPAL - JUNÇÃO DAS 13 GAVETAS + PONTE =====
   async processarComando(cmdOriginal){
     const cmd = cmdOriginal.toLowerCase();
     this.salvarMemoria({tipo:"comando", comando: cmdOriginal});
@@ -142,10 +190,7 @@ class KAIBrain {
 
     // ===== COMANDOS NOVOS DA PONTE =====
     if(cmd.includes("sobe você pro github") || cmd.includes("atualiza você")){
-      const codigo = this.toString();
-      await this.enviarProGithub("kai-core/brain/kai-brain.js", codigo);
-      this.falar("Código enviado. Reiniciando pra aplicar");
-      setTimeout(()=>location.reload(), 3000);
+      await this.autoUpdate();
       return;
     }
     else if(cmd.includes("sobe arquivo")){
@@ -154,6 +199,10 @@ class KAIBrain {
       const codigo = partes.slice(3).join(" ");
       await this.enviarProGithub(`kai-core/${arquivo}`, codigo);
       return this.falar(`Arquivo ${arquivo} enviado`);
+    }
+    else if(cmd.includes("se analisa") || cmd.includes("o que você tem")){
+      await this.analisarSistema();
+      return;
     }
 
     // ===== ATALHOS SISTEMA =====
@@ -211,7 +260,7 @@ class KAIBrain {
         await createFile(target, target);
         return;
       }
-      return this.falar(`Comando recebido. Tente: criar post, ir para sistema K, sobe você pro github`);
+      return this.falar(`Comando recebido. Tente: criar post, sobe você pro github, se analisa`);
     }
   }
 
