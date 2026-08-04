@@ -3,137 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K-ITHUB V-2026.7 - KORVIL LAB</title>
+  <title>KOPYRIGHT PRO V1.0</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#010409;color:#00f0ff;font-family:'Courier New', monospace;height:100vh;display:flex;flex-direction:column}
-    header{padding:15px;background:#0d1117;border-bottom:2px solid #00f0ff;text-align:center}
-    header h1{color:#00f0ff;text-shadow:0 0 10px #00f0ff;font-size:20px}
+    body{font-family:'Segoe UI', Arial;background:#0a0a0a;color:#eee;display:flex;flex-direction:column;height:100vh}
+    header{background:linear-gradient(90deg,#6a00ff,#00d4ff);padding:15px;text-align:center}
+    header h1{font-size:22px;letter-spacing:2px}
+    header p{font-size:12px;opacity:0.8}
     
-    .box{display:flex;flex:1}
-    .esq{width:50%;padding:20px;background:#0d1117;border-right:2px solid #00f0ff;overflow:auto}
-    .dir{width:50%;padding:20px;background:#000}
+    .container{flex:1;display:flex;padding:20px;gap:20px}
+    .box{flex:1;background:#111;border:1px solid #333;border-radius:8px;padding:15px}
+    .box h2{color:#00d4ff;font-size:16px;margin-bottom:10px}
     
-    input{width:100%;padding:12px;margin:10px 0;background:#000;color:#00ff66;border:2px solid #00f0ff;border-radius:5px;font-size:14px}
-    button{width:100%;padding:12px;margin:8px 0;background:#00f0ff;color:#000;border:none;border-radius:5px;font-weight:bold;font-size:15px;cursor:pointer}
-    button:hover{background:#00ccdd;box-shadow:0 0 15px #00f0ff}
+    textarea{width:100%;height:200px;background:#000;color:#0f0;border:1px solid #00d4ff;border-radius:5px;padding:10px;font-family:'Courier New';resize:none}
     
-    #log{background:#010409;border:2px solid #00f0ff;height:400px;overflow:auto;padding:10px;color:#00ff66;font-size:12px}
-    #respostaKai{padding:15px;background:#161b22;border-top:2px solid #00f0ff;color:#00ff66}
-
-    /* VISOR FLUTUANTE */
-    #kaiVisor{position:fixed; bottom:20px; right:20px; width:380px; height:250px; background:#0d1117; border:2px solid #00f0ff; border-radius:10px; box-shadow:0 0 25px #00f0ff; z-index:9999; display:flex; flex-direction:column;}
-    #kaiVisorHeader{background:#00f0ff; color:#000; padding:8px 12px; display:flex; justify-content:space-between; font-weight:bold; border-radius:8px 8px 0 0;}
-    #kaiVisorHeader button{background:transparent; border:none; color:#000; font-size:20px; cursor:pointer; font-weight:bold;}
-    #kaiVisorCorpo{flex:1; overflow:auto; padding:10px; color:#00ff66; background:#010409; font-size:11px;}
-    #kaiVisorCorpo pre{margin:3px 0;}
+    button{width:100%;padding:12px;margin-top:10px;background:#6a00ff;color:#fff;border:none;border-radius:5px;font-weight:bold;cursor:pointer}
+    button:hover{background:#00d4ff;color:#000}
+    
+    footer{text-align:center;padding:10px;font-size:11px;background:#000;border-top:1px solid #333;color:#888}
+    .marca{color:#00d4ff;font-weight:bold}
   </style>
 </head>
 <body>
-  <header><h1>⚡ K-ITHUB V-2026.7 - LAB K-RIADOR ⚡</h1></header>
+  <header>
+    <h1>⚡ KOPYRIGHT PRO ⚡</h1>
+    <p>Gerador de Copyright e Proteção de Conteúdo</p>
+  </header>
   
-  <div class="box">
-    <div class="esq">
-      <h2>PAINEL DE COMANDOS</h2>
-      <input id="cmd" placeholder="Digite: hora, teste, analisa">
-      <button onclick="KAI.processar(document.getElementById('cmd').value)">▶ EXECUTAR</button>
-      <button onclick="KAI.testar()">🧪 TESTE DE LOG</button>
-      <button onclick="KAI.analisarSistema()">🔍 SE ANALISAR</button>
-      <button onclick="abrirVisor()">👁 ABRIR VISOR</button>
-      <p style="margin-top:20px;font-size:11px;color:#888">Local: kai-core/lab/k-riador/k-ithub/</p>
+  <div class="container">
+    <div class="box">
+      <h2>1. SEU TEXTO/CÓDIGO</h2>
+      <textarea id="entrada" placeholder="Cole aqui seu texto, código ou ideia..."></textarea>
+      <button onclick="gerar()">GERAR COPYRIGHT</button>
     </div>
-    <div class="dir">
-      <h2>LOG DO SISTEMA EM TEMPO REAL</h2>
-      <div id="log"></div>
+    
+    <div class="box">
+      <h2>2. RESULTADO COM PROTEÇÃO</h2>
+      <textarea id="saida" readonly placeholder="O copyright gerado vai aparecer aqui..."></textarea>
+      <button onclick="copiar()">COPIAR</button>
     </div>
   </div>
   
-  <div id="respostaKai">K-AI: Aguardando comando...</div>
-
-  <!-- VISOR FLUTUANTE -->
-  <div id="kaiVisor">
-    <div id="kaiVisorHeader">
-      <span>K-AI SISTEMA V-2026.7</span>
-      <button onclick="fecharVisor()">X</button>
-    </div>
-    <div id="kaiVisorCorpo"></div>
-  </div>
+  <footer>
+    © <span id="ano"></span> <span class="marca">KOPYRIGHT PRO</span> - Todos os direitos reservados. KORVIL LAB
+  </footer>
 
 <script>
-function fecharVisor(){ document.getElementById('kaiVisor').style.display='none'; }
-function abrirVisor(){ document.getElementById('kaiVisor').style.display='flex'; }
+document.getElementById('ano').innerText = new Date().getFullYear();
 
-// ============= CÉREBRO K-AI V-2026.7 =============
-class KAIBrain {
-  constructor() {
-    this.versao = "2026.7";
-    this.visor("SISTEMA K-ITHUB V-2026.7 INICIADO", "sucesso");
-    this.visor("Caminho: kai-core/lab/k-riador/k-ithub/");
-    this.visor("Status: ONLINE | Modo: GITHUB PAGES");
-    this.log("K-ITHUB ONLINE. TUDO FUNCIONANDO 100%");
-    this.falar("Kithub Lab iniciado com sucesso");
-  }
+function gerar(){
+  const texto = document.getElementById('entrada').value;
+  if(!texto) { alert("Cole algo primeiro"); return; }
+  
+  const ano = new Date().getFullYear();
+  const hash = btoa(texto).slice(0,8);
+  
+  const resultado = `/* ===================================
+   KOPYRIGHT PRO - REGISTRO ${hash}
+   © ${ano} KORVIL. Todos os direitos reservados.
+   Protegido por KOPYRIGHT PRO V1.0
+   Uso não autorizado é crime.
+   =================================== */
 
-  log(msg){
-    const el = document.getElementById('log');
-    el.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
-    el.scrollTop = el.scrollHeight;
-  }
+${texto}
 
-  visor(msg, tipo="info"){
-    const el = document.getElementById('kaiVisorCorpo');
-    if(!el) return;
-    const cor = tipo==="erro"? "#ff0033" : tipo==="sucesso"? "#00ff66" : "#00f0ff";
-    const hora = new Date().toLocaleTimeString();
-    el.innerHTML += `<pre style="color:${cor}">[${hora}] ${msg}</pre>`;
-    el.scrollTop = el.scrollHeight;
-  }
-
-  falar(texto){
-    this.visor(`FALANDO: ${texto}`);
-    this.log("K-AI: " + texto);
-    document.getElementById('respostaKai').innerHTML = "K-AI: " + texto;
-    const utter = new SpeechSynthesisUtterance(texto);
-    utter.lang = 'pt-BR'; utter.rate = 1.1;
-    speechSynthesis.speak(utter);
-  }
-
-  testar(){
-    this.visor("TESTE INICIADO", "sucesso");
-    this.log("TESTE 1: Botões funcionando");
-    this.visor("TESTE 2: Visor funcionando", "sucesso");
-    this.log("TESTE 3: Voz funcionando");
-    this.falar("Teste completo. Sistema 100% operacional");
-  }
-
-  analisarSistema(){
-    this.visor("INICIANDO AUTO-ANÁLISE...");
-    this.visor(`URL: ${window.location.href}`);
-    this.visor(`Versão: ${this.versao}`);
-    this.visor(`Caminho: ${window.location.pathname}`);
-    this.visor("ANÁLISE CONCLUÍDA", "sucesso");
-    this.falar("Análise completa. Sistema estável");
-  }
-
-  processar(cmdOriginal){
-    const cmd = cmdOriginal.toLowerCase();
-    this.visor(`COMANDO RECEBIDO: ${cmdOriginal}`);
-    this.log("PROCESSANDO: " + cmdOriginal);
-
-    if(cmd.includes("hora")) {
-      const hora = new Date().toLocaleTimeString();
-      this.visor(`HORA ATUAL: ${hora}`, "sucesso");
-      this.falar(`Agora são ${hora}`);
-    }
-    else if(cmd.includes("analisa")) { this.analisarSistema(); }
-    else if(cmd.includes("teste")) { this.testar(); }
-    else { 
-      this.visor("Comando registrado: " + cmdOriginal);
-      this.falar("Comando recebido"); 
-    }
-  }
+/* FIM DO REGISTRO - KOPYRIGHT PRO */`;
+  
+  document.getElementById('saida').value = resultado;
 }
-window.KAI = new KAIBrain();
+
+function copiar(){
+  const saida = document.getElementById('saida');
+  saida.select();
+  document.execCommand('copy');
+  alert('Copiado!');
+}
 </script>
 </body>
 </html>
