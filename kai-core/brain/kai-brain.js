@@ -1,4 +1,4 @@
-// ============= K-AI BRAIN V-2026.3 - JARVIS OS AUTO EVOLUTIVO =============
+// ============= K-AI BRAIN V-2026.4 - JARVIS OS AUTO EVOLUTIVO + PONTE =============
 import * as Cria from './actions/cria.js';
 import * as Navega from './actions/navega.js';
 import * as Sistema from './actions/sistema.js';
@@ -16,21 +16,53 @@ import * as Manipula from './actions/manipula.js';
 import { KAIParser } from './kai-parser.js';
 import { createFile } from '../commands/create.js';
 
-// ===== CÉREBRO PRINCIPAL COM AUTO UPDATE =====
+// ===== CÉREBRO PRINCIPAL COM AUTO UPDATE + PONTE =====
 class KAIBrain {
   constructor() {
-    this.versao = "2026.3";
+    this.versao = "2026.4"; // <-- AUMENTA ESSE NUMERO PRA FORÇAR UPDATE
     this.repo = "https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/kai-core/brain/";
     this.parser = new KAIParser();
     this.memorias = JSON.parse(localStorage.getItem('kai_memorias') || '[]');
+
     this.iniciarVoz();
     this.iniciarAutoUpdate();
-    this.falar("K-AI V-2026.3 online. Protocolo Say Korvil ativo. Auto-update ligado.");
+    this.iniciarPonte(); // <-- LIGA A PONTE
+    this.falar("K-AI V-2026.4 online. Protocolo Say Korvil ativo. Auto-update + Ponte ligada.");
   }
 
-  // ===== 1. AUTO UPDATE VIA GITHUB =====
+  // ===== 1. PONTE GITHUB - SOBE CÓDIGO SOZINHO =====
+  iniciarPonte(){
+    this.TOKEN = localStorage.getItem('kai_gh_token') || prompt("K-AI PONTE: Cole seu token GitHub 1x só:");
+    if(this.TOKEN) localStorage.setItem('kai_gh_token', this.TOKEN);
+    this.REPO = "korvilp-sudo/korvil-app"; // MUDA AQUI SE FOR OUTRO REPO
+  }
+
+  async enviarProGithub(caminho, codigo){
+    if(!this.TOKEN) return this.falar("Erro: Sem token na ponte");
+    const url = `https://api.github.com/repos/${this.REPO}/contents/${caminho}`;
+
+    let sha = null;
+    try{
+      const res = await fetch(url, {headers: {Authorization: `token ${this.TOKEN}`}});
+      if(res.ok) sha = (await res.json()).sha;
+    }catch{}
+
+    const r = await fetch(url, {
+      method: 'PUT',
+      headers: {Authorization: `token ${this.TOKEN}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        message: `Auto-update by K-AI V-2026.4`,
+        content: btoa(unescape(encodeURIComponent(codigo))),
+        sha: sha
+      })
+    });
+    if(r.ok) this.falar(`[PONTE] Enviado: ${caminho}`);
+    else this.falar(`[PONTE] Erro ao enviar`);
+  }
+
+  // ===== 2. AUTO UPDATE VIA GITHUB =====
   iniciarAutoUpdate(){
-    this.verificarAtualizacao(); // verifica na hora
+    this.verificarAtualizacao();
     setInterval(()=>this.verificarAtualizacao(), 300000); // 5 min
     setInterval(()=>this.evoluir(), 60000); // 1 min auto evolução
   }
@@ -40,7 +72,7 @@ class KAIBrain {
       const resposta = await fetch(this.repo + "kai-brain.js?t=" + Date.now());
       const codigoNovo = await resposta.text();
       const versaoNova = codigoNovo.match(/versao = "(.+?)"/)?.[1];
-      
+
       if(versaoNova && versaoNova!== this.versao){
         this.falar(`Nova versão v${versaoNova} encontrada. Atualizando cérebro...`);
         localStorage.setItem('kai_brain_novo', codigoNovo);
@@ -60,7 +92,7 @@ class KAIBrain {
     setTimeout(()=>location.reload(), 3000);
   }
 
-  // ===== 2. AUTO EVOLUÇÃO =====
+  // ===== 3. AUTO EVOLUÇÃO =====
   evoluir(){
     if(this.memorias.length > 20){
       this.aprenderComErros();
@@ -85,7 +117,7 @@ class KAIBrain {
     localStorage.setItem('kai_memorias', JSON.stringify(this.memorias));
   }
 
-  // ===== 3. VOZ =====
+  // ===== 4. VOZ =====
   iniciarVoz(){
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'pt-BR';
@@ -99,17 +131,33 @@ class KAIBrain {
 
     window.ouvirKAI = () => recognition.start();
     window.KAI_RECOGNITION = recognition;
-    recognition.start(); // já liga automático
+    recognition.start();
   }
 
-  // ===== 4. PROCESSADOR PRINCIPAL - JUNÇÃO DAS 13 GAVETAS =====
+  // ===== 5. PROCESSADOR PRINCIPAL - JUNÇÃO DAS 13 GAVETAS + PONTE =====
   async processarComando(cmdOriginal){
     const cmd = cmdOriginal.toLowerCase();
     this.salvarMemoria({tipo:"comando", comando: cmdOriginal});
     this.falar(`Processando: ${cmdOriginal}`);
 
+    // ===== COMANDOS NOVOS DA PONTE =====
+    if(cmd.includes("sobe você pro github") || cmd.includes("atualiza você")){
+      const codigo = this.toString();
+      await this.enviarProGithub("kai-core/brain/kai-brain.js", codigo);
+      this.falar("Código enviado. Reiniciando pra aplicar");
+      setTimeout(()=>location.reload(), 3000);
+      return;
+    }
+    else if(cmd.includes("sobe arquivo")){
+      const partes = cmdOriginal.split(" ");
+      const arquivo = partes[2];
+      const codigo = partes.slice(3).join(" ");
+      await this.enviarProGithub(`kai-core/${arquivo}`, codigo);
+      return this.falar(`Arquivo ${arquivo} enviado`);
+    }
+
     // ===== ATALHOS SISTEMA =====
-    if(cmd.includes("parar de ouvir")) {
+    else if(cmd.includes("parar de ouvir")) {
       if(window.KAI_RECOGNITION) window.KAI_RECOGNITION.stop();
       return this.falar("Modo manual ativado Chefe");
     }
@@ -163,7 +211,7 @@ class KAIBrain {
         await createFile(target, target);
         return;
       }
-      return this.falar(`Comando recebido. Tente: criar post, ir para sistema K, que horas são`);
+      return this.falar(`Comando recebido. Tente: criar post, ir para sistema K, sobe você pro github`);
     }
   }
 
