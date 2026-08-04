@@ -3,84 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 V5.0 // BRACELETE 4D CILINDRO</title>
+<title>KORVIL G15 V6.1 // BRACELETE ADERENTE 3D</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; user-select: none; font-family: 'Courier New', Courier, monospace; }
-  body { background: #000; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; perspective: 1000px; }
-.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 1; }
-.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%); background-size: 100% 3px; pointer-events: none; z-index: 2; }
-  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.3; filter: grayscale(40%) contrast(130%); pointer-events:none; }
+  body { background: #000; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; perspective: 1200px; }
+.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.08) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 1; }
+.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 3px; pointer-events: none; z-index: 2; }
+  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.4; filter: grayscale(30%) contrast(140%); pointer-events:none; }
 
   #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.95);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-  #startBtn { padding:28px 55px; background:linear-gradient(90deg,#ff0044,#00ff66); border:none; color:#000; font:28px bold 'Courier'; border-radius:18px; box-shadow:0 0 60px #00ff66; }
+  #startBtn { padding:28px 55px; background:linear-gradient(90deg,#00ff66,#00f0ff); border:none; color:#000; font:26px bold 'Courier'; border-radius:18px; box-shadow:0 0 60px #00ff66; }
 
-  /* CONTAINER 3D DO BRACELETE */
-  #braceleteContainer { position:absolute; width:120px; height:200px; z-index:15; pointer-events:none; transform-style: preserve-3d; transition: all 0.1s linear; }
+  /* CONTAINER 3D QUE SEGUE O BRAÇO */
+  #braceleteContainer { position:absolute; z-index:16; pointer-events:none; transform-style: preserve-3d; transition: transform 0.08s linear; }
 
-  /* CILINDRO 4D HOLOGRÁFICO */
-  #bracelete { position:absolute; width:120px; height:200px; transform-style: preserve-3d; }
- .face { position:absolute; width:120px; height:200px; border:2px solid; border-radius:60px; background:rgba(0,255,102,0.05); backdrop-filter: blur(10px); }
- .face.frente { transform: translateZ(60px); }
- .face.tras { transform: rotateY(180deg) translateZ(60px); }
- .face.esq { width:120px; height:200px; transform: rotateY(-90deg) translateZ(60px); }
- .face.dir { width:120px; height:200px; transform: rotateY(90deg) translateZ(60px); }
- .tampa { position:absolute; width:120px; height:120px; border:3px solid; border-radius:50%; background:rgba(0,255,102,0.08); }
- .tampa.topo { transform: rotateX(90deg) translateZ(100px); }
- .tampa.base { transform: rotateX(-90deg) translateZ(100px); }
+  /* ESQUELETO ANTEBRAÇO */
+  #scanAntebraco { position:absolute; width:120px; height:400px; border:3px dashed #ff0044; border-radius:60px; z-index:15; pointer-events:none; display:none; background:rgba(255,0,68,0.05); }
+  #scanAntebraco.ativo { border-color:#00ff66; background:rgba(0,255,102,0.1); box-shadow:0 0 40px #00ff66; }
 
-  /* ESTADOS DE LUZ */
-  #bracelete.standby.face, #bracelete.standby.tampa { border-color:#ff0044; box-shadow:0 0 30px #ff0044; animation: pulsarVermelho 1.5s infinite; }
-  #bracelete.proximo.face, #bracelete.proximo.tampa { border-color:#00ff66; box-shadow:0 0 50px #00ff66; animation: piscarVerde 0.3s infinite; }
-  #bracelete.vestido.face, #bracelete.vestido.tampa { border-color:#00f0ff; box-shadow:0 0 60px #00f0ff; background:rgba(0,240,255,0.1); }
-  #bracelete.expandido.face, #bracelete.expandido.tampa { border-color:#ffe600; box-shadow:0 0 80px #ffe600; }
-  @keyframes pulsarVermelho { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
-  @keyframes piscarVerde { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  /* 6 PEÇAS 3D */
+.pecaBracelete { position:absolute; border:3px solid; border-radius:20px; background:rgba(0,240,255,0.12); backdrop-filter: blur(15px); pointer-events:none; display:none; transform-style: preserve-3d; transition: all 4s cubic-bezier(0.22, 1, 0.36, 1); }
+.pecaBracelete.encaixando { display:block; border-color:#ffe600; box-shadow:0 0 60px #ffe600; animation: materializar 4s forwards; }
+.pecaBracelete.ativa { display:block; border-color:#00f0ff; box-shadow:0 0 40px #00f0ff; background:rgba(0,240,255,0.25); }
+  @keyframes materializar { 0%{opacity:0; transform:scale(0.5) rotateX(90deg);} 50%{opacity:1; transform:scale(1.1) rotateX(0);} 100%{opacity:1; transform:scale(1) rotateX(0);} }
 
-  /* 6 PEÇAS FLUTUANTES 3D */
-.peca { position:absolute; width:60px; height:60px; border:3px solid #00f0ff; border-radius:15px; background:rgba(0,240,255,0.15); box-shadow:0 0 25px #00f0ff; z-index:14; pointer-events:none; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; transform-style: preserve-3d; transition: all 1.2s cubic-bezier(0.68,-0.55,0.265,1.55); }
-.peca.hover { border-color:#00ff66; box-shadow:0 0 50px #00ff66; background:rgba(0,255,102,0.4); transform:scale(1.15) translateZ(20px); }
-.peca.selecionada { border-color:#ffe600; box-shadow:0 0 60px #ffe600; background:rgba(255,230,0,0.5); transform:scale(1.3) translateZ(30px); }
-.peca.solta { border-color:#ff00ea; box-shadow:0 0 50px #ff00ea; background:rgba(255,0,234,0.4); }
+  /* EFEITO LASER CONECTANDO */
+ .laser { position:absolute; height:2px; background:linear-gradient(90deg, transparent, #00ff66, transparent); box-shadow:0 0 10px #00ff66; z-index:15; pointer-events:none; }
 
-.pino { position: absolute; width: 24px; height: 24px; border-radius: 50%; pointer-events: none; z-index: 20; transform: translate(-50%, -50%); border: 3px solid #fff; }
-  #pino1 { background: #ff00ea; box-shadow: 0 0 18px #ff00ea; }
-  #pino2 { background: #00f0ff; box-shadow: 0 0 18px #00f0ff; }
-  #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00ff66; font-size: 12px; background: rgba(0, 20, 10, 0.95); border: 2px solid #00ff66; padding: 12px 18px; border-radius: 10px; min-width: 420px; text-align:center; z-index: 10; }
- #indicadorVoz { position:absolute; top:20px; right:20px; background:rgba(0,255,102,0.3); border:2px solid #00ff66; padding:10px 18px; border-radius:30px; font-size:13px; display:none; font-weight:bold; }
+  #barraProgresso { position:absolute; bottom:100px; left:50%; transform:translateX(-50%); width:400px; height:8px; background:#001122; border-radius:4px; overflow:hidden; display:none; }
+  #barraFill { height:100%; width:0%; background:linear-gradient(90deg,#00ff66,#00f0ff); transition: width 0.1s linear; }
+
+  #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00ff66; font-size: 14px; background: rgba(0, 20, 10, 0.95); border: 2px solid #00ff66; padding: 15px 25px; border-radius: 12px; min-width: 480px; text-align:center; z-index: 10; }
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
 <div class="scanlines"></div>
-<div id="indicadorVoz">🎤 OUVINDO: "EXPANDIR BRACELETE"</div>
 
 <div id="startOverlay">
-  <h1 style="color:#00ff66;text-shadow:0 0 40px #00ff66;margin-bottom:20px;font-size:36px;">KORVIL G15 V5.0 4D</h1>
-  <p style="color:#aaa;margin-bottom:5px;">1. Chegue perto do bracelete vermelho</p>
-  <p style="color:#aaa;margin-bottom:5px;">2. Passe a mão por DENTRO do cilindro</p>
-  <p style="color:#aaa;margin-bottom:20px;">3. Fique 4s parado para VESTIR</p>
-  <button id="startBtn">🔷 ATIVAR HOLOGRAMA</button>
+  <h1 style="color:#00ff66;text-shadow:0 0 40px #00ff66;margin-bottom:20px;font-size:36px;">KORVIL G15 V6.1</h1>
+  <p style="color:#aaa;margin-bottom:5px;">POSIÇÃO: Antebraço VERTICAL</p>
+  <p style="color:#aaa;margin-bottom:5px;">Mão fechada, dorso pra câmera</p>
+  <p style="color:#aaa;margin-bottom:20px;">Após forjar, pode mexer livre</p>
+  <button id="startBtn">🔷 INICIAR SCAN</button>
 </div>
 
 <video id="video" autoplay playsinline muted></video>
-<div id="pino1" class="pino"></div>
-<div id="pino2" class="pino"></div>
-
-<!-- BRACELETE CILINDRO 3D -->
-<div id="braceleteContainer">
-  <div id="bracelete" class="standby">
-    <div class="face frente"></div>
-    <div class="face tras"></div>
-    <div class="face esq"></div>
-    <div class="face dir"></div>
-    <div class="tampa topo"></div>
-    <div class="tampa base"></div>
-  </div>
-</div>
+<div id="scanAntebraco"></div>
+<div id="braceleteContainer"></div>
+<div id="barraProgresso"><div id="barraFill"></div></div>
 
 <div id="status">
-  <div>STATUS: <span id="st-status">STANDBY VERMELHO</span> | PEÇA: <span id="st-peca">NENHUMA</span></div>
-  <div>GESTO: <span id="st-gesto">NENHUM</span> | DISTÂNCIA: <span id="st-dist">--</span></div>
+  <div>STATUS: <span id="st-status">AGUARDANDO POSIÇÃO</span></div>
+  <div>PEÇA: <span id="st-peca">0/6</span> | MODO: <span id="st-modo">SCAN</span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
@@ -88,234 +63,168 @@
 <script>
 let AudioContext = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
 function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
-function playSound(freq, type = 'sine', duration = 0.2, vol = 0.15) { if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {}}
-const SFX = { standby: () => playSound(300, 'sine', 0.3, 0.08), proximo: () => playSound(600, 'sine', 0.2, 0.1), vestir: () => {playSound(400,'sine',0.4,0.15);setTimeout(()=>playSound(900,'sine',0.4,0.15),300)}, expandir: () => {playSound(700,'sine',0.5,0.15);setTimeout(()=>playSound(1400,'sine',0.5,0.15),300)}, click: () => playSound(1300, 'square', 0.06, 0.15) };
-const falas=window.speechSynthesis; function falar(texto){falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.0;falas.speak(msg);}
+function playSound(freq, type = 'sine', duration = 0.3, vol = 0.15) { if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {}}
+const SFX = { scan: () => playSound(500, 'sine', 0.2, 0.1), encaixe: () => {playSound(800,'sine',0.4,0.15);setTimeout(()=>playSound(1200,'sine',0.4,0.15),200)}, completo: () => {playSound(400,'sine',0.5,0.15);setTimeout(()=>playSound(800,'sine',0.5,0.15),300);setTimeout(()=>playSound(1200,'sine',0.5,0.15),600)} };
+const falas=window.speechSynthesis; function falar(texto){falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=0.9;falas.speak(msg);}
 
-const video = document.getElementById('video'); const pino1 = document.getElementById('pino1'); const pino2 = document.getElementById('pino2');
-const stStatus = document.getElementById('st-status'); const stPeca = document.getElementById('st-peca'); const stGesto = document.getElementById('st-gesto'); const stDist = document.getElementById('st-dist');
-const braceleteContainer = document.getElementById('braceleteContainer'); const bracelete = document.getElementById('bracelete');
+const video = document.getElementById('video');
+const scanArea = document.getElementById('scanAntebraco');
+const braceleteContainer = document.getElementById('braceleteContainer');
+const stStatus = document.getElementById('st-status'); const stPeca = document.getElementById('st-peca'); const stModo = document.getElementById('st-modo');
+const barra = document.getElementById('barraProgresso'); const barraFill = document.getElementById('barraFill');
 
-let pecas = []; let pecaSelecionada = null; let pecaSegurada = null;
-let braceleteVestido = false; let braceleteExpandido = false;
-let braceletePos = {x: window.innerWidth/2, y: window.innerHeight/2, rotX: 0, rotY: 0};
-let posM1 = {x:-100,y:-100}, posM2 = {x:-100,y:-100};
-let tempoParado = 0; let ultimoToque = 0; let historicoFlip = []; let ultimoFlip = 0;
+let estado = 'aguardando'; // aguardando, escaneando, forjando, ativo
+let tempoParado = 0;
+let antebracoData = {largura:120, altura:400, x:0, y:0, rotX:0, rotY:0, rotZ:0};
+let pecas = []; let pecaAtual = 0;
+const nomesPecas = ['BASE', 'ENERGIA', 'SENSOR', 'CPU', 'COMMS', 'TOPO'];
 
-// --- CRIA CILINDRO INICIAL EM PÉ ---
-function posicionarBraceleteInicial(){
-  braceleteContainer.style.left = window.innerWidth/2-60+'px';
-  braceleteContainer.style.top = window.innerHeight/2-100+'px';
-  braceleteContainer.style.transform = `rotateX(0deg) rotateY(0deg)`;
-}
-
-// --- CRIA 6 PEÇAS EM CÍRCULO 3D ---
-const nomesPecas = ['CPU', 'SENSOR', 'LED', 'BATERIA', 'ANTENA', 'MOD'];
-function criarPecasHolograma(cx, cy, rotX, rotY){
-  pecas.forEach(p=>p.remove()); pecas = [];
+// --- CRIA 6 PEÇAS DENTRO DO CONTAINER ---
+function criarPecas(){
   for(let i=0; i<6; i++){
-    const peca = document.createElement('div'); peca.className = 'peca';
-    peca.innerText = nomesPecas[i]; peca.dataset.id = i;
-    peca.dataset.origX = cx; peca.dataset.origY = cy; peca.dataset.origRotX = rotX; peca.dataset.origRotY = rotY;
-    peca.style.left = `${cx-30}px`; peca.style.top = `${cy-30}px`;
-    document.body.appendChild(peca); pecas.push(peca);
-    setTimeout(()=>{
-      const angulo = (i/6) * Math.PI * 2;
-      const raio = 160;
-      peca.style.left = `${cx + Math.cos(angulo)*raio - 30}px`;
-      peca.style.top = `${cy + Math.sin(angulo)*raio - 30}px`;
-    }, 250*i);
-  }
-  SFX.expandir(); falar("Bracelete expandido. 6 módulos ativos");
-}
-
-// --- ATUALIZA POSIÇÃO E ROTAÇÃO 3D ---
-function atualizarBracelete3D(x, y, hand){
-  // Calcula rotação baseada na inclinação da mão
-  const pulso = hand[0]; const meio = hand[12];
-  const rotY = (pulso.x - meio.x) * 180; // Gira esq/dir
-  const rotX = (pulso.y - meio.y) * 180; // Gira cima/baixo
-
-  braceleteContainer.style.left = `${x-60}px`;
-  braceleteContainer.style.top = `${y-100}px`;
-  braceleteContainer.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
-  braceletePos = {x,y,rotX,rotY};
-
-  // Move peças junto se expandido
-  if(braceleteExpandido){
-    pecas.forEach((p,i)=>{
-      const angulo = (i/6) * Math.PI * 2 + performance.now()/3000;
-      const raio = 160;
-      p.style.left = `${x + Math.cos(angulo)*raio - 30}px`;
-      p.style.top = `${y + Math.sin(angulo)*raio - 30}px`;
-    });
+    const peca = document.createElement('div'); peca.className = 'pecaBracelete';
+    peca.dataset.id = i;
+    braceleteContainer.appendChild(peca); pecas.push(peca);
   }
 }
 
-// --- DETECÇÃO DE PROXIMIDADE ---
-function checarProximidade(x, y){
-  const dist = Math.hypot(x - braceletePos.x, y - braceletePos.y);
-  stDist.textContent = Math.round(dist) + "px";
+// --- CALCULA POSIÇÃO E ROTAÇÃO 3D DO ANTEBRAÇO ---
+function calcularTransformacao3D(hand){
+  const pulso = hand[0]; const meio = hand[9]; const indicador = hand[8]; const mindinho = hand[20];
 
-  if(dist < 200 &&!braceleteVestido){
-    if(!bracelete.classList.contains('proximo')){
-      bracelete.className = 'proximo'; SFX.proximo();
-      stStatus.textContent = "PROXIMIDADE DETECTADA";
-    }
-    return true;
-  } else if(dist >= 200 &&!braceleteVestido){
-    if(!bracelete.classList.contains('standby')){
-      bracelete.className = 'standby'; SFX.standby();
-      stStatus.textContent = "STANDBY VERMELHO";
-    }
-  }
-  return false;
+  // Posição central do antebraço
+  const x = (1 - pulso.x) * window.innerWidth;
+  const y = pulso.y * window.innerHeight;
+
+  // Rotação Y: esquerda/direita baseado na inclinação pulso-meio
+  const rotY = Math.atan2(meio.x - pulso.x, meio.z - pulso.z) * 180 / Math.PI;
+
+  // Rotação X: cima/baixo baseado na inclinação pulso-meio
+  const rotX = Math.atan2(meio.y - pulso.y, meio.z - pulso.z) * 180 / Math.PI;
+
+  // Rotação Z: giro do antebraço baseado na posição mindinho-indicador
+  const rotZ = Math.atan2(indicador.y - mindinho.y, indicador.x - mindinho.x) * 180 / Math.PI;
+
+  // Tamanho adaptativo
+  const altura = Math.hypot(pulso.x - meio.x, pulso.y - meio.y) * 3.2 * window.innerHeight;
+  const largura = Math.hypot(hand[5].x - hand[17].x) * 1.6 * window.innerWidth;
+
+  return {x, y, rotX, rotY, rotZ, altura, largura};
 }
 
-// --- VESTIR REAL COM 4S ---
-function checarVestir(hand, x, y){
-  if(braceleteVestido) return;
-  const distCentro = Math.hypot(x - braceletePos.x, y - braceletePos.y);
-  const isDentro = distCentro < 70; // Dentro do cilindro
-  const isFechado = Math.hypot(hand[8].x-hand[5].x, hand[8].y-hand[5].y) < 0.1;
-
-  if(isDentro && isFechado){
-    tempoParado += 0.1;
-    if(tempoParado >= 4){
-      braceleteVestido = true;
-      bracelete.className = 'vestido';
-      SFX.vestir(); falar("Bracelete vestido. Sistema ativo");
-      stStatus.textContent = "VESTIDO E ATIVO";
-      iniciarReconhecimentoVoz();
-    }
-  } else {
-    tempoParado = 0;
-  }
+// --- APLICA TRANSFORMAÇÃO 3D NO CONTAINER ---
+function aplicarTransformacao3D(data){
+  braceleteContainer.style.left = `${data.x - data.largura/2}px`;
+  braceleteContainer.style.top = `${data.y - data.altura/2}px`;
+  braceleteContainer.style.width = `${data.largura}px`;
+  braceleteContainer.style.height = `${data.altura}px`;
+  braceleteContainer.style.transform = `rotateX(${data.rotX}deg) rotateY(${data.rotY}deg) rotateZ(${data.rotZ}deg)`;
 }
 
-// --- REMOÇÃO POR PARAR ---
-function checarRemocao(x,y){
-  if(!braceleteVestido) return;
-  let mov = Math.hypot(x - braceletePos.x, y - braceletePos.y);
-  if(mov < 10) tempoParado += 0.1; else tempoParado = 0;
-
-  if(tempoParado > 4){
-    braceleteVestido=false; braceleteExpandido=false;
-    bracelete.className = 'standby';
-    posicionarBraceleteInicial();
-    stStatus.textContent = "STANDBY VERMELHO";
-    pecas.forEach(p=>p.remove()); pecas=[];
-    falar("Bracelete removido");
-  }
-}
-
-// --- SELEÇÃO E ARRASTO DAS PEÇAS ---
-function checarHover(x, y){
-  let maisProxima = null; let menorDist = 9999;
-  pecas.forEach(p=>{
-    if(p.classList.contains('solta')) return;
-    const rect = p.getBoundingClientRect();
-    const dist = Math.hypot(x - (rect.left + 30), y - (rect.top + 30));
-    if(dist < menorDist && dist < 120){ menorDist = dist; maisProxima = p; }
+// --- POSICIONA AS 6 PEÇAS RELATIVAS AO CONTAINER ---
+function posicionarPecasRelativas(){
+  const alturaSecao = antebracoData.altura / 6;
+  pecas.forEach((p,i)=>{
+    const y = (i * alturaSecao);
+    p.style.width = `100%`;
+    p.style.height = `${alturaSecao + 15}px`;
+    p.style.left = `0px`;
+    p.style.top = `${y}px`;
   });
-  pecas.forEach(p=>p.classList.remove('hover'));
-  if(maisProxima){ maisProxima.classList.add('hover'); stPeca.textContent = nomesPecas[maisProxima.dataset.id]; }
 }
 
-function selecionarPeca(x, y){
-  let maisProxima = null; let menorDist = 9999;
-  pecas.forEach(p=>{
-    const rect = p.getBoundingClientRect();
-    const dist = Math.hypot(x - (rect.left + 30), y - (rect.top + 30));
-    if(dist < menorDist && dist < 80){ menorDist = dist; maisProxima = p; }
-  });
-  if(maisProxima){
-    pecas.forEach(p=>p.classList.remove('selecionada'));
-    maisProxima.classList.add('selecionada');
-    pecaSelecionada = maisProxima;
-    stPeca.textContent = "SEL: " + nomesPecas[maisProxima.dataset.id];
-    SFX.click();
+// --- FORJAMENTO ---
+function iniciarForjamento(){
+  estado = 'forjando'; stModo.textContent = "FORJANDO";
+  barra.style.display = 'block';
+  falar("Iniciando forjamento. Fique parado");
+  forjarProximaPeca();
+}
+
+function forjarProximaPeca(){
+  if(pecaAtual >= 6){
+    estado = 'ativo'; stModo.textContent = "ATIVO 3D";
+    SFX.completo(); falar("Bracelete completo. Sistema aderido");
+    stStatus.textContent = "BRACELETE ATIVO - PODE SE MOVER";
+    pecas.forEach(p=>p.classList.add('ativa'));
+    return;
   }
+
+  const peca = pecas[pecaAtual];
+  peca.classList.add('encaixando');
+  stPeca.textContent = `${pecaAtual+1}/6`;
+  stStatus.textContent = `FORJANDO: ${nomesPecas[pecaAtual]}`;
+  SFX.encaixe();
+
+  let progresso = 0;
+  const intervalo = setInterval(()=>{
+    progresso += 100/40;
+    barraFill.style.width = `${((pecaAtual*100)+progresso)/6}%`;
+    if(progresso >= 100){
+      clearInterval(intervalo);
+      pecaAtual++;
+      forjarProximaPeca();
+    }
+  }, 100);
 }
 
-// --- FLIP 2X ---
-function detectarFlip2x(hand){
-  const pulso = hand[0]; const meio = hand[12];
-  const angulo = Math.atan2(meio.y - pulso.y, meio.x - pulso.x);
-  historicoFlip.push({ang: angulo, t: performance.now()});
-  if(historicoFlip.length > 12) historicoFlip.shift();
-  if(historicoFlip.length < 6) return false;
-  const diffAng = Math.abs(historicoFlip[historicoFlip.length-1].ang - historicoFlip[0].ang);
-  const diffTime = historicoFlip[historicoFlip.length-1].t - historicoFlip[0].t;
-  if(diffAng > 1.8 && diffTime < 350){
-    if(performance.now() - ultimoFlip < 500){
-      ultimoFlip = 0; historicoFlip = []; return true;
-    }
-    ultimoFlip = performance.now();
-  }
-  return false;
+// --- DETECÇÃO ---
+function checarPosicaoCorreta(hand){
+  const isFechado = Math.hypot(hand[8].x-hand[5].x, hand[8].y-hand[5].y) < 0.12;
+  const isVertical = Math.abs(hand[0].x - hand[9].x) < 0.18;
+  const dorsoPraFrente = hand[0].z < hand[12].z;
+  return isFechado && isVertical && dorsoPraFrente;
 }
 
-// --- VOZ ---
-let recognition;
-function iniciarReconhecimentoVoz(){
-  if(!('webkitSpeechRecognition' in window)) return;
-  recognition = new webkitSpeechRecognition();
-  recognition.continuous = true; recognition.lang = 'pt-BR';
-  recognition.onresult = (event)=>{
-    const comando = event.results[event.results.length-1][0].transcript.toLowerCase();
-    if(comando.includes('expandir') && braceleteVestido){
-      if(!braceleteExpandido){
-        braceleteExpandido=true; bracelete.className = 'vestido expandido';
-        criarPecasHolograma(braceletePos.x, braceletePos.y, braceletePos.rotX, braceletePos.rotY);
-      }
-    }
-    if(comando.includes('fechar') && braceleteExpandido){
-      braceleteExpandido=false; bracelete.className = 'vestido';
-      pecas.forEach(p=>p.remove()); pecas=[];
-    }
-  };
-  recognition.start(); document.getElementById('indicadorVoz').style.display = 'block';
-}
-
-// --- MEDIAPIPE ---
+// --- MEDIAPIPE LOOP ---
 let hands, camera;
 function iniciarSistema(){
   document.getElementById('startOverlay').style.display='none'; initAudio();
-  posicionarBraceleteInicial();
+  criarPecas();
+  scanArea.style.display = 'block';
 
   hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-  hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6 });
+  hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
   hands.onResults(res => {
     const maos = res.multiHandLandmarks;
     if (maos && maos.length > 0) {
       const h1 = maos[0];
-      let targetX1 = (1 - h1[8].x) * window.innerWidth; let targetY1 = h1[8].y * window.innerHeight;
-      posM1 = {x:targetX1, y:targetY1};
-      pino1.style.left = `${posM1.x}px`; pino1.style.top = `${posM1.y}px`;
-      const gesto1 = (Math.hypot(h1[8].x-h1[5].x, h1[8].y-h1[5].y) < 0.11)? "PUNHO" : "ABERTO";
-      stGesto.textContent = gesto1;
+      const transform3D = calcularTransformacao3D(h1);
 
-      if(!braceleteVestido){
-        checarProximidade(posM1.x, posM1.y);
-        checarVestir(h1, posM1.x, posM1.y);
-      } else {
-        checarRemocao(posM1.x, posM1.y);
-        atualizarBracelete3D(posM1.x, posM1.y, h1);
-        checarHover(posM1.x, posM1.y);
-        if(detectarFlip2x(h1)){ /* soltar peça */ }
+      if(estado === 'aguardando'){
+        // Mostra área de scan
+        scanArea.style.width = `${transform3D.largura}px`;
+        scanArea.style.height = `${transform3D.altura}px`;
+        scanArea.style.left = `${transform3D.x - transform3D.largura/2}px`;
+        scanArea.style.top = `${transform3D.y - transform3D.altura/2}px`;
+
+        if(checarPosicaoCorreta(h1)){
+          scanArea.classList.add('ativo');
+          tempoParado += 0.1;
+          stStatus.textContent = `ESCANEANDO... ${Math.round(tempoParado)}s/4s`;
+          if(tempoParado >= 4){
+            antebracoData = transform3D;
+            posicionarPecasRelativas();
+            aplicarTransformacao3D(transform3D);
+            scanArea.style.display = 'none';
+            iniciarForjamento();
+          }
+        } else {
+          scanArea.classList.remove('ativo');
+          tempoParado = 0;
+          stStatus.textContent = "AJUSTE: VERTICAL, MÃO FECHADA, DORSO PRA FRENTE";
+        }
       }
 
-      if(maos.length > 1){
-        const h2 = maos[1];
-        let targetX2 = (1 - h2[8].x) * window.innerWidth; let targetY2 = h2[8].y * window.innerHeight;
-        posM2.x = targetX2; posM2.y = targetY2;
-        pino2.style.left = `${posM2.x}px`; pino2.style.top = `${posM2.y}px`;
-        if(braceleteVestido){
-          checarHover(posM2.x, posM2.y);
-          if(detectarFlip2x(h2)){ selecionarPeca(posM2.x, posM2.y); }
-        }
+      if(estado === 'forjando'){
+        // Continua atualizando pra não sair do lugar durante forjamento
+        aplicarTransformacao3D(transform3D);
+      }
+
+      if(estado === 'ativo'){
+        // MODO LIVRE: bracelete segue o braço em tempo real 3D
+        aplicarTransformacao3D(transform3D);
+        stStatus.textContent = "BRACELETE ATIVO - MOVIMENTE LIVREMENTE";
       }
     }
   });
@@ -325,13 +234,6 @@ function iniciarSistema(){
     camera.start();
   });
 }
-
-// --- TOQUE DUPLO ---
-document.body.addEventListener('touchend', (e)=>{
-  const agora = performance.now();
-  if(agora - ultimoToque < 300){ selecionarPeca(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }
-  ultimoToque = agora;
-});
 
 document.getElementById('startBtn').onclick = iniciarSistema;
 </script>
