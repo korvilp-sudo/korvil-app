@@ -61,6 +61,7 @@
     .btn:hover { box-shadow: 0 0 22px var(--neon-dim); }
     .btn:active { transform: translateY(1px); }
     .erro { color: var(--danger); font-size: .85rem; margin-top: .8rem; min-height: 1rem; }
+    .dica { color: var(--muted); font-size: .75rem; margin-top: .5rem; text-align:center;}
 
     /* ---------- App ---------- */
     #app-view { display: none; }
@@ -115,6 +116,7 @@
         <input id="senha" type="password" autocomplete="current-password" required />
         <button class="btn" type="submit">Entrar</button>
         <div class="erro" id="login-erro"></div>
+        <div class="dica">Dica: use qualquer usuario + senha: 123456 ou xxxxxx</div>
       </form>
     </div>
   </section>
@@ -139,6 +141,9 @@
         <h2>Ultimas Cobrancas</h2>
         <select id="filtro-modulo">
           <option value="">Todos os modulos</option>
+          <option value="PIX">PIX</option>
+          <option value="BOLETO">BOLETO</option>
+          <option value="CARTAO">CARTAO</option>
         </select>
       </div>
 
@@ -160,44 +165,40 @@
 
   <script>
     // ============ Configuracao / estado ============
-    const API = ""; // mesma origem do servidor Express
     const TOKEN_KEY = "korvil_token";
+    const SENHA_SECRETA = "xxxxxx"; // SUA SENHA MESTRA
 
     // Formata numero em BRL
     const brl = (n) => (Number(n) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     // Formata data
     const fmtData = (d) => new Date(d).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 
-    // Requisicao autenticada
-    async function apiGet(path) {
-      const res = await fetch(API + path, {
-        headers: { Authorization: "Bearer " + localStorage.getItem(TOKEN_KEY) },
-      });
-      if (res.status === 401) { logout(); throw new Error("nao autorizado"); }
-      return res.json();
+    // DADOS FAKES PRA TESTAR NO GITHUB PAGES
+    const DADOS_FAKE = {
+      saldo: { saldoDisponivel: 12500.50, totalLiquido: 50000, totalRepassado: 37499.50, totalPendente: 1200 },
+      movimentacoes: [
+        {criadoEm: new Date(), cliente: {nome: "Joao Silva"}, modulo: "PIX", tipo: "RECEBIDO", status: "CONFIRMED", valor: 500},
+        {criadoEm: new Date(Date.now() - 86400000), cliente: {nome: "Maria Souza"}, modulo: "BOLETO", tipo: "PAGO", status: "PENDING", valor: 1200},
+        {criadoEm: new Date(Date.now() - 172800000), cliente: {nome: "Empresa XYZ"}, modulo: "CARTAO", tipo: "RECEBIDO", status: "FAILED", valor: 890.90},
+      ]
     }
 
     // ============ Login ============
     const loginForm = document.getElementById("login-form");
-    loginForm.addEventListener("submit", async (e) => {
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const erroEl = document.getElementById("login-erro");
       erroEl.textContent = "";
-      try {
-        const res = await fetch(API + "/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuario: document.getElementById("usuario").value,
-            senha: document.getElementById("senha").value,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.erro || "Falha no login");
-        localStorage.setItem(TOKEN_KEY, data.token);
+
+      const usuario = document.getElementById("usuario").value;
+      const senha = document.getElementById("senha").value;
+
+      // REGRA: aceita qualquer usuario + senha normal OU senha mestra xxxxxx
+      if(senha === "123456" || senha === SENHA_SECRETA) {
+        localStorage.setItem(TOKEN_KEY, "token_fake_123");
         entrarApp();
-      } catch (err) {
-        erroEl.textContent = err.message;
+      } else {
+        erroEl.textContent = "Usuario ou senha invalidos";
       }
     });
 
@@ -210,42 +211,25 @@
     document.getElementById("logout-btn").addEventListener("click", logout);
 
     // ============ Carrega dados do app ============
-    async function entrarApp() {
+    function entrarApp() {
       document.getElementById("login-view").style.display = "none";
       document.getElementById("app-view").style.display = "block";
-      await carregarModulos();
-      await carregarTudo();
+      carregarTudo();
     }
 
-    // Popula o filtro com os modulos disponiveis
-    async function carregarModulos() {
-      try {
-        const modulos = await apiGet("/api/modulos");
-        const select = document.getElementById("filtro-modulo");
-        modulos.forEach((m) => {
-          const opt = document.createElement("option");
-          opt.value = m.slug;
-          opt.textContent = m.nome;
-          select.appendChild(opt);
-        });
-      } catch (_) {}
-    }
-
-    // Recarrega saldo + cobrancas conforme o filtro
-    async function carregarTudo() {
+    function carregarTudo() {
       const modulo = document.getElementById("filtro-modulo").value;
-      const qs = modulo ? ("?modulo=" + encodeURIComponent(modulo)) : "";
-      const extrato = await apiGet("/api/extrato" + qs);
+      let linhas = DADOS_FAKE.movimentacoes;
+      if(modulo) linhas = linhas.filter(l => l.modulo === modulo);
 
       // Saldo
-      document.getElementById("m-disponivel").textContent = brl(extrato.saldo.saldoDisponivel);
-      document.getElementById("m-liquido").textContent = brl(extrato.saldo.totalLiquido);
-      document.getElementById("m-repassado").textContent = brl(extrato.saldo.totalRepassado);
-      document.getElementById("m-pendente").textContent = brl(extrato.saldo.totalPendente);
+      document.getElementById("m-disponivel").textContent = brl(DADOS_FAKE.saldo.saldoDisponivel);
+      document.getElementById("m-liquido").textContent = brl(DADOS_FAKE.saldo.totalLiquido);
+      document.getElementById("m-repassado").textContent = brl(DADOS_FAKE.saldo.totalRepassado);
+      document.getElementById("m-pendente").textContent = brl(DADOS_FAKE.saldo.totalPendente);
 
       // Tabela
       const tbody = document.getElementById("tbody-cobrancas");
-      const linhas = extrato.movimentacoes || [];
       if (!linhas.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma cobranca encontrada.</td></tr>';
         return;
@@ -267,7 +251,7 @@
 
     // ============ Auto-login se ja tiver token ============
     if (localStorage.getItem(TOKEN_KEY)) {
-      entrarApp().catch(() => logout());
+      entrarApp();
     }
   </script>
 </body>
