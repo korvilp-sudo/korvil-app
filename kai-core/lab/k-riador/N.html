@@ -1,180 +1,292 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>KORVIL G15 ULTRA 3.1 // HUD + CALIBRAGEM</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KORVIL G15 ULTRA 4.2 // BRACELETE 6 PEÇAS</title>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; user-select: none; font-family: 'Courier New', Courier, monospace; }
-    body { background: #030712; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; }
-  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; z-index: 1; animation: gridMove 20s linear infinite; }
-    @keyframes gridMove { from {background-position: 0 0;} to {background-position: 0 30px;} }
-  .scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px; pointer-events: none; z-index: 2; }
-    #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.18; filter: grayscale(80%) contrast(150%); }
-    #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.9);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-    #startBtn { padding:20px 40px; background:linear-gradient(90deg,#00f0ff,#ff00ea); border:none; color:#000; font:22px bold 'Courier'; border-radius:12px; box-shadow:0 0 30px #00f0ff; cursor:pointer; }
-    #menu { position: absolute; top: 15px; left: 15px; width: 220px; background: rgba(5, 12, 24, 0.85); border: 1px solid #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); padding: 10px; border-radius: 6px; backdrop-filter: blur(5px); z-index: 10; }
-  .menu-title { font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; text-shadow: 0 0 5px #00f0ff; display: flex; justify-content: space-between; color:#00ff66; }
-  .btn { width: 100%; padding: 10px; margin: 4px 0; background: rgba(0, 240, 255, 0.08); border: 1px solid #00f0ff; color: #00f0ff; font-size: 11px; font-weight: bold; letter-spacing: 1px; cursor: pointer; border-radius: 4px; transition: all 0.15s ease; }
-  .btn:active { transform: scale(0.95); background: #00f0ff; color: #000; }
-  .cubo { position: absolute; width: 80px; height: 80px; border: 2px solid #00f0ff; background: rgba(0, 240, 255, 0.12); box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); border-radius: 6px; cursor: grab; z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-  .cubo.segurado { border-color: #ff00ea; background: rgba(255, 0, 234, 0.2); box-shadow: 0 0 25px #ff00ea; z-index: 8; }
-    #lixeira { position: absolute; bottom: 20px; left: 20px; width: 60px; height: 60px; border: 2px dashed #ff3366; border-radius: 10px; background: rgba(255, 51, 102, 0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 10; }
-    #lixeira.ativo { border-color: #ff0044; background: rgba(255, 0, 68, 0.35); transform: scale(1.25); }
-    #zonaSalvar { position: absolute; bottom: 20px; right: 20px; width: 60px; height: 60px; border: 2px dashed #00ff66; border-radius: 10px; background: rgba(0, 255, 102, 0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 10; }
-    #zonaSalvar.ativo {background: rgba(0, 255, 102, 0.4); transform: scale(1.25);}
-  .pino { position: absolute; width: 18px; height: 18px; border-radius: 50%; pointer-events: none; z-index: 20; transform: translate(-50%, -50%); }
-    #pino1 { background: #ff00ea; box-shadow: 0 0 12px #ff00ea; border: 2px solid #fff; }
-    #pino2 { background: #00f0ff; box-shadow: 0 0 12px #00f0ff; border: 2px solid #fff; }
-    #cursor { position: absolute; width: 30px; height: 30px; border: 1px dashed #00f0ff; border-radius: 50%; pointer-events: none; z-index: 19; transform: translate(-50%, -50%); animation: spin 6s linear infinite; }
-    @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); }
-    #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00f0ff; font-size: 10px; background: rgba(5, 12, 24, 0.9); border: 1px solid #00f0ff; padding: 8px 12px; border-radius: 4px; min-width: 240px; text-align:center; z-index: 10; }
-  .calib-bar {width:100%;height:6px;background:#001122;border-radius:3px;margin-top:4px;overflow:hidden;}
-  .calib-fill {height:100%;width:0%;background:linear-gradient(90deg,#00ff66,#00f0ff);transition:0.1s;}
-    #contador {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:120px;color:#ffe600;text-shadow:0 0 30px #ffe600;z-index:50;display:none;font-weight:900;}
-  </style>
+  body { background: #030712; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; }
+.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; z-index: 1; animation: gridMove 20s linear infinite; }
+  @keyframes gridMove { from {background-position: 0 0;} to {background-position: 0 30px;} }
+.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px; pointer-events: none; z-index: 2; }
+  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.18; filter: grayscale(80%) contrast(150%); pointer-events:none; }
+  #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.92);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px);}
+  #startBtn { padding:22px 45px; background:linear-gradient(90deg,#00f0ff,#ff00ea); border:none; color:#000; font:24px bold 'Courier'; border-radius:14px; box-shadow:0 0 40px #00f0ff; pointer-events:auto; }
+.menu { position: absolute; top: 15px; width: 240px; background: rgba(5, 12, 24, 0.9); border: 1px solid #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); padding: 10px; border-radius: 6px; backdrop-filter: blur(5px); z-index: 10; pointer-events:auto; }
+  #menuEsq { left: 15px; } #menuDir { right: 15px; }
+.menu-title { font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; text-shadow: 0 0 5px #00f0ff; color:#00ff66; }
+.btn { width: 100%; padding: 10px; margin: 4px 0; background: rgba(0, 240, 255, 0.08); border: 1px solid #00f0ff; color: #00f0ff; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; touch-action: manipulation; }
+.btn.ativo { background: #00f0ff; color: #000; box-shadow: 0 0 15px #00f0ff; }
+
+  /* BRACELETE TAMANHO ANTEBRAÇO */
+  #bracelete { position:absolute; width:180px; height:180px; border:5px solid #00ff66; border-radius:50%; z-index:15; pointer-events:none; display:none; box-shadow:0 0 40px #00ff66; }
+  #bracelete::before { content:''; position:absolute; inset:15px; border:2px dashed #00ff66; border-radius:50%; animation: girar 6s linear infinite; }
+  @keyframes girar { from {transform:rotate(0deg);} to {transform:rotate(360deg);} }
+  #bracelete.vestido { box-shadow:0 0 25px #00ff66; }
+  #bracelete.expandido { border-color:#00f0ff; box-shadow:0 0 60px #00f0ff; }
+
+  /* 6 PEÇAS */
+.peca { position:absolute; width:50px; height:50px; border:2px solid #00f0ff; border-radius:10px; background:rgba(0,240,255,0.15); box-shadow:0 0 15px #00f0ff; z-index:14; pointer-events:none; display:flex; align-items:center; justify-content:center; font-size:8px; text-align:center; transition: all 0.8s cubic-bezier(0.68,-0.55,0.265,1.55); }
+.peca.hover { border-color:#00ff66; box-shadow:0 0 30px #00ff66; background:rgba(0,255,102,0.25); }
+.peca.selecionada { border-color:#ffe600; box-shadow:0 0 40px #ffe600; background:rgba(255,230,0,0.3); transform:scale(1.2); }
+.peca.solta { border-color:#ff00ea; box-shadow:0 0 35px #ff00ea; background:rgba(255,0,234,0.25); }
+
+  #lixeira { position: absolute; bottom: 20px; left: 20px; width: 60px; height: 60px; border: 2px dashed #ff3366; border-radius: 10px; background: rgba(255, 51, 102, 0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 10; pointer-events:none; }
+.pino { position: absolute; width: 20px; height: 20px; border-radius: 50%; pointer-events: none; z-index: 20; transform: translate(-50%, -50%); }
+  #pino1 { background: #ff00ea; box-shadow: 0 0 12px #ff00ea; border: 2px solid #fff; }
+  #pino2 { background: #00f0ff; box-shadow: 0 0 12px #00f0ff; border: 2px solid #fff; }
+  #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00f0ff; font-size: 10px; background: rgba(5, 12, 24, 0.9); border: 1px solid #00f0ff; padding: 8px 12px; border-radius: 4px; min-width: 340px; text-align:center; z-index: 10; pointer-events:none; }
+ #indicadorVoz { position:absolute; top:60px; right:20px; background:rgba(0,255,102,0.2); border:1px solid #00ff66; padding:5px 10px; border-radius:20px; font-size:10px; display:none; }
+</style>
 </head>
 <body>
 <div class="grid-bg"></div>
 <div class="scanlines"></div>
-<div id="contador">10</div>
+<div id="indicadorVoz">🎤 OUVINDO...</div>
 
 <div id="startOverlay">
-  <h1 style="color:#00f0ff;text-shadow:0 0 20px #00f0ff;margin-bottom:20px;">KORVIL G15 ULTRA 3.1</h1>
+  <h1 style="color:#00f0ff;text-shadow:0 0 20px #00f0ff;margin-bottom:10px;">KORVIL G15 ULTRA 4.2</h1>
+  <p style="color:#aaa;margin-bottom:20px;">2 Toques = Selecionar Peça | Flip 2x = Soltar</p>
   <button id="startBtn">🔷 ATIVAR SISTEMA</button>
 </div>
 
-<div id="menu">
-  <div class="menu-title"><span>> KORVIL G15</span><span>v3.1</span></div>
+<div id="menuEsq" class="menu">
+  <div class="menu-title"><span>> CONTROLES</span><span>v4.2</span></div>
   <button class="btn" id="calibrar">CALIBRAR MÃO</button>
-  <button class="btn" id="novo">+ NOVO CUBO</button>
-  <button class="btn" id="limpar">RESETAR</button>
-  <button class="btn" id="cor">TROCAR COR</button>
   <button class="btn" id="voz">VOZ: ON</button>
-  <div class="calib-bar"><div class="calib-fill" id="calibFill"></div></div>
 </div>
 
-<div id="lixeira">🗑️</div>
-<div id="zonaSalvar">💾</div>
-<video id="video" autoplay playsinline muted></video>
+<div id="menuDir" class="menu">
+  <div class="menu-title"><span>> MODO AVANÇADO</span></div>
+  <button class="btn" id="ativarBracelete">Ativar Bracelete</button>
+  <button class="btn" id="resetarPecas">Resetar Peças</button>
+</div>
 
+<video id="video" autoplay playsinline muted></video>
 <div id="pino1" class="pino"></div>
 <div id="pino2" class="pino"></div>
-<div id="cursor"></div>
+<div id="bracelete"></div>
 
 <div id="status">
-  <div>SISTEMA: <span id="st-text">AGUARDANDO INICIALIZAÇÃO</span></div>
-  <div>GESTO: <span id="st-gesto">NENHUM</span></div>
-  <div>OBJETOS: <span id="st-obj">0</span></div>
+  <div>MODO: <span id="st-modo">AVANÇADO</span> | PEÇA: <span id="st-peca">NENHUMA</span></div>
+  <div>GESTO: <span id="st-gesto">NENHUM</span> | VOZ: <span id="st-voz">ATIVA</span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
 <script>
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null; let vozLigada = true;
+let AudioContext = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
 function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
-function playSound(freq, type = 'sine', duration = 0.1, vol = 0.1) {
-  if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
-  } catch(e) {}
-}
-const SFX = { click: () => playSound(800, 'square', 0.05, 0.08), grab: () => playSound(300, 'sawtooth', 0.12, 0.08), trash: () => playSound(150, 'sawtooth', 0.25, 0.12), spawn: () => {playSound(600,'sine',0.1,0.1);setTimeout(()=>playSound(900,'sine',0.1,0.08),50)}, sucesso: () => {playSound(1200,'sine',0.1,0.1);setTimeout(()=>playSound(1500,'sine',0.1,0.08),100)} };
-const falas=window.speechSynthesis; function falar(texto){if(!vozLigada)return;falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.1;falas.speak(msg);}
+function playSound(freq, type = 'sine', duration = 0.1, vol = 0.1) { if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {}}
+const SFX = { click: () => playSound(1200, 'square', 0.04, 0.15), separar: () => playSound(900, 'sine', 0.2, 0.1), encaixe: () => playSound(1500, 'sine', 0.15, 0.12) };
+const falas=window.speechSynthesis; function falar(texto){if(document.getElementById('voz').innerText.includes('ON')){falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=1.1;falas.speak(msg);}}
 
-const video = document.getElementById('video');
-const pino1 = document.getElementById('pino1'); const pino2 = document.getElementById('pino2'); const cursor = document.getElementById('cursor');
-const stText = document.getElementById('st-text'); const stObj = document.getElementById('st-obj'); const stGesto = document.getElementById('st-gesto');
-const lixeira = document.getElementById('lixeira'); const zonaSalvar = document.getElementById('zonaSalvar');
+const video = document.getElementById('video'); const pino1 = document.getElementById('pino1'); const pino2 = document.getElementById('pino2');
+const stPeca = document.getElementById('st-peca'); const stGesto = document.getElementById('st-gesto'); const bracelete = document.getElementById('bracelete');
 
-let cubos = []; let segurado = null; let cooldownGesto=0;
-let posSuave = { x: -100, y: -100, cx: -100, cy: -100 };
-let cores = ['#00f0ff', '#ff00ea', '#ffe600', '#00ff66', '#ff3366']; let corAtual = 0; // Cores SOS PET + KORVIL
-let etapaCalibragem=0; let calibrado=false; let calibValues={abrir:0.35,punho:0.12,pinca:0.06}; let tempoCalib=0;
-let pincaTimer=null; let contagemAtiva=false; let contador=10; let camera, hands;
+let pecas = []; let pecaSelecionada = null; let pecaSegurada = null;
+let braceleteVestido = false; let braceleteExpandido = false; let braceletePos = {x: window.innerWidth/2, y: window.innerHeight/2};
+let posx = {x:-100,y:-100}, poscx = {x:-100,y:-100};
+let ultimoToque = 0; let ultimoFlip = 0; let historicoFlip = [];
 
-const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-function isPinca(h){return dist(h[4],h[8])<calibValues.pinca;}
-function isMaoFechada(h){return dist(h[8],h[5])<calibValues.punho&&dist(h[12],h[9])<calibValues.punho;}
-function isMaoAberta(h){return dist(h[8],h[0])>calibValues.abrir&&dist(h[12],h[0])>calibValues.abrir;}
-function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y)return"PAZ";if(h[8].y<h[6].y)return"APONTAR";if(h[4].y<h[3].y)return"LIKE";if(h[4].y>h[2].y)return"DISLIKE";if(h[8].y<h[6].y&&h[20].y<h[18].y)return"ROCK";return"NEUTRO";}
-
-function iniciarCalibragem(){ etapaCalibragem=1;calibrado=false;document.getElementById('calibFill').style.width='0%'; stText.textContent="CALIBRANDO 1/3";falar("Etapa 1 de 3. Mão aberta"); }
-function checarCalibragem(h){
-  if(etapaCalibragem===0)return; tempoCalib+=0.1; document.getElementById('calibFill').style.width=(tempoCalib*50)+'%';
-  if(etapaCalibragem===1 && isMaoAberta(h) && tempoCalib>1.5){ calibValues.abrir=dist(h[8],h[0])*1.1; etapaCalibragem=2;tempoCalib=0; stText.textContent="CALIBRANDO 2/3"; falar("Feche o punho"); SFX.sucesso();
-  }else if(etapaCalibragem===2 && isMaoFechada(h) && tempoCalib>1.5){ calibValues.punho=dist(h[8],h[5])*1.2; etapaCalibragem=3;tempoCalib=0; stText.textContent="CALIBRANDO 3/3"; falar("Faça pinça"); SFX.sucesso();
-  }else if(etapaCalibragem===3 && isPinca(h) && tempoCalib>1.5){ calibValues.pinca=dist(h[4],h[8])*0.9; etapaCalibragem=0;calibrado=true;tempoCalib=0; document.getElementById('calibFill').style.width='100%'; stText.textContent="SISTEMA PRONTO"; falar("Calibragem concluída"); SFX.sucesso(); }
-  if(tempoCalib>0 && tempoCalib<1.5 && ((etapaCalibragem===1&&!isMaoAberta(h)) || (etapaCalibragem===2&&!isMaoFechada(h)) || (etapaCalibragem===3&&!isPinca(h)))){tempoCalib=0;document.getElementById('calibFill').style.width='0%';}
+// --- CRIA 6 PEÇAS ---
+const nomesPecas = ['CPU', 'SENSOR', 'LED', 'BATERIA', 'ANTENA', 'MODULO'];
+function criarPecasHolograma(cx, cy){
+  pecas.forEach(p=>p.remove()); pecas = [];
+  for(let i=0; i<6; i++){
+    const peca = document.createElement('div'); peca.className = 'peca';
+    peca.innerText = nomesPecas[i]; peca.dataset.id = i;
+    peca.dataset.origX = cx; peca.dataset.origY = cy;
+    peca.style.left = `${cx-25}px`; peca.style.top = `${cy-25}px`;
+    document.body.appendChild(peca); pecas.push(peca);
+    setTimeout(()=>{
+      const angulo = (i/6) * Math.PI * 2;
+      const raio = 130;
+      peca.style.left = `${cx + Math.cos(angulo)*raio - 25}px`;
+      peca.style.top = `${cy + Math.sin(angulo)*raio - 25}px`;
+    }, 150*i);
+  }
+  SFX.separar(); falar("Bracelete expandido. 6 peças ativas");
 }
 
-function tirarFoto(){if(contagemAtiva)return;contagemAtiva=true;contador=10;document.getElementById('contador').style.display='block';falar("Foto em 10");const interval=setInterval(()=>{document.getElementById('contador').innerText=contador;contador--;if(contador<0){clearInterval(interval);document.getElementById('contador').style.display='none';contagemAtiva=false;falar("Foto tirada");}},1000);}
-
-function executarAcao(g1,g2){
-  if(!calibrado)return; if(Date.now()<cooldownGesto)return; cooldownGesto=Date.now()+600;
-  const combo=g2==="NEUTRO"?g1:g1+" "+g2;
-  const acoes={ "PINÇA":()=>criarCubo(posSuave.x,posSuave.y), "LIKE":()=>document.getElementById('cor').click(), "DISLIKE":()=>{if(cubos.length){cubos.pop().remove();stObj.textContent=cubos.length;}}, "ABERTO ABERTO":()=>document.getElementById('limpar').click(), "PUNHO PUNHO":()=>cubos.forEach((c,i)=>{c.style.left=window.innerWidth/2-40+'px';c.style.top=window.innerHeight/2-40+i*90+'px'}), "PAZ PAZ":()=>criarCubo(), "PINÇA PINÇA":()=>tirarFoto() };
-  if(acoes[combo]){stGesto.textContent=combo;falar("Ação: "+combo);SFX.click();acoes[combo]();}
+function resetarPecas(){
+  pecas.forEach((p,i)=>{
+    p.classList.remove('solta','selecionada','hover');
+    const cx = parseFloat(p.dataset.origX); const cy = parseFloat(p.dataset.origY);
+    const angulo = (i/6) * Math.PI * 2;
+    const raio = 130;
+    p.style.left = `${cx + Math.cos(angulo)*raio - 25}px`;
+    p.style.top = `${cy + Math.sin(angulo)*raio - 25}px`;
+  });
+  pecaSelecionada = null; pecaSegurada = null; stPeca.textContent = "NENHUMA";
+  SFX.encaixe();
 }
 
+// --- DETECÇÃO DE HOVER ---
+function checarHover(x, y){
+  let maisProxima = null; let menorDist = 9999;
+  pecas.forEach(p=>{
+    if(p.classList.contains('solta')) return;
+    const rect = p.getBoundingClientRect();
+    const dist = Math.hypot(x - (rect.left + 25), y - (rect.top + 25));
+    if(dist < menorDist && dist < 80){ menorDist = dist; maisProxima = p; }
+  });
+  pecas.forEach(p=>p.classList.remove('hover'));
+  if(maisProxima){ maisProxima.classList.add('hover'); stPeca.textContent = nomesPecas[maisProxima.dataset.id]; }
+  else{ stPeca.textContent = "NENHUMA"; }
+}
+
+// --- SELEÇÃO E ARRASTO ---
+function selecionarPeca(x, y){
+  let maisProxima = null; let menorDist = 9999;
+  pecas.forEach(p=>{
+    const rect = p.getBoundingClientRect();
+    const dist = Math.hypot(x - (rect.left + 25), y - (rect.top + 25));
+    if(dist < menorDist && dist < 60){ menorDist = dist; maisProxima = p; }
+  });
+  if(maisProxima){
+    pecas.forEach(p=>p.classList.remove('selecionada'));
+    maisProxima.classList.add('selecionada');
+    pecaSelecionada = maisProxima;
+    stPeca.textContent = "SELECIONADA: " + nomesPecas[maisProxima.dataset.id];
+    SFX.click();
+  }
+}
+
+function soltarPeca(){
+  if(pecaSelecionada &&!pecaSelecionada.classList.contains('solta')){
+    pecaSelecionada.classList.add('solta');
+    SFX.separar(); falar("Peça solta");
+  }
+}
+
+function segurarPeca(x, y){
+  if(pecaSelecionada && pecaSelecionada.classList.contains('solta') &&!pecaSegurada){
+    const rect = pecaSelecionada.getBoundingClientRect();
+    if(x > rect.left && x < rect.right && y > rect.top && y < rect.bottom){
+      pecaSegurada = pecaSelecionada;
+      SFX.click();
+    }
+  }
+  if(gesto === "ABERTO" && pecaSegurada){
+    pecaSegurada = null;
+  }
+}
+
+function reencaixarPeca(){
+  if(pecaSegurada){
+    const id = pecaSegurada.dataset.id;
+    const cx = parseFloat(pecaSegurada.dataset.origX); const cy = parseFloat(pecaSegurada.dataset.origY);
+    const angulo = (id/6) * Math.PI * 2;
+    const raio = 130;
+    pecaSegurada.style.left = `${cx + Math.cos(angulo)*raio - 25}px`;
+    pecaSegurada.style.top = `${cy + Math.sin(angulo)*raio - 25}px`;
+    pecaSegurada.classList.remove('solta','selecionada');
+    pecaSegurada = null; pecaSelecionada = null; stPeca.textContent = "NENHUMA";
+    SFX.encaixe(); falar("Peça encaixada");
+  }
+}
+
+// --- FLIP DETECTOR 2x ---
+function detectarFlip2x(hand){
+  const pulso = hand[0]; const meio = hand[12];
+  const angulo = Math.atan2(meio.y - pulso.y, meio.x - pulso.x);
+  historicoFlip.push({ang: angulo, t: performance.now()});
+  if(historicoFlip.length > 15) historicoFlip.shift();
+  if(historicoFlip.length < 8) return false;
+  const diffAng = Math.abs(historicoFlip[historicoFlip.length-1].ang - historicoFlip[0].ang);
+  const diffTime = historicoFlip[historicoFlip.length-1].t - historicoFlip[0].t;
+  if(diffAng > 1.5 && diffTime < 400){
+    if(performance.now() - ultimoFlip < 600){ // 2x rápido
+      ultimoFlip = 0; historicoFlip = []; return true;
+    }
+    ultimoFlip = performance.now();
+  }
+  return false;
+}
+
+// --- MEDIAPIPE ---
+let hands, camera;
 function iniciarSistema(){
-  document.getElementById('startOverlay').style.display='none';
-  initAudio();
+  document.getElementById('startOverlay').style.display='none'; initAudio(); iniciarReconhecimentoVoz();
   hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-  hands.setOptions({ maxNumHands: 2, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 }); // 0 = mais leve pro celular
+  hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7 });
   hands.onResults(res => {
     const maos = res.multiHandLandmarks;
     if (maos && maos.length > 0) {
+      // MÃO 1 = BRACELETE
       const h1 = maos[0];
       let targetX1 = (1 - h1[8].x) * window.innerWidth; let targetY1 = h1[8].y * window.innerHeight;
-      posSuave.x += (targetX1 - posSuave.x) * 0.5; posSuave.y += (targetY1 - posSuave.y) * 0.5; // suavização 50%
-      pino1.style.left = `${posSuave.x}px`; pino1.style.top = `${posSuave.y}px`;
-      const gesto1 = identificarGesto(h1); stGesto.textContent=gesto1; checarCalibragem(h1);
-      if(gesto1==="PINÇA"&&!pincaTimer){pincaTimer=setTimeout(()=>tirarFoto(),2000);}
-      if(gesto1!=="PINÇA"&&pincaTimer){clearTimeout(pincaTimer);pincaTimer=null;}
-      if (maos.length > 1) {
+      posx.x = targetX1; posx.y = targetY1;
+      pino1.style.left = `${posx.x}px`; pino1.style.top = `${posx.y}px`;
+
+      if(braceleteVestido){
+        braceletePos.x = posx.x; braceletePos.y = posx.y;
+        bracelete.style.left = `${posx.x-90}px`; bracelete.style.top = `${posx.y-90}px`;
+        checarHover(posx.x, posx.y);
+        if(detectarFlip2x(h1)){ soltarPeca(); }
+        const gesto1 = (Math.hypot(h1[8].x-h1[5].x, h1[8].y-h1[5].y) < 0.12)? "PUNHO" : "ABERTO";
+        stGesto.textContent = gesto1;
+        segurarPeca(posx.x, posx.y);
+        if(pecaSegurada){
+          pecaSegurada.style.left = `${posx.x-25}px`; pecaSegurada.style.top = `${posx.y-25}px`;
+        }
+      }
+
+      // MÃO 2 = INTERAÇÃO
+      if(maos.length > 1){
         const h2 = maos[1];
         let targetX2 = (1 - h2[8].x) * window.innerWidth; let targetY2 = h2[8].y * window.innerHeight;
-        posSuave.cx += (targetX2 - posSuave.cx) * 0.5; posSuave.cy += (targetY2 - posSuave.cy) * 0.5;
-        pino2.style.left = `${posSuave.cx}px`; pino2.style.top = `${posSuave.cy}px`; cursor.style.left = `${posSuave.cx}px`; cursor.style.top = `${posSuave.cy}px`;
-        const gesto2 = identificarGesto(h2); executarAcao(gesto1,gesto2);
-      } else { executarAcao(gesto1,"NEUTRO"); }
-    } else { stText.textContent = "AGUARDANDO MÃOS..."; pino1.style.left = '-100px'; pino2.style.left = '-100px'; cursor.style.left='-100px'; }
+        poscx.x = targetX2; poscx.y = targetY2;
+        pino2.style.left = `${poscx.x}px`; pino2.style.top = `${poscx.y}px`;
+        if(detectarFlip2x(h2)){
+          if(pecaSegurada){ reencaixarPeca(); }
+          else { selecionarPeca(poscx.x, poscx.y); }
+        }
+      }
+    }
   });
   navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}}).then(stream=>{
     video.srcObject = stream;
-    camera = new Camera(video, { onFrame: async () => { await hands.send({ image: video }); }, width: 480, height: 640 }); // resolução menor = mais fps
-    camera.start().then(() => { stText.textContent = "CLIQUE EM CALIBRAR"; });
-  }).catch(err=>{stText.textContent="ERRO: "+err.message});
+    camera = new Camera(video, { onFrame: async () => { await hands.send({ image: video }); }});
+    camera.start();
+  });
 }
 
-function criarCubo(x, y) {
-  if(!calibrado){falar("Calibre primeiro");return;} initAudio();
-  const c = document.createElement('div'); c.className = 'cubo';
-  c.style.left = `${x || (window.innerWidth / 2 - 40)}px`; c.style.top = `${y || (window.innerHeight / 2 - 40)}px`;
-  c.style.borderColor = cores[corAtual]; c.style.background = cores[corAtual] + '22'; c.style.boxShadow = `0 0 15px ${cores[corAtual]}`;
-  let isDragging = false; let offsetX = 0, offsetY = 0;
-  c.addEventListener('pointerdown', (e) => { initAudio(); isDragging = true; offsetX = e.clientX - c.offsetLeft; offsetY = e.clientY - c.offsetTop; c.classList.add('segurado'); SFX.grab(); c.setPointerCapture(e.pointerId); });
-  c.addEventListener('pointermove', (e) => { if (!isDragging) return; c.style.left = `${e.clientX - offsetX}px`; c.style.top = `${e.clientY - offsetY}px`; 
-    const lixRect = lixeira.getBoundingClientRect(); lixeira.classList.toggle('ativo', Math.hypot(e.clientX - (lixRect.left + lixRect.width / 2), e.clientY - (lixRect.top + lixRect.height / 2)) < 90);
-    const saveRect = zonaSalvar.getBoundingClientRect(); zonaSalvar.classList.toggle('ativo', Math.hypot(e.clientX - (saveRect.left + saveRect.width / 2), e.clientY - (saveRect.top + saveRect.height / 2)) < 90);
-  });
-  c.addEventListener('pointerup', (e) => { if (!isDragging) return; isDragging = false; c.classList.remove('segurado'); 
-    const lixRect = lixeira.getBoundingClientRect(); if (Math.hypot(e.clientX - (lixRect.left + lixRect.width / 2), e.clientY - (lixRect.top + lixRect.height / 2)) < 90) { SFX.trash(); c.remove(); cubos = cubos.filter(item => item!== c); stObj.textContent = cubos.length; } 
-    lixeira.classList.remove('ativo'); zonaSalvar.classList.remove('ativo');
-  });
-  document.body.appendChild(c); cubos.push(c); stObj.textContent = cubos.length; SFX.spawn();
+// --- TOQUE DUPLO NA TELA ---
+document.body.addEventListener('touchend', (e)=>{
+  const agora = performance.now();
+  if(agora - ultimoToque < 300){ // duplo toque
+    selecionarPeca(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }
+  ultimoToque = agora;
+});
+
+// --- VOZ ---
+let recognition;
+function iniciarReconhecimentoVoz(){
+  if(!('webkitSpeechRecognition' in window)) return;
+  recognition = new webkitSpeechRecognition();
+  recognition.continuous = true; recognition.lang = 'pt-BR';
+  recognition.onresult = (event)=>{
+    const comando = event.results[event.results.length-1][0].transcript.toLowerCase();
+    if(comando.includes('expandir')){ braceleteExpandido=true; bracelete.classList.add('expandido'); criarPecasHolograma(braceletePos.x, braceletePos.y); }
+    if(comando.includes('fechar')){ braceleteExpandido=false; bracelete.classList.remove('expandido'); }
+  };
+  recognition.start(); document.getElementById('indicadorVoz').style.display = 'block';
 }
 
+// --- EVENTOS ---
 document.getElementById('startBtn').onclick = iniciarSistema;
-document.getElementById('novo').onclick = () => criarCubo();
-document.getElementById('limpar').onclick = () => { initAudio(); SFX.trash(); cubos.forEach(c => c.remove()); cubos = []; stObj.textContent = 0; };
-document.getElementById('cor').onclick = () => { initAudio(); SFX.click(); corAtual = (corAtual + 1) % cores.length; document.getElementById('cor').style.color = cores[corAtual]; };
-document.getElementById('calibrar').onclick = () => iniciarCalibragem();
-document.getElementById('voz').onclick = () => { vozLigada=!vozLigada; document.getElementById('voz').innerText=vozLigada?'VOZ: ON':'VOZ: OFF'; };
+document.getElementById('ativarBracelete').onclick = ()=>{
+  bracelete.style.display='block'; braceleteVestido=true;
+  bracelete.style.left=window.innerWidth/2-90+'px'; bracelete.style.top=window.innerHeight/2-90+'px';
+  braceletePos = {x:window.innerWidth/2, y:window.innerHeight/2};
+  criarPecasHolograma(braceletePos.x, braceletePos.y);
+};
+document.getElementById('resetarPecas').onclick = resetarPecas;
+document.getElementById('voz').onclick = () => { document.getElementById('voz').innerText=document.getElementById('voz').innerText.includes('ON')?'VOZ: OFF':'VOZ: ON'; };
 </script>
 </body>
 </html>
