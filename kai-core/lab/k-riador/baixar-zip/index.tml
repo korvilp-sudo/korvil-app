@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAIXAR-ZIP - K-RIADOR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+    * { box-sizing: border-box; }
+  body { background:#0A0A0A; color:#eee; font-family: 'Segoe UI', Arial; padding:20px; max-width:1000px; margin:auto; }
+  h1 { color:#00ff88; text-align:center; }
+ .card { background:#1A1A1A; padding:15px; border-radius:10px; margin-bottom:10px; border:1px solid #333; }
+ .pasta { border-left:4px solid #00ff88; padding-left:15px; }
+  input, textarea, select { width:100%; padding:10px; margin:5px 0; background:#222; color:#fff; border:1px solid #444; border-radius:5px; }
+  button { padding:10px 15px; margin:5px 5px 5px 0; background:#00ff88; color:#000; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
+  button.danger { background:#ff4444; color:#fff; }
+  button.sec { background:#333; color:#fff; }
+ .botoes { display:flex; flex-wrap:wrap; }
+ .menu-top { background:#111; padding:15px; border-radius:10px; margin-bottom:20px; text-align:center; }
+</style>
+</head>
+<body>
+
+<h1>📦 K-RIADOR DE ZIP</h1>
+<div class="menu-top">
+  <p>Monte pastas e arquivos infinitos. Anexe código, imagens, vídeos.</p>
+  <button onclick="addPasta('root')">📁 Nova Pasta</button>
+  <button onclick="addArquivo('root')">📄 Novo Arquivo</button>
+  <button onclick="baixarZip()" style="background:#00aaff">⬇️ BAIXAR ZIP COMPLETO</button>
+</div>
+
+<div id="estrutura"></div>
+
+<script>
+let idCounter = 0;
+const estrutura = { id: 'root', tipo: 'pasta', nome: 'projeto', filhos: [] };
+
+function addPasta(paiId) {
+  const nome = prompt("Nome da pasta:");
+  if(!nome) return;
+  const novaPasta = { id: 'p' + idCounter++, tipo: 'pasta', nome, filhos: [] };
+  acharPai(estrutura, paiId).filhos.push(novaPasta);
+  render();
+}
+
+function addArquivo(paiId) {
+  const nome = prompt("Nome do arquivo. Ex: index.html, logo.png, script.js");
+  if(!nome) return;
+  const novoArquivo = { id: 'a' + idCounter++, tipo: 'arquivo', nome, conteudo: '', arquivo: null };
+  acharPai(estrutura, paiId).filhos.push(novoArquivo);
+  render();
+}
+
+function delItem(paiId, itemId) {
+  if(!confirm("Excluir este item?")) return;
+  const pai = acharPai(estrutura, paiId);
+  pai.filhos = pai.filhos.filter(f => f.id!== itemId);
+  render();
+}
+
+function acharPai(no, id) {
+  if(no.id === id) return no;
+  for(let f of no.filhos) {
+    if(f.tipo === 'pasta') {
+      const achou = acharPai(f, id);
+      if(achou) return achou;
+    }
+  }
+  return null;
+}
+
+function handleFile(e, item) {
+  const file = e.target.files[0];
+  if(file) {
+    item.arquivo = file;
+  }
+}
+
+function render(no = estrutura, container = document.getElementById('estrutura'), nivel = 0) {
+  if(nivel === 0) container.innerHTML = '';
+  no.filhos.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'card ' + (item.tipo === 'pasta'? 'pasta' : '');
+
+    if(item.tipo === 'pasta') {
+      div.innerHTML = `
+        <div class="botoes">
+          <b style="font-size:18px">📁 ${item.nome}</b>
+          <button onclick="addPasta('${item.id}')">+ Subpasta</button>
+          <button class="sec" onclick="addArquivo('${item.id}')">+ Arquivo</button>
+          <button class="danger" onclick="delItem('${no.id}','${item.id}')">Excluir</button>
+        </div>
+        <div id="filhos-${item.id}" style="margin-top:10px"></div>
+      `;
+      container.appendChild(div);
+      render(item, div.querySelector(`#filhos-${item.id}`), nivel + 1);
+    } else {
+      div.innerHTML = `
+        <div class="botoes">
+          <b style="font-size:16px">📄 ${item.nome}</b>
+          <button class="danger" onclick="delItem('${no.id}','${item.id}')">Excluir</button>
+        </div>
+        <label>1. Conteúdo Texto/Código:</label>
+        <textarea rows="5" oninput="item.conteudo=this.value" placeholder="Cole código, HTML, JSON, TXT aqui...">${item.conteudo}</textarea>
+        <label>2. OU Anexar Arquivo: Img, Vídeo, PDF, ZIP...</label>
+        <input type="file" onchange="handleFile(event, item)">
+        <small style="color:#00ff88">${item.arquivo? '✓ Anexado: ' + item.arquivo.name : 'Nenhum arquivo anexado'}</small>
+      `;
+      container.appendChild(div);
+    }
+  });
+}
+
+async function baixarZip() {
+  const zip = new JSZip();
+  async function addNoZip(no, pastaZip) {
+    for(let item of no.filhos) {
+      if(item.tipo === 'pasta') {
+        const novaPasta = pastaZip.folder(item.nome);
+        await addNoZip(item, novaPasta);
+      } else {
+        if(item.arquivo) {
+          pastaZip.file(item.nome, item.arquivo);
+        } else {
+          pastaZip.file(item.nome, item.conteudo);
+        }
+      }
+    }
+  }
+  await addNoZip(estrutura, zip);
+  const content = await zip.generateAsync({type:"blob"});
+  saveAs(content, estrutura.nome + ".zip");
+  alert("ZIP baixado com sucesso!");
+}
+
+render();
+</script>
+</body>
+</html>
