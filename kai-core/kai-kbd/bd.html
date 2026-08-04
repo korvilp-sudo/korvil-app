@@ -1,219 +1,136 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>KORVIL CUBO DB + MONTADOR</title>
-<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
-  body { background: #000510; color: #00f0ff; overflow-x: hidden; }
+`<!DOCTYPE html> <html lang="pt-BR"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width,initial-scale=1"> <title>K-B.D FORJA</title>  <link rel="stylesheet" href="css/forja.css">  </head> <body>  <div id="forja-app">      <aside id="painel-esquerdo">          <div class="logo">             <h1>K-B.D FORJA</h1>             <span>K-RIADOR</span>         </div>          <input             id="buscaGlobal"             placeholder="Pesquisar..."         >          <select id="acao"></select>          <select id="tipo"></select>          <select id="setor"></select>          <select id="area"></select>          <select id="servico"></select>          <select id="categoria"></select>          <select id="diversos"></select>          <select id="pasta"></select>          <select id="arquivo"></select>          <input             id="comando"             placeholder="Comando K-RIADOR"         >          <div class="acoes">              <button id="executarBtn">                 EXECUTAR             </button>              <button id="confirmarBtn">                 CONFIRMAR             </button>              <button id="githubBtn">                 GITHUB             </button>          </div>      </aside>      <main id="editor-area">          <div id="editor-toolbar">              <button id="desfazerBtn">                 ⬅ DESFAZER             </button>              <button id="avancarBtn">                 AVANÇAR ➡             </button>          </div>          <textarea id="editor"></textarea>      </main>  </div>  <section id="visualizador">      <div id="preview-header">         VISUALIZADOR INTELIGENTE     </div>      <iframe id="preview"></iframe>  </section>  <section id="historico">      <h2>HISTÓRICO</h2>      <div id="listaHistorico"></div>  </section>  <script src="js/forja-dados.js"></script> <script src="js/forja-history.js"></script> <script src="js/forja-preview.js"></script> <script src="js/forja-editor.js"></script>  </body> </html> `
+`*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }  body{ background:#050505; color:white; height:100vh; overflow:hidden; }  #forja-app{ display:flex; height:55vh; }  #painel-esquerdo{ width:320px; background:#0d0d0d; padding:12px; overflow:auto; border-right:2px solid cyan; }  #painel-esquerdo select, #painel-esquerdo input{ width:100%; margin-bottom:8px; padding:10px; background:#111; color:white; border:1px solid cyan; }  .logo{ text-align:center; margin-bottom:15px; }  .logo h1{ color:cyan; }  .acoes{ display:flex; flex-direction:column; gap:8px; }  button{ padding:10px; cursor:pointer; font-weight:bold; }  #editor-area{ flex:1; display:flex; flex-direction:column; }  #editor-toolbar{ padding:10px; background:#111; display:flex; gap:10px; }  #editor{ flex:1; background:#000; color:#00ffcc; padding:15px; border:none; font-family:monospace; font-size:14px; }  #visualizador{ height:30vh; border-top:2px solid cyan; }  #preview-header{ padding:10px; background:#111; }  #preview{ width:100%; height:100%; background:white; border:none; }  #historico{ height:15vh; overflow:auto; padding:10px; background:#080808; border-top:1px solid cyan; } `
+`const dadosForja = {  acoes:[ "Criar", "Editar", "Atualizar", "Mover", "Copiar", "Duplicar", "Excluir", "Renomear", "Pesquisar", "Importar", "Exportar", "Anexar", "Executar", "Sincronizar", "Publicar", "Arquivar", "Restaurar" ],  tipos:[ "Setor", "Área", "Serviço", "Produto", "Projeto", "Curso", "Cliente", "Aluno", "Parceiro", "Profissional", "Arquivo", "Código", "Pasta", "Banco de Dados", "Agente IA" ],  setores:[ "Sistema K", "Serviços Profissionais", "K-TP", "K-AFORTUNADO", "K-ALMA", "CENTRAL K", "KORVIL Loja" ],  areas:[ "Tecnologias", "Empreendedorismo", "Finanças", "Saúde", "Beleza", "Treinamento Personalizado", "Desenvolvimento Humano", "Academia" ],  servicos:[ "Projeto TRANSFORMAÇÃO", "Consultoria", "Mentoria", "Eletricista", "Carpinteiro", "Faxineira", "Massoterapia", "Barbeiro", "Cabeleireiro", "Manicure" ],  categorias:[ "Curso", "Produto", "Serviço", "Documento", "Mídia", "Banco de Dados" ],  diversos:[ "K-AI", "K-RIADOR", "CORVO", "Agentes", "Prompts", "Workflows", "Automações", "Memórias", "Github", "Logs", "Configurações" ],  pastas:[ "Assets", "Components", "Sections", "Pages", "Scripts", "Storage", "Database", "Backups", "Códigos", "Mídias" ],  arquivos:[ "HTML", "CSS", "JavaScript", "JSON", "Imagem", "Vídeo", "Áudio", "PDF", "ZIP", "APK" ]  }; `
+function carregarSelect(id,array){
 
- .top { position: fixed; top: 0; width: 100%; height: 50px; background: rgba(0,20,40,0.95); border-bottom: 2px solid #00f0ff; text-align: center; line-height: 50px; font-weight: 900; z-index: 100; }
+const select =
+document.getElementById(id);
 
- .container { padding-top: 60px; display: flex; flex-direction: column; gap: 10px; }
+array.forEach(item=>{
 
-  /* CUBO PARADO */
-.cubo-area { height: 400px; position: relative; border-bottom: 2px solid #00f0ff; }
-  canvas { width: 100%; height: 100%; }
+const option =
+document.createElement("option");
 
-  /* 6 FORMULARIOS */
-.forms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
-.form-box { background: rgba(0,10,30,0.9); border: 2px solid #00f0ff; border-radius: 12px; padding: 12px; box-shadow: 0 0 20px #00f0ff44; }
-.form-box h3 { font-size: 12px; color: #ff00ff; text-align: center; margin-bottom: 8px; }
-.form-box input,.form-box select,.form-box button { width: 100%; padding: 8px; margin-bottom: 6px; background: #000; color: #00f0ff; border: 1px solid #00f0ff; border-radius: 6px; font-size: 11px; }
-.form-box button { background: linear-gradient(90deg, #00f0ff, #ff00ff); color: #000; font-weight: 900; cursor: pointer; }
+option.textContent=item;
 
-  /* MONTADOR QUEBRA CABECA */
-.montador { padding: 10px; background: rgba(0,10,30,0.9); border-top: 2px solid #00f0ff; }
-.montador h2 { text-align: center; font-size: 14px; margin-bottom: 10px; color: #ff00ff; }
-.pecas { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
-.peca { padding: 10px 15px; background: #001828; border: 2px dashed #00f0ff; border-radius: 8px; cursor: grab; font-size: 11px; min-width: 120px; text-align: center; }
-.peca.dragging { opacity: 0.5; }
-.slots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.slot { width: 150px; height: 60px; background: #000; border: 2px solid #00f0ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-.slot.over { background: #00f0ff33; }
-.btn-montar { width: 100%; padding: 12px; margin-top: 10px; background: #00ff00; color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
-</style>
-</head>
-<body>
-<div class="top">⚡ KORVIL CUBO DB + MONTADOR LÓGICO ⚡</div>
+select.appendChild(option);
 
-<div class="container">
-  <div class="cubo-area">
-    <canvas id="canvas"></canvas>
-  </div>
-
-  <div class="forms-grid">
-    <div class="form-box">
-      <h3>LADO 1: SETOR</h3>
-      <input id="nomeSetor" placeholder="Nome do Setor: Sistema K">
-      <input id="descSetor" placeholder="Descrição">
-      <button onclick="salvarDB('setor')">SALVAR NO BANCO</button>
-    </div>
-    <div class="form-box">
-      <h3>LADO 2: ÁREA</h3>
-      <select id="setorArea"><option>Selecione Setor</option></select>
-      <input id="nomeArea" placeholder="Nome da Área: Tecnologia">
-      <button onclick="salvarDB('area')">SALVAR NO BANCO</button>
-    </div>
-    <div class="form-box">
-      <h3>LADO 3: SERVIÇO</h3>
-      <select id="areaServico"><option>Selecione Área</option></select>
-      <input id="nomeServico" placeholder="Nome do Serviço: Dev Front">
-      <input type="number" id="precoServico" placeholder="Preço R$">
-      <button onclick="salvarDB('servico')">SALVAR NO BANCO</button>
-    </div>
-    <div class="form-box">
-      <h3>LADO 4: PROFISSIONAL</h3>
-      <select id="servicoProf"><option>Selecione Serviço</option></select>
-      <input id="nomeProf" placeholder="Nome Profissional">
-      <input id="telProf" placeholder="WhatsApp">
-      <button onclick="salvarDB('prof')">SALVAR NO BANCO</button>
-    </div>
-    <div class="form-box">
-      <h3>LADO 5: CLIENTE</h3>
-      <input id="nomeCli" placeholder="Nome Cliente">
-      <input id="telCli" placeholder="WhatsApp Cliente">
-      <select id="tipoCli"><option>PF</option><option>PJ</option></select>
-      <button onclick="salvarDB('cliente')">SALVAR NO BANCO</button>
-    </div>
-    <div class="form-box">
-      <h3>LADO 6: VENDA</h3>
-      <select id="clienteVenda"><option>Selecione Cliente</option></select>
-      <select id="profVenda"><option>Selecione Profissional</option></select>
-      <input type="date" id="dataVenda">
-      <button onclick="salvarDB('venda')">LANÇAR VENDA</button>
-    </div>
-  </div>
-
-  <div class="montador">
-    <h2>🧩 MONTADOR LÓGICO KORVIL - ARRASTE NA ORDEM</h2>
-    <div class="pecas" id="pecas">
-      <div class="peca" draggable="true" data-tipo="setor">SETOR</div>
-      <div class="peca" draggable="true" data-tipo="area">ÁREA</div>
-      <div class="peca" draggable="true" data-tipo="servico">SERVIÇO</div>
-      <div class="peca" draggable="true" data-tipo="prof">PROFISSIONAL</div>
-      <div class="peca" draggable="true" data-tipo="cliente">CLIENTE</div>
-    </div>
-    <div class="slots">
-      <div class="slot" data-ordem="1">1. SETOR</div>
-      <div class="slot" data-ordem="2">2. ÁREA</div>
-      <div class="slot" data-ordem="3">3. SERVIÇO</div>
-      <div class="slot" data-ordem="4">4. PROFISSIONAL</div>
-      <div class="slot" data-ordem="5">5. CLIENTE</div>
-    </div>
-    <button class="btn-montar" onclick="validarMontagem()">VALIDAR ESTRUTURA</button>
-    <div id="resultadoMontagem" style="text-align:center; margin-top:10px; font-size:12px;"></div>
-  </div>
-</div>
-
-<script type="module">
-import * as THREE from 'three';
-
-// BANCO DE DADOS EM MEMORIA
-const DB = {setores:[], areas:[], servicos:[], profs:[], clientes:[], vendas:[]};
-const OS_5_SETORES = ["Sistema K","K-TP","K-AFORTUNADO","K-ALMA","K-GESTAO"];
-
-// CUBO PARADO
-let scene, camera, renderer, cube;
-function initCubo() {
-  scene = new THREE.Scene(); scene.background = new THREE.Color(0x000010);
-  camera = new THREE.PerspectiveCamera(60, window.innerWidth / 400, 0.1, 1000);
-  camera.position.set(0, 0, 5);
-  renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
-  renderer.setSize(window.innerWidth, 400);
-
-  const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
-  const materials = [];
-  const cores = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-  const textos = ['SETOR','ÁREA','SERVIÇO','PROF','CLIENTE','VENDA'];
-
-  for(let i=0; i<6; i++){
-    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = `#${cores[i].toString(16).padStart(6,'0')}`; ctx.fillRect(0,0,512,512);
-    ctx.fillStyle = '#000'; ctx.font = 'bold 70px Orbitron'; ctx.textAlign = 'center';
-    ctx.fillText(textos[i], 256, 256);
-    materials.push(new THREE.MeshBasicMaterial({map: new THREE.CanvasTexture(canvas)}));
-  }
-  cube = new THREE.Mesh(geometry, materials);
-  scene.add(cube);
-  renderer.render(scene, camera); // PARADO
-}
-
-// SALVAR NO BANCO
-function salvarDB(tipo){
-  if(tipo==='setor'){
-    DB.setores.push({nome: nomeSetor.value, desc: descSetor.value});
-    atualizarSelects();
-    alert('Setor salvo!');
-  }
-  if(tipo==='area'){
-    DB.areas.push({setor: setorArea.value, nome: nomeArea.value});
-    atualizarSelects();
-    alert('Área salva!');
-  }
-  if(tipo==='servico'){
-    DB.servicos.push({area: areaServico.value, nome: nomeServico.value, preco: precoServico.value});
-    atualizarSelects();
-    alert('Serviço salvo!');
-  }
-  if(tipo==='prof'){
-    DB.profs.push({servico: servicoProf.value, nome: nomeProf.value, tel: telProf.value});
-    atualizarSelects();
-    alert('Profissional salvo!');
-  }
-  if(tipo==='cliente'){
-    DB.clientes.push({nome: nomeCli.value, tel: telCli.value, tipo: tipoCli.value});
-    atualizarSelects();
-    alert('Cliente salvo!');
-  }
-  if(tipo==='venda'){
-    DB.vendas.push({cliente: clienteVenda.value, prof: profVenda.value, data: dataVenda.value});
-    alert('Venda lançada!');
-    console.log(DB);
-  }
-}
-window.salvarDB = salvarDB;
-
-function atualizarSelects(){
-  setorArea.innerHTML = '<option>Selecione Setor</option>' + DB.setores.map(s=>`<option>${s.nome}</option>`).join('');
-  areaServico.innerHTML = '<option>Selecione Área</option>' + DB.areas.map(a=>`<option>${a.nome}</option>`).join('');
-  servicoProf.innerHTML = '<option>Selecione Serviço</option>' + DB.servicos.map(s=>`<option>${s.nome}</option>`).join('');
-  clienteVenda.innerHTML = '<option>Selecione Cliente</option>' + DB.clientes.map(c=>`<option>${c.nome}</option>`).join('');
-  profVenda.innerHTML = '<option>Selecione Profissional</option>' + DB.profs.map(p=>`<option>${p.nome}</option>`).join('');
-}
-
-// MONTADOR QUEBRA CABECA
-let ordemCorreta = ['setor','area','servico','prof','cliente'];
-document.querySelectorAll('.peca').forEach(p=>{
-  p.addEventListener('dragstart', e=>{ e.dataTransfer.setData('tipo', p.dataset.tipo); p.classList.add('dragging'); });
-  p.addEventListener('dragend', ()=>p.classList.remove('dragging'));
-});
-document.querySelectorAll('.slot').forEach(s=>{
-  s.addEventListener('dragover', e=>{ e.preventDefault(); s.classList.add('over'); });
-  s.addEventListener('dragleave', ()=>s.classList.remove('over'));
-  s.addEventListener('drop', e=>{
-    e.preventDefault(); s.classList.remove('over');
-    const tipo = e.dataTransfer.getData('tipo');
-    s.innerText = tipo.toUpperCase(); s.dataset.valor = tipo;
-  });
 });
 
-function validarMontagem(){
-  let ok = true; let txt = 'ORDEM: ';
-  document.querySelectorAll('.slot').forEach((s,i)=>{
-    if(s.dataset.valor!== ordemCorreta[i]) ok = false;
-    txt += s.dataset.valor + ' > ';
-  });
-  resultadoMontagem.innerText = ok? txt + '✅ ESTRUTURA KORVIL CORRETA!' : txt + '❌ ORDEM ERRADA';
-  resultadoMontagem.style.color = ok? '#00ff00' : '#ff0000';
 }
-window.validarMontagem = validarMontagem;
 
-initCubo();
-</script>
-</body>
-</html>
+carregarSelect("acao",dadosForja.acoes);
+carregarSelect("tipo",dadosForja.tipos);
+carregarSelect("setor",dadosForja.setores);
+carregarSelect("area",dadosForja.areas);
+carregarSelect("servico",dadosForja.servicos);
+carregarSelect("categoria",dadosForja.categorias);
+carregarSelect("diversos",dadosForja.diversos);
+carregarSelect("pasta",dadosForja.pastas);
+carregarSelect("arquivo",dadosForja.arquivos);
+const historico=[];
+
+let posicao=-1;
+
+function salvarHistorico(codigo){
+
+historico.splice(posicao+1);
+
+historico.push({
+
+data:new Date(),
+codigo
+
+});
+
+posicao=
+historico.length-1;
+
+renderHistorico();
+
+}
+
+function desfazer(){
+
+if(posicao>0){
+
+posicao--;
+
+editor.value=
+historico[posicao].codigo;
+
+atualizarPreview();
+
+}
+
+}
+
+function avancar(){
+
+if(posicao<historico.length-1){
+
+posicao++;
+
+editor.value=
+historico[posicao].codigo;
+
+atualizarPreview();
+
+}
+
+}
+const editor =
+document.getElementById("editor");
+
+const preview =
+document.getElementById("preview");
+
+function atualizarPreview(){
+
+const codigo =
+editor.value;
+
+preview.srcdoc =
+codigo;
+
+}
+
+editor.addEventListener(
+"input",
+()=>{
+
+atualizarPreview();
+
+salvarHistorico(
+editor.value
+);
+
+}
+);
+forja-github.js
+- commits
+- pull
+- push
+- diff visual
+
+forja-ai.js
+- memória K-AI
+- análise de código
+- criação automática
+
+forja-db.js
+- JSON
+- CSV
+- XLSX
+- banco local
+
+forja-files.js
+- imagens
+- vídeos
+- áudios
+- documentos
+
+forja-repo.js
+- leitura automática do korvil-app
+- árvore de arquivos
+- busca global
