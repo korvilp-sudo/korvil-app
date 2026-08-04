@@ -35,7 +35,6 @@
       <span class="tag-kai">K-RIADOR v8.2</span>
     </div>
 
-    <!-- COMANDO UNIFICADO -->
     <div class="barra-comando">
       <button id="btnVoz">🎤 VOZ</button>
       <input id="comandoUnificado" placeholder="Digite ou fale: criar setor K-TP area Treinamento">
@@ -45,7 +44,6 @@
     <input id="buscaGlobal" placeholder="Busca Global Rápida...">
     <input id="buscaRepo" placeholder="Busca Repositório...">
 
-    <!-- SELETORES RÁPIDOS -->
     <div id="seletores-rapidos">
       <select id="acao"></select>
       <select id="tipo"></select>
@@ -57,7 +55,6 @@
       <select id="pasta"></select>
     </div>
 
-    <!-- ZONA MONTAGEM RÁPIDA -->
     <h4 class="titulo-zona">MONTAGEM RÁPIDA - ARRASTE AQUI</h4>
     <div id="zona-montagem">
       <div class="slot" data-tipo="setor">Setor</div>
@@ -66,7 +63,6 @@
       <div class="slot" data-tipo="arquivo">Arquivo</div>
     </div>
 
-    <!-- PEÇAS DISPONÍVEIS -->
     <div id="pecas-rapidas"></div>
 
     <div class="acoes">
@@ -133,15 +129,15 @@
   </div>
 </div>
 
-<!-- CAMERA CGM -->
 <video id="videoCGM" style="display:none" autoplay playsinline></video>
-<canvas id="canvasCGM" style="position:fixed;bottom:140px;left:20px;width:200px;height:150px;border:2px solid #00ff66;border-radius:10px;z-index:9998;display:none;box-shadow:0 0 20px #00ff66;"></canvas>
-<div id="statusCGM" style="position:fixed;bottom:120px;left:20px;font-size:11px;color:#00ff66;display:none;">CGM OFF</div>
+<canvas id="canvasCGM"></canvas>
+<div id="statusCGM">CGM OFF</div>
 <input type="file" id="inputImportar" style="display:none" multiple>
 
 <script src="js/forja-dados.js"></script>
 <script src="js/forja-history.js"></script>
 <script src="js/forja-preview.js"></script>
+<script src="js/forja-kai.js"></script>
 <script src="js/forja-editor.js"></script>
 </body>
 </html>
