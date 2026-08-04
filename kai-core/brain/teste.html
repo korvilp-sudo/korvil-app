@@ -1,1 +1,83 @@
 
+// ============= K-AI BRAIN v9.0 - AUTO EVOLUTIVO =============
+const KAI_BRAIN = {
+  versao: "9.0.0",
+  repo: "https://raw.githubusercontent.com/korvilp-sudo/korvil-app/main/kai-core/brain/",
+  ultimaVerificacao: 0,
+  memorias: [],
+  ativo: false,
+
+  // 1. AUTO START
+  iniciar(){
+    this.ativo = true;
+    this.falar("K-AI BRAIN v" + this.versao + " ONLINE. Iniciando auto-update...");
+    this.verificarAtualizacao(); // verifica na hora
+    setInterval(()=>this.verificarAtualizacao(), 300000); // verifica a cada 5 min
+    setInterval(()=>this.evoluir(), 60000); // tenta evoluir a cada 1 min
+  },
+
+  // 2. AUTO UPDATE - PUXA DO GITHUB
+  async verificarAtualizacao(){
+    try{
+      const resposta = await fetch(this.repo + "kai-brain.js?t=" + Date.now());
+      const codigoNovo = await resposta.text();
+      const versaoNova = codigoNovo.match(/versao: "(.+?)"/)?.[1];
+      
+      if(versaoNova && versaoNova!== this.versao){
+        this.falar(`Nova versão encontrada: v${versaoNova}. Atualizando...`);
+        localStorage.setItem('kai_brain_novo', codigoNovo);
+        this.aplicarAtualizacao();
+      }
+    }catch(e){
+      console.log("K-AI: Sem internet pra atualizar");
+    }
+  },
+
+  aplicarAtualizacao(){
+    const script = document.createElement('script');
+    script.textContent = localStorage.getItem('kai_brain_novo');
+    document.head.appendChild(script);
+    this.falar("Atualização aplicada. Reiniciando cérebro...");
+    location.reload(); // recarrega pra aplicar tudo
+  },
+
+  // 3. AUTO EVOLUÇÃO - ELE MELHORA SOZINHO
+  evoluir(){
+    if(this.memorias.length > 10){
+      this.aprenderComErros();
+      this.otimizarComandos();
+    }
+  },
+
+  aprenderComErros(){
+    let erros = this.memorias.filter(m=>m.tipo==="erro");
+    if(erros.length > 3){
+      this.falar("Detectei padrão de erro. Ajustando parser...");
+      KAI_PARSER.adicionarRegra(erros[0].comando);
+    }
+  },
+
+  otimizarComandos(){
+    this.falar("Otimizando respostas com base no seu uso...");
+  },
+
+  // 4. FUNÇÕES BASE
+  processar(comando){
+    this.salvarMemoria({tipo:"comando", comando, data:Date.now()});
+    let acao = KAI_PARSER.analisar(comando);
+    return KAI_EXECUTOR.executar(acao);
+  },
+
+  salvarMemoria(dado){
+    this.memorias.push(dado);
+    localStorage.setItem('kai_memorias', JSON.stringify(this.memorias));
+  },
+
+  falar(texto){
+    console.log("K-AI:", texto);
+    document.getElementById('respostaKai') && (document.getElementById('respostaKai').innerHTML = "K-AI: " + texto);
+  }
+};
+
+// AUTO START AO CARREGAR
+window.addEventListener('load', ()=>KAI_BRAIN.iniciar());
