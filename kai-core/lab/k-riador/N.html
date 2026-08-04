@@ -3,246 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 V7.1 // FIX BOTÃO</title>
+<title>KORVIL G15 V7.2</title>
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; user-select: none; font-family: 'Courier New', Courier, monospace; }
-  body { background: #000; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; perspective: 1400px; }
-.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 1; }
-.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%); background-size: 100% 4px; pointer-events: none; z-index: 2; }
-  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.3; filter: grayscale(10%) contrast(160%); pointer-events:none; background:#000; }
-
-  #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.98);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-  #startBtn { padding:30px 60px; background:linear-gradient(90deg,#00ff66,#00f0ff); border:none; color:#000; font:30px bold 'Courier'; border-radius:20px; box-shadow:0 0 80px #00ff66; cursor:pointer; }
-  #erroMsg { color:#ff0044; margin-top:20px; display:none; font-size:14px; }
-
-  #menuFormas { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:12px; z-index:50; }
-.aba { padding:14px 22px; background:rgba(0,20,30,0.9); border:2px solid #003344; color:#00aaff; border-radius:12px; font-size:12px; font-weight:bold; cursor:pointer; }
-.aba.ativa { background:linear-gradient(180deg,#00f0ff,#00aaff); color:#000; border-color:#00f0ff; box-shadow:0 0 30px #00f0ff; }
-
-  #pontoFoco { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:160px; height:480px; border:4px dashed #ff0044; border-radius:80px; z-index:15; pointer-events:none; background:rgba(255,0,68,0.04); display:none; }
-  #pontoFoco.ativo { border-color:#00ff66; background:rgba(0,255,102,0.15); box-shadow:0 0 80px #00ff66; display:block; }
-
-  #braceleteContainer { position:absolute; z-index:16; pointer-events:none; transform-style: preserve-3d; transition: transform 0.05s linear; display:none; }
-.pecaBracelete { position:absolute; border:4px solid; border-radius:25px; background:linear-gradient(180deg, rgba(0,240,255,0.1), rgba(0,240,255,0.2)); backdrop-filter: blur(20px); pointer-events:none; display:none; }
-.pecaBracelete.ativa { display:block; border-color:#00f0ff; box-shadow:0 0 60px #00f0ff; }
-
-  #escudo { position:absolute; width:300px; height:300px; border:6px solid #00f0ff; border-radius:50%; background:radial-gradient(circle, rgba(0,240,255,0.15), transparent 70%); box-shadow:0 0 80px #00f0ff; z-index:17; display:none; pointer-events:none; animation: girarEscudo 3s linear infinite; }
-  @keyframes girarEscudo { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-
-  #visor { position:absolute; width:120px; height:120px; z-index:18; display:none; pointer-events:none; }
-  #visor::before { content:''; position:absolute; inset:0; border:3px solid #ffe600; background:rgba(255,230,0,0.1); clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); box-shadow:0 0 40px #ffe600; animation: pulsarVisor 1s infinite; }
-  @keyframes pulsarVisor { 0%,100%{opacity:0.7;} 50%{opacity:1;} }
-
-.parteArmadura { position:absolute; border:3px solid #00f0ff; background:linear-gradient(180deg, rgba(0,240,255,0.12), rgba(0,240,255,0.25)); backdrop-filter: blur(15px); box-shadow:0 0 50px #00f0ff; display:none; pointer-events:none; z-index:19; }
-  #capacete { width:200px; height:240px; border-radius:50% 50% 40% 40%; }
-  #peitoral { width:280px; height:320px; border-radius:40px; }
-  #bracoE, #bracoD { width:100px; height:280px; border-radius:50px; }
-  #pernaE, #pernaD { width:120px; height:350px; border-radius:60px; }
-
-  #status { position: absolute; bottom: 90px; left: 50%; transform:translateX(-50%); color: #00ff66; font-size: 15px; background: rgba(0, 20, 10, 0.98); border: 3px solid #00ff66; padding: 16px 28px; border-radius: 15px; min-width: 540px; text-align:center; z-index: 10; }
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none;font-family:'Courier New';}
+body{background:#000;overflow:hidden;width:100vw;height:100vh;perspective:1200px;}
+#video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0.3;}
+#startOverlay{position:absolute;inset:0;background:#000;z-index:100;display:flex;align-items:center;justify-content:center;}
+#startBtn{padding:30px 60px;background:#00ff66;border:none;color:#000;font:28px bold;cursor:pointer;border-radius:15px;}
+#menu{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:50;}
+.btn{padding:12px 20px;background:#003344;color:#00f0ff;border:2px solid #00f0ff;border-radius:10px;font-size:12px;cursor:pointer;}
+.btn.ativo{background:#00f0ff;color:#000;}
+#ponto{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:160px;height:480px;border:4px dashed red;border-radius:80px;display:none;z-index:10;}
+#bracelete{position:absolute;display:none;z-index:11;transform-style:preserve-3d;}
+.peca{position:absolute;border:4px solid #00f0ff;background:rgba(0,240,255,0.2);border-radius:20px;}
+#escudo{position:absolute;width:300px;height:300px;border:6px solid #00f0ff;border-radius:50%;background:rgba(0,240,255,0.1);display:none;animation:giro 2s linear infinite;}
+@keyframes giro{to{transform:rotate(360deg)}}
+#visor{position:absolute;width:120px;height:120px;border:3px solid yellow;background:rgba(255,255,0,0.1);clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);display:none;}
+.arm{position:absolute;border:3px solid #00f0ff;background:rgba(0,240,255,0.2);display:none;}
+#status{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);color:#00ff66;background:#001100;padding:15px;border:2px solid #00ff66;border-radius:10px;}
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
-<div class="scanlines"></div>
-
-<div id="startOverlay">
-  <h1 style="color:#00ff66;text-shadow:0 0 50px #00ff66;margin-bottom:25px;font-size:40px;">KORVIL G15 V7.1</h1>
-  <p style="color:#aaa;margin-bottom:20px;">Clique para liberar câmera</p>
-  <button id="startBtn">🔷 INICIAR SISTEMA</button>
-  <div id="erroMsg">ERRO: Permita acesso à câmera e recarregue</div>
-</div>
-
 <video id="video" autoplay playsinline muted></video>
-<div id="pontoFoco"></div>
-<div id="braceleteContainer"></div>
+<div id="startOverlay"><button id="startBtn">INICIAR</button></div>
+<div id="ponto"></div>
+<div id="bracelete"></div>
 <div id="escudo"></div>
 <div id="visor"></div>
-<div id="capacete" class="parteArmadura"></div>
-<div id="peitoral" class="parteArmadura"></div>
-<div id="bracoE" class="parteArmadura"></div>
-<div id="bracoD" class="parteArmadura"></div>
-<div id="pernaE" class="parteArmadura"></div>
-<div id="pernaD" class="parteArmadura"></div>
-
-<div id="menuFormas">
-  <div class="aba ativa" data-forma="bracelete">1. BRACELETE</div>
-  <div class="aba" data-forma="escudo">2. ESCUDO</div>
-  <div class="aba" data-forma="visor">3. VISOR</div>
-  <div class="aba" data-forma="armadura">4. ARMADURA</div>
+<div id="capacete" class="arm" style="width:200px;height:240px;border-radius:50%"></div>
+<div id="peito" class="arm" style="width:280px;height:320px;border-radius:40px"></div>
+<div id="bracoE" class="arm" style="width:100px;height:280px;border-radius:50px"></div>
+<div id="bracoD" class="arm" style="width:100px;height:280px;border-radius:50px"></div>
+<div id="menu">
+  <div class="btn ativo" data-f="bracelete">BRACELETE</div>
+  <div class="btn" data-f="escudo">ESCUDO</div>
+  <div class="btn" data-f="visor">VISOR</div>
+  <div class="btn" data-f="armadura">ARMADURA</div>
 </div>
-
-<div id="status">STATUS: <span id="st-status">AGUARDANDO INICIAR</span></div>
+<div id="status">AGUARDANDO</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 <script>
-let AudioContext = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
-function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
-function playSound(freq, d=0.2) { if (!audioCtx) return; try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=0.15;g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
-const SFX = { ativar:()=>playSound(800,0.3), escudo:()=>playSound(400,0.5), visor:()=>playSound(1200,0.3), armadura:()=>{playSound(300,0.6);setTimeout(()=>playSound(600,0.6),300)} };
-const falar=t=>{try{speechSynthesis.cancel();let m=new SpeechSynthesisUtterance(t);m.lang='pt-BR';speechSynthesis.speak(m);}catch(e){}};
-
+let forma='bracelete', hand, face, pose, travado=false;
 const video=document.getElementById('video');
-const pontoFoco=document.getElementById('pontoFoco');
-const braceleteContainer=document.getElementById('braceleteContainer');
-const escudo=document.getElementById('escudo');
-const visor=document.getElementById('visor');
-const stStatus=document.getElementById('st-status');
-const erroMsg=document.getElementById('erroMsg');
+const ponto=document.getElementById('ponto');
+const bracelete=document.getElementById('bracelete');
+const status=document.getElementById('status');
 
-let formaAtual='bracelete'; let braceleteAtivo=false; let sistemaRodando=false;
-let hand=null, face=null, pose=null;
-let tempoParado=0; let ultimoBalanço=0; let sobrancelhaAtiva=false;
+// CRIA 6 PEÇAS
+for(let i=0;i<6;i++){let p=document.createElement('div');p.className='peca';bracelete.appendChild(p);}
 
-// --- CRIA 6 PEÇAS ---
-for(let i=0;i<6;i++){const p=document.createElement('div');p.className='pecaBracelete';braceleteContainer.appendChild(p);}
-
-// --- TROCA DE ABAS ---
-document.querySelectorAll('.aba').forEach(aba=>{
-  aba.onclick=()=>{
-    document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
-    aba.classList.add('ativa');
-    formaAtual=aba.dataset.forma;
-    resetarFormas();
-    SFX.ativar(); falar(`Forma ${formaAtual}`);
-    stStatus.textContent = `MODO: ${formaAtual.toUpperCase()}`;
-  }
+// BOTÕES
+document.querySelectorAll('.btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.btn').forEach(x=>x.classList.remove('ativo'));
+  b.classList.add('ativo'); forma=b.dataset.f; reset();
+  status.textContent='MODO: '+forma.toUpperCase();
 });
 
-function resetarFormas(){
-  escudo.style.display='none'; visor.style.display='none';
-  document.querySelectorAll('.parteArmadura').forEach(p=>p.style.display='none');
-  braceleteContainer.style.display='none'; pontoFoco.style.display='none'; braceleteAtivo=false;
+function reset(){
+  ponto.style.display='none'; bracelete.style.display='none'; travado=false;
+  document.getElementById('escudo').style.display='none';
+  document.getElementById('visor').style.display='none';
+  document.querySelectorAll('.arm').forEach(a=>a.style.display='none');
 }
 
-// --- CALCULO 3D BRACELETE ---
-function atualizarBracelete3D(hand){
-  const pulso=hand[0], meio=hand[9], ind=hand[8], min=hand[20];
-  const x=(1-pulso.x)*window.innerWidth; const y=pulso.y*window.innerHeight;
-  const rotY=Math.atan2(meio.x-pulso.x,meio.z-pulso.z)*180/Math.PI;
-  const rotX=Math.atan2(meio.y-pulso.y,meio.z-pulso.z)*180/Math.PI;
-  const rotZ=Math.atan2(ind.y-min.y,ind.x-min.x)*180/Math.PI;
-  const altura=Math.hypot(pulso.x-meio.x,pulso.y-meio.y)*3.8*window.innerHeight;
-  const largura=Math.hypot(hand[5].x-hand[17].x)*1.8*window.innerWidth;
-
-  braceleteContainer.style.left=`${x-largura/2}px`; braceleteContainer.style.top=`${y-altura/2}px`;
-  braceleteContainer.style.width=`${largura}px`; braceleteContainer.style.height=`${altura}px`;
-  braceleteContainer.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
-
-  const alturaSecao=altura/6;
-  braceleteContainer.querySelectorAll('.pecaBracelete').forEach((p,i)=>{
-    p.style.width='100%'; p.style.height=`${alturaSecao+20}px`; p.style.top=`${i*alturaSecao}px`; p.classList.add('ativa');
-  });
-}
-
-// --- ESCUDO ---
-function detectarBalanço(hand){
-  const agora=performance.now();
-  const vel=Math.abs(hand[0].x - (window.lastX||hand[0].x));
-  window.lastX=hand[0].x;
-  if(vel>0.08 && agora-ultimoBalanço>800){
-    ultimoBalanço=agora;
-    escudo.style.display='block';
-    escudo.style.left=`${(1-hand[0].x)*window.innerWidth-150}px`;
-    escudo.style.top=`${hand[0].y*window.innerHeight-150}px`;
-    SFX.escudo(); falar("Escudo");
-    setTimeout(()=>escudo.style.display='none',3000);
-  }
-}
-
-// --- VISOR ---
-function detectarSobrancelha(face){
-  const sobrancelha=face[65].y - face[159].y;
-  if(sobrancelha<0.025 &&!sobrancelhaAtiva){
-    sobrancelhaAtiva=true;
-    visor.style.display='block';
-    SFX.visor(); falar("Visor ativo");
-  }
-  if(sobrancelha>0.03) sobrancelhaAtiva=false;
-  if(visor.style.display==='block'){
-    const olhoDirX=(1-face[468].x)*window.innerWidth;
-    const olhoDirY=face[468].y*window.innerHeight;
-    visor.style.left=`${olhoDirX-60}px`; visor.style.top=`${olhoDirY-60}px`;
-  }
-}
-
-// --- ARMADURA ---
-function detectarCruzamento(pose){
-  if(!pose) return;
-  const ombroE=pose[11], ombroD=pose[12], punhoE=pose[15], punhoD=pose[16];
-  const cruzado=Math.abs(punhoE.x-punhoD.x)<0.15 && punhoE.y<ombroE.y+0.1;
-  if(cruzado){
-    document.querySelectorAll('.parteArmadura').forEach(p=>p.style.display='block');
-    SFX.armadura(); falar("Armadura");
-    document.getElementById('capacete').style.left=`${(1-pose[0].x)*window.innerWidth-100}px`;
-    document.getElementById('capacete').style.top=`${pose[0].y*window.innerHeight-120}px`;
-    document.getElementById('peitoral').style.left=`${(1-pose[0].x)*window.innerWidth-140}px`;
-    document.getElementById('peitoral').style.top=`${pose[0].y*window.innerHeight+50}px`;
-  }
-}
-
-// --- INICIAR SISTEMA COM TRATAMENTO DE ERRO ---
-async function iniciarSistema(){
+// INICIAR
+document.getElementById('startBtn').onclick=async()=>{
   document.getElementById('startOverlay').style.display='none';
-  initAudio();
-  stStatus.textContent = "PEDINDO PERMISSÃO DA CÂMERA...";
+  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+  video.srcObject=stream;
+};
 
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:1280,height:720}});
-    video.srcObject=stream;
-    await video.play();
-    iniciarMediaPipe();
-    sistemaRodando=true;
-    stStatus.textContent = "CÂMERA ATIVA - SELECIONE UMA FORMA";
-  }catch(e){
-    console.error(e);
-    erroMsg.style.display='block';
-    document.getElementById('startOverlay').style.display='flex';
-    stStatus.textContent = "ERRO NA CÂMERA";
-  }
-}
+// MEDIAPIPE
+const hands=new Hands({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/hands/'+f});
+hands.setOptions({maxNumHands:2});
+hands.onResults(r=>{hand=r.multiHandLandmarks?r.multiHandLandmarks[0]:null;});
 
-function iniciarMediaPipe(){
-  const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-  hands.setOptions({maxNumHands:2,modelComplexity:1});
-  hands.onResults(r=>{hand=r.multiHandLandmarks?r.multiHandLandmarks[0]:null;});
+const fm=new FaceMesh({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f});
+fm.setOptions({maxNumFaces:1});
+fm.onResults(r=>{face=r.multiFaceLandmarks?r.multiFaceLandmarks[0]:null;});
 
-  const faceMesh=new FaceMesh({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
-  faceMesh.setOptions({maxNumFaces:1});
-  faceMesh.onResults(r=>{face=r.multiFaceLandmarks?r.multiFaceLandmarks[0]:null;});
+const pose=new Pose({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/pose/'+f});
+pose.setOptions({modelComplexity:1});
+pose.onResults(r=>{pose=r.poseLandmarks;});
 
-  const pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});
-  pose.setOptions({modelComplexity:1});
-  pose.onResults(r=>{pose=r.poseLandmarks;});
+function loop(){
+  if(hand){
+    let x=(1-hand[0].x)*innerWidth, y=hand[0].y*innerHeight;
 
-  function loop(){
-    if(!sistemaRodando) return;
-    if(hand){
-      if(formaAtual==='bracelete'){
-        pontoFoco.style.display='block'; braceleteContainer.style.display='block';
-        const x=(1-hand[0].x)*window.innerWidth; const y=hand[0].y*window.innerHeight;
-        if(Math.hypot(x-window.innerWidth/2,y-window.innerHeight/2)<120){
-          tempoParado+=0.1;
-          if(tempoParado>4 &&!braceleteAtivo){braceleteAtivo=true;stStatus.textContent="BRACELETE ADERIDO - MEXA LIVRE"}
-        }
-        if(braceleteAtivo) atualizarBracelete3D(hand);
+    // FORMA 1: BRACELETE - FICA FIXO NO ANTEBRAÇO EM QUALQUER LUGAR
+    if(forma==='bracelete'){
+      ponto.style.display='block';
+      bracelete.style.display='block';
+      let dist=Math.hypot(x-innerWidth/2,y-innerHeight/2);
+      if(dist<120){status.textContent='ESCANEANDO 4s...'}else{status.textContent='POSICIONE NO PONTO'}
+
+      // trava após 4s no ponto
+      if(dist<120 &&!travado){
+        if(!window.t){window.t=0}
+        window.t+=0.016;
+        if(window.t>4){travado=true;status.textContent='BRACELETE ATIVO'}
+      }else{window.t=0}
+
+      if(travado){
+        // SEGUE EM QUALQUER DIREÇÃO NA VERTICAL DO ANTEBRAÇO
+        let pulso=hand[0], meio=hand[9];
+        let rotX=(meio.y-pulso.y)*180, rotY=(meio.x-pulso.x)*180, rotZ=(hand[8].x-hand[20].x)*180;
+        let alt=Math.hypot(pulso.x-meio.x,pulso.y-meio.y)*3.5*innerHeight;
+        let larg=Math.hypot(hand[5].x-hand[17].x)*1.8*innerWidth;
+        bracelete.style.left=`${x-larg/2}px`; bracelete.style.top=`${y-alt/2}px`;
+        bracelete.style.width=`${larg}px`; bracelete.style.height=`${alt}px`;
+        bracelete.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
+        let sec=alt/6;
+        [...bracelete.children].forEach((p,i)=>{p.style.width='100%';p.style.height=`${sec}px`;p.style.top=`${i*sec}px`;});
       }
-      if(formaAtual==='escudo') detectarBalanço(hand);
     }
-    if(face && formaAtual==='visor') detectarSobrancelha(face);
-    if(pose && formaAtual==='armadura') detectarCruzamento(pose);
-    requestAnimationFrame(loop);
+
+    // FORMA 2: ESCUDO - 1 MÃO ABERTA + BALANÇAR LADOS
+    if(forma==='escudo'){
+      let aberto=Math.hypot(hand[8].x-hand[5].x,hand[8].y-hand[5].y)>0.2;
+      if(aberto && Math.abs(hand[0].x-(window.lx||0))>0.08){
+        let e=document.getElementById('escudo'); e.style.display='block';
+        e.style.left=`${x-150}px`; e.style.top=`${y-150}px`;
+        setTimeout(()=>e.style.display='none',3000); status.textContent='ESCUDO ATIVO';
+      }
+      window.lx=hand[0].x;
+    }
   }
-  loop();
 
-  const camera=new Camera(video,{onFrame:async()=>{await hands.send({image:video});await faceMesh.send({image:video});await pose.send({image:video});}});
-  camera.start();
+  // FORMA 3: VISOR - LEVANTAR SOBRANCELHA
+  if(face && forma==='visor'){
+    let sob=face[65].y-face[159].y;
+    if(sob<0.025){
+      let v=document.getElementById('visor'); v.style.display='block';
+      let ox=(1-face[468].x)*innerWidth, oy=face[468].y*innerHeight;
+      v.style.left=`${ox-60}px`; v.style.top=`${oy-60}px`; status.textContent='VISOR ATIVO';
+    }
+  }
+
+  // FORMA 4: ARMADURA - CRUZAR BRAÇOS
+  if(pose && forma==='armadura'){
+    if(Math.abs(pose[15].x-pose[16].x)<0.15 && pose[15].y<pose[11].y){
+      document.querySelectorAll('.arm').forEach(a=>a.style.display='block');
+      document.getElementById('capacete').style.left=`${(1-pose[0].x)*innerWidth-100}px`;
+      document.getElementById('capacete').style.top=`${pose[0].y*innerHeight-120}px`;
+      document.getElementById('peito').style.left=`${(1-pose[0].x)*innerWidth-140}px`;
+      document.getElementById('peito').style.top=`${pose[0].y*innerHeight+50}px`;
+      status.textContent='ARMADURA ATIVA';
+    }
+  }
+  requestAnimationFrame(loop);
 }
+loop();
 
-document.getElementById('startBtn').onclick=iniciarSistema;
+new Camera(video,{onFrame:async()=>{await hands.send({image:video});await fm.send({image:video});await pose.send({image:video});}}).start();
 </script>
 </body>
 </html>
