@@ -1,26 +1,19 @@
+// ============= DENTRO DO KAI_BRAIN =============
+  constructor(){
+    this.parser = new KAIParser(); // AGORA USA A CLASSE
+    //... resto
+  }
 
-// kai-core/brain/kai-parser.js
-export class KAIParser {
-  parse(comando) {
-    comando = comando.toLowerCase();
-    
-    if(comando.includes("cria") || comando.includes("criar")){
-      return { action: "create", target: this.extractTarget(comando) }
+  processar(comando){
+    this.salvarMemoria({tipo:"comando", comando, data:Date.now()});
+    let acao = this.parser.parse(comando); // usa a classe
+    return KAI_EXECUTOR.executar(acao);
+  },
+
+  aprenderComErros(){
+    let erros = this.memorias.filter(m=>m.tipo==="erro");
+    if(erros.length > 3){
+      this.falar("Detectei padrão de erro. Ajustando parser...");
+      this.parser.adicionarRegra(erros[0].comando); // usa método da classe
     }
-    if(comando.includes("edita") || comando.includes("editar")){
-      return { action: "edit", target: this.extractTarget(comando) }
-    }
-    if(comando.includes("lista") || comando.includes("mostra")){
-      return { action: "list", target: "all" }
-    }
-    
-    return { action: "unknown" }
-  }
-  
-  extractTarget(texto){
-    if(texto.includes("peça")) return texto.split("peça ")[1];
-    if(texto.includes("visor")) return "visor";
-    if(texto.includes("peito")) return "peito";
-    return "geral";
-  }
-}
+  },
