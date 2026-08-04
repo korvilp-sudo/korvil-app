@@ -3,37 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KORVIL G15 V6.1 // BRACELETE ADERENTE 3D</title>
+<title>KORVIL G15 V6.2 // AUTO FORJAMENTO 4X</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; user-select: none; font-family: 'Courier New', Courier, monospace; }
   body { background: #000; color: #00f0ff; overflow: hidden; width: 100vw; height: 100vh; perspective: 1200px; }
-.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.08) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 1; }
-.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 3px; pointer-events: none; z-index: 2; }
-  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.4; filter: grayscale(30%) contrast(140%); pointer-events:none; }
+.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 1; }
+.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%); background-size: 100% 4px; pointer-events: none; z-index: 2; }
+  #video { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.35; filter: grayscale(20%) contrast(150%); pointer-events:none; }
 
-  #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.95);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-  #startBtn { padding:28px 55px; background:linear-gradient(90deg,#00ff66,#00f0ff); border:none; color:#000; font:26px bold 'Courier'; border-radius:18px; box-shadow:0 0 60px #00ff66; }
+  #startOverlay {position:absolute;inset:0;background:rgba(0,0,0,0.97);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+  #startBtn { padding:30px 60px; background:linear-gradient(90deg,#00ff66,#00f0ff); border:none; color:#000; font:30px bold 'Courier'; border-radius:20px; box-shadow:0 0 80px #00ff66; }
+
+  /* PONTO DE FOCO CENTRAL 4X MAIOR */
+  #pontoFoco { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:160px; height:480px; border:4px dashed #ff0044; border-radius:80px; z-index:15; pointer-events:none; background:rgba(255,0,68,0.04); transition: all 0.3s; }
+  #pontoFoco::before { content:'POSICIONE ANTEBRAÇO AQUI'; position:absolute; top:-50px; left:50%; transform:translateX(-50%); color:#ff0044; font-size:14px; white-space:nowrap; font-weight:bold; text-shadow:0 0 10px #ff0044; }
+  #pontoFoco.ativo { border-color:#00ff66; background:rgba(0,255,102,0.15); box-shadow:0 0 80px #00ff66; animation: pulsarFoco 0.8s infinite; }
+  #pontoFoco.ativo::before { content:'ESCANEANDO... FIQUe PARADO'; color:#00ff66; text-shadow:0 0 10px #00ff66; }
+  @keyframes pulsarFoco { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.05);} }
 
   /* CONTAINER 3D QUE SEGUE O BRAÇO */
-  #braceleteContainer { position:absolute; z-index:16; pointer-events:none; transform-style: preserve-3d; transition: transform 0.08s linear; }
+  #braceleteContainer { position:absolute; z-index:16; pointer-events:none; transform-style: preserve-3d; transition: transform 0.06s linear; }
 
-  /* ESQUELETO ANTEBRAÇO */
-  #scanAntebraco { position:absolute; width:120px; height:400px; border:3px dashed #ff0044; border-radius:60px; z-index:15; pointer-events:none; display:none; background:rgba(255,0,68,0.05); }
-  #scanAntebraco.ativo { border-color:#00ff66; background:rgba(0,255,102,0.1); box-shadow:0 0 40px #00ff66; }
+  /* 6 PEÇAS 3D AUTO ESCALA */
+.pecaBracelete { position:absolute; border:4px solid; border-radius:25px; background:linear-gradient(180deg, rgba(0,240,255,0.1), rgba(0,240,255,0.2)); backdrop-filter: blur(20px); pointer-events:none; display:none; transform-style: preserve-3d; transition: all 4s cubic-bezier(0.16, 1, 0.3, 1); }
+.pecaBracelete.encaixando { display:block; border-color:#ffe600; box-shadow:0 0 80px #ffe600, inset 0 0 30px #ffe600; animation: materializar 4s forwards; }
+.pecaBracelete.ativa { display:block; border-color:#00f0ff; box-shadow:0 0 60px #00f0ff, inset 0 0 20px #00f0ff; background:linear-gradient(180deg, rgba(0,240,255,0.2), rgba(0,240,255,0.3)); }
+  @keyframes materializar { 0%{opacity:0; transform:scale(0.3) rotateX(90deg) translateZ(200px);} 30%{opacity:1; transform:scale(1.2) rotateX(0) translateZ(0);} 100%{opacity:1; transform:scale(1) rotateX(0) translateZ(0);} }
 
-  /* 6 PEÇAS 3D */
-.pecaBracelete { position:absolute; border:3px solid; border-radius:20px; background:rgba(0,240,255,0.12); backdrop-filter: blur(15px); pointer-events:none; display:none; transform-style: preserve-3d; transition: all 4s cubic-bezier(0.22, 1, 0.36, 1); }
-.pecaBracelete.encaixando { display:block; border-color:#ffe600; box-shadow:0 0 60px #ffe600; animation: materializar 4s forwards; }
-.pecaBracelete.ativa { display:block; border-color:#00f0ff; box-shadow:0 0 40px #00f0ff; background:rgba(0,240,255,0.25); }
-  @keyframes materializar { 0%{opacity:0; transform:scale(0.5) rotateX(90deg);} 50%{opacity:1; transform:scale(1.1) rotateX(0);} 100%{opacity:1; transform:scale(1) rotateX(0);} }
+  #barraProgresso { position:absolute; bottom:120px; left:50%; transform:translateX(-50%); width:500px; height:12px; background:#001122; border:2px solid #00ff66; border-radius:6px; overflow:hidden; display:none; box-shadow:0 0 20px #00ff66; }
+  #barraFill { height:100%; width:0%; background:linear-gradient(90deg,#00ff66,#00f0ff,#ffe600); transition: width 0.1s linear; }
 
-  /* EFEITO LASER CONECTANDO */
- .laser { position:absolute; height:2px; background:linear-gradient(90deg, transparent, #00ff66, transparent); box-shadow:0 0 10px #00ff66; z-index:15; pointer-events:none; }
-
-  #barraProgresso { position:absolute; bottom:100px; left:50%; transform:translateX(-50%); width:400px; height:8px; background:#001122; border-radius:4px; overflow:hidden; display:none; }
-  #barraFill { height:100%; width:0%; background:linear-gradient(90deg,#00ff66,#00f0ff); transition: width 0.1s linear; }
-
-  #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00ff66; font-size: 14px; background: rgba(0, 20, 10, 0.95); border: 2px solid #00ff66; padding: 15px 25px; border-radius: 12px; min-width: 480px; text-align:center; z-index: 10; }
+  #status { position: absolute; bottom: 20px; left: 50%; transform:translateX(-50%); color: #00ff66; font-size: 16px; background: rgba(0, 20, 10, 0.98); border: 3px solid #00ff66; padding: 18px 30px; border-radius: 15px; min-width: 520px; text-align:center; z-index: 10; box-shadow:0 0 30px #00ff66; }
 </style>
 </head>
 <body>
@@ -41,21 +41,21 @@
 <div class="scanlines"></div>
 
 <div id="startOverlay">
-  <h1 style="color:#00ff66;text-shadow:0 0 40px #00ff66;margin-bottom:20px;font-size:36px;">KORVIL G15 V6.1</h1>
-  <p style="color:#aaa;margin-bottom:5px;">POSIÇÃO: Antebraço VERTICAL</p>
-  <p style="color:#aaa;margin-bottom:5px;">Mão fechada, dorso pra câmera</p>
-  <p style="color:#aaa;margin-bottom:20px;">Após forjar, pode mexer livre</p>
-  <button id="startBtn">🔷 INICIAR SCAN</button>
+  <h1 style="color:#00ff66;text-shadow:0 0 50px #00ff66;margin-bottom:25px;font-size:40px;">KORVIL G15 V6.2 AUTO</h1>
+  <p style="color:#aaa;margin-bottom:8px;">1. Posicione antebraço no PONTO CENTRAL</p>
+  <p style="color:#aaa;margin-bottom:8px;">2. Mão fechada, dorso pra câmera</p>
+  <p style="color:#aaa;margin-bottom:25px;">3. Fique 4s parado. O resto é automático</p>
+  <button id="startBtn">🔷 INICIAR SISTEMA</button>
 </div>
 
 <video id="video" autoplay playsinline muted></video>
-<div id="scanAntebraco"></div>
+<div id="pontoFoco"></div>
 <div id="braceleteContainer"></div>
 <div id="barraProgresso"><div id="barraFill"></div></div>
 
 <div id="status">
-  <div>STATUS: <span id="st-status">AGUARDANDO POSIÇÃO</span></div>
-  <div>PEÇA: <span id="st-peca">0/6</span> | MODO: <span id="st-modo">SCAN</span></div>
+  <div>STATUS: <span id="st-status">AGUARDANDO NO PONTO CENTRAL</span></div>
+  <div>PEÇA: <span id="st-peca">0/6</span> | TAMANHO: <span id="st-tamanho">AUTO</span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
@@ -63,23 +63,24 @@
 <script>
 let AudioContext = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
 function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
-function playSound(freq, type = 'sine', duration = 0.3, vol = 0.15) { if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {}}
-const SFX = { scan: () => playSound(500, 'sine', 0.2, 0.1), encaixe: () => {playSound(800,'sine',0.4,0.15);setTimeout(()=>playSound(1200,'sine',0.4,0.15),200)}, completo: () => {playSound(400,'sine',0.5,0.15);setTimeout(()=>playSound(800,'sine',0.5,0.15),300);setTimeout(()=>playSound(1200,'sine',0.5,0.15),600)} };
+function playSound(freq, type = 'sine', duration = 0.3, vol = 0.18) { if (!audioCtx) return; try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); } catch(e) {}}
+const SFX = { foco: () => playSound(600, 'sine', 0.2, 0.1), encaixe: () => {playSound(900,'sine',0.5,0.18);setTimeout(()=>playSound(1300,'sine',0.5,0.18),250)}, completo: () => {for(let i=0;i<3;i++)setTimeout(()=>playSound(400+i*400,'sine',0.6,0.18),i*300)} };
 const falas=window.speechSynthesis; function falar(texto){falas.cancel();let msg=new SpeechSynthesisUtterance(texto);msg.lang='pt-BR';msg.rate=0.9;falas.speak(msg);}
 
 const video = document.getElementById('video');
-const scanArea = document.getElementById('scanAntebraco');
+const pontoFoco = document.getElementById('pontoFoco');
 const braceleteContainer = document.getElementById('braceleteContainer');
-const stStatus = document.getElementById('st-status'); const stPeca = document.getElementById('st-peca'); const stModo = document.getElementById('st-modo');
+const stStatus = document.getElementById('st-status'); const stPeca = document.getElementById('st-peca'); const stTamanho = document.getElementById('st-tamanho');
 const barra = document.getElementById('barraProgresso'); const barraFill = document.getElementById('barraFill');
 
-let estado = 'aguardando'; // aguardando, escaneando, forjando, ativo
-let tempoParado = 0;
-let antebracoData = {largura:120, altura:400, x:0, y:0, rotX:0, rotY:0, rotZ:0};
+let estado = 'aguardando'; // aguardando, forjando, ativo
+let tempoParado = 0; let autoIniciou = false;
+let antebracoData = {largura:160, altura:480, x:0, y:0, rotX:0, rotY:0, rotZ:0};
 let pecas = []; let pecaAtual = 0;
 const nomesPecas = ['BASE', 'ENERGIA', 'SENSOR', 'CPU', 'COMMS', 'TOPO'];
+const centroTela = {x: window.innerWidth/2, y: window.innerHeight/2};
 
-// --- CRIA 6 PEÇAS DENTRO DO CONTAINER ---
+// --- CRIA 6 PEÇAS ---
 function criarPecas(){
   for(let i=0; i<6; i++){
     const peca = document.createElement('div'); peca.className = 'pecaBracelete';
@@ -88,31 +89,34 @@ function criarPecas(){
   }
 }
 
-// --- CALCULA POSIÇÃO E ROTAÇÃO 3D DO ANTEBRAÇO ---
-function calcularTransformacao3D(hand){
+// --- CALCULA E AUTO ESCALA ANTEBRAÇO ---
+function calcularAutoEscala(hand){
   const pulso = hand[0]; const meio = hand[9]; const indicador = hand[8]; const mindinho = hand[20];
 
-  // Posição central do antebraço
-  const x = (1 - pulso.x) * window.innerWidth;
-  const y = pulso.y * window.innerHeight;
+  // Mede tamanho real do antebraço do usuário
+  const alturaReal = Math.hypot(pulso.x - meio.x, pulso.y - meio.y) * 3.8;
+  const larguraReal = Math.hypot(hand[5].x - hand[17].x) * 1.8;
 
-  // Rotação Y: esquerda/direita baseado na inclinação pulso-meio
+  // Converte pra pixels baseado na tela
+  const alturaPx = alturaReal * window.innerHeight;
+  const larguraPx = larguraReal * window.innerWidth;
+
+  // Posição central do ponto
+  const x = centroTela.x;
+  const y = centroTela.y;
+
+  // Rotação 3D
   const rotY = Math.atan2(meio.x - pulso.x, meio.z - pulso.z) * 180 / Math.PI;
-
-  // Rotação X: cima/baixo baseado na inclinação pulso-meio
   const rotX = Math.atan2(meio.y - pulso.y, meio.z - pulso.z) * 180 / Math.PI;
-
-  // Rotação Z: giro do antebraço baseado na posição mindinho-indicador
   const rotZ = Math.atan2(indicador.y - mindinho.y, indicador.x - mindinho.x) * 180 / Math.PI;
 
-  // Tamanho adaptativo
-  const altura = Math.hypot(pulso.x - meio.x, pulso.y - meio.y) * 3.2 * window.innerHeight;
-  const largura = Math.hypot(hand[5].x - hand[17].x) * 1.6 * window.innerWidth;
+  antebracoData = {x, y, rotX, rotY, rotZ, altura: alturaPx, largura: larguraPx};
+  stTamanho.textContent = `${Math.round(larguraPx)}x${Math.round(alturaPx)}px`;
 
-  return {x, y, rotX, rotY, rotZ, altura, largura};
+  return antebracoData;
 }
 
-// --- APLICA TRANSFORMAÇÃO 3D NO CONTAINER ---
+// --- APLICA TRANSFORMAÇÃO 3D ---
 function aplicarTransformacao3D(data){
   braceleteContainer.style.left = `${data.x - data.largura/2}px`;
   braceleteContainer.style.top = `${data.y - data.altura/2}px`;
@@ -121,31 +125,31 @@ function aplicarTransformacao3D(data){
   braceleteContainer.style.transform = `rotateX(${data.rotX}deg) rotateY(${data.rotY}deg) rotateZ(${data.rotZ}deg)`;
 }
 
-// --- POSICIONA AS 6 PEÇAS RELATIVAS AO CONTAINER ---
-function posicionarPecasRelativas(){
+// --- POSICIONA PEÇAS AUTO ESCALA ---
+function posicionarPecasAuto(){
   const alturaSecao = antebracoData.altura / 6;
   pecas.forEach((p,i)=>{
-    const y = (i * alturaSecao);
     p.style.width = `100%`;
-    p.style.height = `${alturaSecao + 15}px`;
+    p.style.height = `${alturaSecao + 20}px`;
     p.style.left = `0px`;
-    p.style.top = `${y}px`;
+    p.style.top = `${i * alturaSecao}px`;
   });
 }
 
-// --- FORJAMENTO ---
-function iniciarForjamento(){
-  estado = 'forjando'; stModo.textContent = "FORJANDO";
+// --- FORJAMENTO AUTOMÁTICO ---
+function iniciarForjamentoAuto(){
+  estado = 'forjando';
   barra.style.display = 'block';
-  falar("Iniciando forjamento. Fique parado");
+  pontoFoco.style.display = 'none';
+  falar("Forjamento iniciado. Fique parado");
   forjarProximaPeca();
 }
 
 function forjarProximaPeca(){
   if(pecaAtual >= 6){
-    estado = 'ativo'; stModo.textContent = "ATIVO 3D";
-    SFX.completo(); falar("Bracelete completo. Sistema aderido");
-    stStatus.textContent = "BRACELETE ATIVO - PODE SE MOVER";
+    estado = 'ativo';
+    SFX.completo(); falar("Bracelete forjado e aderido. Pode se mover");
+    stStatus.textContent = "BRACELETE ATIVO 3D - MOVIMENTO LIBERADO";
     pecas.forEach(p=>p.classList.add('ativa'));
     return;
   }
@@ -153,7 +157,7 @@ function forjarProximaPeca(){
   const peca = pecas[pecaAtual];
   peca.classList.add('encaixando');
   stPeca.textContent = `${pecaAtual+1}/6`;
-  stStatus.textContent = `FORJANDO: ${nomesPecas[pecaAtual]}`;
+  stStatus.textContent = `MONTANDO: ${nomesPecas[pecaAtual]}`;
   SFX.encaixe();
 
   let progresso = 0;
@@ -168,67 +172,73 @@ function forjarProximaPeca(){
   }, 100);
 }
 
-// --- DETECÇÃO ---
-function checarPosicaoCorreta(hand){
+// --- DETECÇÃO AUTOMÁTICA NO PONTO CENTRAL ---
+function detectarNoPontoCentral(hand){
+  const pulso = hand[0];
+  const x = (1 - pulso.x) * window.innerWidth;
+  const y = pulso.y * window.innerHeight;
+
+  // Distância do pulso ao centro do ponto
+  const distCentro = Math.hypot(x - centroTela.x, y - centroTela.y);
+
+  // Mão fechada + Vertical
   const isFechado = Math.hypot(hand[8].x-hand[5].x, hand[8].y-hand[5].y) < 0.12;
-  const isVertical = Math.abs(hand[0].x - hand[9].x) < 0.18;
+  const isVertical = Math.abs(hand[0].x - hand[9].x) < 0.2;
   const dorsoPraFrente = hand[0].z < hand[12].z;
-  return isFechado && isVertical && dorsoPraFrente;
+
+  return distCentro < 120 && isFechado && isVertical && dorsoPraFrente;
 }
 
-// --- MEDIAPIPE LOOP ---
+// --- LOOP PRINCIPAL ---
 let hands, camera;
 function iniciarSistema(){
   document.getElementById('startOverlay').style.display='none'; initAudio();
   criarPecas();
-  scanArea.style.display = 'block';
 
   hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-  hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
+  hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.75 });
   hands.onResults(res => {
     const maos = res.multiHandLandmarks;
     if (maos && maos.length > 0) {
       const h1 = maos[0];
-      const transform3D = calcularTransformacao3D(h1);
+      const data3D = calcularAutoEscala(h1);
 
       if(estado === 'aguardando'){
-        // Mostra área de scan
-        scanArea.style.width = `${transform3D.largura}px`;
-        scanArea.style.height = `${transform3D.altura}px`;
-        scanArea.style.left = `${transform3D.x - transform3D.largura/2}px`;
-        scanArea.style.top = `${transform3D.y - transform3D.altura/2}px`;
-
-        if(checarPosicaoCorreta(h1)){
-          scanArea.classList.add('ativo');
+        if(detectarNoPontoCentral(h1)){
+          pontoFoco.classList.add('ativo');
+          SFX.foco();
           tempoParado += 0.1;
-          stStatus.textContent = `ESCANEANDO... ${Math.round(tempoParado)}s/4s`;
-          if(tempoParado >= 4){
-            antebracoData = transform3D;
-            posicionarPecasRelativas();
-            aplicarTransformacao3D(transform3D);
-            scanArea.style.display = 'none';
-            iniciarForjamento();
+          stStatus.textContent = `DETECTADO! ESCANEANDO... ${Math.round(tempoParado)}s/4s`;
+
+          if(tempoParado >= 4 &&!autoIniciou){
+            autoIniciou = true;
+            posicionarPecasAuto();
+            aplicarTransformacao3D(data3D);
+            iniciarForjamentoAuto();
           }
         } else {
-          scanArea.classList.remove('ativo');
+          pontoFoco.classList.remove('ativo');
           tempoParado = 0;
-          stStatus.textContent = "AJUSTE: VERTICAL, MÃO FECHADA, DORSO PRA FRENTE";
+          stStatus.textContent = "POSICIONE ANTEBRAÇO NO PONTO CENTRAL";
         }
       }
 
       if(estado === 'forjando'){
-        // Continua atualizando pra não sair do lugar durante forjamento
-        aplicarTransformacao3D(transform3D);
+        aplicarTransformacao3D(data3D); // Mantém alinhado durante forjamento
       }
 
       if(estado === 'ativo'){
-        // MODO LIVRE: bracelete segue o braço em tempo real 3D
-        aplicarTransformacao3D(transform3D);
-        stStatus.textContent = "BRACELETE ATIVO - MOVIMENTE LIVREMENTE";
+        aplicarTransformacao3D(data3D); // Segue em tempo real
+        stStatus.textContent = "BRACELETE ATIVO - MEXA LIVREMENTE";
+      }
+    } else {
+      if(estado === 'aguardando'){
+        pontoFoco.classList.remove('ativo');
+        tempoParado = 0;
       }
     }
   });
-  navigator.mediaDevices.getUserMedia({video: {facingMode: "user", width:1280, height:720}}).then(stream=>{
+  navigator.mediaDevices.getUserMedia({video: {facingMode: "user", width:1920, height:1080}}).then(stream=>{
     video.srcObject = stream;
     camera = new Camera(video, { onFrame: async () => { await hands.send({ image: video }); }});
     camera.start();
