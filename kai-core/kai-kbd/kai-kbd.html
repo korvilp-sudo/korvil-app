@@ -1,143 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>K-B.D FORJA // KORVIL OS v8.2</title>
-<link rel="stylesheet" href="css/forja.css">
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAI KBD</title>
+  <link rel="stylesheet" href="kai.css">
 </head>
 <body>
-<div class="grid-bg"></div>
-<div class="scanlines"></div>
-
-<!-- BARRA DE ABAS -->
-<div id="barra-abas">
-  <div class="aba ativa" data-aba="editor">EDITOR</div>
-  <div class="aba" data-aba="repo">REPOSITÓRIO</div>
-  <div class="aba" data-aba="kai">K-AI</div>
-  <div class="aba" data-aba="historico">HISTÓRICO</div>
-  <div class="aba-menu">
-    <button id="btnNovo">NOVO</button>
-    <button id="btnImportar">IMPORTAR</button>
-    <button id="btnExportar">EXPORTAR</button>
-    <button id="btnSalvar">SALVAR</button>
-    <button id="btnDownloadZip">BAIXAR ZIP</button>
+  <div id="app">
+    <h1>KAI KBD Online</h1>
+    <textarea id="terminal" placeholder="Digite /help"></textarea>
+    <button onclick="enviar()">Enviar</button>
   </div>
-</div>
 
-<div id="forja-app">
-  <aside id="painel-esquerdo" class="painel-glass">
-    <div class="logo">
-      <h1>K-B.D <span>FORJA</span></h1>
-      <span class="tag-kai">K-RIADOR v8.2</span>
-    </div>
-
-    <div class="barra-comando">
-      <button id="btnVoz">🎤 VOZ</button>
-      <input id="comandoUnificado" placeholder="Digite ou fale: criar setor K-TP area Treinamento">
-      <button id="btnExecutarComando" class="btn-neon">EXECUTAR</button>
-    </div>
-
-    <input id="buscaGlobal" placeholder="Busca Global Rápida...">
-    <input id="buscaRepo" placeholder="Busca Repositório...">
-
-    <div id="seletores-rapidos">
-      <select id="acao"></select>
-      <select id="tipo"></select>
-      <select id="setor"></select>
-      <select id="area"></select>
-      <select id="servico"></select>
-      <select id="categoria"></select>
-      <select id="arquivo"></select>
-      <select id="pasta"></select>
-    </div>
-
-    <h4 class="titulo-zona">MONTAGEM RÁPIDA - ARRASTE AQUI</h4>
-    <div id="zona-montagem">
-      <div class="slot" data-tipo="setor">Setor</div>
-      <div class="slot" data-tipo="area">Área</div>
-      <div class="slot" data-tipo="servico">Serviço</div>
-      <div class="slot" data-tipo="arquivo">Arquivo</div>
-    </div>
-
-    <div id="pecas-rapidas"></div>
-
-    <div class="acoes">
-      <button id="executarBtn" class="btn-neon">EXECUTAR</button>
-      <button id="confirmarBtn" class="btn-neon">CONFIRMAR</button>
-      <button id="githubBtn" class="btn-neon">GITHUB</button>
-    </div>
-  </aside>
-
-  <main id="editor-area">
-    <div id="editor-toolbar">
-      <button id="desfazerBtn" class="btn-toolbar">⬅ DESFAZER</button>
-      <button id="avancarBtn" class="btn-toolbar">AVANÇAR ➡</button>
-    </div>
-    <textarea id="editor"></textarea>
-  </main>
-</div>
-
-<section id="repo-explorer" class="painel-glass" style="display:none">
-  <div class="header-painel">REPOSITÓRIO KORVIL</div>
-  <div id="arvoreRepo"></div>
-</section>
-
-<section id="kai-painel" class="painel-glass" style="display:none">
-  <div class="header-painel">K-AI ONLINE</div>
-  <div id="kai-memorias"></div>
-</section>
-
-<section id="historico" class="painel-glass" style="display:none">
-  <h2>HISTÓRICO DE ALTERAÇÕES</h2>
-  <div id="listaHistorico"></div>
-</section>
-
-<section id="visualizador" class="painel-glass">
-  <div id="preview-header">VISUALIZADOR INTELIGENTE</div>
-  <div id="preview-container"></div>
-</section>
-
-<div id="barraStatus">
-  <span id="status-forja">FORJA ONLINE</span>
-  <span id="status-kai">K-AI OFF</span>
-  <span id="status-cgm">CGM OFF</span>
-  <span id="status-arquivo">ARQUIVO ATUAL: -</span>
-</div>
-
-<!-- CUBO K-AI 4D -->
-<div id="cubo-kai-container">
-  <div id="cubo-kai">
-    <div class="face frente">K</div>
-    <div class="face tras">A</div>
-    <div class="face direita">I</div>
-    <div class="face esquerda">∞</div>
-    <div class="face topo">4D</div>
-    <div class="face base">K</div>
-  </div>
-  <div id="menu-kai">
-    <div class="header-kai">K-AI ASSISTENTE</div>
-    <button id="ativarKaiBtn">ATIVAR K-AI</button>
-    <button id="ativarCGMBTN">ATIVAR CGM</button>
-    <button id="perguntarKaiBtn">PERGUNTAR</button>
-    <button id="analisarCodigoBtn">ANALISAR CÓDIGO</button>
-    <button id="sugerirMelhoriaBtn">SUGERIR MELHORIA</button>
-    <div id="respostaKai"></div>
-  </div>
-</div>
-
-<video id="videoCGM" style="display:none" autoplay playsinline></video>
-<canvas id="canvasCGM"></canvas>
-<div id="statusCGM">CGM OFF</div>
-<input type="file" id="inputImportar" style="display:none" multiple>
-
-<script src="js/forja-dados.js"></script>
-<script src="js/forja-history.js"></script>
-<script src="js/forja-preview.js"></script>
-<script src="js/forja-kai.js"></script>
-<script src="js/forja-editor.js"></script>
+  <script src="kai.js"></script>
 </body>
 </html>
