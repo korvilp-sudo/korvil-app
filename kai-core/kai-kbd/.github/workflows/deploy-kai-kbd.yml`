@@ -2,27 +2,24 @@ name: Deploy KAI-KBD
 
 on:
   push:
+    branches: [ "main" ]
     paths:
-      - 'kai-core/kai-kbd/deploy/kai-kbd.zip' # <- caminho completo a partir da raiz
-
-permissions:
-  contents: write
+      - 'kai-core/kai-kbd/**' # só roda quando mexe aqui dentro
 
 jobs:
-  unzip:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Baixar Código
+        uses: actions/checkout@v4
 
-      - name: Descompactar
-        run: |
-          unzip -o kai-core/kai-kbd/deploy/kai-kbd.zip -d kai-core/kai-kbd/ # <- descompacta aqui
-          rm kai-core/kai-kbd/deploy/kai-kbd.zip
+      - name: Zipar kai-kbd
+        run: zip -r kai-kbd.zip kai-core/kai-kbd/
 
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add kai-core/kai-kbd/
-          git commit -m "🤖 Auto Deploy KAI-KBD" || exit 0
-          git push
+      - name: Enviar para Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: kai-kbd-${{ github.run_number }}
+          files: kai-kbd.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
