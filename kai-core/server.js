@@ -20,6 +20,3 @@ app.get('/api/buscar/:nome', async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`🚀 KAI rodando em http://localhost:${PORT}`));
-
-env:
-  KAI_TOKEN: ${{ secrets.KAI_TOKEN }} # <- MUDOU AQUI
