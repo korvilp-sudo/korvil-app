@@ -1,35 +1,28 @@
-name: Deploy KAI-KBD ZIP
+name: Deploy KAI-KBD
 
 on:
   push:
     paths:
-      - 'deploy/kai-kbd.zip' # Só ativa quando esse arquivo mudar
+      - 'kai-core/kai-kbd/deploy/kai-kbd.zip' # <- caminho completo a partir da raiz
 
 permissions:
-  contents: write # Precisa pra fazer commit e push
+  contents: write
 
 jobs:
-  unzip-and-deploy:
+  unzip:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Criar pasta de destino se não existir
-        run: mkdir -p lab/k-riador/kai-kbd
-
-      - name: Descompactar kai-kbd.zip
+      - name: Descompactar
         run: |
-          unzip -o deploy/kai-kbd.zip -d lab/k-riador/kai-kbd/
-          echo "✅ Descompactado em lab/k-riador/kai-kbd/"
+          unzip -o kai-core/kai-kbd/deploy/kai-kbd.zip -d kai-core/kai-kbd/ # <- descompacta aqui
+          rm kai-core/kai-kbd/deploy/kai-kbd.zip
 
-      - name: Remover ZIP após descompactar
-        run: rm deploy/kai-kbd.zip
-
-      - name: Commit e Push automático
+      - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add lab/k-riador/kai-kbd/
-          git commit -m "🤖 Auto Deploy KAI-KBD: $(date '+%Y-%m-%d %H:%M:%S')" || echo "Nada para commitar"
+          git add kai-core/kai-kbd/
+          git commit -m "🤖 Auto Deploy KAI-KBD" || exit 0
           git push
