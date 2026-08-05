@@ -22,4 +22,4 @@ jobs:
           tag_name: kai-kbd-${{ github.run_number }}
           files: kai-kbd.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  KAI_TOKEN: ${{ secrets.KAI_TOKEN }} # <- MUDOU AQUI
