@@ -3,316 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cgm helmet ui</title>
+<title>cgm iron ui</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3); }
-  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:15px; width:100%; text-align:center; font-size:14px; color:#0ff; font-family:'Courier New'; text-shadow:0 0 10px #0ff; }
-  #btn_camera { position:absolute; z-index:4; bottom:25px; right:20px; padding:12px 18px; background:rgba(0,255,255,0.15); border:2px solid #0ff; color:#0ff; border-radius:50px; backdrop-filter:blur(5px); }
+  #video { position:absolute; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.35); }
+  #canvas { position:absolute; width:100vw; height:100vh; z-index:2; }
+  #msg { position:absolute; z-index:3; top:15px; width:100%; text-align:center; color:#0ff; font-family:'Courier New'; font-size:14px; text-shadow:0 0 8px #0ff; }
+ .btn { position:absolute; z-index:4; padding:10px 16px; background:rgba(0,255,255,0.15); border:2px solid #0ff; color:#0ff; border-radius:20px; font-family:'Courier New'; }
+  #btn_cap { bottom:20px; left:20px; }
+  #btn_luva { bottom:20px; right:20px; }
+  #btn_camera { bottom:70px; right:20px; }
+ .btn.active { background:#0ff; color:#000; box-shadow:0 0 20px #0ff; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">iniciando capacete cgm...</div>
+  <div id="msg">clique em CAPACETE ou LUVAS para ativar</div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
-  <button id="btn_camera">trocar camera</button>
+  <button id="btn_cap" class="btn">CAPACETE</button>
+  <button id="btn_luva" class="btn">LUVAS</button>
+  <button id="btn_camera" class="btn">CAMERA</button>
 
 <script>
-const videoElement = document.getElementById('video');
-const canvasElement = document.getElementById('canvas');
-const canvasCtx = canvasElement.getContext('2d');
-const uiText = document.getElementById('ui');
-const btnCamera = document.getElementById('btn_camera');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const msg = document.getElementById('msg');
 
-let handBase = null, handInteract = null;
-let faceLandmarks = null;
-let hologramActive = true;
-let appScreen = null, loadingPercent = 0, lastClickTime = 0;
-let useFrontCamera = true, camera = null;
-let eyeLeftBlink = false, eyeRightBlink = false, mouthOpen = false;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const buttons = [
-  {id: 'grid', icon: '■', y_offset: -50, active: false},
-  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
-  {id: 'power', icon: '⚡', y_offset: 50, active: false},
-];
+let capAtivo = false;
+let luvaAtiva = false;
+let useFront = true;
+let face = null, hand1 = null, hand2 = null;
+let appScreen = null;
 
-// 1. HANDS
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.5 });
-
-// 2. FACEMESH
-const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5 });
-
-hands.onResults((results) => {
-  if (results.multiHandLandmarks) {
-    handBase = results.multiHandLandmarks[0];
-    handInteract = results.multiHandLandmarks[1] || null;
-  } else { handBase = null; handInteract = null; }
-  drawAll();
+// 1. HANDS = LUVAS
+const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+hands.setOptions({maxNumHands: 2});
+hands.onResults(r => {
+  if(r.multiHandLandmarks.length > 0){
+    hand1 = r.multiHandLandmarks[0];
+    hand2 = r.multiHandLandmarks[1] || null;
+  } else { hand1 = null; hand2 = null; }
 });
 
-faceMesh.onResults((results) => {
-  if (results.multiFaceLandmarks) {
-    faceLandmarks = results.multiFaceLandmarks[0];
-    checkFaceCommands(faceLandmarks);
-  } else { faceLandmarks = null; }
-  drawAll();
+// 2. FACEMESH = CAPACETE
+const faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+faceMesh.setOptions({maxNumFaces: 1, refineLandmarks: true});
+faceMesh.onResults(r => {
+  face = r.multiFaceLandmarks[0] || null;
 });
 
-function drawAll() {
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.shadowColor = '#00ffff';
-  canvasCtx.shadowBlur = 30;
+// LOOP PRINCIPAL
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.shadowColor = '#00ffff';
+  ctx.shadowBlur = 25;
 
-  if(faceLandmarks) drawHelmetUI(faceLandmarks);
-  if(handBase) drawHologramOnHand(handBase);
-  if(handInteract) { drawPointer(handInteract[8]); handleButtonClick(handInteract[8], handBase); }
-  if(appScreen && handBase) drawAppScreen(handBase);
+  if(capAtivo && face) drawCapacete(face);
+  if(luvaAtiva && hand1) drawLuvas(hand1, hand2);
+  if(appScreen && hand1) drawTela(appScreen, hand1);
+
+  requestAnimationFrame(draw);
 }
+draw();
 
-// 3. DESENHA CAPACETE + VISOR + MIRA
-function drawHelmetUI(landmarks) {
-  const leftEye = landmarks[159]; // olho esq
-  const rightEye = landmarks[386]; // olho dir
-  const mouth = landmarks[13]; // boca
+// CAPACETE: VISOR + MIRA + PONTOS
+function drawCapacete(landmarks){
+  const olhoE = landmarks[159];
+  const olhoD = landmarks[386];
+  const boca = landmarks[13];
 
-  const lx = leftEye.x * canvasElement.width;
-  const ly = leftEye.y * canvasElement.height;
-  const rx = rightEye.x * canvasElement.width;
-  const ry = rightEye.y * canvasElement.height;
-  const mx = mouth.x * canvasElement.width;
-  const my = mouth.y * canvasElement.height;
+  const ex = olhoE.x * canvas.width, ey = olhoE.y * canvas.height;
+  const dx = olhoD.x * canvas.width, dy = olhoD.y * canvas.height;
+  const bx = boca.x * canvas.width, by = boca.y * canvas.height;
 
-  // VISOR - linha entre os olhos
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.lineWidth = 2;
-  canvasCtx.beginPath();
-  canvasCtx.moveTo(lx, ly);
-  canvasCtx.lineTo(rx, ry);
-  canvasCtx.stroke();
+  // VISOR
+  ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(dx, dy); ctx.stroke();
 
-  // MIRA EM CADA OLHO - pontos
-  canvasCtx.fillStyle = '#ff0000';
-  canvasCtx.beginPath(); canvasCtx.arc(lx, ly, 6, 0, 2 * Math.PI); canvasCtx.fill();
-  canvasCtx.beginPath(); canvasCtx.arc(rx, ry, 6, 0, 2 * Math.PI); canvasCtx.fill();
+  // MIRA OLHOS
+  ctx.fillStyle = '#ff0000';
+  ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(dx, dy, 5, 0, Math.PI*2); ctx.fill();
 
-  // MIRA NA BOCA
-  canvasCtx.strokeStyle = '#00ff00';
-  canvasCtx.beginPath();
-  canvasCtx.arc(mx, my, 20, 0, 2 * Math.PI);
-  canvasCtx.stroke();
+  // MIRA BOCA
+  ctx.strokeStyle = '#00ff00';
+  ctx.beginPath(); ctx.arc(bx, by, 20, 0, Math.PI*2); ctx.stroke();
 
-  // PONTOS DO CAPACETE
-  for(let i=0; i<468; i+=20){
+  // PONTOS CAPACETE
+  for(let i=0; i<468; i+=30){
     const p = landmarks[i];
-    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
-    canvasCtx.beginPath();
-    canvasCtx.arc(p.x * canvasElement.width, p.y * canvasElement.height, 2, 0, 2 * Math.PI);
-    canvasCtx.fill();
+    ctx.fillStyle = 'rgba(0,255,255,0.4)';
+    ctx.beginPath(); ctx.arc(p.x*canvas.width, p.y*canvas.height, 2, 0, Math.PI*2); ctx.fill();
   }
 }
 
-// 4. COMANDOS DO ROSTO
-function checkFaceCommands(landmarks) {
-  const now = Date.now();
-  if(now - lastClickTime < 800) return;
+// LUVAS: HOLOGRAMA + 3 BOTOES
+function drawLuvas(h1, h2){
+  const px = h1[9].x * canvas.width; // palma
+  const py = h1[9].y * canvas.height;
+  const tx = h1[4].x * canvas.width; // polegar
 
-  const leftEyeTop = landmarks[159].y;
-  const leftEyeBottom = landmarks[145].y;
-  const rightEyeTop = landmarks[386].y;
-  const rightEyeBottom = landmarks[374].y;
-  const mouthTop = landmarks[13].y;
-  const mouthBottom = landmarks[14].y;
-
-  const leftBlink = (leftEyeBottom - leftEyeTop) < 0.01;
-  const rightBlink = (rightEyeBottom - rightEyeTop) < 0.01;
-  const mouthIsOpen = (mouthBottom - mouthTop) > 0.04;
-
-  // OLHO ESQUERDO PISCAR = MINI MENU
-  if(leftBlink &&!eyeLeftBlink) {
-    lastClickTime = now;
-    appScreen = 'menu';
-    uiText.innerText = "mini menu aberto";
-  }
-  eyeLeftBlink = leftBlink;
-
-  // OLHO DIREITO PISCAR = GRAFICO PIZZA
-  if(rightBlink &&!eyeRightBlink) {
-    lastClickTime = now;
-    appScreen = 'pizza';
-    uiText.innerText = "grafico pizza aberto";
-  }
-  eyeRightBlink = rightBlink;
-
-  // OS DOIS OLHOS = OCTAEDRO 3D
-  if(leftBlink && rightBlink) {
-    lastClickTime = now;
-    appScreen = 'octaedro';
-    uiText.innerText = "octaedro 3d ativado";
+  // aneis
+  for(let i=0; i<3; i++){
+    ctx.beginPath();
+    ctx.arc(px, py, 50 + i*20, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(0,255,255,${1 - i*0.3})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
-  // BOCA ABRIR = COMANDOS
-  if(mouthIsOpen &&!mouthOpen) {
-    uiText.innerText = "comando de voz ativado";
-  }
-  mouthOpen = mouthIsOpen;
-}
+  // BOTOES DA LUVA
+  const botoes = [
+    {id:'menu', text:'MENU', y:-50},
+    {id:'mapa', text:'MAPA', y:0},
+    {id:'arma', text:'ARMA', y:50},
+  ];
 
-// 5. DESENHA TELA DO APP COM OS NOVOS MENUS
-function drawAppScreen(landmarks) {
-  const x = landmarks[9].x * canvasElement.width - 160;
-  const y = landmarks[9].y * canvasElement.height - 100;
-  const w = 320; const h = 200;
+  botoes.forEach(b => {
+    b.x = tx + 90;
+    b.y = py + b.y;
+    ctx.fillStyle = 'rgba(0,255,255,0.2)';
+    ctx.fillRect(b.x-30, b.y-15, 60, 30);
+    ctx.strokeStyle = '#00ffff';
+    ctx.strokeRect(b.x-30, b.y-15, 60, 30);
+    ctx.fillStyle = '#fff'; ctx.font = '14px Courier New'; ctx.textAlign = 'center';
+    ctx.fillText(b.text, b.x, b.y+5);
 
-  canvasCtx.fillStyle = 'rgba(0, 10, 30, 0.9)';
-  canvasCtx.fillRect(x, y, w, h);
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.strokeRect(x, y, w, h);
-
-  if(appScreen === 'menu') {
-    canvasCtx.fillStyle = '#0ff';
-    canvasCtx.font = '16px Courier New';
-    canvasCtx.fillText("MENU", x + 160, y + 30);
-    canvasCtx.font = '12px Courier New';
-    canvasCtx.fillText("1. status", x + 20, y + 60);
-    canvasCtx.fillText("2. armas", x + 20, y + 80);
-    canvasCtx.fillText("3. mapa", x + 20, y + 100);
-  }
-
-  if(appScreen === 'pizza') {
-    // grafico pizza
-    const cx = x + w/2, cy = y + h/2;
-    canvasCtx.fillStyle = '#ff00ff';
-    canvasCtx.beginPath(); canvasCtx.moveTo(cx,cy); canvasCtx.arc(cx,cy,60,0,Math.PI*0.4); canvasCtx.fill();
-    canvasCtx.fillStyle = '#00ff00';
-    canvasCtx.beginPath(); canvasCtx.moveTo(cx,cy); canvasCtx.arc(cx,cy,60,Math.PI*0.4,Math.PI*0.9); canvasCtx.fill();
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.beginPath(); canvasCtx.moveTo(cx,cy); canvasCtx.arc(cx,cy,60,Math.PI*0.9,Math.PI*2); canvasCtx.fill();
-  }
-
-  if(appScreen === 'octaedro') {
-    drawOctaedro3D(x + w/2, y + h/2, 60);
-  }
-}
-
-let angle = 0;
-function drawOctaedro3D(cx, cy, r) {
-  angle += 0.02;
-  const points = [];
-  for(let i=0; i<8; i++){
-    const a = angle + i * Math.PI/4;
-    points.push({
-      x: cx + r * Math.cos(a),
-      y: cy + r * Math.sin(a) * 0.5
-    });
-  }
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.lineWidth = 2;
-  canvasCtx.beginPath();
-  canvasCtx.moveTo(points[0].x, points[0].y);
-  points.forEach(p => canvasCtx.lineTo(p.x, p.y));
-  canvasCtx.closePath();
-  canvasCtx.stroke();
-}
-
-// 6. CODIGO DAS MAOS IGUAL - MANTIDO
-function drawHologramOnHand(landmarks) {
-  const palmX = landmarks[9].x * canvasElement.width;
-  const palmY = landmarks[9].y * canvasElement.height;
-  const thumbX = landmarks[4].x * canvasElement.width;
-  const flip = useFrontCamera? -1 : 1;
-
-  for(let i=0; i<4; i++) {
-    canvasCtx.beginPath();
-    canvasCtx.arc(palmX, palmY, 55 + i*22, 0, 2 * Math.PI);
-    canvasCtx.strokeStyle = `rgba(0,255,255,${1 - i*0.22})`;
-    canvasCtx.lineWidth = 2.5;
-    canvasCtx.stroke();
-  }
-
-  buttons.forEach(b => {
-    b.x = thumbX + (95 * flip);
-    b.y = palmY + b.y_offset;
-    drawHexagon(b.x, b.y, 28, b.active);
-    canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '20px sans-serif';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(b.icon, b.x, b.y + 7);
+    // CLIQUE COM OUTRA MAO
+    if(h2){
+      const cx = h2[8].x * canvas.width;
+      const cy = h2[8].y * canvas.height;
+      if(cx > b.x-30 && cx < b.x+30 && cy > b.y-15 && cy < b.y+15){
+        ativarFuncao(b.id);
+        // desenha dedo
+        ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI*2); ctx.fillStyle = '#ff00ff'; ctx.fill();
+      }
+    }
   });
 }
 
-function drawHexagon(x, y, radius, active) {
-  canvasCtx.beginPath();
-  for(let i=0; i<6; i++){
-    const angle = Math.PI / 3 * i - Math.PI/6;
-    const px = x + radius * Math.cos(angle);
-    const py = y + radius * Math.sin(angle);
-    if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
-  }
-  canvasCtx.closePath();
-  canvasCtx.fillStyle = active? 'rgba(0,255,255,1)' : 'rgba(0,255,255,0.2)';
-  canvasCtx.fill();
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.stroke();
+function ativarFuncao(id){
+  if(id === 'menu') { appScreen = 'menu'; msg.innerText = "MENU ATIVO"; }
+  if(id === 'mapa') { appScreen = 'mapa'; msg.innerText = "MAPA ATIVO"; }
+  if(id === 'arma') { appScreen = 'arma'; msg.innerText = "ARMA ATIVA"; }
+  setTimeout(()=> appScreen = null, 2000); // fecha tela em 2s
 }
 
-function handleButtonClick(landmark, baseHand) {
-  if(!baseHand) return;
-  const now = Date.now();
-  if(now - lastClickTime < 400) return;
-  const x = landmark.x * canvasElement.width;
-  const y = landmark.y * canvasElement.height;
-  buttons.forEach(b => {
-    const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
-    if(dist < 35) {
-      lastClickTime = now;
-      b.active = true;
-      setTimeout(() => b.active = false, 200);
-      if(b.id === 'grid') { appScreen = 'loading'; loadingPercent = 0; }
-      if(b.id === 'power') { appScreen = null; }
-    }
-  })
+function drawTela(tipo, hand){
+  const x = hand[9].x * canvas.width - 120;
+  const y = hand[9].y * canvas.height - 60;
+  ctx.fillStyle = 'rgba(0,10,30,0.9)';
+  ctx.fillRect(x,y,240,120);
+  ctx.strokeStyle = '#0ff'; ctx.strokeRect(x,y,240,120);
+  ctx.fillStyle = '#0ff'; ctx.font = '16px Courier New'; ctx.textAlign = 'center';
+  ctx.fillText(tipo.toUpperCase(), x+120, y+60);
 }
 
-function drawPointer(landmark) {
-  const x = landmark.x * canvasElement.width;
-  const y = landmark.y * canvasElement.height;
-  canvasCtx.beginPath();
-  canvasCtx.arc(x, y, 12, 0, 2 * Math.PI);
-  canvasCtx.fillStyle = '#ff00ff';
-  canvasCtx.fill();
+// BOTOES DE ATIVAR
+document.getElementById('btn_cap').onclick = () => {
+  capAtivo =!capAtivo;
+  document.getElementById('btn_cap').classList.toggle('active');
+  msg.innerText = capAtivo? "CAPACETE ATIVADO" : "CAPACETE DESATIVADO";
 }
 
-// CAMERA
-async function startCamera() {
-  if(camera) camera.stop();
-  const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: useFrontCamera? "user" : "environment"}});
-  videoElement.srcObject = stream;
-  videoElement.style.transform = useFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
+document.getElementById('btn_luva').onclick = () => {
+  luvaAtiva =!luvaAtiva;
+  document.getElementById('btn_luva').classList.toggle('active');
+  msg.innerText = luvaAtiva? "LUVAS ATIVADAS" : "LUVAS DESATIVADAS";
+}
 
-  const cameraUtil = new Camera(videoElement, {
+document.getElementById('btn_camera').onclick = async () => {
+  useFront =!useFront;
+  const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: useFront? "user":"environment"}});
+  video.srcObject = stream;
+  video.style.transform = useFront? 'scaleX(-1)' : 'scaleX(1)';
+}
+
+// LIGA CAMERA
+navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
+  video.srcObject = stream;
+  const camera = new Camera(video, {
     onFrame: async () => {
-      await hands.send({image: videoElement});
-      await faceMesh.send({image: videoElement});
-    },
-    width: 1280, height: 720
+      await hands.send({image: video});
+      await faceMesh.send({image: video});
+    }
   });
   camera.start();
-}
-
-btnCamera.onclick = () => {
-  useFrontCamera =!useFrontCamera;
-  startCamera();
-}
-
-startCamera();
+});
 </script>
 </body>
 </html>
