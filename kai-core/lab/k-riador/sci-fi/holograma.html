@@ -3,35 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>holograma cgm</title>
+<title>holograma cgm auto</title>
 <style>
-  body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); transform:scaleX(-1); }
+  body { margin:0; background:#000; overflow:hidden; }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.35); transform:scaleX(-1); }
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
-  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
+  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; font-family:'Courier New'; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">sci-fi hologram by cgm</div>
+  <div id="ui">aponte a mao para ativar o holograma</div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
-  <button id="start_btn">iniciar camera</button>
 
 <script>
 const videoElement = document.getElementById('video');
 const canvasElement = document.getElementById('canvas');
 const canvasCtx = canvasElement.getContext('2d');
-const startBtn = document.getElementById('start_btn');
+const uiText = document.getElementById('ui');
 
-let hand1 = null;
-let hand2 = null;
+let handBase = null; // mao 1 - segura o holograma
+let handInteract = null; // mao 2 - clica
+let hologramActive = false;
 let appScreen = null;
 let loadingPercent = 0;
-let cameraRunning = false;
+let lastClickTime = 0;
 
 const buttons = [
   {id: 'grid', icon: '■', y_offset: -50, active: false},
@@ -46,60 +45,82 @@ function resize() {
 resize();
 window.onresize = resize;
 
-// 1. MEDIAPIPE HANDS
+// LIGA CAMERA AUTOMATICO
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}});
+  videoElement.srcObject = stream;
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => { await hands.send({image: videoElement}); },
+    width: 1280, height: 720
+  });
+  camera.start();
+}
+
+// MEDIAPIPE
 const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
 
 hands.onResults((results) => {
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.shadowColor = '#00ffff';
-  canvasCtx.shadowBlur = 25;
+  canvasCtx.shadowBlur = 30;
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    hand1 = results.multiHandLandmarks[0];
-    hand2 = results.multiHandLandmarks[1] || null;
+    // AUTO ATIVAR
+    if(!hologramActive) {
+      hologramActive = true;
+      uiText.innerText = "holograma ativo - use a outra mao para clicar";
+    }
 
-    drawHandSkeleton(hand1, '#00ffff');
-    if(hand1) drawHologramBase(hand1);
-    if(appScreen && hand1) drawAppScreen(hand1);
-    
-    if(hand2) {
-      drawHandSkeleton(hand2, '#ff00ff');
-      checkButtonClick(hand2[8], hand1);
+    handBase = results.multiHandLandmarks[0]; // primeira mao = base
+    handInteract = results.multiHandLandmarks[1] || null; // segunda mao = interage
+
+    // 1. DESENHA HOLOGRAMA FIXO NA PALMA DA MAO 1
+    drawHologramOnHand(handBase);
+
+    // 2. SE TIVER MAO 2, ELA CLICA
+    if(handInteract) {
+      drawPointer(handInteract[8]);
+      handleButtonClick(handInteract[8], handBase);
+    }
+
+    // 3. DESENHA TELA DO APP SE ESTIVER ABERTA
+    if(appScreen) drawAppScreen(handBase);
+
+  } else {
+    // SEM MAO = DESATIVA
+    if(hologramActive) {
+      hologramActive = false;
+      appScreen = null;
+      uiText.innerText = "aponte a mao para ativar o holograma";
     }
   }
 });
 
-function drawHandSkeleton(landmarks, color) {
-  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
-  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 4});
-}
+function drawHologramOnHand(landmarks) {
+  const palmX = landmarks[9].x * canvasElement.width; // centro da palma
+  const palmY = landmarks[9].y * canvasElement.height;
+  const thumbX = landmarks[4].x * canvasElement.width; // polegar
 
-// 2. HOLOGRAMA NA PALMA
-function drawHologramBase(landmarks) {
-  const cx = landmarks[9].x * canvasElement.width;
-  const cy = landmarks[9].y * canvasElement.height;
-
-  for(let i=0; i<3; i++) {
+  // circulos girando na palma
+  for(let i=0; i<4; i++) {
     canvasCtx.beginPath();
-    canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI);
-    canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`;
+    canvasCtx.arc(palmX, palmY, 50 + i*25, 0, 2 * Math.PI);
+    canvasCtx.strokeStyle = `rgba(0,255,255,${1 - i*0.2})`;
     canvasCtx.lineWidth = 2;
     canvasCtx.stroke();
   }
 
-  // botoes do lado do polegar
-  const bx_base = landmarks[4].x * canvasElement.width + 80;
-  const by_base = landmarks[4].y * canvasElement.height;
-
+  // botoes flutuando do lado do polegar - SEMPRE SEGUEM A MAO
   buttons.forEach(b => {
-    b.x = bx_base;
-    b.y = by_base + b.y_offset;
-    drawHexagon(b.x, b.y, 25, b.active);
+    b.x = thumbX + 90; // 90px do polegar
+    b.y = palmY + b.y_offset;
+    drawHexagon(b.x, b.y, 28, b.active);
     canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '18px sans-serif';
+    canvasCtx.font = '20px sans-serif';
     canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(b.icon, b.x, b.y + 6);
+    canvasCtx.fillText(b.icon, b.x, b.y + 7);
   });
 }
 
@@ -112,40 +133,35 @@ function drawHexagon(x, y, radius, active) {
     if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
   }
   canvasCtx.closePath();
-  canvasCtx.fillStyle = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
+  canvasCtx.fillStyle = active? 'rgba(0,255,255,1)' : 'rgba(0,255,255,0.25)';
   canvasCtx.fill();
   canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.lineWidth = 2;
   canvasCtx.stroke();
 }
 
-// 3. TELA DE APP
 function drawAppScreen(landmarks) {
-  const x = landmarks[9].x * canvasElement.width - 180;
-  const y = landmarks[9].y * canvasElement.height - 120;
-  const w = 360; const h = 240;
+  const x = landmarks[9].x * canvasElement.width - 160;
+  const y = landmarks[9].y * canvasElement.height - 100;
+  const w = 320; const h = 200;
 
-  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.7)';
+  canvasCtx.fillStyle = 'rgba(0, 10, 30, 0.8)';
   canvasCtx.fillRect(x, y, w, h);
   canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.lineWidth = 2;
   canvasCtx.strokeRect(x, y, w, h);
 
   if(appScreen === 'loading') {
     canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.font = '28px Courier New';
+    canvasCtx.font = '24px Courier New';
     canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(`${loadingPercent}%`, x + w/2, y + h/2);
-    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
-    canvasCtx.fillRect(x + 40, y + h - 30, w - 80, 8);
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.fillRect(x + 40, y + h - 30, (w - 80) * (loadingPercent/100), 8);
+    canvasCtx.fillText(`loading ${loadingPercent}%`, x + w/2, y + h/2);
   }
 
   if(appScreen === 'mapa') {
-    canvasCtx.fillStyle = 'rgba(0, 100, 50, 0.8)';
+    canvasCtx.fillStyle = 'rgba(0, 80, 40, 0.9)';
     canvasCtx.fillRect(x + 10, y + 10, w - 20, h - 20);
     canvasCtx.strokeStyle = '#00ff88';
-    for(let i=0; i<4; i++){
+    for(let i=0; i<3; i++){
       canvasCtx.beginPath();
       canvasCtx.moveTo(x + 10, y + 10 + i*50);
       canvasCtx.lineTo(x + w - 10, y + 10 + i*50);
@@ -153,38 +169,37 @@ function drawAppScreen(landmarks) {
     }
     canvasCtx.fillStyle = '#ff0000';
     canvasCtx.beginPath();
-    canvasCtx.arc(x + 80, y + 60, 5, 0, 2 * Math.PI); canvasCtx.fill();
+    canvasCtx.arc(x + 70, y + 50, 4, 0, 2 * Math.PI); canvasCtx.fill();
     canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '12px Courier New';
-    canvasCtx.fillText("3 km - 30 min", x + 180, y + 220);
+    canvasCtx.font = '11px Courier New';
+    canvasCtx.fillText("3 km - 30 min", x + 160, y + 180);
   }
 }
 
-function updateLoading() {
-  if(appScreen === 'loading' && loadingPercent < 100) {
-    loadingPercent += 3;
-  } else if(loadingPercent >= 100) {
-    appScreen = 'mapa';
-  }
-  requestAnimationFrame(updateLoading);
-}
-updateLoading();
+function handleButtonClick(landmark, baseHand) {
+  const now = Date.now();
+  if(now - lastClickTime < 500) return; // anti spam
 
-// 4. CLIQUE
-function checkButtonClick(landmark, base_hand) {
-  if(!base_hand) return;
   const x = landmark.x * canvasElement.width;
   const y = landmark.y * canvasElement.height;
 
   buttons.forEach(b => {
     const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
-    if(dist < 30 &&!b.active) {
+    if(dist < 35) {
+      lastClickTime = now;
       b.active = true;
-      setTimeout(() => b.active = false, 300);
+      setTimeout(() => b.active = false, 250);
 
       if(b.id === 'grid') {
         appScreen = 'loading';
         loadingPercent = 0;
+        let interval = setInterval(() => {
+          loadingPercent += 5;
+          if(loadingPercent >= 100) {
+            clearInterval(interval);
+            appScreen = 'mapa';
+          }
+        }, 100);
       }
       if(b.id === 'power') {
         appScreen = null;
@@ -193,19 +208,16 @@ function checkButtonClick(landmark, base_hand) {
   })
 }
 
-// 5. LIGAR CAMERA AO CLICAR
-startBtn.onclick = async () => {
-  if(cameraRunning) return;
-  cameraRunning = true;
-  startBtn.style.display = 'none';
-  
-  const camera = new Camera(videoElement, {
-    onFrame: async () => { await hands.send({image: videoElement}); },
-    width: 1280, height: 720
-  });
-  camera.start();
+function drawPointer(landmark) {
+  const x = landmark.x * canvasElement.width;
+  const y = landmark.y * canvasElement.height;
+  canvasCtx.beginPath();
+  canvasCtx.arc(x, y, 12, 0, 2 * Math.PI);
+  canvasCtx.fillStyle = '#ff00ff';
+  canvasCtx.fill();
 }
 
+startCamera();
 </script>
 </body>
 </html>
