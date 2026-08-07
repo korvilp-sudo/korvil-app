@@ -2,228 +2,209 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>holograma cgm v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>holograma cgm</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.5); }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); transform:scaleX(-1); }
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#aaa; }
+  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
+  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">sound design - alexander nelipa<br>sci-fi hologram by cgm</div>
-  <video id="video" autoplay playsinline></video>
+  <div id="ui">sci-fi hologram by cgm</div>
+  <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
+  <button id="start_btn">iniciar camera</button>
 
 <script>
-const video_element = document.get_element_by_id('video');
-const canvas_element = document.get_element_by_id('canvas');
-const canvas_ctx = canvas_element.get_context('2d');
+const videoElement = document.getElementById('video');
+const canvasElement = document.getElementById('canvas');
+const canvasCtx = canvasElement.getContext('2d');
+const startBtn = document.getElementById('start_btn');
 
 let hand1 = null;
 let hand2 = null;
-let hologram_pos = {x: 0.5, y: 0.5, size: 280};
-let app_screen = null; // 'mapa', 'loading', null
-let loading_percent = 0;
+let appScreen = null;
+let loadingPercent = 0;
+let cameraRunning = false;
 
 const buttons = [
-  {id: 'grid', icon: '■', y_offset: -40, active: false, label: 'app'},
-  {id: 'settings', icon: '⚙', y_offset: 0, active: false, label: 'config'},
-  {id: 'power', icon: '⚡', y_offset: 40, active: false, label: 'energia'},
+  {id: 'grid', icon: '■', y_offset: -50, active: false},
+  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
+  {id: 'power', icon: '⚡', y_offset: 50, active: false},
 ];
 
 function resize() {
-  canvas_element.width = window.inner_width;
-  canvas_element.height = window.inner_height;
+  canvasElement.width = window.innerWidth;
+  canvasElement.height = window.innerHeight;
 }
 resize();
-window.on_resize = resize;
+window.onresize = resize;
 
-// MEDIAPIPE
-const hands_detector = new hands({locate_file: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands_detector.set_options({ max_num_hands: 2, min_detection_confidence: 0.7 });
+// 1. MEDIAPIPE HANDS
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
-hands_detector.on_results((results) => {
-  canvas_ctx.clear_rect(0, 0, canvas_element.width, canvas_element.height);
-  canvas_ctx.shadow_color = '#00ffff';
-  canvas_ctx.shadow_blur = 20;
+hands.onResults((results) => {
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.shadowColor = '#00ffff';
+  canvasCtx.shadowBlur = 25;
 
-  if (results.multi_hand_landmarks) {
-    hand1 = results.multi_hand_landmarks[0];
-    hand2 = results.multi_hand_landmarks[1] || null;
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    hand1 = results.multiHandLandmarks[0];
+    hand2 = results.multiHandLandmarks[1] || null;
 
-    if(hand1) {
-      draw_hologram_base(hand1);
-      if(app_screen) draw_app_screen(hand1);
-    }
+    drawHandSkeleton(hand1, '#00ffff');
+    if(hand1) drawHologramBase(hand1);
+    if(appScreen && hand1) drawAppScreen(hand1);
+    
     if(hand2) {
-      const tip = hand2[8];
-      check_button_click(tip, hand1);
-      draw_pointer(tip);
+      drawHandSkeleton(hand2, '#ff00ff');
+      checkButtonClick(hand2[8], hand1);
     }
   }
-
-  if(app_screen === 'loading') update_loading();
 });
 
-// 1. DESENHA BASE DO HOLOGRAMA NA PALMA
-function draw_hologram_base(landmarks) {
-  const cx = landmarks[9].x * canvas_element.width;
-  const cy = landmarks[9].y * canvas_element.height;
-  hologram_pos.x = cx; hologram_pos.y = cy;
+function drawHandSkeleton(landmarks, color) {
+  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
+  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 4});
+}
 
-  // circulos girando
-  for(let i=0; i<4; i++) {
-    canvas_ctx.begin_path();
-    canvas_ctx.arc(cx, cy, hologram_pos.size * (0.2 + i*0.15), 0, 2 * math.pi);
-    canvas_ctx.stroke_style = `rgba(0,255,255,${0.9 - i*0.2})`;
-    canvas_ctx.line_width = 1.5;
-    canvas_ctx.stroke();
+// 2. HOLOGRAMA NA PALMA
+function drawHologramBase(landmarks) {
+  const cx = landmarks[9].x * canvasElement.width;
+  const cy = landmarks[9].y * canvasElement.height;
+
+  for(let i=0; i<3; i++) {
+    canvasCtx.beginPath();
+    canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI);
+    canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`;
+    canvasCtx.lineWidth = 2;
+    canvasCtx.stroke();
   }
 
-  // botões do lado do polegar
-  const bx_base = landmarks[4].x * canvas_element.width + 60;
-  const by_base = landmarks[4].y * canvas_element.height;
+  // botoes do lado do polegar
+  const bx_base = landmarks[4].x * canvasElement.width + 80;
+  const by_base = landmarks[4].y * canvasElement.height;
 
-  buttons.for_each(b => {
+  buttons.forEach(b => {
     b.x = bx_base;
     b.y = by_base + b.y_offset;
-    draw_hexagon(b.x, b.y, 22, b.active);
-    canvas_ctx.fill_style = '#fff';
-    canvas_ctx.font = '14px sans-serif';
-    canvas_ctx.text_align = 'center';
-    canvas_ctx.fill_text(b.icon, b.x, b.y + 4);
+    drawHexagon(b.x, b.y, 25, b.active);
+    canvasCtx.fillStyle = '#fff';
+    canvasCtx.font = '18px sans-serif';
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillText(b.icon, b.x, b.y + 6);
   });
 }
 
-function draw_hexagon(x, y, radius, active) {
-  canvas_ctx.begin_path();
+function drawHexagon(x, y, radius, active) {
+  canvasCtx.beginPath();
   for(let i=0; i<6; i++){
-    const angle = math.pi / 3 * i - math.pi/6;
-    const px = x + radius * math.cos(angle);
-    const py = y + radius * math.sin(angle);
-    if(i===0) canvas_ctx.move_to(px, py); else canvas_ctx.line_to(px, py);
+    const angle = Math.PI / 3 * i - Math.PI/6;
+    const px = x + radius * Math.cos(angle);
+    const py = y + radius * Math.sin(angle);
+    if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
   }
-  canvas_ctx.close_path();
-  canvas_ctx.fill_style = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
-  canvas_ctx.fill();
-  canvas_ctx.stroke_style = '#00ffff';
-  canvas_ctx.stroke();
+  canvasCtx.closePath();
+  canvasCtx.fillStyle = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
+  canvasCtx.fill();
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.stroke();
 }
 
-// 2. DESENHA A "TELA" HOLOGRÁFICA
-function draw_app_screen(landmarks) {
-  const x = landmarks[9].x * canvas_element.width - 200;
-  const y = landmarks[9].y * canvas_element.height - 150;
-  const w = 400; const h = 300;
+// 3. TELA DE APP
+function drawAppScreen(landmarks) {
+  const x = landmarks[9].x * canvasElement.width - 180;
+  const y = landmarks[9].y * canvasElement.height - 120;
+  const w = 360; const h = 240;
 
-  // moldura transparente
-  canvas_ctx.fill_style = 'rgba(0, 20, 40, 0.6)';
-  canvas_ctx.fill_rect(x, y, w, h);
-  canvas_ctx.stroke_style = '#00ffff';
-  canvas_ctx.line_width = 2;
-  canvas_ctx.stroke_rect(x, y, w, h);
+  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.7)';
+  canvasCtx.fillRect(x, y, w, h);
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.lineWidth = 2;
+  canvasCtx.strokeRect(x, y, w, h);
 
-  if(app_screen === 'loading') {
-    canvas_ctx.fill_style = '#00ffff';
-    canvas_ctx.font = '24px Courier New';
-    canvas_ctx.text_align = 'center';
-    canvas_ctx.fill_text(`${loading_percent}%`, x + w/2, y + h/2);
-
-    // barra de loading
-    canvas_ctx.fill_style = 'rgba(0,255,255,0.3)';
-    canvas_ctx.fill_rect(x + 50, y + h - 40, w - 100, 10);
-    canvas_ctx.fill_style = '#00ffff';
-    canvas_ctx.fill_rect(x + 50, y + h - 40, (w - 100) * (loading_percent/100), 10);
+  if(appScreen === 'loading') {
+    canvasCtx.fillStyle = '#00ffff';
+    canvasCtx.font = '28px Courier New';
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillText(`${loadingPercent}%`, x + w/2, y + h/2);
+    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
+    canvasCtx.fillRect(x + 40, y + h - 30, w - 80, 8);
+    canvasCtx.fillStyle = '#00ffff';
+    canvasCtx.fillRect(x + 40, y + h - 30, (w - 80) * (loadingPercent/100), 8);
   }
 
-  if(app_screen === 'mapa') {
-    // fundo do mapa
-    canvas_ctx.fill_style = 'rgba(0, 100, 50, 0.8)';
-    canvas_ctx.fill_rect(x + 10, y + 10, w - 20, h - 20);
-
-    // "ruas" do mapa
-    canvas_ctx.stroke_style = '#00ff88';
-    canvas_ctx.line_width = 1;
-    for(let i=0; i<5; i++){
-      canvas_ctx.begin_path();
-      canvas_ctx.move_to(x + 10, y + 10 + i*60);
-      canvas_ctx.line_to(x + w - 10, y + 10 + i*60);
-      canvas_ctx.stroke();
+  if(appScreen === 'mapa') {
+    canvasCtx.fillStyle = 'rgba(0, 100, 50, 0.8)';
+    canvasCtx.fillRect(x + 10, y + 10, w - 20, h - 20);
+    canvasCtx.strokeStyle = '#00ff88';
+    for(let i=0; i<4; i++){
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(x + 10, y + 10 + i*50);
+      canvasCtx.lineTo(x + w - 10, y + 10 + i*50);
+      canvasCtx.stroke();
     }
-
-    // pins do mapa
-    canvas_ctx.fill_style = '#ff0000';
-    canvas_ctx.begin_path();
-    canvas_ctx.arc(x + 100, y + 80, 5, 0, 2 * math.pi); canvas_ctx.fill();
-    canvas_ctx.begin_path();
-    canvas_ctx.arc(x + 300, y + 200, 5, 0, 2 * math.pi); canvas_ctx.fill();
-
-    canvas_ctx.fill_style = '#fff';
-    canvas_ctx.font = '12px Courier New';
-    canvas_ctx.fill_text("3 km - 30 min", x + 200, y + 270);
-  }
-
-  // barra lateral de ícones
-  const icons = ['☰','♪','■','📍','⚡'];
-  icons.for_each((icon, i) => {
-    canvas_ctx.fill_style = 'rgba(0,255,255,0.3)';
-    canvas_ctx.begin_path();
-    canvas_ctx.arc(x - 20, y + 30 + i*40, 15, 0, 2 * math.pi);
-    canvas_ctx.fill();
-    canvas_ctx.fill_style = '#fff';
-    canvas_ctx.font = '14px sans-serif';
-    canvas_ctx.fill_text(icon, x - 20, y + 35 + i*40);
-  })
-}
-
-function update_loading() {
-  if(loading_percent < 100) {
-    loading_percent += 2;
-  } else {
-    app_screen = 'mapa'; // depois do loading abre o mapa
+    canvasCtx.fillStyle = '#ff0000';
+    canvasCtx.beginPath();
+    canvasCtx.arc(x + 80, y + 60, 5, 0, 2 * Math.PI); canvasCtx.fill();
+    canvasCtx.fillStyle = '#fff';
+    canvasCtx.font = '12px Courier New';
+    canvasCtx.fillText("3 km - 30 min", x + 180, y + 220);
   }
 }
 
-// 3. CLIQUE NOS BOTÕES
-function check_button_click(landmark, base_hand) {
-  const x = landmark.x * canvas_element.width;
-  const y = landmark.y * canvas_element.height;
+function updateLoading() {
+  if(appScreen === 'loading' && loadingPercent < 100) {
+    loadingPercent += 3;
+  } else if(loadingPercent >= 100) {
+    appScreen = 'mapa';
+  }
+  requestAnimationFrame(updateLoading);
+}
+updateLoading();
 
-  buttons.for_each(b => {
-    const dist = math.sqrt(math.pow(x - b.x, 2) + math.pow(y - b.y, 2));
-    if(dist < 25 &&!b.active) {
+// 4. CLIQUE
+function checkButtonClick(landmark, base_hand) {
+  if(!base_hand) return;
+  const x = landmark.x * canvasElement.width;
+  const y = landmark.y * canvasElement.height;
+
+  buttons.forEach(b => {
+    const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
+    if(dist < 30 &&!b.active) {
       b.active = true;
-      set_timeout(() => b.active = false, 200);
+      setTimeout(() => b.active = false, 300);
 
       if(b.id === 'grid') {
-        app_screen = 'loading';
-        loading_percent = 0;
+        appScreen = 'loading';
+        loadingPercent = 0;
       }
       if(b.id === 'power') {
-        app_screen = null; // fecha tudo
+        appScreen = null;
       }
     }
   })
 }
 
-function draw_pointer(landmark) {
-  const x = landmark.x * canvas_element.width;
-  const y = landmark.y * canvas_element.height;
-  canvas_ctx.begin_path();
-  canvas_ctx.arc(x, y, 10, 0, 2 * math.pi);
-  canvas_ctx.fill_style = '#ff00ff';
-  canvas_ctx.fill();
+// 5. LIGAR CAMERA AO CLICAR
+startBtn.onclick = async () => {
+  if(cameraRunning) return;
+  cameraRunning = true;
+  startBtn.style.display = 'none';
+  
+  const camera = new Camera(videoElement, {
+    onFrame: async () => { await hands.send({image: videoElement}); },
+    width: 1280, height: 720
+  });
+  camera.start();
 }
-
-// LIGAR CAMERA
-const camera = new camera(video_element, {
-  on_frame: async () => { await hands_detector.send({image: video_element}); },
-  width: 1280, height: 720
-});
-camera.start();
 
 </script>
 </body>
