@@ -3,163 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cgm luva ui</title>
+<title>luva ui</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; }
-  #video { position:absolute; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3); }
+  #video { position:absolute; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3); transform:scaleX(-1); }
   #canvas { position:absolute; width:100vw; height:100vh; z-index:2; }
-  #msg { position:absolute; z-index:3; top:15px; width:100%; text-align:center; color:#0ff; font-family:'Courier New'; font-size:16px; text-shadow:0 0 10px #0ff; }
-.btn { position:absolute; z-index:4; bottom:20px; padding:12px 20px; background:rgba(0,255,255,0.1); border:2px solid #0ff; color:#0ff; border-radius:25px; font-family:'Courier New'; font-size:16px; }
-.btn.active { background:#0ff; color:#000; box-shadow:0 0 25px #0ff; }
-  #btn_luva { left:50%; transform:translateX(-50%); }
- .target { position:absolute; width:80px; height:80px; border:3px dashed #ffff00; border-radius:50%; z-index:3; left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 0 20px #ff0; display:none; }
+  #msg { position:absolute; z-index:3; top:20px; width:100%; text-align:center; color:#0ff; font-family:'Courier New'; font-size:18px; text-shadow:0 0 10px #0ff; }
+  #btn_luva { position:absolute; z-index:4; bottom:30px; left:50%; transform:translateX(-50%); padding:15px 30px; background:rgba(0,255,255,0.1); border:3px solid #0ff; color:#0ff; border-radius:30px; font-family:'Courier New'; font-size:18px; }
+  #btn_luva.active { background:#0ff; color:#000; }
+  #alvo { position:absolute; z-index:3; width:100px; height:100px; border:4px dashed #ff0; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); display:none; box-shadow:0 0 30px #ff0; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 </head>
 <body>
-  <div id="msg">clique em LUVAS para ativar</div>
-  <div class="target" id="target"></div>
+  <div id="msg">clique em LUVAS</div>
+  <div id="alvo"></div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
-  <button id="btn_luva" class="btn">LUVAS</button>
+  <button id="btn_luva">LUVAS</button>
 
 <script>
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const msg = document.getElementById('msg');
-const target = document.getElementById('target');
-const btnLuva = document.getElementById('btn_luva');
+const alvo = document.getElementById('alvo');
+const btn = document.getElementById('btn_luva');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = innerWidth; canvas.height = innerHeight;
 
-let luvaAtiva = false;
-let hands = null;
-let luvaPega = false; // se ja ficou na mao
-let luvaPos = {x: canvas.width/2, y: canvas.height/2};
-let contagem = 0, ultimoClique = 0;
-let useFront = true;
+let luvaOn = false, luvaPega = false;
+let luvaX = canvas.width/2, luvaY = canvas.height/2;
+let tempo = 0, ultimoClick = 0;
+let handsData = null;
 
-// 1. HANDS
-const handsDetector = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-handsDetector.setOptions({maxNumHands: 2, minDetectionConfidence: 0.6});
-handsDetector.onResults(r => { hands = r.multiHandLandmarks; });
+// HANDS
+const hands = new Hands({locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+hands.setOptions({maxNumHands: 2});
+hands.onResults(res => { handsData = res.multiHandLandmarks; });
 
-function loop(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 20;
+// LIGA CAMERA
+navigator.mediaDevices.getUserMedia({video:true}).then(s => { video.srcObject = s; });
 
-  if(luvaAtiva && hands) desenharLuvas(hands);
-
-  requestAnimationFrame(loop);
+btn.onclick = () => {
+  luvaOn =!luvaOn;
+  btn.classList.toggle('active');
+  alvo.style.display = luvaOn? 'block' : 'none';
+  luvaPega = false; tempo = 0;
+  msg.innerText = luvaOn? "coloque a mao no circulo" : "clique em LUVAS";
 }
-loop();
 
-// LUVAS: PONTO -> 3S -> SEGUIR MAO -> PINÇAR
-function desenharLuvas(handsData){
-  const mao1 = handsData[0]; // mao que ativa
-  const mao2 = handsData[1] || null; // mao que clica
+function draw(){
+  if(video.readyState >= 2){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.shadowBlur = 20; ctx.shadowColor = '#0ff';
 
-  if(!mao1) { if(!luvaPega) contagem = 0; return; }
+    if(luvaOn && handsData){
+      const m1 = handsData[0];
+      const m2 = handsData[1];
 
-  // ARRUIMA ESPELHO: se for camera frontal inverte o X
-  let palmaX = mao1[9].x * canvas.width;
-  let palmaY = mao1[9].y * canvas.height;
-  if(useFront) palmaX = canvas.width - palmaX;
+      if(m1){
+        // ESPELHO PRA FICAR CERTO NA FRONTAL
+        let px = (1 - m1[9].x) * canvas.width;
+        let py = m1[9].y * canvas.height;
 
-  // 1. MOSTRA PONTO ALVO NO MEIO
-  if(!luvaPega){
-    target.style.display = 'block';
-    const dist = Math.sqrt(Math.pow(palmaX - luvaPos.x, 2) + Math.pow(palmaY - luvaPos.y, 2));
-
-    // 2. DEIXAR MAO NO PONTO POR 3S
-    if(dist < 60){
-      contagem += 0.016;
-      msg.innerText = `segure no ponto... ${Math.ceil(3 - contagem)}s`;
-      ctx.strokeStyle = '#ffff00';
-      ctx.beginPath(); ctx.arc(luvaPos.x, luvaPos.y, 50, 0, Math.PI*2 * (contagem/3)); ctx.stroke();
-
-      if(contagem >= 3){
-        luvaPega = true;
-        contagem = 0;
-        target.style.display = 'none';
-        msg.innerText = "luva ativa - use a outra mao para clicar";
-      }
-    } else {
-      contagem = 0;
-      msg.innerText = "coloque a palma da mao no circulo amarelo";
-    }
-  }
-
-  // 3. SE JA PEGOU, HOLOGRAMA SEGUE A MAO PRA QUALQUER LADO
-  if(luvaPega){
-    luvaPos.x = palmaX;
-    luvaPos.y = palmaY;
-
-    // DESENHAR HOLOGRAMA NA MAO
-    for(let i=0; i<3; i++){
-      ctx.beginPath();
-      ctx.arc(luvaPos.x, luvaPos.y, 50 + i*20, 0, Math.PI*2);
-      ctx.strokeStyle = `rgba(0,255,255,${1 - i*0.3})`;
-      ctx.lineWidth = 2; ctx.stroke();
-    }
-
-    // BOTOES DO HOLOGRAMA
-    const botoes = [
-      {id:'menu', text:'MENU', y:-60},
-      {id:'mapa', text:'MAPA', y:0},
-      {id:'arma', text:'ARMA', y:60},
-    ];
-
-    botoes.forEach(b => {
-      b.x = luvaPos.x + 90; b.y = luvaPos.y + b.y;
-      ctx.fillStyle = 'rgba(0,255,255,0.2)';
-      ctx.fillRect(b.x-35, b.y-18, 70, 36);
-      ctx.strokeStyle = '#00ffff'; ctx.strokeRect(b.x-35, b.y-18, 70, 36);
-      ctx.fillStyle = '#fff'; ctx.font = '14px Courier New'; ctx.textAlign = 'center';
-      ctx.fillText(b.text, b.x, b.y+5);
-
-      // 4. CLIQUE POR PINÇA: indicador + polegar
-      if(mao2){
-        let indX = mao2[8].x * canvas.width;
-        let indY = mao2[8].y * canvas.height;
-        let poleX = mao2[4].x * canvas.width;
-        let poleY = mao2[4].y * canvas.height;
-        if(useFront){ indX = canvas.width - indX; poleX = canvas.width - poleX; } // arruma espelho
-
-        const distPinca = Math.sqrt(Math.pow(indX-poleX,2) + Math.pow(indY-poleY,2));
-
-        if(distPinca < 40 && Date.now() - ultimoClique > 500){ // pinçou
-          if(indX > b.x-35 && indX < b.x+35 && indY > b.y-18 && indY < b.y+18){
-            ultimoClique = Date.now();
-            msg.innerText = b.text + " ATIVADO";
-            setTimeout(()=> msg.innerText = "use a outra mao para clicar", 1000);
+        // 1. ATIVAR NO ALVO
+        if(!luvaPega){
+          let d = Math.hypot(px - luvaX, py - luvaY);
+          if(d < 70){
+            tempo += 0.016;
+            msg.innerText = `segurando... ${Math.ceil(3-tempo)}`;
+            ctx.beginPath(); ctx.arc(luvaX, luvaY, 60, 0, Math.PI*2 * tempo/3); ctx.strokeStyle='#ff0'; ctx.lineWidth=4; ctx.stroke();
+            if(tempo >= 3){ luvaPega = true; alvo.style.display='none'; msg.innerText="luva ativa"; }
+          } else { tempo = 0; }
+        }
+        // 2. SEGUIR MAO
+        else {
+          luvaX = px; luvaY = py;
+          // desenha holograma
+          for(let i=0;i<3;i++){
+            ctx.beginPath(); ctx.arc(luvaX, luvaY, 50+i*15, 0, Math.PI*2);
+            ctx.strokeStyle=`rgba(0,255,255,${1-i*0.3})`; ctx.lineWidth=3; ctx.stroke();
           }
+
+          // BOTOES
+          let botoes = [{t:'MENU',y:-60},{t:'MAPA',y:0},{t:'ARMA',y:60}];
+          botoes.forEach(b=>{
+            let bx = luvaX+100, by = luvaY+b.y;
+            ctx.fillStyle='rgba(0,255,255,0.2)'; ctx.fillRect(bx-40,by-20,80,40);
+            ctx.strokeStyle='#0ff'; ctx.strokeRect(bx-40,by-20,80,40);
+            ctx.fillStyle='#fff'; ctx.font='16px Courier'; ctx.textAlign='center'; ctx.fillText(b.t,bx,by+6);
+
+            // 3. PINÇA PRA CLICAR
+            if(m2){
+              let ix = (1 - m2[8].x) * canvas.width;
+              let iy = m2[8].y * canvas.height;
+              let pix = (1 - m2[4].x) * canvas.width;
+              let piy = m2[4].y * canvas.height;
+              let pinca = Math.hypot(ix-pix, iy-piy);
+              if(pinca < 40 && Date.now()-ultimoClick > 600){
+                if(ix>bx-40 && ix<bx+40 && iy>by-20 && iy<by+20){
+                  ultimoClick = Date.now();
+                  msg.innerText = b.t + " CLICADO";
+                  setTimeout(()=>msg.innerText="luva ativa",1000);
+                }
+              }
+            }
+          });
         }
       }
-    });
+    }
   }
+  hands.send({image: video});
+  requestAnimationFrame(draw);
 }
-
-// BOTAO LUVA
-btnLuva.onclick = () => {
-  luvaAtiva =!luvaAtiva;
-  btnLuva.classList.toggle('active');
-  luvaPega = false;
-  contagem = 0;
-  target.style.display = luvaAtiva? 'block' : 'none';
-  msg.innerText = luvaAtiva? "coloque a palma da mao no circulo amarelo" : "clique em LUVAS para ativar";
-}
-
-// CAMERA
-async function startCamera(){
-  const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode: useFront? "user":"environment", width:1280, height:720}});
-  video.srcObject = stream;
-  video.style.transform = useFront? 'scaleX(-1)' : 'scaleX(1)'; // espelha so o video
-}
-startCamera();
+draw();
 </script>
 </body>
 </html>
