@@ -1,55 +1,184 @@
-function drawLuva(landmarks, estado) {
-    const cx = landmarks[9].x * canvasElement.width;
-    const cy = landmarks[9].y * canvasElement.height;
-    
-    // Configuração de Estilo "4D"
-    canvasCtx.shadowBlur = 20;
-    canvasCtx.shadowColor = (estado === 'tiro') ? '#ff0000' : '#00ffff';
-    canvasCtx.lineWidth = 4;
-    canvasCtx.strokeStyle = (estado === 'tiro') ? '#ff0000' : '#00ffff';
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>CGM - SISTEMA DE ARMADURA 4D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body { margin:0; background:#000; overflow:hidden; font-family:'Orbitron', sans-serif; color:#0ff; }
+        #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; filter:brightness(0.3) contrast(1.2); }
+        #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
+        
+        /* UI E HUD */
+        #hud { position:absolute; z-index:10; left:20px; top:100px; background:rgba(0,20,30,0.6); backdrop-filter:blur(10px); padding:20px; border-left:4px solid #0ff; color:#fff; font-size:12px; box-shadow:0 0 20px rgba(0,255,255,0.3); }
+        .cmd { margin-bottom:8px; display:flex; align-items:center; }
+        .active { color:#ff00ff; text-shadow:0 0 10px #ff00ff; }
 
-    // 1. DESENHO DA ESTRUTURA (MESH)
-    window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
-        color: (estado === 'tiro') ? '#ff4444' : '#00ffff',
-        lineWidth: 2
-    });
+        #menuLateral { position:absolute; right:20px; top:50%; transform:translateY(-50%); z-index:10; background:rgba(0,0,0,0.7); padding:10px; border:1px solid #0ff; border-radius:10px; }
+        .btnHolo { display:block; width:140px; margin:5px 0; padding:8px; background:transparent; border:1px solid #0ff; color:#0ff; cursor:pointer; font-size:10px; transition:0.3s; }
+        .btnHolo.ativo { background:#0ff; color:#000; }
+        
+        #start_btn { position:absolute; z-index:11; bottom:50px; left:50%; transform:translateX(-50%); padding:20px 50px; background:#0ff; color:#000; font-weight:bold; cursor:pointer; border:none; border-radius:50px; box-shadow:0 0 30px #0ff; }
+    </style>
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+</head>
+<body>
+    <div id="hud">
+        <h3 style="margin:0 0 10px 0; color:#0ff;">SISTEMA GESTUAL 4D</h3>
+        <div class="cmd">○ Juntar Mãos: Alternar HUD</div>
+        <div class="cmd">○ Shake 3x: Bloco Escrita</div>
+        <div class="cmd">○ Palma 1x: Reator (Energia)</div>
+        <div class="cmd">○ Palma 2x: Limpar Tela</div>
+        <div class="cmd">○ Rotacionar: Zoom (4D)</div>
+    </div>
 
-    // 2. EFEITOS DE ESTADO (VISUALIZAÇÃO 4D)
-    if (estado === 'escudo') {
-        // Campo de Força Esférico
-        canvasCtx.beginPath();
-        canvasCtx.arc(cx, cy, 70, 0, Math.PI * 2);
-        canvasCtx.fillStyle = 'rgba(0, 255, 255, 0.15)';
-        canvasCtx.fill();
-        canvasCtx.stroke();
-    } 
-    
-    else if (estado === 'tiro') {
-        // Feixe de Plasma
-        const ponta = landmarks[8]; // Indicador
-        canvasCtx.beginPath();
-        canvasCtx.moveTo(cx, cy);
-        canvasCtx.lineTo(ponta.x * canvasElement.width, ponta.y * canvasElement.height);
-        canvasCtx.strokeStyle = '#ff0000';
-        canvasCtx.lineWidth = 15; // Feixe grosso
-        canvasCtx.stroke();
-    } 
-    
-    else if (estado === 'scanner') {
-        // Ondas de Pulso (Concentric Rings)
-        const time = Date.now() * 0.005;
-        for(let i=0; i<3; i++) {
-            let radius = (40 + (i * 20)) + (Math.sin(time) * 10);
-            canvasCtx.beginPath();
-            canvasCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-            canvasCtx.strokeStyle = `rgba(0, 255, 255, ${0.6 - i*0.2})`;
-            canvasCtx.stroke();
-        }
+    <div id="menuLateral">
+        <button class="btnHolo ativo" data-tipo="capacete">CAPACETE</button>
+        <button class="btnHolo ativo" data-tipo="peito">PEITO</button>
+        <button class="btnHolo ativo" data-tipo="braco">BRAÇOS</button>
+    </div>
+
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+    <button id="start_btn">INICIALIZAR SISTEMA</button>
+
+<script>
+const videoElement = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let state = { 
+    zoom: 1, hudVisible: true, writingMode: false, energy: false, 
+    hologramas: new Set(['capacete', 'peito', 'braco']),
+    trace: [] 
+};
+let shakeBuffer = [];
+let clapBuffer = 0;
+let lastClap = 0;
+
+// Modelos
+const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+pose.setOptions({ modelComplexity: 1, minDetectionConfidence: 0.5 });
+hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.6 });
+
+// Engine de Renderização
+function render(poseRes, handsRes) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = state.energy ? '#ff00ff' : '#00ffff';
+
+    // 1. Armadura (Pose)
+    if(poseRes.poseLandmarks) {
+        if(state.hologramas.has('capacete')) drawCapacete(poseRes.poseLandmarks[0]);
+        if(state.hologramas.has('peito')) drawReator(poseRes.poseLandmarks[11], poseRes.poseLandmarks[12]);
     }
 
-    // 3. NÚCLEO (PALMA)
-    canvasCtx.beginPath();
-    canvasCtx.arc(cx, cy, 10, 0, Math.PI * 2);
-    canvasCtx.fillStyle = (estado === 'tiro') ? '#ff0000' : '#ffffff';
-    canvasCtx.fill();
+    // 2. Luva (Mãos)
+    if(handsRes.multiHandLandmarks) {
+        handsRes.multiHandLandmarks.forEach(hand => drawLuva(hand, state.energy ? 'scanner' : 'normal'));
+        processarGestos(handsRes.multiHandLandmarks[0]);
+    }
+
+    // 3. Escrita
+    if(state.writingMode) {
+        drawWritingBox();
+        if(handsRes.multiHandLandmarks && handsRes.multiHandLandmarks[0]) {
+            processarEscrita(handsRes.multiHandLandmarks[0][8]);
+        }
+    }
 }
+
+// Lógica de Gestos
+function processarGestos(h1) {
+    if(!h1) return;
+    
+    // Shake Detect (3x rápido)
+    shakeBuffer.push(h1[0].x);
+    if(shakeBuffer.length > 20) shakeBuffer.shift();
+    let diff = 0;
+    for(let i=1; i<shakeBuffer.length; i++) if(Math.abs(shakeBuffer[i] - shakeBuffer[i-1]) > 0.15) diff++;
+    if(diff > 5) { state.writingMode = !state.writingMode; shakeBuffer = []; }
+
+    // Rotação (Zoom)
+    if(h1[0].y < h1[9].y - 0.1) state.zoom = Math.min(state.zoom + 0.05, 3);
+    if(h1[0].y > h1[9].y + 0.1) state.zoom = Math.max(1, state.zoom - 0.05);
+}
+
+// Funções de Desenho
+function drawLuva(landmarks, estado) {
+    const cx = landmarks[9].x * canvas.width;
+    const cy = landmarks[9].y * canvas.height;
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = '#00ffff';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#00ffff';
+
+    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {color: '#00ffff', lineWidth: 2});
+
+    if(estado === 'scanner') {
+        let radius = 40 + (Math.sin(Date.now() * 0.01) * 10);
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+}
+
+function drawCapacete(nose) {
+    ctx.beginPath(); ctx.arc(nose.x * canvas.width, nose.y * canvas.height - 40 * state.zoom, 60 * state.zoom, 0, Math.PI*2);
+    ctx.stroke();
+}
+
+function drawReator(o1, o2) {
+    const cx = (o1.x + o2.x)/2 * canvas.width;
+    const cy = (o1.y + o2.y)/2 * canvas.height;
+    ctx.beginPath(); ctx.arc(cx, cy, 50 * state.zoom, 0, Math.PI*2);
+    ctx.fillStyle = state.energy ? 'rgba(255,0,255,0.2)' : 'rgba(0,255,255,0.2)';
+    ctx.fill(); ctx.stroke();
+}
+
+function processarEscrita(indexFinger) {
+    const x = indexFinger.x * canvas.width;
+    const y = indexFinger.y * canvas.height;
+    if(x > 200 && x < 800) state.trace.push({x, y});
+    ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+    for(let p of state.trace) ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+}
+
+function drawWritingBox() {
+    ctx.fillStyle = 'rgba(0,40,60,0.8)'; ctx.fillRect(200, 100, 600, 400);
+    ctx.strokeStyle = '#0ff'; ctx.strokeRect(200, 100, 600, 400);
+    ctx.fillStyle = '#fff'; ctx.fillText("PAINEL 4D ATIVO", 220, 130);
+}
+
+// Inicialização
+document.getElementById('start_btn').onclick = async () => {
+    document.getElementById('start_btn').style.display = 'none';
+    const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await pose.send({image: videoElement});
+            await hands.send({image: videoElement});
+        }
+    });
+    camera.start();
+};
+
+pose.onResults(res => { 
+    // Lógica para sincronizar pose e hands
+    window.lastPose = res; 
+    if(window.lastHands) render(res, window.lastHands);
+});
+hands.onResults(res => { 
+    window.lastHands = res; 
+    if(window.lastPose) render(window.lastPose, res);
+});
+
+window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+window.onresize();
+</script>
+</body>
+</html>
