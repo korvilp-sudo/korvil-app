@@ -3,258 +3,450 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>holograma cgm</title>
+<title>Armadura Tactical 4D - HUD Sci-Fi</title>
 <style>
-  body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); }
-  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
-  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+  * { box-sizing: border-box; user-select: none; }
+  body { 
+    margin: 0; 
+    background: #020508; 
+    overflow: hidden; 
+    color: #00f3ff; 
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* VIDEO & CANVAS */
+  #video { 
+    position: absolute; top: 0; left: 0; 
+    width: 100vw; height: 100vh; 
+    object-fit: cover; z-index: 1; 
+    filter: brightness(0.4) contrast(1.2) hue-rotate(180deg);
+  }
+  #canvas { 
+    position: absolute; top: 0; left: 0; 
+    width: 100vw; height: 100vh; 
+    z-index: 2; pointer-events: none; 
+    filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.8)) drop-shadow(0 0 20px rgba(0, 243, 255, 0.4));
+  }
+
+  /* OVERLAY HUD GRID */
+  .hud-overlay {
+    position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 3; pointer-events: none;
+    background: 
+      radial-gradient(circle, transparent 60%, rgba(0, 10, 20, 0.85) 100%),
+      linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+
+  /* HEADER TITULO */
+  #ui { 
+    position: absolute; z-index: 4; top: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px; font-weight: 900; letter-spacing: 4px;
+    color: #00f3ff;
+    text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff;
+    border-bottom: 2px solid #00f3ff;
+    padding-bottom: 6px;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+  }
+
+  /* BOTÃO DE INÍCIO 4D */
+  #start_btn { 
+    position: absolute; z-index: 10; bottom: 40px; left: 50%; 
+    transform: translateX(-50%); 
+    padding: 16px 48px; 
+    background: linear-gradient(135deg, rgba(0,243,255,0.2) 0%, rgba(0,120,255,0.4) 100%); 
+    color: #fff; 
+    border: 1px solid #00f3ff; 
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 2px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  #start_btn:hover {
+    background: #00f3ff; color: #000;
+    box-shadow: 0 0 30px #00f3ff, inset 0 0 20px #fff;
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  /* MENU LATERAL HOLOGRAMA 4D */
+  #menuLateral { 
+    position: absolute; left: 20px; top: 50%; 
+    transform: translateY(-50%); z-index: 4; 
+    background: rgba(2, 12, 27, 0.7); 
+    border: 1px solid rgba(0, 243, 255, 0.3); 
+    border-left: 3px solid #00f3ff;
+    padding: 15px; 
+    backdrop-filter: blur(12px);
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);
+  }
+  .btnHolo { 
+    display: block; width: 180px; margin: 6px 0; padding: 10px 12px; 
+    background: rgba(0, 243, 255, 0.05); 
+    border: 1px solid rgba(0, 243, 255, 0.2); 
+    color: rgba(0, 243, 255, 0.6); 
+    font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 1px;
+    cursor: pointer; 
+    text-align: left; 
+    transition: all 0.2s ease;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .btnHolo:hover {
+    background: rgba(0, 243, 255, 0.15);
+    color: #fff;
+    border-color: #00f3ff;
+  }
+  .btnHolo.ativo { 
+    background: linear-gradient(90deg, rgba(0, 243, 255, 0.3) 0%, rgba(0, 243, 255, 0.05) 100%); 
+    color: #00f3ff; 
+    border-color: #00f3ff;
+    text-shadow: 0 0 8px #00f3ff;
+    border-left: 3px solid #00f3ff;
+  }
+
+  /* HUD MIRA DE ALVO 4D */
+  #miraMenu { 
+    position: absolute; top: 20px; right: 20px; z-index: 5; 
+    background: rgba(255, 0, 60, 0.15); 
+    border: 1px solid #ff003c; 
+    padding: 12px 18px; 
+    color: #ff003c; 
+    display: none; font-size: 12px; 
+    backdrop-filter: blur(8px);
+    text-shadow: 0 0 8px #ff003c;
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
+  }
+  .mira { 
+    position: absolute; width: 80px; height: 80px; 
+    border: 1px dashed #ff003c; 
+    border-radius: 50%; display: none; z-index: 5; 
+    animation: rotacaoMira 6s linear infinite;
+    pointer-events: none;
+  }
+  .mira::before {
+    content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border: 2px solid transparent; border-top-color: #ff003c; border-bottom-color: #ff003c;
+    border-radius: 50%;
+  }
+  @keyframes rotacaoMira { 100% { transform: rotate(360deg); } }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">sci-fi hologram by cgm</div>
+  <div class="hud-overlay"></div>
+  <div id="ui">SYSTEM // MARK-IV ARMOR</div>
+  <div id="miraMenu">TARGET LOCK ACTIVE<br>► TRACKING: ON<br>► ZOOM: 2.4X<br>► TACTICAL SCAN</div>
+  <div class="mira" id="mira"></div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
-  <button id="start_btn">iniciar camera</button>
+  <button id="start_btn">INICIALIZAR INTERFACE 4D</button>
+
+  <div id="menuLateral">
+    <button class="btnHolo ativo" data-tipo="capacete">[01] HELM HUD</button>
+    <button class="btnHolo ativo" data-tipo="ombro">[02] PAULDRONS</button>
+    <button class="btnHolo ativo" data-tipo="peito">[03] ARC CHEST</button>
+    <button class="btnHolo ativo" data-tipo="braco">[04] ARMS CORE</button>
+    <button class="btnHolo ativo" data-tipo="antebraco">[05] FOREARMS</button>
+    <button class="btnHolo ativo" data-tipo="luva">[06] GAUNTLETS</button>
+    <button class="btnHolo ativo" data-tipo="abdomen">[07] ABDOMINAL</button>
+    <button class="btnHolo ativo" data-tipo="coxa">[08] THIGHS</button>
+    <button class="btnHolo ativo" data-tipo="canela">[09] SHINS</button>
+    <button class="btnHolo ativo" data-tipo="pe">[10] BOOTS</button>
+  </div>
 
 <script>
 const videoElement = document.getElementById('video');
 const canvasElement = document.getElementById('canvas');
 const canvasCtx = canvasElement.getContext('2d');
 const startBtn = document.getElementById('start_btn');
+const miraDiv = document.getElementById('mira');
+const miraMenu = document.getElementById('miraMenu');
 
-let hand1 = null;
-let hand2 = null;
-let appScreen = null;
-let loadingPercent = 0;
-let cameraRunning = false;
-let isFrontCamera = true;
-let swapTimer = null; // TIMER PRA TROCAR HOLOGRAMA
-let hologramSide = 'left'; // left = hand1, right = hand2
+let poseLandmarks = null;
+let handLandmarks = [];
+let hologramasAtivos = new Set(['capacete','ombro','peito','braco','antebraco','luva','abdomen','coxa','canela','pe']);
+let miraAtiva = false;
+let tickCount = 0;
 
-const buttons = [
-  {id: 'grid', icon: '■', y_offset: -50, active: false},
-  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
-  {id: 'power', icon: '⚡', y_offset: 50, active: false},
-];
+let estado = {
+  luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal', ombro: 'normal'
+};
 
-function resize() {
-  canvasElement.width = window.innerWidth;
-  canvasElement.height = window.innerHeight;
-}
-resize();
-window.onresize = resize;
+function resize() { canvasElement.width = window.innerWidth; canvasElement.height = window.innerHeight; }
+resize(); window.onresize = resize;
 
-// 1. MEDIAPIPE HANDS
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
-
-hands.onResults((results) => {
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.shadowColor = '#00ffff';
-  canvasCtx.shadowBlur = 25;
-
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    // CORRECAO: SÓ INVERTE SE FOR CAMERA FRONTAL
-    if(isFrontCamera){
-      hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
-      hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
-    } else {
-      hand1 = results.multiHandLandmarks[0];
-      hand2 = results.multiHandLandmarks[1] || null;
-    }
-
-    // DESENHA AS 2 MAOS
-    if(hand1) drawHandSkeleton(hand1, '#00ffff');
-    if(hand2) drawHandSkeleton(hand2, '#ff00ff');
-
-    // VERIFICA TROCA DE HOLOGRAMA: MAOS JUNTAS 3s TIPO REZAR
-    if(hand1 && hand2) {
-      const distHands = Math.hypot(hand1[9].x - hand2[9].x, hand1[9].y - hand2[9].y);
-      if(distHands < 0.15) { // maos perto
-        if(!swapTimer) {
-          swapTimer = setTimeout(() => {
-            hologramSide = hologramSide === 'left'? 'right' : 'left';
-            swapTimer = null;
-          }, 3000);
-        }
-      } else {
-        if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
-      }
-    } else {
-      if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
-    }
-
-    // DEFINE QUAL MAO DESENHA O HOLOGRAMA BASEADO NO LADO
-    const hologramHand = hologramSide === 'left'? hand1 : hand2;
-    const clickHand = hologramSide === 'left'? hand2 : hand1;
-
-    if(hologramHand) {
-      drawHologramBase(hologramHand);
-      if(appScreen) drawAppScreen(hologramHand);
-    }
-
-    // CLIQUE SÓ COM PINCA POLEGAR + INDICADOR
-    if(clickHand) {
-      checkButtonClick(clickHand, hologramHand);
-    }
+// MENU
+document.querySelectorAll('.btnHolo').forEach(btn=>{
+  btn.onclick = () => { 
+    btn.classList.toggle('ativo'); 
+    const tipo = btn.dataset.tipo; 
+    if(hologramasAtivos.has(tipo)) hologramasAtivos.delete(tipo); 
+    else hologramasAtivos.add(tipo); 
   }
 });
 
-function drawHandSkeleton(landmarks, color) {
-  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
-  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 4});
-}
+// MEDIA PIPE
+const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+pose.setOptions({ modelComplexity: 2, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
-// 2. HOLOGRAMA NA PALMA
-function drawHologramBase(landmarks) {
-  const cx = landmarks[9].x * canvasElement.width;
-  const cy = landmarks[9].y * canvasElement.height;
+pose.onResults((results) => {
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  tickCount++;
+  poseLandmarks = results.poseLandmarks;
+  if(poseLandmarks) {
+    processarGestos(poseLandmarks, handLandmarks);
+    desenharArmaturaCompleta(poseLandmarks);
+  }
+});
+hands.onResults((results) => { handLandmarks = results.multiHandLandmarks || []; });
 
-  for(let i=0; i<3; i++) {
-    canvasCtx.beginPath();
-    canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI);
-    canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`;
-    canvasCtx.lineWidth = 2;
-    canvasCtx.stroke();
+// PROCESSAMENTO DE GESTOS
+function processarGestos(pose, hands){
+  if(!pose) return;
+
+  const maoE = hands[0]; const maoD = hands[1];
+  const pulsoE = pose[15]; const pulsoD = pose[16];
+  const ombroE = pose[11]; const ombroD = pose[12];
+  const quadril = {x:(pose[23].x+pose[24].x)/2, y:(pose[23].y+pose[24].y)/2};
+  const joelhoE = pose[25];
+
+  // CABECA: PISCAR / FECHAR OLHO = MIRA
+  const olhoD = pose[8]; const sobrancelhaD = pose[7];
+  if(Math.abs(olhoD.y - sobrancelhaD.y) < 0.03 && !window.piscou){
+    window.piscou=true; miraAtiva=!miraAtiva;
+    miraDiv.style.display = miraAtiva?'block':'none'; miraMenu.style.display = miraAtiva?'block':'none';
+    setTimeout(()=>window.piscou=false,600);
+  }
+  if(miraAtiva){ 
+    miraDiv.style.left = (olhoD.x * canvasElement.width - 40) + 'px'; 
+    miraDiv.style.top = (olhoD.y * canvasElement.height - 40) + 'px'; 
   }
 
-  // botoes do lado do polegar
-  const bx_base = landmarks[4].x * canvasElement.width + 80;
-  const by_base = landmarks[4].y * canvasElement.height;
+  // LUVA
+  if(maoE){ 
+    if(isPunho(maoE)) estado.luva='escudo'; 
+    else if(isPinca(maoE)) estado.luva='tiro'; 
+    else estado.luva='scanner'; 
+  }
 
-  buttons.forEach(b => {
-    b.x = bx_base;
-    b.y = by_base + b.y_offset;
-    drawHexagon(b.x, b.y, 25, b.active);
-    canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '18px sans-serif';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(b.icon, b.x, b.y + 6);
-  });
+  // BRAÇO
+  if(pulsoE.y < ombroE.y - 0.1) estado.braco='canhao';
+  else if(Math.abs(pulsoE.x - ombroD.x) < 0.1) estado.braco='lamina';
+  else estado.braco='normal';
+
+  // OMBRO
+  if(Math.abs(ombroE.y - pose[13].y) < 0.1) estado.ombro='escudo';
+  else if(Math.abs(ombroE.y - ombroD.y) > 0.2) estado.ombro='misseis';
+  else estado.ombro='normal';
+
+  // PEITO
+  if(maoE && maoD && Math.hypot(maoE[9].x-maoD[9].x, maoE[9].y-maoD[9].y) < 0.1 && maoE[9].y < quadril.y) estado.peito='reator';
+  else if(pose[11].x < 0.3 && pose[12].x > 0.7) estado.peito='barreira';
+  else if(maoE && isPunho(maoE) && maoE[9].y < quadril.y) estado.peito='armadura';
+  else estado.peito='normal';
+
+  // PERNA
+  if(joelhoE.y < quadril.y - 0.05) estado.perna='turbo';
+  else if(joelhoE.x > pose[23].x + 0.15) estado.perna='chute';
+  else if(quadril.y > 0.7) estado.perna='estabilizar';
+  else estado.perna='normal';
 }
 
-function drawHexagon(x, y, radius, active) {
+function isPunho(h){ return Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y) < 0.08; }
+function isPinca(h){ return Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y) < 0.05; }
+
+// DESENHO 4D NO CANVAS
+function desenharArmaturaCompleta(lm){
+  if(hologramasAtivos.has('capacete')) drawCapacete(lm[0], lm[8]);
+  if(hologramasAtivos.has('ombro')) { drawAnel(lm[11], estado.ombro); drawAnel(lm[12], estado.ombro); }
+  if(hologramasAtivos.has('peito')) drawPlaca(lm[11], lm[12], lm[23], lm[24], estado.peito);
+  if(hologramasAtivos.has('abdomen')) drawFaixas(lm[23], lm[24]);
+  if(hologramasAtivos.has('braco')) { drawTubo(lm[11], lm[13], estado.braco); drawTubo(lm[12], lm[14], estado.braco); }
+  if(hologramasAtivos.has('antebraco')) { drawTubo(lm[13], lm[15], 'normal'); drawTubo(lm[14], lm[16], 'normal'); }
+  if(hologramasAtivos.has('coxa')) { drawTubo(lm[23], lm[25], estado.perna); drawTubo(lm[24], lm[26], estado.perna); }
+  if(hologramasAtivos.has('canela')) { drawTubo(lm[25], lm[27], estado.perna); drawTubo(lm[26], lm[28], estado.perna); }
+  if(hologramasAtivos.has('pe')) { drawAnel(lm[31], estado.perna); drawAnel(lm[32], estado.perna); }
+  if(hologramasAtivos.has('luva') && handLandmarks[0]) drawLuva(handLandmarks[0], estado.luva);
+  if(hologramasAtivos.has('luva') && handLandmarks[1]) drawLuva(handLandmarks[1], estado.luva);
+}
+
+// CAPACETE HUD REALISTA
+function drawCapacete(nariz, olhoD){
+  const cx = nariz.x * canvasElement.width; const cy = nariz.y * canvasElement.height;
+  
+  canvasCtx.save();
+  // Arco de capacete HUD
   canvasCtx.beginPath();
-  for(let i=0; i<6; i++){
-    const angle = Math.PI / 3 * i - Math.PI/6;
-    const px = x + radius * Math.cos(angle);
-    const py = y + radius * Math.sin(angle);
-    if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
-  }
-  canvasCtx.closePath();
-  canvasCtx.fillStyle = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
-  canvasCtx.fill();
-  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.arc(cx, cy - 10, 80, Math.PI * 0.85, Math.PI * 0.15, true);
+  canvasCtx.strokeStyle = '#00f3ff'; canvasCtx.lineWidth = 3;
+  canvasCtx.setLineDash([8, 4]);
   canvasCtx.stroke();
+  
+  // HUD Visor Retículo
+  canvasCtx.beginPath();
+  canvasCtx.arc(cx, cy - 10, 88, 0, 2 * Math.PI);
+  canvasCtx.strokeStyle = 'rgba(0, 243, 255, 0.2)'; canvasCtx.lineWidth = 1;
+  canvasCtx.setLineDash([]);
+  canvasCtx.stroke();
+
+  // Olho/Sensores
+  canvasCtx.beginPath(); 
+  canvasCtx.ellipse(olhoD.x*canvasElement.width, olhoD.y*canvasElement.height, 10, 5, 0, 0, 2*Math.PI);
+  canvasCtx.fillStyle = miraAtiva ? '#ff003c' : '#00f3ff'; 
+  canvasCtx.fill();
+  canvasCtx.restore();
 }
 
-// 3. TELA DE APP
-function drawAppScreen(landmarks) {
-  const x = landmarks[9].x * canvasElement.width - 180;
-  const y = landmarks[9].y * canvasElement.height - 120;
-  const w = 360; const h = 240;
+// ANÉIS HOLOGRÁFICOS 4D ROTATIVOS
+function drawAnel(joint, estado){
+  const x = joint.x * canvasElement.width; const y = joint.y * canvasElement.height;
+  let cor = '#00f3ff'; 
+  if(estado==='escudo') cor='#00ff66'; 
+  if(estado==='misseis') cor='#ff6600';
 
-  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.7)';
-  canvasCtx.fillRect(x, y, w, h);
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.lineWidth = 2;
-  canvasCtx.strokeRect(x, y, w, h);
-
-  if(appScreen === 'loading') {
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.font = '28px Courier New';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(`${loadingPercent}%`, x + w/2, y + h/2);
-    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
-    canvasCtx.fillRect(x + 40, y + h - 30, w - 80, 8);
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.fillRect(x + 40, y + h - 30, (w - 80) * (loadingPercent/100), 8);
+  canvasCtx.save();
+  for(let i = 0; i < 3; i++) { 
+    canvasCtx.beginPath(); 
+    let anguloOffset = (tickCount * 0.03) * (i % 2 === 0 ? 1 : -1);
+    canvasCtx.arc(x, y, 20 + i*12, anguloOffset, anguloOffset + Math.PI * 1.5); 
+    canvasCtx.strokeStyle = cor; 
+    canvasCtx.lineWidth = 2 - i*0.4; 
+    canvasCtx.stroke(); 
   }
+  canvasCtx.restore();
+}
 
-  if(appScreen === 'mapa') {
-    canvasCtx.fillStyle = 'rgba(0, 100, 50, 0.8)';
-    canvasCtx.fillRect(x + 10, y + 10, w - 20, h - 20);
-    canvasCtx.strokeStyle = '#00ff88';
-    for(let i=0; i<4; i++){
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(x + 10, y + 10 + i*50);
-      canvasCtx.lineTo(x + w - 10, y + 10 + i*50);
-      canvasCtx.stroke();
+// TUBOS E ESTRUTURA ÓSSEA ARTICULADA
+function drawTubo(j1, j2, estado){
+  const x1 = j1.x * canvasElement.width; const y1 = j1.y * canvasElement.height;
+  const x2 = j2.x * canvasElement.width; const y2 = j2.y * canvasElement.height;
+  
+  let cor = '#00f3ff'; let esp = 12; 
+  if(estado==='lamina'){ cor='#ff003c'; esp=6; } 
+  if(estado==='canhao'){ cor='#ffaa00'; esp=20; } 
+  if(estado==='turbo'){ cor='#00ff66'; }
+
+  canvasCtx.save();
+  // Linha de Energia Interna
+  canvasCtx.beginPath(); canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); 
+  canvasCtx.strokeStyle = cor; canvasCtx.lineWidth = esp; 
+  canvasCtx.lineCap = 'round'; canvasCtx.stroke();
+
+  // Borda Externa Tecnológica
+  canvasCtx.beginPath(); canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); 
+  canvasCtx.strokeStyle = '#ffffff'; canvasCtx.lineWidth = 2; 
+  canvasCtx.stroke();
+  
+  if(estado==='lamina'){ 
+    canvasCtx.beginPath(); canvasCtx.moveTo(x2,y2); canvasCtx.lineTo(x2 + 40, y2 - 20); 
+    canvasCtx.strokeStyle='#ff003c'; canvasCtx.lineWidth=6; canvasCtx.stroke(); 
+  }
+  canvasCtx.restore();
+}
+
+// PLACA PEITORAL E REATOR ARC
+function drawPlaca(oE, oD, qE, qD, estado){
+  const x1=oE.x*canvasElement.width, y1=oE.y*canvasElement.height;
+  const x2=oD.x*canvasElement.width, y2=oD.y*canvasElement.height;
+  const x3=qE.x*canvasElement.width, y3=qE.y*canvasElement.height;
+  const x4=qD.x*canvasElement.width, y4=qD.y*canvasElement.height;
+  
+  let cor = '#00f3ff'; 
+  if(estado==='reator'){ cor='#ffffff'; } 
+  if(estado==='barreira'){ cor='#00ff66'; } 
+  if(estado==='armadura'){ cor='#ffaa00'; }
+
+  canvasCtx.save();
+  // Armadura do Peito
+  canvasCtx.beginPath(); 
+  canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); 
+  canvasCtx.lineTo(x4,y4); canvasCtx.lineTo(x3,y3); 
+  canvasCtx.closePath();
+  canvasCtx.strokeStyle = cor; canvasCtx.lineWidth = 2; 
+  canvasCtx.fillStyle = 'rgba(0, 243, 255, 0.05)';
+  canvasCtx.fill(); canvasCtx.stroke();
+
+  // Reator Arc Central (Efeito Pulsante)
+  const cx = (x1+x2)/2; const cy = (y1+y2)/2 + 10;
+  const raioPulsante = 18 + Math.sin(tickCount * 0.1) * 3;
+  
+  canvasCtx.beginPath(); canvasCtx.arc(cx, cy, raioPulsante, 0, 2*Math.PI); 
+  canvasCtx.fillStyle = cor; canvasCtx.fill();
+  canvasCtx.strokeStyle = '#ffffff'; canvasCtx.lineWidth = 3; canvasCtx.stroke();
+  canvasCtx.restore();
+}
+
+// FAISHAS ABDOMINAIS
+function drawFaixas(qE, qD){
+  const cx = (qE.x+qD.x)/2 * canvasElement.width; 
+  const cy = (qE.y+qD.y)/2 * canvasElement.height;
+  
+  canvasCtx.save();
+  for(let i=0; i<3; i++){ 
+    canvasCtx.beginPath(); 
+    canvasCtx.rect(cx - 60, cy + i*14 - 15, 120, 6); 
+    canvasCtx.strokeStyle = 'rgba(0, 243, 255, 0.6)'; 
+    canvasCtx.lineWidth = 1;
+    canvasCtx.stroke(); 
+  }
+  canvasCtx.restore();
+}
+
+// LUVAS E MANÍPULOS HOLOGRAMA
+function drawLuva(landmarks, estado){
+  const cx = landmarks[9].x * canvasElement.width; 
+  const cy = landmarks[9].y * canvasElement.height;
+  
+  canvasCtx.save();
+  if(estado==='escudo'){ 
+    canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 110, 0, 2*Math.PI); 
+    canvasCtx.fillStyle = 'rgba(0,255,102,0.15)'; 
+    canvasCtx.strokeStyle = '#00ff66'; canvasCtx.lineWidth = 3;
+    canvasCtx.fill(); canvasCtx.stroke();
+  } else if(estado==='tiro'){ 
+    canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 25, 0, 2*Math.PI); 
+    canvasCtx.fillStyle = '#ff003c'; canvasCtx.fill(); 
+  } else { 
+    for(let i=0; i<2; i++) { 
+      canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 40 + i*20, 0, 2 * Math.PI); 
+      canvasCtx.strokeStyle = 'rgba(0,243,255,0.5)'; canvasCtx.lineWidth = 1.5; 
+      canvasCtx.stroke(); 
     }
-    canvasCtx.fillStyle = '#ff0000';
-    canvasCtx.beginPath();
-    canvasCtx.arc(x + 80, y + 60, 5, 0, 2 * Math.PI); canvasCtx.fill();
-    canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '12px Courier New';
-    canvasCtx.fillText("3 km - 30 min", x + 180, y + 220);
   }
+
+  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00f3ff', lineWidth: 2});
+  window.drawLandmarks(canvasCtx, landmarks, {color: '#ffffff', radius: 3});
+  canvasCtx.restore();
 }
 
-function updateLoading() {
-  if(appScreen === 'loading' && loadingPercent < 100) {
-    loadingPercent += 3;
-  } else if(loadingPercent >= 100) {
-    appScreen = 'mapa';
-  }
-  requestAnimationFrame(updateLoading);
-}
-updateLoading();
-
-// 4. CLIQUE: SÓ COM PINCA POLEGAR + INDICADOR
-function checkButtonClick(clickHand, base_hand) {
-  if(!base_hand) return;
-  const thumb = clickHand[4];
-  const index = clickHand[8];
-  const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
-
-  // SÓ CLICA SE ESTIVER EM PINCA
-  if(pinchDist > 0.05) return;
-
-  const x = index.x * canvasElement.width;
-  const y = index.y * canvasElement.height;
-
-  buttons.forEach(b => {
-    const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
-    if(dist < 30 &&!b.active) {
-      b.active = true;
-      setTimeout(() => b.active = false, 300);
-
-      if(b.id === 'grid') {
-        appScreen = 'loading';
-        loadingPercent = 0;
-      }
-      if(b.id === 'power') {
-        appScreen = null;
-      }
-    }
-  })
-}
-
-// 5. LIGAR CAMERA AO CLICAR - DETECTA FRENTE/TRASEIRA
+// INICIALIZADOR DA CÂMERA
 startBtn.onclick = async () => {
-  if(cameraRunning) return;
-  cameraRunning = true;
   startBtn.style.display = 'none';
-
-  let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
+  const constraints = { video: { facingMode: 'user', width: 1280, height: 720 } };
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   videoElement.srcObject = stream;
-
-  isFrontCamera = constraints.video.facingMode === 'user';
-  videoElement.style.transform = isFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
-
-  const camera = new Camera(videoElement, {
-    onFrame: async () => { await hands.send({image: videoElement}); },
-    width: 1280, height: 720
+  const camera = new Camera(videoElement, { 
+    onFrame: async () => { 
+      await pose.send({image: videoElement}); 
+      await hands.send({image: videoElement}); 
+    }, 
+    width: 1280, height: 720 
   });
   camera.start();
-}
-
+};
 </script>
 </body>
 </html>
