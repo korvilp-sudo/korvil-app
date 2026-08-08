@@ -232,1569 +232,585 @@ body{
 
     text-shadow:0 0 8px #00ffff;
 }
-</style>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>NEXUS GEN - 3D Hand Gestures</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #05050a; font-family: sans-serif; }
+    #webcam { position: absolute; top: 10px; right: 10px; width: 160px; height: 120px; border-radius: 8px; transform: scaleX(-1); opacity: 0.7; }
+    #ui-overlay { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #00ffcc;<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>NEXUS GEN 3D - Ultimate Multiverse AR</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #030308;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    #webcam {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      transform: scaleX(-1);
+      z-index: 1;
+    }
+    #canvas3d {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      pointer-events: none;
+    }
+    #ui-overlay {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 3;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+      font-size: 15px;
+      background: rgba(5, 10, 20, 0.85);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #00ffcc;
+      max-width: 320px;
+      backdrop-filter: blur(5px);
+    }
+    .device-btn {
+      background: #002233;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      padding: 6px 10px;
+      margin: 3px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .device-btn:hover, .device-btn.active {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+    #info-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 3;
+      color: #00ffcc;
+      background: rgba(5, 10, 20, 0.9);
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+      padding: 20px;
+      border-radius: 12px;
+      width: 260px;
+      display: none;
+      text-align: center;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #003322;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+  </style>
 
-<!-- THREE.JS -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-
-<!-- MEDIA PIPE -->
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
 
-<!-- =====================================================
-     CÂMERA
-===================================================== -->
+<div id="container">
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="canvas3d"></canvas>
 
-<video
-    id="video"
-    autoplay
-    playsinline
-    muted>
-</video>
-
-<!-- =====================================================
-     WEBGL 3D
-===================================================== -->
-
-<canvas id="webgl"></canvas>
-
-<!-- =====================================================
-     HUD 2D
-===================================================== -->
-
-<canvas id="canvas"></canvas>
-
-<div id="scanlines"></div>
-<div id="vignette"></div>
-
-<div id="ui">
-
-    KORVIL // HOLOGRAPHIC CORE
-
-    <div id="status">
-        3D / 4D TEMPORAL ENGINE — ONLINE
+  <div id="ui-overlay">
+    <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">NEXUS MULTIVERSE OS</div>
+    <div>Status: <span id="status-text" class="status-badge">Aguardando Mão...</span></div>
+    
+    <div style="margin-top: 10px;">
+      <small>SELECIONAR DISPOSITIVO 3D:</small><br>
+      <button class="device-btn active" onclick="switchDevice('omnitrix')">Omnitrix</button>
+      <button class="device-btn" onclick="switchDevice('morfador')">Morfador</button>
+      <button class="device-btn" onclick="switchDevice('maxsteel')">Max Steel</button>
+      <button class="device-btn" onclick="switchDevice('nexus')">NEXUS GEN</button>
     </div>
 
+    <hr style="border-color: #00ffcc; margin: 10px 0;">
+    <small id="instructions">
+      • <b>Aproximar Mão:</b> Fixa o objeto 3D no pulso.<br>
+      • <b>Gestos de Mão:</b><br>
+      &nbsp;&nbsp;- <i>Pinça (Polegar+Indicador):</i> Dispara Ação/Abre Holo.<br>
+      &nbsp;&nbsp;- <i>Mão Fechada (Punho):</i> Modo Sobrecarga.<br>
+      &nbsp;&nbsp;- <i>Vitória (V):</i> Modo Elemental/Turbo.
+    </small>
+  </div>
+
+  <div id="info-panel">
+    <div style="font-size: 12px; color: #88ffaa;">MODO CINETICO ATIVO</div>
+    <h2 id="shape-title" style="margin: 10px 0;">NEXUS GEN</h2>
+    <div id="mode-desc" style="font-size: 13px; color: #aaffdd;">Sincronizado com os gestos da sua mão.</div>
+  </div>
 </div>
-
-<div id="handStatus">
-    HAND TRACKING: OFFLINE
-</div>
-
-<div id="resolution">
-    RENDER: AUTO
-</div>
-
-<button id="start_btn">
-    INICIAR HOLOGRAMA
-</button>
-
 
 <script>
+  // --- DADOS DOS DISPOSITIVOS E FORMAS ---
+  const SHAPES_DATA = [
+    { name: "Octaedro Alien", type: "octahedron" },
+    { name: "Esfera de Energia", type: "sphere" },
+    { name: "Cone de Plasma", type: "cone" },
+    { name: "Cubo Morfico", type: "cube" },
+    { name: "Anel Toroidal", type: "torus" },
+    { name: "Icosaedro Quantum", type: "icosahedron" }
+  ];
 
-/* =========================================================
-   ELEMENTOS
-========================================================= */
+  // --- VARIÁVEIS GLOBAIS ---
+  let scene, camera, renderer;
+  let currentDevice = 'omnitrix';
+  let deviceGroup, coreMesh, ringMesh, particleSystem;
+  let pointerHoloMesh;
+  let attachedToWrist = false;
+  
+  // Estado de Gestos e Animação
+  let isActionActive = false;
+  let targetRotationY = 0;
+  let activeColor = new THREE.Color(0x00ff66);
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+  // Mãos do MediaPipe
+  let wristHand = null;
+  let actionHand = null;
 
-const webglCanvas = document.getElementById("webgl");
+  // --- INICIALIZAÇÃO THREE.JS ---
+  function init3D() {
+    const canvas = document.getElementById('canvas3d');
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-const startBtn = document.getElementById("start_btn");
+    scene = new THREE.Scene();
 
-const statusEl = document.getElementById("status");
-const handStatus = document.getElementById("handStatus");
-const resolutionEl = document.getElementById("resolution");
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 10);
 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
 
-/* =========================================================
-   VARIÁVEIS
-========================================================= */
+    const dirLight = new THREE.DirectionalLight(0x00ffcc, 1.5);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
 
-let hand1 = null;
-let hand2 = null;
+    deviceGroup = new THREE.Group();
+    scene.add(deviceGroup);
 
-let cameraRunning = false;
+    buildPointer();
+    buildParticleSystem();
+    switchDevice('omnitrix');
 
-let appScreen = null;
+    window.addEventListener('resize', onWindowResize);
+  }
 
-let loadingPercent = 0;
+  // --- CONSTRUTOR DE PARTÍCULAS 3D (EFEITOS VISUAIS) ---
+  function buildParticleSystem() {
+    const particleCount = 120;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
 
-let time4D = 0;
+    for (let i = 0; i < particleCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 3;
+    }
 
-let targetX = 0;
-let targetY = 0;
-let targetZ = 0;
-
-let hologramVisible = true;
-
-
-/* =========================================================
-   RESOLUÇÃO ADAPTATIVA
-========================================================= */
-
-function resizeCanvas(){
-
-    const dpr = Math.min(
-        window.devicePixelRatio || 1,
-        2
-    );
-
-    canvas.width =
-        window.innerWidth * dpr;
-
-    canvas.height =
-        window.innerHeight * dpr;
-
-    canvas.style.width =
-        window.innerWidth + "px";
-
-    canvas.style.height =
-        window.innerHeight + "px";
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-    updateResolutionLabel();
-}
-
-function updateResolutionLabel(){
-
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    resolutionEl.textContent =
-        `VIEWPORT: ${w} × ${h} | WEBGL: ADAPTIVE`;
-}
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-resizeCanvas();
-
-
-/* =========================================================
-   THREE.JS — MOTOR 3D
-========================================================= */
-
-const renderer =
-    new THREE.WebGLRenderer({
-        canvas:webglCanvas,
-        antialias:true,
-        alpha:true,
-        powerPreference:"high-performance"
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+      color: 0x00ffcc,
+      size: 0.08,
+      transparent: true,
+      opacity: 0.7
     });
 
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio || 1,2)
-);
+    particleSystem = new THREE.Points(geometry, material);
+    particleSystem.visible = false;
+    scene.add(particleSystem);
+  }
 
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
+  // --- CONSTRUÇÃO DINÂMICA DOS ARTEFATOS 3D ---
+  function switchDevice(type) {
+    currentDevice = type;
+    
+    // Limpa o grupo antigo
+    while(deviceGroup.children.length > 0) { 
+      deviceGroup.remove(deviceGroup.children[0]); 
+    }
 
-renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
+    // Atualiza Botões da UI
+    document.querySelectorAll('.device-btn').forEach(btn => btn.classList.remove('active'));
+    
+    const matMetal = new THREE.MeshStandardMaterial({ color: 0x111116, roughness: 0.2, metalness: 0.8 });
+    const matAccent = new THREE.MeshBasicMaterial({ color: 0x00ff66, wireframe: true });
 
-renderer.setClearColor(
-    0x000000,
-    0
-);
+    if (type === 'omnitrix') {
+      activeColor.setHex(0x00ff66);
+      
+      // Base Relógio + Mostrador Ampulheta
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 1.2, 32), matMetal);
+      band.rotation.x = Math.PI / 2;
+      deviceGroup.add(band);
 
+      const coreGeo = new THREE.CylinderGeometry(0.9, 0.9, 1.3, 32);
+      const coreMat = new THREE.MeshStandardMaterial({ color: 0x00ff66, emissive: 0x003311, roughness: 0.3 });
+      coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      coreMesh.rotation.x = Math.PI / 2;
+      deviceGroup.add(coreMesh);
 
-/* =========================================================
-   CENA
-========================================================= */
+    } else if (type === 'morfador') {
+      activeColor.setHex(0xff0044);
+      
+      // Morfador Power Rangers (Moeda do Poder + Placa)
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.6, 0.4), matMetal);
+      deviceGroup.add(plate);
 
-const scene =
-    new THREE.Scene();
+      const coinGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.5, 24);
+      const coinMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, metalness: 0.9, roughness: 0.1 });
+      coreMesh = new THREE.Mesh(coinGeo, coinMat);
+      coreMesh.rotation.x = Math.PI / 2;
+      deviceGroup.add(coreMesh);
 
+    } else if (type === 'maxsteel') {
+      activeColor.setHex(0x00aaff);
+      
+      // Núcleo Turbo N-Tek (Icosaedro Flutuante com Anel)
+      const coreGeo = new THREE.IcosahedronGeometry(0.8, 1);
+      const coreMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0044aa, wireframe: true });
+      coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      deviceGroup.add(coreMesh);
 
-/* =========================================================
-   CÂMERA 3D
-========================================================= */
+      const ringGeo = new THREE.TorusGeometry(1.4, 0.06, 16, 64);
+      ringMesh = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0x00ffff }));
+      deviceGroup.add(ringMesh);
 
-const camera =
-    new THREE.PerspectiveCamera(
-        55,
-        window.innerWidth /
-        window.innerHeight,
-        .1,
-        1000
-    );
+    } else if (type === 'nexus') {
+      activeColor.setHex(0xff00ff);
+      
+      // NEXUS GEN: A Fusão de Tudo (Omnitrix + Morfador + Max Steel)
+      const baseGeo = new THREE.DodecahedronGeometry(0.9, 0);
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0x550055, wireframe: true });
+      coreMesh = new THREE.Mesh(baseGeo, baseMat);
+      deviceGroup.add(coreMesh);
 
-camera.position.z = 8;
+      const ringGeo1 = new THREE.TorusGeometry(1.5, 0.05, 16, 64);
+      const ringGeo2 = new THREE.TorusGeometry(1.8, 0.03, 16, 64);
+      
+      ringMesh = new THREE.Mesh(ringGeo1, new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true }));
+      const ringMesh2 = new THREE.Mesh(ringGeo2, new THREE.MeshBasicMaterial({ color: 0xff0055, wireframe: true }));
+      
+      deviceGroup.add(ringMesh);
+      deviceGroup.add(ringMesh2);
+    }
 
+    document.getElementById('info-panel').style.display = 'block';
+    document.getElementById('shape-title').innerText = type.toUpperCase();
+  }
 
-/* =========================================================
-   LUZES
-========================================================= */
+  function buildPointer() {
+    const geo = new THREE.SphereGeometry(0.12, 16, 16);
+    const mat = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.8 });
+    pointerHoloMesh = new THREE.Mesh(geo, mat);
+    pointerHoloMesh.visible = false;
+    scene.add(pointerHoloMesh);
+  }
 
-const ambient =
-    new THREE.AmbientLight(
-        0x00ffff,
-        .4
-    );
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
 
-scene.add(ambient);
+  // --- LOOP DE ANIMAÇÃO 3D ---
+  function animate() {
+    requestAnimationFrame(animate);
 
-const pointLight =
-    new THREE.PointLight(
-        0x00ffff,
-        5,
-        30
-    );
+    // Rotação Padrão / Sem Mão
+    if (!attachedToWrist) {
+      deviceGroup.position.set(0, 0, 0);
+      deviceGroup.rotation.y += 0.01;
+      deviceGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.2;
+    }
 
-pointLight.position.set(
-    0,
-    0,
-    5
-);
+    // Animação Específica de Núcleos
+    if (coreMesh) {
+      coreMesh.rotation.y += 0.02;
+    }
+    if (ringMesh) {
+      ringMesh.rotation.x += 0.01;
+      ringMesh.rotation.z += 0.015;
+    }
 
-scene.add(pointLight);
+    // Animação de Partículas no Efeito
+    if (particleSystem.visible) {
+      particleSystem.position.copy(deviceGroup.position);
+      particleSystem.rotation.y += 0.05;
+    }
 
+    renderer.render(scene, camera);
+  }
 
-/* =========================================================
-   GRUPO PRINCIPAL
-========================================================= */
+  // --- PROCESSAMENTO DO MEDIAPIPE HANDS E GESTOS ---
+  function onResults(results) {
+    const statusText = document.getElementById('status-text');
 
-const holoGroup =
-    new THREE.Group();
+    if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+      attachedToWrist = false;
+      pointerHoloMesh.visible = false;
+      particleSystem.visible = false;
+      statusText.innerText = "Giro Livre (360°)";
+      statusText.style.color = "#00ffcc";
+      return;
+    }
 
-scene.add(holoGroup);
+    wristHand = results.multiHandLandmarks[0];
+    actionHand = results.multiHandLandmarks.length > 1 ? results.multiHandLandmarks[1] : null;
 
+    // 1. ACOPLAMENTO AO PULSO 3D
+    if (wristHand) {
+      attachedToWrist = true;
+      statusText.innerText = "Sincronizado com o Pulso";
+      statusText.style.color = "#00ff66";
 
-/* =========================================================
-   GEOMETRIA CENTRAL
-========================================================= */
+      const wrist = wristHand[0];
+      const vector = new THREE.Vector3(
+        (1 - wrist.x) * 2 - 1,
+        -(wrist.y * 2 - 1),
+        0.5
+      );
+      vector.unproject(camera);
+      const dir = vector.sub(camera.position).normalize();
+      const pos = camera.position.clone().add(dir.multiplyScalar(7.5));
 
-const coreGeometry =
-    new THREE.IcosahedronGeometry(
-        1.3,
-        3
-    );
+      deviceGroup.position.copy(pos);
 
-const coreMaterial =
-    new THREE.MeshBasicMaterial({
-        color:0x00ffff,
-        wireframe:true,
-        transparent:true,
-        opacity:.45
+      // Orientação do Braço
+      const middleFinger = wristHand[9];
+      const dx = (1 - middleFinger.x) - (1 - wrist.x);
+      const dy = -(middleFinger.y - wrist.y);
+      const angle = Math.atan2(dy, dx);
+
+      deviceGroup.rotation.set(0, 0, angle - Math.PI / 2);
+    }
+
+    // 2. RECONHECIMENTO DE GESTOS DA MÃO DE AÇÃO
+    const handForGestures = actionHand || wristHand;
+    detectGestures(handForGestures);
+  }
+
+  function detectGestures(hand) {
+    const thumbTip = hand[4];
+    const indexTip = hand[8];
+    const middleTip = hand[12];
+    const ringTip = hand[16];
+    const pinkyTip = hand[20];
+
+    // Calculo de Distância (Pinch / Pinça: Polegar + Indicador)
+    const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+    
+    // Gesto 1: Pinça (Ativar Modo / Disparo Holográfico)
+    if (pinchDist < 0.06) {
+      triggerSpecialEffect(true);
+      document.getElementById('status-text').innerText = "GESTO: PINÇA (ATIVADO)";
+    } else {
+      triggerSpecialEffect(false);
+    }
+
+    // Gesto 2: Mão Fechada (Punho / Sobrecarga)
+    const isFist = (indexTip.y > hand[6].y) && (middleTip.y > hand[10].y) && (ringTip.y > hand[14].y);
+    if (isFist) {
+      deviceGroup.scale.set(1.3, 1.3, 1.3);
+      document.getElementById('status-text').innerText = "GESTO: PUNHO (SOBRECARGA)";
+    } else if (pinchDist >= 0.06) {
+      deviceGroup.scale.set(0.9, 0.9, 0.9);
+    }
+  }
+
+  function triggerSpecialEffect(active) {
+    particleSystem.visible = active;
+    
+    if (active) {
+      if (coreMesh && coreMesh.material) {
+        coreMesh.material.emissive = activeColor;
+      }
+      deviceGroup.rotation.y += 0.1;
+    }
+  }
+
+  // --- CONFIGURAÇÃO DA WEBCAM ---
+  function initCamera() {
+    const videoElement = document.getElementById('webcam');
+
+    const hands = new Hands({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
 
-const core =
-    new THREE.Mesh(
-        coreGeometry,
-        coreMaterial
-    );
-
-holoGroup.add(core);
-
-
-/* =========================================================
-   CORE INTERNO
-========================================================= */
-
-const innerGeometry =
-    new THREE.IcosahedronGeometry(
-        .72,
-        2
-    );
-
-const innerMaterial =
-    new THREE.MeshBasicMaterial({
-        color:0x66ffff,
-        wireframe:true,
-        transparent:true,
-        opacity:.75
+    hands.setOptions({
+      maxNumHands: 2,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.65,
+      minTrackingConfidence: 0.65
     });
 
-const innerCore =
-    new THREE.Mesh(
-        innerGeometry,
-        innerMaterial
-    );
+    hands.onResults(onResults);
 
-holoGroup.add(innerCore);
-
-
-/* =========================================================
-   ANÉIS 3D
-========================================================= */
-
-const rings = [];
-
-for(let i=0;i<8;i++){
-
-    const geometry =
-        new THREE.TorusGeometry(
-            1.6 + i*.23,
-            .018 + i*.004,
-            8,
-            128
-        );
-
-    const material =
-        new THREE.MeshBasicMaterial({
-            color:
-                i % 2 === 0
-                ? 0x00ffff
-                : 0xff00ff,
-
-            transparent:true,
-
-            opacity:
-                .15 + i*.045
-        });
-
-    const ring =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    ring.rotation.x =
-        Math.random()*Math.PI;
-
-    ring.rotation.y =
-        Math.random()*Math.PI;
-
-    ring.rotation.z =
-        Math.random()*Math.PI;
-
-    holoGroup.add(ring);
-
-    rings.push(ring);
-}
-
-
-/* =========================================================
-   PARTICULAS 3D
-========================================================= */
-
-const particleCount = 5000;
-
-const particlePositions =
-    new Float32Array(
-        particleCount * 3
-    );
-
-const particleData = [];
-
-for(let i=0;i<particleCount;i++){
-
-    const radius =
-        1.5 +
-        Math.random()*4.5;
-
-    const theta =
-        Math.random() *
-        Math.PI*2;
-
-    const phi =
-        Math.acos(
-            2*Math.random()-1
-        );
-
-    particlePositions[i*3] =
-        radius *
-        Math.sin(phi) *
-        Math.cos(theta);
-
-    particlePositions[i*3+1] =
-        radius *
-        Math.sin(phi) *
-        Math.sin(theta);
-
-    particlePositions[i*3+2] =
-        radius *
-        Math.cos(phi);
-
-    particleData.push({
-        speed:
-            .1 +
-            Math.random()*.6,
-
-        phase:
-            Math.random()*Math.PI*2,
-
-        radius
-    });
-}
-
-const particleGeometry =
-    new THREE.BufferGeometry();
-
-particleGeometry.setAttribute(
-    "position",
-    new THREE.BufferAttribute(
-        particlePositions,
-        3
-    )
-);
-
-const particleMaterial =
-    new THREE.PointsMaterial({
-
-        color:0x00ffff,
-
-        size:.035,
-
-        transparent:true,
-
-        opacity:.75,
-
-        blending:
-            THREE.AdditiveBlending,
-
-        depthWrite:false
+    const cameraUtils = new Camera(videoElement, {
+      onFrame: async () => {
+        await hands.send({ image: videoElement });
+      },
+      width: 1280,
+      height: 720
     });
 
-const particles =
-    new THREE.Points(
-        particleGeometry,
-        particleMaterial
-    );
-
-scene.add(particles);
-
-
-/* =========================================================
-   GRADE HOLOGRÁFICA
-========================================================= */
-
-const gridGeometry =
-    new THREE.SphereGeometry(
-        5,
-        32,
-        32
-    );
-
-const gridMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color:0x00ffff,
-
-        wireframe:true,
-
-        transparent:true,
-
-        opacity:.025
-    });
-
-const globalGrid =
-    new THREE.Mesh(
-        gridGeometry,
-        gridMaterial
-    );
-
-scene.add(globalGrid);
-
-
-/* =========================================================
-   ANIMAÇÃO 3D/4D
-========================================================= */
-
-function animate3D(){
-
-    requestAnimationFrame(
-        animate3D
-    );
-
-    time4D += .016;
-
-
-    /* =========================================
-       ROTAÇÃO DO CORE
-    ========================================= */
-
-    core.rotation.x =
-        time4D * .25;
-
-    core.rotation.y =
-        time4D * .42;
-
-    innerCore.rotation.x =
-        -time4D * .5;
-
-    innerCore.rotation.y =
-        time4D * .7;
-
-
-    /* =========================================
-       ANÉIS
-    ========================================= */
-
-    rings.forEach(
-        (ring,i)=>{
-
-            ring.rotation.x +=
-                .002 + i*.0004;
-
-            ring.rotation.y +=
-                .003 + i*.0005;
-
-            ring.rotation.z +=
-                .001 + i*.0003;
-
-            /*
-             * 4D:
-             * expansão/contração temporal
-             */
-
-            const pulse =
-                1 +
-                Math.sin(
-                    time4D*1.7 +
-                    i
-                )*.12;
-
-            ring.scale.set(
-                pulse,
-                pulse,
-                pulse
-            );
-        }
-    );
-
-
-    /* =========================================
-       PARTÍCULAS
-    ========================================= */
-
-    const positions =
-        particleGeometry.attributes
-        .position.array;
-
-    for(let i=0;i<particleCount;i++){
-
-        const d =
-            particleData[i];
-
-        const index =
-            i*3;
-
-        const phase =
-            time4D*d.speed +
-            d.phase;
-
-        const factor =
-            1 +
-            Math.sin(phase)*.08;
-
-        positions[index] *= factor;
-        positions[index+1] *= factor;
-        positions[index+2] *= factor;
-    }
-
-    particleGeometry.attributes
-        .position.needsUpdate = true;
-
-
-    particles.rotation.y += .0007;
-    particles.rotation.x += .0003;
-
-
-    /* =========================================
-       MOVIMENTO DA MÃO
-    ========================================= */
-
-    holoGroup.position.x +=
-        (targetX -
-         holoGroup.position.x)*.08;
-
-    holoGroup.position.y +=
-        (targetY -
-         holoGroup.position.y)*.08;
-
-    holoGroup.position.z +=
-        (targetZ -
-         holoGroup.position.z)*.08;
-
-
-    /* =========================================
-       EFEITO 4D GLOBAL
-    ========================================= */
-
-    const pulse =
-        1 +
-        Math.sin(time4D*2.2)*.035;
-
-    holoGroup.scale.set(
-        pulse,
-        pulse,
-        pulse
-    );
-
-
-    renderer.render(
-        scene,
-        camera
-    );
-}
-
-animate3D();
-
-
-/* =========================================================
-   RESIZE WEBGL
-========================================================= */
-
-window.addEventListener(
-    "resize",
-    ()=>{
-
-        camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
-
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(
-            window.innerWidth,
-            window.innerHeight
-        );
-
-        renderer.setPixelRatio(
-            Math.min(
-                window.devicePixelRatio || 1,
-                2
-            )
-        );
-    }
-);
-
-
-/* =========================================================
-   MEDIAPIPE HANDS
-========================================================= */
-
-const hands =
-    new Hands({
-
-        locateFile:
-            file =>
-                `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-    });
-
-
-hands.setOptions({
-
-    maxNumHands:2,
-
-    modelComplexity:1,
-
-    minDetectionConfidence:.65,
-
-    minTrackingConfidence:.65
-});
-
-
-/* =========================================================
-   CONEXÕES
-========================================================= */
-
-const connections =
-    window.HAND_CONNECTIONS;
-
-
-/* =========================================================
-   RESULTADOS
-========================================================= */
-
-hands.onResults(
-    results => {
-
-        ctx.clearRect(
-            0,
-            0,
-            window.innerWidth,
-            window.innerHeight
-        );
-
-
-        hand1 = null;
-        hand2 = null;
-
-
-        if(
-            results.multiHandLandmarks &&
-            results.multiHandLandmarks.length
-        ){
-
-            hand1 =
-                convertHand(
-                    results.multiHandLandmarks[0]
-                );
-
-            if(
-                results.multiHandLandmarks[1]
-            ){
-
-                hand2 =
-                    convertHand(
-                        results.multiHandLandmarks[1]
-                    );
-            }
-
-
-            handStatus.textContent =
-                hand2
-                ? "HAND TRACKING: 2 HANDS"
-                : "HAND TRACKING: 1 HAND";
-
-
-            /* =====================================
-               MÃO 1
-            ===================================== */
-
-            drawHandSkeleton(
-                hand1,
-                "#00ffff"
-            );
-
-            drawHologramBase(
-                hand1
-            );
-
-
-            /* =====================================
-               MÃO 2
-            ===================================== */
-
-            if(hand2){
-
-                drawHandSkeleton(
-                    hand2,
-                    "#ff00ff"
-                );
-
-                checkButtonClick(
-                    hand2[8],
-                    hand1
-                );
-            }
-
-        }else{
-
-            handStatus.textContent =
-                "HAND TRACKING: SEARCHING...";
-        }
-    }
-);
-
-
-/* =========================================================
-   CONVERSÃO DAS COORDENADAS
-========================================================= */
-
-function convertHand(landmarks){
-
-    return landmarks.map(
-        lm => ({
-
-            x:1-lm.x,
-
-            y:lm.y,
-
-            z:lm.z
-        })
-    );
-}
-
-
-/* =========================================================
-   DESENHO DAS MÃOS
-========================================================= */
-
-function drawHandSkeleton(
-    landmarks,
-    color
-){
-
-    ctx.save();
-
-    ctx.shadowColor =
-        color;
-
-    ctx.shadowBlur =
-        18;
-
-    window.drawConnectors(
-        ctx,
-        landmarks,
-        connections,
-        {
-            color:color,
-            lineWidth:3
-        }
-    );
-
-    window.drawLandmarks(
-        ctx,
-        landmarks,
-        {
-            color:color,
-            radius:5
-        }
-    );
-
-    ctx.restore();
-}
-
-
-/* =========================================================
-   BOTÕES
-========================================================= */
-
-const buttons = [
-
-    {
-        id:"grid",
-        icon:"◈",
-        yOffset:-60,
-        active:false
-    },
-
-    {
-        id:"settings",
-        icon:"⚙",
-        yOffset:0,
-        active:false
-    },
-
-    {
-        id:"power",
-        icon:"⚡",
-        yOffset:60,
-        active:false
-    }
-
-];
-
-
-/* =========================================================
-   HOLOGRAMA DA PALMA
-========================================================= */
-
-function drawHologramBase(
-    landmarks
-){
-
-    const cx =
-        landmarks[9].x *
-        window.innerWidth;
-
-    const cy =
-        landmarks[9].y *
-        window.innerHeight;
-
-
-    /* =====================================
-       POSIÇÃO DO 3D
-    ===================================== */
-
-    targetX =
-        (landmarks[9].x-.5)*6;
-
-    targetY =
-        -(landmarks[9].y-.5)*4;
-
-    targetZ =
-        THREE.MathUtils.clamp(
-            -landmarks[9].z*12,
-            -3,
-            3
-        );
-
-
-    /* =====================================
-       CÍRCULOS 2D
-    ===================================== */
-
-    ctx.save();
-
-    ctx.translate(
-        cx,
-        cy
-    );
-
-    ctx.shadowColor =
-        "#00ffff";
-
-    ctx.shadowBlur =
-        30;
-
-
-    for(let i=0;i<6;i++){
-
-        const pulse =
-            Math.sin(
-                time4D*2 +
-                i
-            )*8;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            0,
-            0,
-            60 +
-            i*25 +
-            pulse,
-            0,
-            Math.PI*2
-        );
-
-        ctx.strokeStyle =
-            `rgba(0,255,255,${.8-i*.1})`;
-
-        ctx.lineWidth =
-            i===0 ? 3 : 1;
-
-        ctx.stroke();
-    }
-
-
-    /* =====================================
-       EIXOS 3D
-    ===================================== */
-
-    ctx.beginPath();
-
-    ctx.moveTo(-110,0);
-    ctx.lineTo(110,0);
-
-    ctx.moveTo(0,-110);
-    ctx.lineTo(0,110);
-
-    ctx.strokeStyle =
-        "rgba(0,255,255,.3)";
-
-    ctx.stroke();
-
-
-    ctx.restore();
-
-
-    /* =====================================
-       BOTÕES
-    ===================================== */
-
-    const bx =
-        landmarks[4].x *
-        window.innerWidth +
-        100;
-
-    const by =
-        landmarks[4].y *
-        window.innerHeight;
-
-
-    buttons.forEach(
-        b=>{
-
-            b.x = bx;
-
-            b.y =
-                by +
-                b.yOffset;
-
-            drawHexagon(
-                b.x,
-                b.y,
-                30,
-                b.active
-            );
-
-            ctx.save();
-
-            ctx.font =
-                "20px Arial";
-
-            ctx.textAlign =
-                "center";
-
-            ctx.textBaseline =
-                "middle";
-
-            ctx.fillStyle =
-                "#ffffff";
-
-            ctx.shadowColor =
-                "#00ffff";
-
-            ctx.shadowBlur =
-                15;
-
-            ctx.fillText(
-                b.icon,
-                b.x,
-                b.y
-            );
-
-            ctx.restore();
-        }
-    );
-
-
-    /* =====================================
-       PAINEL
-    ===================================== */
-
-    if(appScreen){
-
-        drawAppScreen(
-            landmarks
-        );
-    }
-}
-
-
-/* =========================================================
-   HEXÁGONO
-========================================================= */
-
-function drawHexagon(
-    x,
-    y,
-    radius,
-    active
-){
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    for(
-        let i=0;
-        i<6;
-        i++
-    ){
-
-        const angle =
-            Math.PI/3*i -
-            Math.PI/6;
-
-        const px =
-            x +
-            radius *
-            Math.cos(angle);
-
-        const py =
-            y +
-            radius *
-            Math.sin(angle);
-
-        if(i===0)
-            ctx.moveTo(px,py);
-        else
-            ctx.lineTo(px,py);
-    }
-
-    ctx.closePath();
-
-    ctx.fillStyle =
-        active
-        ? "rgba(0,255,255,.85)"
-        : "rgba(0,255,255,.12)";
-
-    ctx.strokeStyle =
-        "#00ffff";
-
-    ctx.lineWidth =
-        active ? 3 : 1.5;
-
-    ctx.shadowColor =
-        "#00ffff";
-
-    ctx.shadowBlur =
-        active ? 35 : 15;
-
-    ctx.fill();
-
-    ctx.stroke();
-
-    ctx.restore();
-}
-
-
-/* =========================================================
-   PAINEL APP
-========================================================= */
-
-function drawAppScreen(
-    landmarks
-){
-
-    const cx =
-        landmarks[9].x *
-        window.innerWidth;
-
-    const cy =
-        landmarks[9].y *
-        window.innerHeight;
-
-
-    const width =
-        Math.min(
-            420,
-            window.innerWidth*.75
-        );
-
-    const height =
-        270;
-
-
-    const x =
-        cx -
-        width/2;
-
-    const y =
-        cy -
-        210;
-
-
-    ctx.save();
-
-    /* =====================================
-       SOMBRA
-    ===================================== */
-
-    ctx.shadowColor =
-        "#00ffff";
-
-    ctx.shadowBlur =
-        35;
-
-
-    /* =====================================
-       PAINEL
-    ===================================== */
-
-    ctx.fillStyle =
-        "rgba(0,15,35,.75)";
-
-    ctx.fillRect(
-        x,
-        y,
-        width,
-        height
-    );
-
-
-    ctx.strokeStyle =
-        "#00ffff";
-
-    ctx.lineWidth =
-        2;
-
-    ctx.strokeRect(
-        x,
-        y,
-        width,
-        height
-    );
-
-
-    /* =====================================
-       CABEÇALHO
-    ===================================== */
-
-    ctx.fillStyle =
-        "#00ffff";
-
-    ctx.font =
-        "13px Courier New";
-
-    ctx.textAlign =
-        "left";
-
-    ctx.fillText(
-        "KORVIL // HOLOGRAPHIC SYSTEM",
-        x+15,
-        y+25
-    );
-
-
-    /* =====================================
-       LOADING
-    ===================================== */
-
-    if(
-        appScreen === "loading"
-    ){
-
-        ctx.textAlign =
-            "center";
-
-        ctx.font =
-            "42px Courier New";
-
-        ctx.fillText(
-            `${Math.floor(loadingPercent)}%`,
-            x+width/2,
-            y+120
-        );
-
-
-        ctx.fillStyle =
-            "rgba(0,255,255,.15)";
-
-        ctx.fillRect(
-            x+40,
-            y+190,
-            width-80,
-            8
-        );
-
-
-        ctx.fillStyle =
-            "#00ffff";
-
-        ctx.fillRect(
-            x+40,
-            y+190,
-            (width-80) *
-            (loadingPercent/100),
-            8
-        );
-    }
-
-
-    /* =====================================
-       MAPA
-    ===================================== */
-
-    if(
-        appScreen === "mapa"
-    ){
-
-        ctx.fillStyle =
-            "rgba(0,70,50,.5)";
-
-        ctx.fillRect(
-            x+10,
-            y+45,
-            width-20,
-            height-60
-        );
-
-
-        ctx.strokeStyle =
-            "rgba(0,255,150,.35)";
-
-
-        for(
-            let i=0;
-            i<5;
-            i++
-        ){
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                x+10,
-                y+50+i*38
-            );
-
-            ctx.lineTo(
-                x+width-10,
-                y+50+i*38
-            );
-
-            ctx.stroke();
-        }
-
-
-        /* marcador */
-
-        ctx.fillStyle =
-            "#ff004c";
-
-        ctx.shadowColor =
-            "#ff004c";
-
-        ctx.shadowBlur =
-            20;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x+90,
-            y+100,
-            7,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-
-        ctx.shadowBlur = 0;
-
-        ctx.fillStyle =
-            "#ffffff";
-
-        ctx.font =
-            "12px Courier New";
-
-        ctx.textAlign =
-            "left";
-
-        ctx.fillText(
-            "DESTINO",
-            x+110,
-            y+105
-        );
-
-
-        ctx.fillText(
-            "3 KM // 30 MIN",
-            x+20,
-            y+245
-        );
-    }
-
-
-    ctx.restore();
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function updateLoading(){
-
-    if(
-        appScreen === "loading"
-    ){
-
-        loadingPercent +=
-            .8;
-
-        if(
-            loadingPercent >= 100
-        ){
-
-            loadingPercent = 100;
-
-            appScreen =
-                "mapa";
-        }
-    }
-
-    requestAnimationFrame(
-        updateLoading
-    );
-}
-
-updateLoading();
-
-
-/* =========================================================
-   INTERAÇÃO
-========================================================= */
-
-function checkButtonClick(
-    landmark,
-    baseHand
-){
-
-    if(!baseHand)
-        return;
-
-
-    const x =
-        landmark.x *
-        window.innerWidth;
-
-    const y =
-        landmark.y *
-        window.innerHeight;
-
-
-    buttons.forEach(
-        b=>{
-
-            const dx =
-                x-b.x;
-
-            const dy =
-                y-b.y;
-
-            const distance =
-                Math.sqrt(
-                    dx*dx +
-                    dy*dy
-                );
-
-
-            if(
-                distance < 40 &&
-                !b.active
-            ){
-
-                b.active = true;
-
-
-                setTimeout(
-                    ()=>{
-                        b.active=false;
-                    },
-                    400
-                );
-
-
-                /* GRID */
-
-                if(
-                    b.id === "grid"
-                ){
-
-                    appScreen =
-                        "loading";
-
-                    loadingPercent =
-                        0;
-                }
-
-
-                /* POWER */
-
-                if(
-                    b.id === "power"
-                ){
-
-                    hologramVisible =
-                        !hologramVisible;
-
-                    holoGroup.visible =
-                        hologramVisible;
-
-                    particles.visible =
-                        hologramVisible;
-                }
-
-
-                /* SETTINGS */
-
-                if(
-                    b.id === "settings"
-                ){
-
-                    statusEl.textContent =
-                        "SYSTEM SETTINGS // 4D MODE";
-                }
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   INICIAR CÂMERA
-========================================================= */
-
-startBtn.onclick =
-    async ()=>{
-
-        if(cameraRunning)
-            return;
-
-
-        cameraRunning =
-            true;
-
-        startBtn.style.display =
-            "none";
-
-
-        statusEl.textContent =
-            "INITIALIZING HOLOGRAPHIC CORE...";
-
-
-        try{
-
-            const camera =
-                new Camera(
-                    video,
-                    {
-
-                        onFrame:
-                            async()=>{
-                                await hands.send({
-                                    image:video
-                                });
-                            },
-
-                        width:1920,
-                        height:1080
-                    }
-                );
-
-
-            camera.start();
-
-
-            statusEl.textContent =
-                "3D / 4D TEMPORAL ENGINE — ONLINE";
-
-        }
-        catch(error){
-
-            console.error(error);
-
-            statusEl.textContent =
-                "CAMERA ERROR";
-        }
-    };
-
-
-/* =========================================================
-   LOOP VISUAL 4D
-========================================================= */
-
-function visualLoop(){
-
-    /*
-     * Pequena oscilação temporal do ambiente.
-     */
-
-    globalGrid.rotation.y +=
-        .00025;
-
-    globalGrid.rotation.x =
-        Math.sin(time4D*.15)*.08;
-
-
-    requestAnimationFrame(
-        visualLoop
-    );
-}
-
-visualLoop();
-
+    cameraUtils.start();
+  }
+
+  // --- INICIALIZAÇÃO ---
+  window.onload = () => {
+    init3D();
+    animate();
+    initCamera();
+  };
 </script>
+</body>
+</html> text-align: center; text-shadow: 0 0 10px #00ffcc; }
+  </style>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+</head>
+<body>
 
+  <video id="webcam" autoplay playsinline></video>
+  <div id="ui-overlay">
+    <h2 id="mode-title">NEXUS GEN: AGUARDANDO GESTO</h2>
+    <p id="gesture-hint">Aproxime a mão da câmera: [Palma Aberta] Ativar | [Pinch/Pinça] Alternar Modo</p>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // 1. CONFIGURAÇÃO DA CENA THREE.JS (3D)
+    // ----------------------------------------------------
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Iluminação
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const pointLight = new THREE.PointLight(0x00ffcc, 2, 50);
+    pointLight.position.set(0, 0, 5);
+    scene.add(ambientLight, pointLight);
+
+    // Objeto Central NEXUS GEN (Núcleo + Anel)
+    const coreGroup = new THREE.Group();
+
+    // Núcleo Turbo (Max Steel)
+    const coreGeo = new THREE.IcosahedronGeometry(1, 2);
+    const coreMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, wireframe: true, emissive: 0x0044ff });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    coreGroup.add(coreMesh);
+
+    // Anel Seletor (Omnitrix)
+    const ringGeo = new THREE.TorusGeometry(1.8, 0.08, 16, 100);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0x00ffcc, metalness: 0.8, roughness: 0.2 });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.rotation.x = Math.PI / 2;
+    coreGroup.add(ringMesh);
+
+    scene.add(coreGroup);
+    camera.position.z = 5;
+
+    // ----------------------------------------------------
+    // 2. RECONHECIMENTO DE GESTOS (MediaPipe)
+    // ----------------------------------------------------
+    const videoElement = document.getElementById('webcam');
+    const modeTitle = document.getElementById('mode-title');
+
+    function onResults(results) {
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const hand = results.multiHandLandmarks[0];
+
+        // Mapear posição da mão para rotação do objeto 3D
+        const handX = (hand[9].x - 0.5) * 4;
+        const handY = -(hand[9].y - 0.5) * 4;
+        coreGroup.position.x = handX;
+        coreGroup.position.y = handY;
+
+        // Distância entre polegar (4) e indicador (8) -> Gesto de Pinça (Pinch)
+        const thumbTip = hand[4];
+        const indexTip = hand[8];
+        const distance = Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y);
+
+        if (distance < 0.05) {
+          // Gesto: Ativar Carga Max Turbo / Fusão Ranger
+          coreMat.color.setHex(0xff0055);
+          coreMat.emissive.setHex(0xff0000);
+          coreGroup.rotation.y += 0.2;
+          modeTitle.innerText = "NEXUS GEN: MODO SOBRECARGA TURBO";
+        } else {
+          // Estado Padrão Omnitrix / Holo
+          coreMat.color.setHex(0x00aaff);
+          coreMat.emissive.setHex(0x0044ff);
+          modeTitle.innerText = "NEXUS GEN: SINTONIZANDO ADN ALIEN";
+        }
+      }
+    }
+
+    const hands = new Hands({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
+    hands.onResults(onResults);
+
+    const cameraUtils = new Camera(videoElement, {
+      onFrame: async () => { await hands.send({ image: videoElement }); },
+      width: 640,
+      height: 480
+    });
+    cameraUtils.start();
+
+    // ----------------------------------------------------
+    // 3. LOOP DE RENDERIZAÇÃO 3D
+    // ----------------------------------------------------
+    function animate() {
+      requestAnimationFrame(animate);
+      coreMesh.rotation.y += 0.01;
+      ringMesh.rotation.z -= 0.02;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Responsividade da tela
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
