@@ -1,488 +1,128 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K-RIADOR OMNI-GEN 1000000% - FANTASY ANIMATIONS</title>
-
-  <!-- Bibliotecas 3D, Visão Computacional e Fontes -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@700;900&display=swap" rel="stylesheet">
-
+  <title>NEXUS GEN - 3D Hand Gestures</title>
   <style>
-    :root {
-      --primary-color: #00FF66;
-      --bg-theme: radial-gradient(circle at center, #001A0A 0%, #000000 100%);
-      --glow-shadow: 0 0 50px #00FF66;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-    body {
-      background: #000;
-      height: 100vh;
-      overflow: hidden;
-      font-family: 'Rajdhani', 'Orbitron', sans-serif;
-      color: #FFF;
-      perspective: 2000px;
-    }
-
-    /* WEBCAM & CANVAS 3D */
-    #webcam {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-      object-fit: cover; transform: scaleX(-1); opacity: 0.25; z-index: 1;
-    }
-    #canvas3d {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2;
-    }
-
-    /* GRID CIBERNÉTICO REATIVO */
-    .cyber-grid {
-      position: absolute; width: 300%; height: 300%; top: -100%; left: -100%;
-      background-image: linear-gradient(var(--primary-color) 1px, transparent 1px),
-                       linear-gradient(90deg, var(--primary-color) 1px, transparent 1px);
-      background-size: 80px 80px; opacity: 0.15;
-      transform: rotateX(75deg) translateZ(-600px);
-      animation: gridMove 20s linear infinite; z-index: 1;
-    }
-    @keyframes gridMove { 100% { transform: rotateX(75deg) translateZ(-600px) translateY(80px); } }
-
-    /* SELETOR DE UNIVERSOS */
-    .universe-selector {
-      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 10; background: rgba(0,0,0,0.85);
-      padding: 10px 18px; border-radius: 20px; border: 2px solid var(--primary-color);
-      box-shadow: var(--glow-shadow); backdrop-filter: blur(10px); flex-wrap: wrap; justify-content: center;
-    }
-    .u-btn {
-      padding: 8px 14px; border: 2px solid transparent; background: rgba(255,255,255,0.05);
-      color: #FFF; font-family: 'Orbitron'; font-weight: 900; font-size: 11px;
-      border-radius: 8px; cursor: pointer; transition: 0.3s;
-    }
-    .u-btn:hover, .u-btn.active {
-      border-color: var(--primary-color); background: var(--primary-color);
-      color: #000; box-shadow: 0 0 15px var(--primary-color);
-    }
-
-    /* HUD STATUS */
-    .hud-overlay {
-      position: absolute; top: 90px; left: 20px; z-index: 10;
-      background: rgba(0,0,0,0.75); border: 1px solid var(--primary-color);
-      padding: 15px; border-radius: 12px; width: 280px;
-      backdrop-filter: blur(15px); box-shadow: var(--glow-shadow);
-    }
-    .hud-overlay h3 { font-family: 'Orbitron'; color: var(--primary-color); margin-bottom: 8px; font-size: 16px; }
-    .hud-status { display: inline-block; padding: 4px 8px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 13px; margin-bottom: 10px; }
-
-    /* PAINEL DE AÇÕES E BOTÃO CÓDIGO GEN INOVADOR */
-    .action-panel {
-      position: absolute; right: 20px; top: 90px; z-index: 10; width: 320px;
-      background: rgba(0,0,0,0.85); border: 2px solid var(--primary-color);
-      border-radius: 15px; padding: 20px; backdrop-filter: blur(20px);
-      box-shadow: var(--glow-shadow); display: flex; flex-direction: column; gap: 10px;
-      max-height: calc(100vh - 120px); overflow-y: auto;
-    }
-    .action-btn {
-      width: 100%; padding: 10px; border: 1px solid var(--primary-color);
-      background: rgba(255,255,255,0.05); color: #FFF; font-weight: 700;
-      border-radius: 8px; cursor: pointer; font-family: 'Rajdhani'; font-size: 14px;
-      transition: 0.2s; display: flex; align-items: center; justify-content: space-between; text-align: left;
-    }
-    .action-btn:hover { background: var(--primary-color); color: #000; transform: translateX(-4px); }
-
-    /* BOTÃO INOVADOR OMNI-GEN 1000000% */
-    .omni-gen-btn {
-      margin-top: 10px; padding: 14px; border: 2px solid #FFF;
-      background: linear-gradient(135deg, #FF0055, #9D00FF, #00CCFF, #00FF66);
-      background-size: 300% 300%; animation: gradientMove 4s ease infinite;
-      color: #FFF; font-family: 'Orbitron'; font-weight: 900; font-size: 12px;
-      border-radius: 10px; cursor: pointer; text-shadow: 0 0 8px #000;
-      box-shadow: 0 0 25px rgba(255,255,255,0.6); transition: 0.3s;
-    }
-    .omni-gen-btn:hover { transform: scale(1.03); box-shadow: 0 0 40px #FFF; }
-    @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-    /* OVERLAYS E TELAS DE ANIMAÇÃO DE FANTASIA */
-    #flash-overlay {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #FFF; opacity: 0; z-index: 100; pointer-events: none; transition: opacity 0.15s ease-out;
-    }
-
-    .build-screen {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.92); display: none; justify-content: center;
-      align-items: center; flex-direction: column; z-index: 90;
-    }
-    .build-screen.active { display: flex; }
-    .build-screen h1 { font-family: 'Orbitron'; font-size: 36px; color: var(--primary-color); text-shadow: var(--glow-shadow); text-align: center; line-height: 1.3; }
-    .build-screen p { font-family: 'Rajdhani'; font-size: 18px; color: #AAA; margin-top: 8px; text-align: center; }
-    .build-bar { width: 60%; height: 16px; background: #111; border: 2px solid var(--primary-color); border-radius: 8px; margin-top: 20px; overflow: hidden; }
-    .build-fill { height: 100%; width: 0%; background: var(--primary-color); animation: fillProgress 1.8s forwards linear; }
-
-    @keyframes fillProgress { 100% { width: 100%; } }
+    body { margin: 0; overflow: hidden; background: #05050a; font-family: sans-serif; }
+    #webcam { position: absolute; top: 10px; right: 10px; width: 160px; height: 120px; border-radius: 8px; transform: scaleX(-1); opacity: 0.7; }
+    #ui-overlay { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #00ffcc; text-align: center; text-shadow: 0 0 10px #00ffcc; }
   </style>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 </head>
 <body>
 
-  <div class="cyber-grid" id="grid"></div>
   <video id="webcam" autoplay playsinline></video>
-  <canvas id="canvas3d"></canvas>
-  <div id="flash-overlay"></div>
-
-  <!-- SELETOR DE UNIVERSOS -->
-  <div class="universe-selector">
-    <button class="u-btn active" onclick="switchUniverse('ben10')">BEN 10</button>
-    <button class="u-btn" onclick="switchUniverse('rex')">GEN REX</button>
-    <button class="u-btn" onclick="switchUniverse('omega')">CORE OMEGA</button>
-    <button class="u-btn" onclick="switchUniverse('maxsteel')">MAX STEEL</button>
-    <button class="u-btn" onclick="switchUniverse('rangers')">POWER RANGERS</button>
-  </div>
-
-  <!-- HUD STATUS -->
-  <div class="hud-overlay">
-    <h3 id="hud-title">OMNITRIX OS v6.0</h3>
-    <div>Status: <span id="gesto-info" class="hud-status">Aguardando Mão...</span></div>
-    <div style="font-size: 11px; opacity: 0.8; margin-top: 5px;">
-      • <b>Pinça (👌):</b> Disparar Animação<br>
-      • <b>Mão Aberta (✋):</b> Rotacionar Projeção<br>
-      • <b>GEN TOTAL:</b> Fusão Multiverso Completa
-    </div>
-  </div>
-
-  <!-- PAINEL DINÂMICO DE AÇÕES -->
-  <div class="action-panel" id="action-panel">
-    <!-- Gerado dinamicamente via JavaScript -->
-  </div>
-
-  <!-- OVERLAY DE TRANSFORMAÇÃO E ANIMAÇÕES -->
-  <div class="build-screen" id="buildScreen">
-    <h1 id="buildText">INICIANDO...</h1>
-    <p id="buildSubText">Carregando sequência de animação...</p>
-    <div class="build-bar"><div class="build-fill" id="buildFill"></div></div>
+  <div id="ui-overlay">
+    <h2 id="mode-title">NEXUS GEN: AGUARDANDO GESTO</h2>
+    <p id="gesture-hint">Aproxime a mão da câmera: [Palma Aberta] Ativar | [Pinch/Pinça] Alternar Modo</p>
   </div>
 
   <script>
-    let currentUniverse = 'ben10';
-    let scene, camera, renderer, coreGroup, holoGroup;
-    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // ----------------------------------------------------
+    // 1. CONFIGURAÇÃO DA CENA THREE.JS (3D)
+    // ----------------------------------------------------
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-    // CONFIGURAÇÃO DOS UNIVERSOS COM ANIMAÇÕES DE FANTASIA INDIVIDUAIS
-    const UNIVERSE_CONFIGS = {
-      ben10: {
-        name: "OMNITRIX OS", primary: "#00FF66",
-        items: [
-          { id: "omnitrix_select", name: "Seleção de Silhueta", animType: "ben10_dial", icon: "⌚", desc: "Mostra o disco do Omnitrix girando as silhuetas alienígenas" },
-          { id: "omnitrix_transform", name: "Recarga de DNA", animType: "ben10_flash", icon: "🟢", desc: "Avanço do Omnitrix com Flash Verde de Transformação" }
-        ]
-      },
-      rex: {
-        name: "NANITE CONSTRUCTOR", primary: "#00CCFF",
-        items: [
-          { id: "nanite_build", name: "Construção de Nanites", animType: "rex_nanite", icon: "⚙️", desc: "Nanites azuis fluem e constroem a máquina no corpo" },
-          { id: "nanite_smash", name: "Smack Hand Slam", animType: "rex_smash", icon: "🔨", desc: "Impacto mecânico pesado com circuito elétrico" }
-        ]
-      },
-      omega: {
-        name: "HOLOGRAM CORE OMEGA", primary: "#9D00FF",
-        items: [
-          { id: "omega_helix", name: "Hélice de DNA Puro", animType: "omega_helix", icon: "🧬", desc: "Estrutura genética holográfica rotativa em 360°" },
-          { id: "omega_synthesis", name: "Sintetizador Quantum", animType: "omega_core", icon: "🔮", desc: "Núcleo holográfico violeta processando código biológico" }
-        ]
-      },
-      maxsteel: {
-        name: "TURBO N-TECH", primary: "#FF6600",
-        items: [
-          { id: "turbo_go", name: "MODO TURBO: ATIVAR!", animType: "max_turbo", icon: "⚡", desc: "Explosão de energia Turbo Azul e Laranja com linhas de vento" },
-          { id: "steel_connect", name: "Conexão de Steel", animType: "max_steel", icon: "🤖", desc: "Steel se acopla ao peito liberando descarga Turbo" }
-        ]
-      },
-      rangers: {
-        name: "COMMAND MORPHER", primary: "#FF0055",
-        items: [
-          { id: "morphin_time", name: "É HORA DE MORFAR!", animType: "ranger_morph", icon: "⚡", desc: "Raios coloridos e moedas do poder piscando no ar" },
-          { id: "ranger_defeat", name: "Explosão de Derrota", animType: "ranger_explode", icon: "💥", desc: "Animação clássica do Ranger caindo com faíscas e explosão" }
-        ]
-      }
-    };
+    // Iluminação
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const pointLight = new THREE.PointLight(0x00ffcc, 2, 50);
+    pointLight.position.set(0, 0, 5);
+    scene.add(ambientLight, pointLight);
 
-    // SINTETIZADOR DE ÁUDIO FANTÁSTICO
-    function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      const now = audioCtx.currentTime;
+    // Objeto Central NEXUS GEN (Núcleo + Anel)
+    const coreGroup = new THREE.Group();
 
-      if (type === 'ben10') {
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now);
-        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.4);
-        gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
-        osc.start(now); osc.stop(now + 0.4);
-      } else if (type === 'rex') {
-        osc.type = 'square'; osc.frequency.setValueAtTime(150, now);
-        osc.frequency.linearRampToValueAtTime(400, now + 0.3);
-        gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-        osc.start(now); osc.stop(now + 0.3);
-      } else if (type === 'ranger') {
-        osc.type = 'triangle'; osc.frequency.setValueAtTime(800, now);
-        osc.frequency.linearRampToValueAtTime(200, now + 0.5);
-        gain.gain.setValueAtTime(0.5, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
-        osc.start(now); osc.stop(now + 0.5);
-      } else if (type === 'gen_total') {
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now);
-        osc.frequency.linearRampToValueAtTime(2000, now + 1.5);
-        gain.gain.setValueAtTime(0.6, now); gain.gain.linearRampToValueAtTime(0.01, now + 1.5);
-        osc.start(now); osc.stop(now + 1.5);
+    // Núcleo Turbo (Max Steel)
+    const coreGeo = new THREE.IcosahedronGeometry(1, 2);
+    const coreMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, wireframe: true, emissive: 0x0044ff });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    coreGroup.add(coreMesh);
+
+    // Anel Seletor (Omnitrix)
+    const ringGeo = new THREE.TorusGeometry(1.8, 0.08, 16, 100);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0x00ffcc, metalness: 0.8, roughness: 0.2 });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.rotation.x = Math.PI / 2;
+    coreGroup.add(ringMesh);
+
+    scene.add(coreGroup);
+    camera.position.z = 5;
+
+    // ----------------------------------------------------
+    // 2. RECONHECIMENTO DE GESTOS (MediaPipe)
+    // ----------------------------------------------------
+    const videoElement = document.getElementById('webcam');
+    const modeTitle = document.getElementById('mode-title');
+
+    function onResults(results) {
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const hand = results.multiHandLandmarks[0];
+
+        // Mapear posição da mão para rotação do objeto 3D
+        const handX = (hand[9].x - 0.5) * 4;
+        const handY = -(hand[9].y - 0.5) * 4;
+        coreGroup.position.x = handX;
+        coreGroup.position.y = handY;
+
+        // Distância entre polegar (4) e indicador (8) -> Gesto de Pinça (Pinch)
+        const thumbTip = hand[4];
+        const indexTip = hand[8];
+        const distance = Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y);
+
+        if (distance < 0.05) {
+          // Gesto: Ativar Carga Max Turbo / Fusão Ranger
+          coreMat.color.setHex(0xff0055);
+          coreMat.emissive.setHex(0xff0000);
+          coreGroup.rotation.y += 0.2;
+          modeTitle.innerText = "NEXUS GEN: MODO SOBRECARGA TURBO";
+        } else {
+          // Estado Padrão Omnitrix / Holo
+          coreMat.color.setHex(0x00aaff);
+          coreMat.emissive.setHex(0x0044ff);
+          modeTitle.innerText = "NEXUS GEN: SINTONIZANDO ADN ALIEN";
+        }
       }
     }
 
-    // INICIALIZAÇÃO 3D (THREE.JS)
-    function init3D() {
-      const canvas = document.getElementById('canvas3d');
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    const hands = new Hands({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
+    hands.onResults(onResults);
 
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 0, 8);
+    const cameraUtils = new Camera(videoElement, {
+      onFrame: async () => { await hands.send({ image: videoElement }); },
+      width: 640,
+      height: 480
+    });
+    cameraUtils.start();
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-
-      coreGroup = new THREE.Group();
-      holoGroup = new THREE.Group();
-      scene.add(coreGroup);
-      scene.add(holoGroup);
-
-      buildCore3D();
-      window.addEventListener('resize', onWindowResize);
-    }
-
-    function buildCore3D() {
-      coreGroup.clear();
-      const config = UNIVERSE_CONFIGS[currentUniverse];
-      const glowMat = new THREE.MeshBasicMaterial({ color: config.primary, wireframe: true });
-
-      const ringGeo = new THREE.TorusGeometry(1.5, 0.06, 16, 100);
-      const ringMesh = new THREE.Mesh(ringGeo, glowMat);
-      coreGroup.add(ringMesh);
-
-      const sphereGeo = new THREE.OctahedronGeometry(0.8, 2);
-      const sphereMesh = new THREE.Mesh(sphereGeo, glowMat);
-      coreGroup.add(sphereMesh);
-    }
-
-    function switchUniverse(univKey) {
-      currentUniverse = univKey;
-      const config = UNIVERSE_CONFIGS[univKey];
-
-      document.documentElement.style.setProperty('--primary-color', config.primary);
-      document.getElementById('hud-title').innerText = config.name;
-
-      document.querySelectorAll('.u-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.innerText.replace(/\s+/g, '').toLowerCase().includes(univKey));
-      });
-
-      renderActionPanel();
-      buildCore3D();
-    }
-
-    function renderActionPanel() {
-      const config = UNIVERSE_CONFIGS[currentUniverse];
-      const panel = document.getElementById('action-panel');
-      panel.innerHTML = `<h4 style="color:${config.primary}; font-family:'Orbitron'; font-size:13px;">ANIMAÇÕES DE FANTASIA:</h4>`;
-
-      config.items.forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'action-btn';
-        btn.innerHTML = `<span>${item.icon} <b>${item.name}</b></span> <span>►</span>`;
-        btn.onclick = () => playFantasyAnimation(item);
-        panel.appendChild(btn);
-      });
-
-      // BOTÃO INOVADOR CÓDIGO GEN TOTAL
-      const omniBtn = document.createElement('button');
-      omniBtn.className = 'omni-gen-btn';
-      omniBtn.innerHTML = `⚡ OMNI-GEN 1000000% TOTAL<br><span style="font-size:10px; font-weight:normal;">FUSÃO COMPLETA DE TODAS AS ANIMAÇÕES</span>`;
-      omniBtn.onclick = () => triggerGenTotalAll();
-      panel.appendChild(omniBtn);
-    }
-
-    // RENDERIZAÇÃO DAS ANIMAÇÕES DE FANTASIA INDIVIDUAIS
-    function playFantasyAnimation(item) {
-      holoGroup.clear();
-      showScreen(item.name.toUpperCase(), item.desc);
-
-      if (item.animType === 'ben10_dial') {
-        playSound('ben10');
-        // Ampulheta clássica do Omnitrix
-        const geo = new THREE.CylinderGeometry(1.2, 1.2, 0.3, 6);
-        const mat = new THREE.MeshBasicMaterial({ color: 0x00FF66, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      } 
-      else if (item.animType === 'ben10_flash') {
-        playSound('ben10');
-        flashEffect('#00FF66');
-        const geo = new THREE.IcosahedronGeometry(1.5, 2);
-        const mat = new THREE.MeshBasicMaterial({ color: 0x00FF66, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      } 
-      else if (item.animType === 'rex_nanite' || item.animType === 'rex_smash') {
-        playSound('rex');
-        flashEffect('#00CCFF');
-        // Estrutura mecânica de Nanites
-        const geo = new THREE.BoxGeometry(1.8, 1.2, 1.2);
-        const mat = new THREE.MeshBasicMaterial({ color: 0x00CCFF, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      } 
-      else if (item.animType === 'omega_helix' || item.animType === 'omega_core') {
-        playSound('ben10');
-        const geo = new THREE.TorusGeometry(1.2, 0.4, 16, 100);
-        const mat = new THREE.MeshBasicMaterial({ color: 0x9D00FF, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      } 
-      else if (item.animType === 'max_turbo' || item.animType === 'max_steel') {
-        playSound('ben10');
-        flashEffect('#FF6600');
-        const geo = new THREE.OctahedronGeometry(1.5, 0);
-        const mat = new THREE.MeshBasicMaterial({ color: 0xFF6600, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      } 
-      else if (item.animType === 'ranger_morph' || item.animType === 'ranger_explode') {
-        playSound('ranger');
-        flashEffect('#FF0055');
-        // Faíscas / Explosão de Moeda do Poder
-        const geo = new THREE.ConeGeometry(1.4, 2, 16);
-        const mat = new THREE.MeshBasicMaterial({ color: 0xFF0055, wireframe: true });
-        holoGroup.add(new THREE.Mesh(geo, mat));
-      }
-    }
-
-    // ANIMAÇÃO INOVADORA GEN TOTAL (JUNTA TUDO DE FORMA NOVE)
-    function triggerGenTotalAll() {
-      playSound('gen_total');
-      flashEffect('#FFFFFF');
-      showScreen("OMNI-GEN 1000000% TOTAL", "FUSÃO MULTIVERSAL: OMNITRIX + NANITES + TURBO + MORPHER + CORE OMEGA!");
-
-      holoGroup.clear();
-
-      // Unificação inovadora de todas as formas geométricas e cores das animações
-      const configs = [
-        { color: 0x00FF66, scale: 0.8 }, // Ben 10
-        { color: 0x00CCFF, scale: 1.2 }, // Gen Rex
-        { color: 0x9D00FF, scale: 1.6 }, // Core Omega
-        { color: 0xFF6600, scale: 2.0 }, // Max Steel
-        { color: 0xFF0055, scale: 2.4 }  // Power Rangers
-      ];
-
-      configs.forEach((cfg, idx) => {
-        const geo = new THREE.TorusGeometry(cfg.scale, 0.05, 16, 80);
-        const mat = new THREE.MeshBasicMaterial({ color: cfg.color, wireframe: true });
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.rotation.x = idx * 0.5;
-        mesh.rotation.y = idx * 0.8;
-        holoGroup.add(mesh);
-      });
-
-      // Núcleo Cósmico de Energia Unificada
-      const centerGeo = new THREE.DodecahedronGeometry(0.7, 1);
-      const centerMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true });
-      holoGroup.add(new THREE.Mesh(centerGeo, centerMat));
-    }
-
-    function flashEffect(colorHex) {
-      const flash = document.getElementById('flash-overlay');
-      flash.style.background = colorHex || '#FFF';
-      flash.style.opacity = '0.9';
-      setTimeout(() => flash.style.opacity = '0', 200);
-    }
-
-    function showScreen(title, sub) {
-      const screen = document.getElementById('buildScreen');
-      document.getElementById('buildText').innerText = title;
-      document.getElementById('buildSubText').innerText = sub;
-      screen.classList.add('active');
-
-      const fill = document.getElementById('buildFill');
-      fill.style.animation = 'none';
-      fill.offsetHeight;
-      fill.style.animation = 'fillProgress 1.8s forwards linear';
-
-      setTimeout(() => screen.classList.remove('active'), 1800);
-    }
-
-    // LOOP DE ANIMAÇÃO
+    // ----------------------------------------------------
+    // 3. LOOP DE RENDERIZAÇÃO 3D
+    // ----------------------------------------------------
     function animate() {
       requestAnimationFrame(animate);
-
-      coreGroup.rotation.y += 0.01;
-      coreGroup.rotation.x += 0.005;
-
-      holoGroup.rotation.y -= 0.02;
-      holoGroup.rotation.z += 0.01;
-
+      coreMesh.rotation.y += 0.01;
+      ringMesh.rotation.z -= 0.02;
       renderer.render(scene, camera);
     }
+    animate();
 
-    function onWindowResize() {
+    // Responsividade da tela
+    window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    // VISÃO COMPUTACIONAL (MEDIAPIPE)
-    function initCamera() {
-      const videoElement = document.getElementById('webcam');
-      const gestoInfo = document.getElementById('gesto-info');
-
-      const hands = new Hands({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-      });
-
-      hands.setOptions({
-        maxNumHands: 1,
-        modelComplexity: 1,
-        minDetectionConfidence: 0.6,
-        minTrackingConfidence: 0.6
-      });
-
-      hands.onResults(results => {
-        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-          const landmarks = results.multiHandLandmarks[0];
-          const thumb = landmarks[4];
-          const index = landmarks[8];
-          const distance = Math.hypot(thumb.x - index.x, thumb.y - index.y);
-
-          if (distance < 0.05) {
-            gestoInfo.innerText = "Gesto: PINÇA (Ativado)";
-            coreGroup.scale.set(1.3, 1.3, 1.3);
-          } else {
-            gestoInfo.innerText = "Mão Detectada";
-            coreGroup.scale.set(1.0, 1.0, 1.0);
-          }
-
-          coreGroup.position.x = (0.5 - index.x) * 5;
-          coreGroup.position.y = (0.5 - index.y) * 3;
-        } else {
-          gestoInfo.innerText = "Aguardando Mão...";
-          coreGroup.position.set(0, 0, 0);
-        }
-      });
-
-      const cameraUtils = new Camera(videoElement, {
-        onFrame: async () => { await hands.send({ image: videoElement }); },
-        width: 640,
-        height: 480
-      });
-      cameraUtils.start();
-    }
-
-    window.onload = () => {
-      init3D();
-      animate();
-      switchUniverse('ben10');
-      initCamera();
-    };
+    });
   </script>
 </body>
 </html>
