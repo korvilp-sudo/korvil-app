@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>KORVIL — Gestos</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+}
+
+/* =========================
+   CÂMERA
+========================= */
+
+#camera {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    background: #000;
+}
+
+/* =========================
+   INTERFACE
+========================= */
+
+#hud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+#topBar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: white;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow:
+        0 0 5px #00ffff,
+        0 0 15px #00ffff;
+}
+
+.status {
+    padding: 7px 12px;
+    border: 1px solid rgba(0,255,255,.5);
+    border-radius: 20px;
+    background: rgba(0,0,0,.35);
+    color: #00ffff;
+    font-size: 12px;
+}
+
+/* =========================
+   BOTÃO CÂMERA
+========================= */
+
+#cameraButton {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+
+    width: 58px;
+    height: 58px;
+
+    border-radius: 50%;
+    border: 1px solid rgba(0,255,255,.8);
+
+    background: rgba(0,0,0,.45);
+    color: white;
+
+    font-size: 25px;
+
+    box-shadow:
+        0 0 10px rgba(0,255,255,.5),
+        inset 0 0 15px rgba(0,255,255,.1);
+
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* =========================
+   ALVO CABEÇA
+========================= */
+
+#headTarget {
+    display: none;
+
+    position: absolute;
+
+    width: 220px;
+    height: 280px;
+
+    left: 50%;
+    top: 45%;
+
+    transform: translate(-50%, -50%);
+
+    border: 2px dashed rgba(0,255,255,.75);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 15px rgba(0,255,255,.35),
+        inset 0 0 20px rgba(0,255,255,.08);
+
+    transition: .3s;
+}
+
+#headTarget.active {
+    border-color: #00ff88;
+
+    box-shadow:
+        0 0 20px #00ff88,
+        inset 0 0 30px rgba(0,255,136,.15);
+}
+
+#targetText {
+    position: absolute;
+
+    width: 100%;
+
+    top: -35px;
+
+    text-align: center;
+
+    color: #00ffff;
+
+    font-size: 13px;
+
+    text-shadow:
+        0 0 5px #00ffff;
+}
+
+/* =========================
+   CONTADOR
+========================= */
+
+#countdown {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 52px;
+    font-weight: bold;
+
+    color: #00ffff;
+
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 30px #00ffff;
+
+    display: none;
+}
+
+/* =========================
+   HOLOGRAMAS
+========================= */
+
+.holo {
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    transform: translate(-50%, -50%) rotate(45deg);
+
+    border: 2px solid #00ffff;
+
+    background: rgba(0,255,255,.08);
+
+    box-shadow:
+        0 0 7px #00ffff,
+        0 0 20px rgba(0,255,255,.7);
+
+    opacity: 0;
+
+    transition:
+        opacity .5s,
+        transform .5s;
+}
+
+.holo::after {
+    content: "◇";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-45deg);
+
+    color: #00ffff;
+
+    font-size: 15px;
+}
+
+.holo.visible {
+    opacity: 1;
+
+    animation:
+        hologramPulse 1.2s infinite alternate;
+}
+
+@keyframes hologramPulse {
+
+    from {
+        filter: brightness(.8);
+        box-shadow:
+            0 0 5px #00ffff,
+            0 0 12px rgba(0,255,255,.5);
+    }
+
+    to {
+        filter: brightness(1.8);
+        box-shadow:
+            0 0 12px #00ffff,
+            0 0 35px rgba(0,255,255,.9);
+    }
+}
+
+/* =========================
+   MENU INFERIOR
+========================= */
+
+#bottomMenu {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 110px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 15px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.85),
+            rgba(0,0,0,.15)
+        );
+
+    pointer-events: auto;
+}
+
+.menuButton {
+
+    width: 95px;
+    height: 70px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(0,255,255,.5);
+
+    background:
+        rgba(0,20,25,.65);
+
+    color: white;
+
+    cursor: pointer;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    transition: .2s;
+
+    box-shadow:
+        0 0 8px rgba(0,255,255,.15);
+}
+
+.menuButton:hover,
+.menuButton.selected {
+
+    border-color: #00ffff;
+
+    background:
+        rgba(0,255,255,.12);
+
+    box-shadow:
+        0 0 15px rgba(0,255,255,.5);
+}
+
+.icon {
+    font-size: 27px;
+}
+
+.label {
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+/* =========================
+   AVISO
+========================= */
+
+#message {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 125px;
+
+    transform: translateX(-50%);
+
+    padding: 10px 18px;
+
+    color: #fff;
+
+    background: rgba(0,0,0,.55);
+
+    border: 1px solid rgba(0,255,255,.35);
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- CÂMERA -->
+    <video
+        id="camera"
+        autoplay
+        playsinline>
+    </video>
+
+    <!-- HUD -->
+    <div id="hud">
+
+        <div id="topBar">
+
+            <div class="logo">
+                KORVIL
+            </div>
+
+            <div class="status" id="status">
+                CÂMERA FRONTAL
+            </div>
+
+        </div>
+
+        <!-- TROCAR CÂMERA -->
+        <button id="cameraButton">
+            ↻
+        </button>
+
+        <!-- ALVO -->
+        <div id="headTarget">
+
+            <div id="targetText">
+                CENTRALIZE SUA CABEÇA
+            </div>
+
+        </div>
+
+        <!-- CONTAGEM -->
+        <div id="countdown">
+            3
+        </div>
+
+        <!-- PONTOS HOLOGRÁFICOS -->
+
+        <div class="holo" id="leftEye"></div>
+        <div class="holo" id="rightEye"></div>
+
+        <div class="holo" id="leftEar"></div>
+        <div class="holo" id="rightEar"></div>
+
+        <div class="holo" id="nose"></div>
+        <div class="holo" id="mouth"></div>
+
+        <div class="holo" id="betweenEyes"></div>
+
+        <!-- MENSAGEM -->
+
+        <div id="message">
+            Selecione um equipamento
+        </div>
+
+        <!-- MENU -->
+
+        <div id="bottomMenu">
+
+            <button
+                class="menuButton"
+                id="helmetButton">
+
+                <span class="icon">⛑</span>
+                <span class="label">CAPACETE</span>
+
+            </button>
+
+            <button
+                class="menuButton"
+                id="glovesButton">
+
+                <span class="icon">🧤</span>
+                <span class="label">LUVAS</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURAÇÃO
+========================================================= */
+
+const video =
+    document.getElementById("camera");
+
+const cameraButton =
+    document.getElementById("cameraButton");
+
+const status =
+    document.getElementById("status");
+
+const helmetButton =
+    document.getElementById("helmetButton");
+
+const glovesButton =
+    document.getElementById("glovesButton");
+
+const headTarget =
+    document.getElementById("headTarget");
+
+const countdown =
+    document.getElementById("countdown");
+
+const message =
+    document.getElementById("message");
+
+
+let currentCamera = "user";
+
+let stream = null;
+
+let helmetMode = false;
+
+let countdownTimer = null;
+
+let centeredStart = null;
+
+
+/* =========================================================
+   INICIAR CÂMERA
+========================================================= */
+
+async function startCamera() {
+
+    try {
+
+        if (stream) {
+
+            stream.getTracks().forEach(
+                track => track.stop()
+            );
+
+        }
+
+        stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+                    facingMode: currentCamera,
+
+                    width: {
+                        ideal: 1920
+                    },
+
+                    height: {
+                        ideal: 1080
+                    }
+                },
+
+                audio: false
+            });
+
+        video.srcObject = stream;
+
+        status.textContent =
+            currentCamera === "user"
+            ? "CÂMERA FRONTAL"
+            : "CÂMERA TRASEIRA";
+
+        /*
+         * A câmera frontal é espelhada.
+         * A traseira deve ficar normal.
+         */
+
+        video.style.transform =
+            currentCamera === "user"
+            ? "scaleX(-1)"
+            : "scaleX(1)";
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Não foi possível acessar a câmera.";
+
+    }
+
+}
+
+
+/* =========================================================
+   TROCAR CÂMERA
+========================================================= */
+
+cameraButton.addEventListener(
+    "click",
+    async () => {
+
+        currentCamera =
+            currentCamera === "user"
+            ? "environment"
+            : "user";
+
+        await startCamera();
+
+    }
+);
+
+
+/* =========================================================
+   ATIVAR CAPACETE
+========================================================= */
+
+helmetButton.addEventListener(
+    "click",
+    () => {
+
+        helmetMode = true;
+
+        helmetButton.classList.add(
+            "selected"
+        );
+
+        glovesButton.classList.remove(
+            "selected"
+        );
+
+        headTarget.style.display =
+            "block";
+
+        message.textContent =
+            "Centralize sua cabeça no alvo.";
+
+        hideHolograms();
+
+        centeredStart = null;
+
+    }
+);
+
+
+/* =========================================================
+   LUVAS
+========================================================= */
+
+glovesButton.addEventListener(
+    "click",
+    () => {
+
+        helmetMode = false;
+
+        glovesButton.classList.add(
+            "selected"
+        );
+
+        helmetButton.classList.remove(
+            "selected"
+        );
+
+        headTarget.style.display =
+            "none";
+
+        hideHolograms();
+
+        message.textContent =
+            "Modo LUVA selecionado.";
+
+    }
+);
+
+
+/* =========================================================
+   POSIÇÃO DOS HOLOGRAMAS
+========================================================= */
+
+const holograms = {
+
+    leftEye:
+        document.getElementById("leftEye"),
+
+    rightEye:
+        document.getElementById("rightEye"),
+
+    leftEar:
+        document.getElementById("leftEar"),
+
+    rightEar:
+        document.getElementById("rightEar"),
+
+    nose:
+        document.getElementById("nose"),
+
+    mouth:
+        document.getElementById("mouth"),
+
+    betweenEyes:
+        document.getElementById("betweenEyes")
+
+};
+
+
+/* =========================================================
+   MOSTRAR HOLOGRAMAS
+========================================================= */
+
+function showHolograms() {
+
+    /*
+     * Posições iniciais aproximadas.
+     *
+     * A versão avançada substitui estas posições
+     * pelas coordenadas reais do Face Landmarker.
+     */
+
+    holograms.leftEye.style.left =
+        "43%";
+
+    holograms.leftEye.style.top =
+        "43%";
+
+    holograms.rightEye.style.left =
+        "57%";
+
+    holograms.rightEye.style.top =
+        "43%";
+
+    holograms.leftEar.style.left =
+        "34%";
+
+    holograms.leftEar.style.top =
+        "46%";
+
+    holograms.rightEar.style.left =
+        "66%";
+
+    holograms.rightEar.style.top =
+        "46%";
+
+    holograms.nose.style.left =
+        "50%";
+
+    holograms.nose.style.top =
+        "50%";
+
+    holograms.mouth.style.left =
+        "50%";
+
+    holograms.mouth.style.top =
+        "57%";
+
+    holograms.betweenEyes.style.left =
+        "50%";
+
+    holograms.betweenEyes.style.top =
+        "41%";
+
+
+    Object.values(holograms)
+        .forEach(element => {
+
+            element.classList.add(
+                "visible"
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   ESCONDER HOLOGRAMAS
+========================================================= */
+
+function hideHolograms() {
+
+    Object.values(holograms)
+        .forEach(element => {
+
+            element.classList.remove(
+                "visible"
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   VERIFICAR CENTRALIZAÇÃO
+========================================================= */
+
+/*
+ * Nesta versão inicial usamos o centro da tela.
+ *
+ * Para detectar a cabeça REALMENTE,
+ * conectaríamos o MediaPipe Face Landmarker.
+ */
+
+function checkHeadPosition() {
+
+    if (!helmetMode)
+        return;
+
+
+    /*
+     * Protótipo:
+     *
+     * considera que a cabeça está centralizada
+     * quando o usuário permanece na região central.
+     *
+     * O detector facial real substituirá esta parte.
+     */
+
+    const simulatedCentered =
+        true;
+
+
+    if (simulatedCentered) {
+
+        if (!centeredStart) {
+
+            centeredStart =
+                Date.now();
+
+            headTarget.classList.add(
+                "active"
+            );
+
+            startCountdown();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   CONTAGEM DE 3 SEGUNDOS
+========================================================= */
+
+function startCountdown() {
+
+    let remaining = 3;
+
+    countdown.style.display =
+        "block";
+
+    countdown.textContent =
+        remaining;
+
+
+    countdownTimer =
+        setInterval(() => {
+
+            remaining--;
+
+            if (remaining > 0) {
+
+                countdown.textContent =
+                    remaining;
+
+            }
+
+            else {
+
+                clearInterval(
+                    countdownTimer
+                );
+
+                countdown.style.display =
+                    "none";
+
+                message.textContent =
+                    "CAPACETE ATIVADO";
+
+                showHolograms();
+
+            }
+
+        }, 1000);
+
+}
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+startCamera();
+
+
+/*
+ * Loop de verificação.
+ */
+
+setInterval(
+    checkHeadPosition,
+    100
+);
+
+</script>
+
+</body>
+</html>
