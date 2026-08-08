@@ -6,11 +6,10 @@
 <title>holograma cgm</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); transform:scaleX(-1); }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); }
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
   #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
   #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
-  #cubo { position:absolute; z-index:3; width:120px; height:120px; left:50%; top:50%; transform:translate(-50%,-50%); border:3px solid #0ff; border-radius:20px; box-shadow:0 0 30px #0ff, inset 0 0 30px #0ff; background:rgba(0,255,255,0.1); pointer-events:none; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -18,7 +17,6 @@
 </head>
 <body>
   <div id="ui">sci-fi hologram by cgm</div>
-  <div id="cubo"></div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
   <button id="start_btn">iniciar camera</button>
@@ -34,6 +32,9 @@ let hand2 = null;
 let appScreen = null;
 let loadingPercent = 0;
 let cameraRunning = false;
+let isFrontCamera = true;
+let swapTimer = null; // TIMER PRA TROCAR HOLOGRAMA
+let hologramSide = 'left'; // left = hand1, right = hand2
 
 const buttons = [
   {id: 'grid', icon: '■', y_offset: -50, active: false},
@@ -58,17 +59,48 @@ hands.onResults((results) => {
   canvasCtx.shadowBlur = 25;
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    // CORRECAO: INVERTER X PQ O VIDEO TA ESPELHADO
-    hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
-    hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
+    // CORRECAO: SÓ INVERTE SE FOR CAMERA FRONTAL
+    if(isFrontCamera){
+      hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+      hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
+    } else {
+      hand1 = results.multiHandLandmarks[0];
+      hand2 = results.multiHandLandmarks[1] || null;
+    }
 
-    drawHandSkeleton(hand1, '#00ffff');
-    if(hand1) drawHologramBase(hand1);
-    if(appScreen && hand1) drawAppScreen(hand1);
+    // DESENHA AS 2 MAOS
+    if(hand1) drawHandSkeleton(hand1, '#00ffff');
+    if(hand2) drawHandSkeleton(hand2, '#ff00ff');
 
-    if(hand2) {
-      drawHandSkeleton(hand2, '#ff00ff');
-      checkButtonClick(hand2[8], hand1);
+    // VERIFICA TROCA DE HOLOGRAMA: MAOS JUNTAS 3s TIPO REZAR
+    if(hand1 && hand2) {
+      const distHands = Math.hypot(hand1[9].x - hand2[9].x, hand1[9].y - hand2[9].y);
+      if(distHands < 0.15) { // maos perto
+        if(!swapTimer) {
+          swapTimer = setTimeout(() => {
+            hologramSide = hologramSide === 'left'? 'right' : 'left';
+            swapTimer = null;
+          }, 3000);
+        }
+      } else {
+        if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
+      }
+    } else {
+      if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
+    }
+
+    // DEFINE QUAL MAO DESENHA O HOLOGRAMA BASEADO NO LADO
+    const hologramHand = hologramSide === 'left'? hand1 : hand2;
+    const clickHand = hologramSide === 'left'? hand2 : hand1;
+
+    if(hologramHand) {
+      drawHologramBase(hologramHand);
+      if(appScreen) drawAppScreen(hologramHand);
+    }
+
+    // CLIQUE SÓ COM PINCA POLEGAR + INDICADOR
+    if(clickHand) {
+      checkButtonClick(clickHand, hologramHand);
     }
   }
 });
@@ -173,11 +205,18 @@ function updateLoading() {
 }
 updateLoading();
 
-// 4. CLIQUE
-function checkButtonClick(landmark, base_hand) {
+// 4. CLIQUE: SÓ COM PINCA POLEGAR + INDICADOR
+function checkButtonClick(clickHand, base_hand) {
   if(!base_hand) return;
-  const x = landmark.x * canvasElement.width;
-  const y = landmark.y * canvasElement.height;
+  const thumb = clickHand[4];
+  const index = clickHand[8];
+  const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
+
+  // SÓ CLICA SE ESTIVER EM PINCA
+  if(pinchDist > 0.05) return;
+
+  const x = index.x * canvasElement.width;
+  const y = index.y * canvasElement.height;
 
   buttons.forEach(b => {
     const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
@@ -196,11 +235,18 @@ function checkButtonClick(landmark, base_hand) {
   })
 }
 
-// 5. LIGAR CAMERA AO CLICAR
+// 5. LIGAR CAMERA AO CLICAR - DETECTA FRENTE/TRASEIRA
 startBtn.onclick = async () => {
   if(cameraRunning) return;
   cameraRunning = true;
   startBtn.style.display = 'none';
+
+  let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  videoElement.srcObject = stream;
+
+  isFrontCamera = constraints.video.facingMode === 'user';
+  videoElement.style.transform = isFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
 
   const camera = new Camera(videoElement, {
     onFrame: async () => { await hands.send({image: videoElement}); },
