@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KORVIL // UNIVERSAL TRANSLATOR v2.0</title>
+    
+    <!-- Google Fonts para estilo Sci-Fi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #030712;
+            --panel-bg: rgba(15, 23, 42, 0.75);
+            --cyan-neon: #00f3ff;
+            --cyan-glow: rgba(0, 243, 255, 0.3);
+            --pink-neon: #ff0055;
+            --text-color: #e2e8f0;
+            --border-color: rgba(0, 243, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.05) 0%, transparent 80%),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 4px;
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Principal Futurista */
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--cyan-glow);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efeito Scanline na Tela */
+        .container::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Título HUD */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--cyan-neon);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--cyan-neon), 0 0 20px var(--cyan-neon);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        h1::before, h1::after {
+            content: '';
+            height: 2px;
+            width: 40px;
+            background: var(--cyan-neon);
+            box-shadow: 0 0 8px var(--cyan-neon);
+        }
+
+        .painel {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        select, button, textarea {
+            background: rgba(5, 11, 24, 0.9);
+            color: var(--cyan-neon);
+            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            border-radius: 6px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        select {
+            flex: 1;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--cyan-neon);
+            box-shadow: 0 0 12px var(--cyan-glow);
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            resize: none;
+            margin-bottom: 15px;
+        }
+
+        button {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: var(--cyan-neon);
+            color: #000;
+            box-shadow: 0 0 15px var(--cyan-neon);
+        }
+
+        #btnParar:hover {
+            background: var(--pink-neon);
+            color: #fff;
+            box-shadow: 0 0 15px var(--pink-neon);
+            border-color: var(--pink-neon);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Grid de Exibição dos Dados */
+        .grid-output {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-output { grid-template-columns: 1fr; }
+        }
+
+        .box {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(0, 243, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            padding-bottom: 4px;
+        }
+
+        .box-content {
+            font-size: 1rem;
+            min-height: 24px;
+            word-break: break-word;
+        }
+
+        /* Histórico */
+        #historico {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        #historico::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #historico::-webkit-scrollbar-thumb {
+            background: var(--cyan-neon);
+            border-radius: 2px;
+        }
+
+        .item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(0, 243, 255, 0.03);
+            border-left: 3px solid var(--cyan-neon);
+            font-size: 0.85rem;
+        }
+
+        /* Animação de Gravação Ativa */
+        .recording {
+            animation: pulse 1.5s infinite;
+            border-color: var(--pink-neon) !important;
+            color: var(--pink-neon) !important;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>KORVIL // TRANSLATOR</h1>
+
+    <div class="painel">
+        <select id="idiomaDestino">
+            <option value="pt">Português (PT)</option>
+            <option value="en">English (US)</option>
+            <option value="ja">日本語 (JP)</option>
+            <option value="fr">Français (FR)</option>
+            <option value="es">Español (ES)</option>
+            <option value="de">Deutsch (DE)</option>
+            <option value="it">Italiano (IT)</option>
+            <option value="ko">한국어 (KR)</option>
+            <option value="ru">Русский (RU)</option>
+            <option value="zh-CN">中文 (CN)</option>
+        </select>
+
+        <button id="btnVoz">🎤 CAPTURAR VOZ</button>
+        <button id="btnParar">⛔ PARAR</button>
+    </div>
+
+    <textarea id="textoManual" placeholder="> Insira o texto ou comando para tradução..."></textarea>
+    <button id="btnTraduzir" class="btn-full">EXECUTAR TRADUÇÃO</button>
+
+    <div class="grid-output">
+        <div class="box">
+            <h3>IDIOMA DETECTADO</h3>
+            <div id="detectado" class="box-content">--</div>
+        </div>
+        <div class="box">
+            <h3>TEXTO ORIGINAL</h3>
+            <div id="original" class="box-content">--</div>
+        </div>
+    </div>
+
+    <div class="box" style="margin-bottom: 20px;">
+        <h3>TRADUÇÃO PROCESSADA</h3>
+        <div id="traduzido" class="box-content" style="color: var(--cyan-neon);">--</div>
+    </div>
+
+    <div class="box">
+        <h3>LOGS / HISTÓRICO DE REQUISIÇÕES</h3>
+        <div id="historico"></div>
+    </div>
+</div>
+
+<script>
+    const original = document.getElementById("original");
+    const traduzido = document.getElementById("traduzido");
+    const detectado = document.getElementById("detectado");
+    const historico = document.getElementById("historico");
+    const idiomaDestino = document.getElementById("idiomaDestino");
+    const btnVoz = document.getElementById("btnVoz");
+
+    // Validação de API de Voz no Navegador
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let reconhecimento = null;
+
+    if (SpeechRecognition) {
+        reconhecimento = new SpeechRecognition();
+        reconhecimento.continuous = true;
+        reconhecimento.interimResults = false;
+
+        reconhecimento.onresult = async (e) => {
+            const texto = e.results[e.results.length - 1][0].transcript;
+            await processar(texto);
+        };
+
+        reconhecimento.onerror = (e) => {
+            console.error("Erro no reconhecimento de voz:", e.error);
+            btnVoz.classList.remove("recording");
+        };
+
+        reconhecimento.onend = () => {
+            btnVoz.classList.remove("recording");
+        };
+    } else {
+        btnVoz.disabled = true;
+        btnVoz.innerText = "🎤 INDISPONÍVEL";
+    }
+
+    async function traduzir(texto) {
+        try {
+            const idioma = idiomaDestino.value;
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${idioma}&dt=t&q=${encodeURIComponent(texto)}`;
+            
+            const resposta = await fetch(url);
+            const dados = await resposta.json();
+
+            return {
+                traducao: dados[0].map(x => x[0]).join(""),
+                origem: (dados[2] || "AUTO").toUpperCase()
+            };
+        } catch (erro) {
+            console.error("Erro de conexão com API:", erro);
+            return {
+                traducao: "ERRO AO PROCESSAR TRADUÇÃO.",
+                origem: "FAIL"
+            };
+        }
+    }
+
+    function falar(texto, idioma) {
+        if ('speechSynthesis' in window) {
+            speechSynthesis.cancel();
+            const voz = new SpeechSynthesisUtterance(texto);
+            voz.lang = idioma;
+            speechSynthesis.speak(voz);
+        }
+    }
+
+    function salvarHistorico(origem, texto, traducao) {
+        const item = document.createElement("div");
+        item.className = "item";
+        item.innerHTML = `
+            <strong>[${origem} ➔ ${idiomaDestino.value.toUpperCase()}]</strong><br>
+            <span style="opacity: 0.8">${texto}</span><br>
+            <span style="color: var(--cyan-neon)">> ${traducao}</span>
+        `;
+        historico.prepend(item);
+    }
+
+    async function processar(texto) {
+        original.innerText = "Processando...";
+        traduzido.innerText = "Traduzindo...";
+
+        const resultado = await traduzir(texto);
+
+        original.innerText = texto;
+        traduzido.innerText = resultado.traducao;
+        detectado.innerText = resultado.origem;
+
+        falar(resultado.traducao, idiomaDestino.value);
+        salvarHistorico(resultado.origem, texto, resultado.traducao);
+    }
+
+    // Eventos dos Botões
+    btnVoz.onclick = () => {
+        if (reconhecimento) {
+            reconhecimento.start();
+            btnVoz.classList.add("recording");
+        }
+    };
+
+    document.getElementById("btnParar").onclick = () => {
+        if (reconhecimento) {
+            reconhecimento.stop();
+            btnVoz.classList.remove("recording");
+        }
+    };
+
+    document.getElementById("btnTraduzir").onclick = () => {
+        const texto = document.getElementById("textoManual").value;
+        if (texto.trim()) {
+            processar(texto);
+        }
+    };
+</script>
+
+</body>
+</html>
