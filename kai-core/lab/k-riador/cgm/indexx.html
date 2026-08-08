@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>KORVIL G15 ULTRA x HOLOGRAMA CGM 5.0 - FULL BODY</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;touch-action:none;user-select:none;font-family:'Courier New',Courier,monospace}
+    body{background:#030712;color:#00f0ff;overflow:hidden;width:100vw;height:100vh}
+   .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.05) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;z-index:1}
+   .scanlines{position:absolute;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.25) 50%);background-size:100% 4px;pointer-events:none;z-index:2}
+    #video{position:absolute;width:100vw;height:100vh;object-fit:cover;transform:scaleX(-1);opacity:.35;filter:grayscale(40%) contrast(140%) brightness(.6);z-index:1}
+    #canvas{position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:3;pointer-events:none}
+    #menu{position:absolute;top:15px;left:15px;width:235px;max-height:92vh;overflow-y:auto;background:rgba(5,12,24,.92);border:1px solid #00f0ff;box-shadow:0 0 15px rgba(0,240,255,.2),inset 0 0 10px rgba(0,240,255,.1);padding:12px;border-radius:8px;backdrop-filter:blur(6px);z-index:10}
+    #menu::-webkit-scrollbar{width:4px}#menu::-webkit-scrollbar-thumb{background:#00f0ff}
+   .menu-title{font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;text-shadow:0 0 5px #00f0ff;display:flex;justify-content:space-between}
+   .separador{font-size:9px;color:#ff00ea;margin:12px 0 4px 0;letter-spacing:2px;border-top:1px dashed rgba(0,240,255,.3);padding-top:8px}
+   .btn{width:100%;padding:7px;margin:3px 0;background:rgba(0,240,255,.08);border:1px solid #00f0ff;color:#00f0ff;font-size:10px;font-weight:bold;letter-spacing:1px;cursor:pointer;border-radius:4px;transition:all.15s}
+   .btn:hover,.btn.active{border-color:#fff;box-shadow:0 0 12px #00f0ff;background:rgba(0,240,255,.3);color:#fff}
+   .btn.body-part{border-color:#ff00ea;color:#ff9aff;background:rgba(255,0,234,.08)}
+   .btn.body-part.active{background:rgba(255,0,234,.35);border-color:#fff;box-shadow:0 0 15px #ff00ea;color:#fff}
+   .btn.full{border-color:#ffe600;color:#ffe600;background:rgba(255,230,0,.1)}
+   .btn.full.active{background:rgba(255,230,0,.35);color:#000;box-shadow:0 0 15px #ffe600}
+   .cubo{position:absolute;width:80px;height:80px;border:2px solid #00f0ff;background:rgba(0,240,255,.12);box-shadow:0 0 15px rgba(0,240,255,.4);border-radius:6px;cursor:grab;z-index:5;display:flex;align-items:center;justify-content:center;font-size:10px;transition:.2s}
+   .cubo.segurado{border-color:#ff00ea;background:rgba(255,0,234,.2);box-shadow:0 0 25px #ff00ea;z-index:8}
+    #lixeira{position:absolute;bottom:20px;left:20px;width:60px;height:60px;border:2px dashed #ff3366;border-radius:10px;background:rgba(255,51,102,.1);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:10;transition:.2s}
+    #lixeira.ativo{transform:scale(1.25);background:rgba(255,0,68,.35);box-shadow:0 0 25px #ff0044}
+    #alvo{position:absolute;left:50%;top:50%;width:120px;height:120px;border-radius:50%;border:4px dashed #ffff00;transform:translate(-50%,-50%);display:none;z-index:4;box-shadow:0 0 20px #ffff00}
+    #status{position:absolute;bottom:20px;right:20px;color:#00f0ff;font-size:10px;background:rgba(5,12,24,.85);border:1px solid #00f0ff;padding:8px 12px;border-radius:4px;min-width:220px;z-index:10}
+   .calib-bar{width:100%;height:4px;background:#001122;border-radius:2px;margin-top:6px}.calib-fill{height:100%;width:0%;background:#00ff66;transition:.1s}
+    #msg{position:absolute;top:20px;width:100%;text-align:center;color:#00ffff;font-size:14px;z-index:10;text-shadow:0 0 10px #00ffff;pointer-events:none}
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div><div class="scanlines"></div>
+<div id="msg">KORVIL G15 FULL BODY // VOZ ATIVA</div>
+
+<div id="menu">
+  <div class="menu-title"><span>> CGM HOLO ULTRA</span><span>v5.1 FULL</span></div>
+
+  <div class="separador">> MEMBROS SUPERIORES</div>
+  <button class="btn body-part" data-part="capacete">⛑ CAPACETE HUD</button>
+  <button class="btn body-part" data-part="peitoral">▭ PEITORAL G15</button>
+  <button class="btn body-part" data-part="ombreira_e">◫ OMBREIRA ESQ</button>
+  <button class="btn body-part" data-part="ombreira_d">◫ OMBREIRA DIR</button>
+  <button class="btn body-part" data-part="braco_e">ᒍ BRAÇO ESQ</button>
+  <button class="btn body-part" data-part="braco_d">ᒐ BRAÇO DIR</button>
+  <button class="btn body-part active" data-part="luva_e">🧤 LUVA ESQ</button>
+  <button class="btn body-part" data-part="luva_d">🧤 LUVA DIR</button>
+
+  <div class="separador">> MEMBROS INFERIORES</div>
+  <button class="btn body-part" data-part="cinto">⬔ CINTO TÁTICO</button>
+  <button class="btn body-part" data-part="coxa_e">⬓ COXA ESQ</button>
+  <button class="btn body-part" data-part="coxa_d">⬓ COXA DIR</button>
+  <button class="btn body-part" data-part="canela_e">⟦ CANELA ESQ</button>
+  <button class="btn body-part" data-part="canela_d">⟧ CANELA DIR</button>
+  <button class="btn body-part" data-part="bota_e">👢 BOTA ESQ</button>
+  <button class="btn body-part" data-part="bota_d">👢 BOTA DIR</button>
+
+  <div class="separador">> SISTEMA COMPLETO</div>
+  <button class="btn full" id="btn_full">☢ CORPO TODO</button>
+  <button class="btn active" id="btn_luva">MODO LUVAS</button>
+  <button class="btn" id="calibrar">CALIBRAR GESTOS</button>
+  <button class="btn" id="novo">+ NOVO CUBO</button>
+  <button class="btn" id="limpar">RESETAR TUDO</button>
+  <button class="btn" id="cor">COR HUD</button>
+  <button class="btn" id="voz">VOZ / MIC: ON</button>
+  <div class="calib-bar"><div class="calib-fill" id="calibFill"></div></div>
+</div>
+
+<div id="lixeira">🗑</div><div id="alvo"></div>
+<video id="video" autoplay playsinline muted></video>
+<canvas id="canvas"></canvas>
+<div id="cubo1" class="cubo" style="left:calc(50% - 40px);top:calc(50% - 40px);">CUBO</div>
+<div id="status"><div>SISTEMA: <span id="st-text">AGUARDANDO</span></div><div>GESTO: <span id="st-gesto">NENHUM</span></div><div>OBJETOS: <span id="st-obj">1</span> | PARTES: <span id="st-parts">1</span></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script>
+const AudioContext = window.AudioContext||window.webkitAudioContext; let audioCtx=null,vozLigada=true;
+function initAudio(){if(!audioCtx)audioCtx=new AudioContext()} function vibrar(ms=30){if(navigator.vibrate)navigator.vibrate(ms)}
+function playSound(f,t='sine',d=.1,v=.1){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
+const SFX={click:()=>{playSound(800,'square',.05,.08);vibrar(20)},grab:()=>{playSound(300,'sawtooth',.12,.08);vibrar(40)},trash:()=>{playSound(150,'sawtooth',.25,.12);vibrar(70)},spawn:()=>{playSound(600,'sine',.1,.1);setTimeout(()=>playSound(900,'sine',.1,.08),50);vibrar(30)},sucesso:()=>{playSound(1200,'sine',.1,.1);setTimeout(()=>playSound(1500,'sine',.1,.08),100);vibrar([40,30,40])}};
+const falas=window.speechSynthesis; function falar(t){if(!vozLigada)return;falas.cancel();let m=new SpeechSynthesisUtterance(t);m.lang='pt-BR';m.rate=1.1;falas.speak(m)}
+
+if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; const rec=new SR(); rec.continuous=true; rec.lang='pt-BR';
+  rec.onresult=e=>{const cmd=e.results[e.results.length-1][0].transcript.trim().toLowerCase(); document.getElementById('msg').innerText="VOZ: "+cmd.toUpperCase();
+    if(cmd.includes("capacete"))togglePart("capacete"); if(cmd.includes("luva")){togglePart("luva_e");togglePart("luva_d")}
+    if(cmd.includes("peitoral")||cmd.includes("peito"))togglePart("peitoral"); if(cmd.includes("bota")){togglePart("bota_e");togglePart("bota_d")}
+    if(cmd.includes("corpo todo")||cmd.includes("armadura"))document.getElementById('btn_full').click();
+    if(cmd.includes("novo")||cmd.includes("cubo"))criarCubo(); if(cmd.includes("limpar")||cmd.includes("resetar"))document.getElementById('limpar').click();
+  }; rec.onend=()=>{if(vozLigada)rec.start()}; rec.start();
+}
+
+const video=document.getElementById('video'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+const msg=document.getElementById('msg'),alvo=document.getElementById('alvo'),stText=document.getElementById('st-text'),stObj=document.getElementById('st-obj'),stParts=document.getElementById('st-parts'),stGesto=document.getElementById('st-gesto'),lixeira=document.getElementById('lixeira');
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight} resize(); addEventListener('resize',resize);
+
+let cubos=[document.getElementById('cubo1')],luvaAtiva=true,luvaPega=false,contagemLuva=0,ultimoClique=0,cooldownGesto=0,appScreen=null,loadingPercent=0;
+let cores=['#00f0ff','#ff00ea','#ffe600','#00ff66','#ff3366'],corAtual=0;
+let luvaPos={x:innerWidth/2,y:innerHeight/2},smoothedHand1=null,smoothedHand2=null,etapaCalibragem=0,calibrado=true,calibValues={abrir:.32,punho:.12,pinca:.06},tempoCalib=0,distPincaAnterior=null;
+
+let activeParts=new Set(['luva_e']);
+function togglePart(p){initAudio();SFX.click(); if(activeParts.has(p))activeParts.delete(p);else activeParts.add(p); updatePartsUI(); stParts.textContent=activeParts.size; }
+function updatePartsUI(){document.querySelectorAll('.body-part').forEach(b=>{b.classList.toggle('active',activeParts.has(b.dataset.part))})}
+document.querySelectorAll('.body-part').forEach(b=>b.onclick=()=>togglePart(b.dataset.part));
+
+document.getElementById('btn_full').onclick=()=>{initAudio();const all=["capacete","peitoral","ombreira_e","ombreira_d","braco_e","braco_d","luva_e","luva_d","cinto","coxa_e","coxa_d","canela_e","canela_d","bota_e","bota_d"];
+  if(activeParts.size>=all.length){activeParts.clear()}else{all.forEach(p=>activeParts.add(p))} updatePartsUI(); stParts.textContent=activeParts.size; SFX.sucesso(); falar(activeParts.size>0?"Armadura completa ativada":"Armadura desativada");
+  document.getElementById('btn_full').classList.toggle('active',activeParts.size>=all.length);
+};
+
+const lerp=(s,e,a)=>s+(e-s)*a; const smoothLandmarks=(prev,curr,f=.35)=>{if(!prev)return curr;return curr.map((lm,i)=>({x:lerp(prev[i].x,lm.x,f),y:lerp(prev[i].y,lm.y,f),z:lerp(prev[i].z,lm.z,f)}))};
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const isPinca=h=>dist(h[4],h[8])<calibValues.pinca, isMaoFechada=h=>dist(h[8],h[5])<calibValues.punho && dist(h[12],h[9])<calibValues.punho, isMaoAberta=h=>dist(h[8],h[0])>calibValues.abrir;
+function identificarGesto(h){if(isPinca(h))return"PINÇA";if(isMaoFechada(h))return"PUNHO";if(isMaoAberta(h))return"ABERTO";if(h[8].y<h[6].y&&h[12].y<h[10].y)return"PAZ";if(h[8].y<h[6].y)return"APONTAR";if(h[4].y<h[3].y)return"LIKE";return"NEUTRO"}
+
+function drawHoloPart(name,x,y,scale=1){
+  ctx.save(); ctx.translate(x,y); ctx.scale(scale,scale);
+  ctx.strokeStyle=cores[corAtual]; ctx.shadowColor=cores[corAtual]; ctx.shadowBlur=12; ctx.lineWidth=2; ctx.fillStyle=`rgba(0,240,255,0.15)`;
+  // Desenhos wireframe por parte
+  if(name.includes('capacete')){ ctx.beginPath(); ctx.arc(0,0,45,0,Math.PI*2); ctx.stroke(); ctx.strokeRect(-35,-10,70,25); ctx.fillRect(-35,-10,70,25);
+    ctx.beginPath(); ctx.moveTo(-20,5);ctx.lineTo(20,5);ctx.stroke(); // visor
+  } else if(name.includes('peitoral')){ ctx.strokeRect(-60,-45,120,90); ctx.beginPath(); ctx.moveTo(0,-45);ctx.lineTo(0,45);ctx.stroke(); ctx.strokeRect(-15,-15,30,30); ctx.fillRect(-15,-15,30,30); }
+  else if(name.includes('ombreira')){ ctx.beginPath(); ctx.arc(0,0,30,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(0,0,40,0,Math.PI*1.5); ctx.stroke(); }
+  else if(name.includes('braco')){ ctx.strokeRect(-20,-50,40,100); ctx.beginPath(); for(let i=0;i<3;i++){ctx.moveTo(-20,-20+i*20);ctx.lineTo(20,-20+i*20)} ctx.stroke(); }
+  else if(name.includes('luva')){ ctx.strokeRect(-22,-25,44,50); ctx.fillRect(-22,-25,44,50); for(let i=0;i<4;i++){ctx.strokeRect(-18+i*10,25,6,18)} }
+  else if(name.includes('cinto')){ ctx.strokeRect(-70,-12,140,24); ctx.fillRect(-12,-12,24,24); ctx.strokeRect(-70,-12,140,24); }
+  else if(name.includes('coxa')){ ctx.strokeRect(-28,-55,56,110); ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.stroke(); }
+  else if(name.includes('canela')){ ctx.strokeRect(-20,-50,40,100); ctx.beginPath(); ctx.moveTo(-20,0);ctx.lineTo(20,0);ctx.stroke(); }
+  else if(name.includes('bota')){ ctx.strokeRect(-26,-15,52,30); ctx.fillRect(-26,-15,52,12); ctx.strokeRect(-30,15,60,25); }
+  ctx.font='9px Courier New'; ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.fillText(name.toUpperCase(),0,75);
+  ctx.restore();
+}
+
+function drawFullBodyLayout(){
+  const cx=canvas.width*0.75, cy=canvas.height*0.5;
+  const layout={
+    capacete:{x:cx,y:cy-180,s:1},
+    peitoral:{x:cx,y:cy-80,s:1.1},
+    ombreira_e:{x:cx-75,y:cy-90,s:.9}, ombreira_d:{x:cx+75,y:cy-90,s:.9},
+    braco_e:{x:cx-105,y:cy-20,s:.9}, braco_d:{x:cx+105,y:cy-20,s:.9},
+    luva_e:{x:cx-110,y:cy+55,s:.9}, luva_d:{x:cx+110,y:cy+55,s:.9},
+    cinto:{x:cx,y:cy+5,s:1},
+    coxa_e:{x:cx-30,y:cy+85,s:.9}, coxa_d:{x:cx+30,y:cy+85,s:.9},
+    canela_e:{x:cx-30,y:cy+180,s:.9}, canela_d:{x:cx+30,y:cy+180,s:.9},
+    bota_e:{x:cx-30,y:cy+250,s:1}, bota_d:{x:cx+30,y:cy+250,s:1},
+  };
+  // linhas de conexão do corpo
+  ctx.strokeStyle='rgba(0,240,255,0.2)'; ctx.lineWidth=1;
+  activeParts.forEach(p=>{ if(layout[p]){ ctx.beginPath(); ctx.moveTo(cx,cy-80); ctx.lineTo(layout[p].x,layout[p].y); ctx.stroke(); drawHoloPart(p,layout[p].x,layout[p].y,layout[p].s); }});
+}
+
+const handsDetector=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+handsDetector.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:.6,minTrackingConfidence:.6});
+handsDetector.onResults(results=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height); ctx.shadowColor=cores[corAtual]; ctx.shadowBlur=15;
+  if(results.multiHandLandmarks&&results.multiHandLandmarks.length>0){
+    const raw1=results.multiHandLandmarks[0].map(lm=>({x:1-lm.x,y:lm.y,z:lm.z})), raw2=results.multiHandLandmarks[1]?results.multiHandLandmarks[1].map(lm=>({x:1-lm.x,y:lm.y,z:lm.z})):null;
+    smoothedHand1=smoothLandmarks(smoothedHand1,raw1); if(raw2)smoothedHand2=smoothLandmarks(smoothedHand2,raw2); else smoothedHand2=null;
+    const g1=identificarGesto(smoothedHand1); stGesto.textContent=g1;
+    drawHandSkeleton(smoothedHand1,cores[corAtual]); if(smoothedHand2)drawHandSkeleton(smoothedHand2,'#ff00ea');
+
+    if(luvaAtiva){
+      processarModoLuva(smoothedHand1,smoothedHand2);
+      // Se luva conectada, desenha partes na palma
+      if(luvaPega && activeParts.size>0){
+        let px=luvaPos.x, py=luvaPos.y-120;
+        activeParts.forEach((part,i)=>{
+          drawHoloPart(part, px + (i%3-1)*90, py + Math.floor(i/3)*90, 0.6);
+        });
+      }
+    } else {
+      // modo livre mostra corpo completo no canto direito
+      if(activeParts.size>0) drawFullBodyLayout();
+    }
+    checarCalibragem(smoothedHand1); executarAcao(g1,smoothedHand2?identificarGesto(smoothedHand2):"NEUTRO",smoothedHand1);
+  } else { stText.textContent="AGUARDANDO MÃOS..."; smoothedHand1=smoothedHand2=null; if(activeParts.size>0 &&!luvaAtiva) drawFullBodyLayout(); }
+});
+
+function drawHandSkeleton(lm,color){window.drawConnectors(ctx,lm,HAND_CONNECTIONS,{color:color,lineWidth:2}); window.drawLandmarks(ctx,lm,{color:color,radius:3});}
+function processarModoLuva(m1,m2){
+  let px=m1[9].x*canvas.width, py=m1[9].y*canvas.height;
+  if(!luvaPega){ alvo.style.display="block"; const d=Math.hypot(px-luvaPos.x,py-luvaPos.y);
+    if(d<80){ contagemLuva+=1/30; msg.innerText=`SINCRO: ${Math.ceil(3-contagemLuva)}s`; ctx.strokeStyle="#ffe600";ctx.lineWidth=4;ctx.beginPath();ctx.arc(luvaPos.x,luvaPos.y,60,0,Math.PI*2*(contagemLuva/3));ctx.stroke();
+      if(contagemLuva>=3){luvaPega=true;contagemLuva=0;alvo.style.display="none";msg.innerText="LUVAS CONECTADAS - "+activeParts.size+" PARTES";SFX.sucesso();falar("Sistema corporal online")}
+    } else {contagemLuva=0;msg.innerText="ALINHE A PALMA AO CÍRCULO"} return;
+  }
+  luvaPos.x=px; luvaPos.y=py; for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(luvaPos.x,luvaPos.y,45+i*15,0,Math.PI*2);ctx.strokeStyle=`rgba(0,240,255,${1-i*.3})`;ctx.lineWidth=2;ctx.stroke();}
+}
+function executarAcao(g1,g2,h1){
+  if(!calibrado||Date.now()<cooldownGesto)return; const combo=g2==="NEUTRO"?g1:g1+" "+g2;
+  if(g1==="PINÇA"&&h1){const x=h1[8].x*canvas.width,y=h1[8].y*canvas.height; cubos.forEach(c=>{const cx=c.offsetLeft+c.offsetWidth/2,cy=c.offsetTop+c.offsetHeight/2; if(Math.hypot(x-cx,y-cy)<60){c.style.left=`${x-c.offsetWidth/2}px`;c.style.top=`${y-c.offsetHeight/2}px`}})}
+  const acoes={"LIKE":()=>document.getElementById('cor').click(),"ABERTO ABERTO":()=>document.getElementById('limpar').click(),"PAZ PAZ":()=>criarCubo()};
+  if(acoes[combo]){cooldownGesto=Date.now()+800; stGesto.textContent=combo; acoes[combo]()}
+}
+function iniciarCalibragem(){etapaCalibragem=1;calibrado=false;document.getElementById('calibFill').style.width='0%';stText.textContent="CALIBRANDO 1/3";falar("Mostre a mão aberta")}
+function checarCalibragem(h){if(etapaCalibragem===0)return;tempoCalib+=.05;document.getElementById('calibFill').style.width=(tempoCalib*33)+'%';
+  if(etapaCalibragem===1&&isMaoAberta(h)&&tempoCalib>1.5){calibValues.abrir=dist(h[8],h[0])*.9;etapaCalibragem=2;tempoCalib=0;stText.textContent="CALIBRANDO 2/3";falar("Feche o punho");SFX.sucesso()}
+  else if(etapaCalibragem===2&&isMaoFechada(h)&&tempoCalib>1.5){calibValues.punho=dist(h[8],h[5])*1.2;etapaCalibragem=3;tempoCalib=0;stText.textContent="CALIBRANDO 3/3";falar("Faça pinça");SFX.sucesso()}
+  else if(etapaCalibragem===3&&isPinca(h)&&tempoCalib>1.5){calibValues.pinca=dist(h[4],h[8])*1.1;etapaCalibragem=0;calibrado=true;tempoCalib=0;document.getElementById('calibFill').style.width='100%';stText.textContent="PRONTO";falar("Calibragem concluída");SFX.sucesso()}
+}
+function criarCubo(x,y){initAudio();const c=document.createElement('div');c.className='cubo';c.style.left=`${x||innerWidth/2-40}px`;c.style.top=`${y||innerHeight/2-40}px`;c.style.borderColor=cores[corAtual];let drag=false,ox=0,oy=0;
+  c.addEventListener('pointerdown',e=>{initAudio();drag=true;ox=e.clientX-c.offsetLeft;oy=e.clientY-c.offsetTop;c.classList.add('segurado');SFX.grab();c.setPointerCapture(e.pointerId)});
+  c.addEventListener('pointermove',e=>{if(!drag)return;c.style.left=`${e.clientX-ox}px`;c.style.top=`${e.clientY-oy}px`;const r=lixeira.getBoundingClientRect();lixeira.classList.toggle('ativo',Math.hypot(e.clientX-(r.left+30),e.clientY-(r.top+30))<80)});
+  c.addEventListener('pointerup',e=>{if(!drag)return;drag=false;c.classList.remove('segurado');const r=lixeira.getBoundingClientRect();if(Math.hypot(e.clientX-(r.left+30),e.clientY-(r.top+30))<80){SFX.trash();c.remove();cubos=cubos.filter(i=>i!==c);stObj.textContent=cubos.length}lixeira.classList.remove('ativo')});
+  document.body.appendChild(c);cubos.push(c);stObj.textContent=cubos.length;SFX.spawn();
+}
+document.getElementById('novo').onclick=()=>criarCubo();
+document.getElementById('limpar').onclick=()=>{initAudio();SFX.trash();cubos.forEach(c=>c.remove());cubos=[];activeParts.clear();activeParts.add('luva_e');updatePartsUI();stObj.textContent=0;stParts.textContent=1};
+document.getElementById('cor').onclick=()=>{initAudio();SFX.click();corAtual=(corAtual+1)%cores.length;document.getElementById('cor').style.color=cores[corAtual]};
+document.getElementById('calibrar').onclick=()=>iniciarCalibragem();
+document.getElementById('voz').onclick=()=>{vozLigada=!vozLigada;document.getElementById('voz').innerText=vozLigada?'VOZ / MIC: ON':'VOZ / MIC: OFF'};
+document.getElementById('btn_luva').onclick=()=>{initAudio();luvaAtiva=!luvaAtiva;document.getElementById('btn_luva').classList.toggle("active");luvaPega=false;contagemLuva=0;alvo.style.display=luvaAtiva?"block":"none";msg.innerText=luvaAtiva?"ALINHE A PALMA AO CÍRCULO":"MODO LIVRE - FULL BODY";SFX.click()};
+
+navigator.mediaDevices.getUserMedia({video:{width:1280,height:720}}).then(stream=>{
+  video.srcObject=stream; const camera=new Camera(video,{onFrame:async()=>{await handsDetector.send({image:video})},width:1280,height:720});
+  camera.start().then(()=>{stText.textContent="G15 FULL ONLINE"});
+}).catch(()=>{stText.textContent="ERRO CAMERA"});
+</script>
+</body>
+</html>
