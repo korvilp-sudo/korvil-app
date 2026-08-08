@@ -3,203 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>armadura 360 cgm</title>
+<title>holograma cgm</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
   #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); }
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:14px; color:#0ff; text-shadow:0 0 10px #0ff; }
+  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
   #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
-  #menuLateral { position:absolute; left:20px; top:50%; transform:translateY(-50%); z-index:4; background:rgba(0,20,40,0.85); border:1px solid #0ff; padding:10px; border-radius:10px; box-shadow:0 0 20px #0ff; max-height:80vh; overflow-y:auto; }
-.btnHolo { display:block; width:160px; margin:6px 0; padding:8px; background:rgba(0,255,255,0.1); border:1px solid #0ff; color:#0ff; font-size:12px; cursor:pointer; border-radius:5px; text-align:left; }
-.btnHolo.ativo { background:#0ff; color:#000; box-shadow:0 0 15px #0ff; }
- #direcao { position:absolute; top:40px; width:100%; text-align:center; z-index:3; color:#0ff; font-size:12px; }
- #miraMenu { position:absolute; top:10px; right:20px; z-index:5; background:rgba(255,0,0,0.2); border:1px solid #f00; padding:8px; border-radius:5px; color:#f00; display:none; font-size:11px; }
-.mira { position:absolute; width:60px; height:60px; border:2px solid #f00; border-radius:50%; display:none; z-index:5; }
-.mira::before { content:''; position:absolute; top:50%; left:0; width:100%; height:2px; background:#f00; }
-.mira::after { content:''; position:absolute; left:50%; top:0; width:2px; height:100%; background:#f00; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">ARMADURA HOLOGRAFICA 360° by CGM</div>
-  <div id="direcao">DIRECAO: FRENTE</div>
-  <div id="miraMenu">MIRA ATIVA<br>1.ALVO<br>2.ZOOM<br>3.SCAN</div>
-  <div class="mira" id="mira"></div>
+  <div id="ui">sci-fi hologram by cgm</div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
   <button id="start_btn">iniciar camera</button>
-
-  <div id="menuLateral">...mesmo menu... </div>
 
 <script>
 const videoElement = document.getElementById('video');
 const canvasElement = document.getElementById('canvas');
 const canvasCtx = canvasElement.getContext('2d');
 const startBtn = document.getElementById('start_btn');
-const direcaoTxt = document.getElementById('direcao');
-const miraDiv = document.getElementById('mira');
-const miraMenu = document.getElementById('miraMenu');
 
-let hand1 = null, hand2 = null, poseLandmarks = null;
-let isFrontCamera = true, cameraRunning = false;
-let hologramasAtivos = new Set(['luva','bracelete','braco','ombro','peito','costas','lateral','capacete','abdomen','coxa','canela','pe']);
-let direcaoCorpo = 'frente';
-let miraAtiva = false;
+let hand1 = null;
+let hand2 = null;
+let appScreen = null;
+let loadingPercent = 0;
+let cameraRunning = false;
+let isFrontCamera = true;
+let swapTimer = null; // TIMER PRA TROCAR HOLOGRAMA
+let hologramSide = 'left'; // left = hand1, right = hand2
 
-// ESTADOS DOS MEMBROS
-let estado = {
-  luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal'
+const buttons = [
+  {id: 'grid', icon: '■', y_offset: -50, active: false},
+  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
+  {id: 'power', icon: '⚡', y_offset: 50, active: false},
+];
+
+function resize() {
+  canvasElement.width = window.innerWidth;
+  canvasElement.height = window.innerHeight;
 }
+resize();
+window.onresize = resize;
 
-// HANDS + POSE igual anterior
+// 1. MEDIAPIPE HANDS
 const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
 hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
-const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
-pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-
-pose.onResults((results) => {
-  poseLandmarks = results.poseLandmarks;
-  if(poseLandmarks) {
-    detectarDirecao(poseLandmarks);
-    processarGestosCabeca(poseLandmarks); // GESTO DA CABEÇA
-  }
-})
-
-function detectarDirecao(lm){ /* igual ao anterior */ }
 
 hands.onResults((results) => {
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 20;
+  canvasCtx.shadowColor = '#00ffff';
+  canvasCtx.shadowBlur = 25;
 
-  if (results.multiHandLandmarks) {
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    // CORRECAO: SÓ INVERTE SE FOR CAMERA FRONTAL
     if(isFrontCamera){
-      hand1 = results.multiHandLandmarks[0]?.map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
-      hand2 = results.multiHandLandmarks[1]?.map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+      hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+      hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
     } else {
       hand1 = results.multiHandLandmarks[0];
-      hand2 = results.multiHandLandmarks[1];
+      hand2 = results.multiHandLandmarks[1] || null;
     }
-    processarGestosMembros(); // 3 GESTOS POR MEMBRO
 
-    if(direcaoCorpo === 'frente') drawFrente();
-    if(direcaoCorpo === 'costas') drawCostas();
-    if(direcaoCorpo === 'esq') drawLateral('esq');
-    if(direcaoCorpo === 'dir') drawLateral('dir');
+    // DESENHA AS 2 MAOS
+    if(hand1) drawHandSkeleton(hand1, '#00ffff');
+    if(hand2) drawHandSkeleton(hand2, '#ff00ff');
+
+    // VERIFICA TROCA DE HOLOGRAMA: MAOS JUNTAS 3s TIPO REZAR
+    if(hand1 && hand2) {
+      const distHands = Math.hypot(hand1[9].x - hand2[9].x, hand1[9].y - hand2[9].y);
+      if(distHands < 0.15) { // maos perto
+        if(!swapTimer) {
+          swapTimer = setTimeout(() => {
+            hologramSide = hologramSide === 'left'? 'right' : 'left';
+            swapTimer = null;
+          }, 3000);
+        }
+      } else {
+        if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
+      }
+    } else {
+      if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; }
+    }
+
+    // DEFINE QUAL MAO DESENHA O HOLOGRAMA BASEADO NO LADO
+    const hologramHand = hologramSide === 'left'? hand1 : hand2;
+    const clickHand = hologramSide === 'left'? hand2 : hand1;
+
+    if(hologramHand) {
+      drawHologramBase(hologramHand);
+      if(appScreen) drawAppScreen(hologramHand);
+    }
+
+    // CLIQUE SÓ COM PINCA POLEGAR + INDICADOR
+    if(clickHand) {
+      checkButtonClick(clickHand, hologramHand);
+    }
   }
 });
 
-// 1. GESTO DA CABEÇA: PISCAR OLHO DIREITO
-let olhoFechado = false;
-function processarGestosCabeca(lm){
-  const olhoDirCima = lm[7]; // olho dir
-  const olhoDirBaixo = lm[5];
-  const distOlho = Math.abs(olhoDirCima.y - olhoDirBaixo.y);
-
-  if(distOlho < 0.02 &&!olhoFechado){ // piscou
-    olhoFechado = true;
-    miraAtiva =!miraAtiva;
-    miraDiv.style.display = miraAtiva? 'block' : 'none';
-    miraMenu.style.display = miraAtiva? 'block' : 'none';
-    setTimeout(()=>olhoFechado=false, 500);
-  }
-  if(miraAtiva){
-    miraDiv.style.left = (olhoDirCima.x * canvasElement.width - 30) + 'px';
-    miraDiv.style.top = (olhoDirCima.y * canvasElement.height - 30) + 'px';
-  }
-}
-
-// 2. 3 GESTOS PARA CADA MEMBRO
-function processarGestosMembros(){
-  if(!hand1 &&!hand2) return;
-  const h = hand1 || hand2;
-
-  // LUVA: 1.PUNHO=ESCUDO 2.PINÇA=TIRO 3.MÃO ABERTA=PULSO
-  if(isMaoFechada(h)) estado.luva = 'escudo';
-  else if(isPinca(h)) estado.luva = 'tiro';
-  else estado.luva = 'normal';
-
-  // BRAÇO: 1.PUNHO=RETRATIL 2.DEDO PRA CIMA=LAMINA 3.GIRAR=POWER
-  if(isMaoFechada(h)) estado.braco = 'retraitil';
-  else if(h[8].y < h[6].y) estado.braco = 'lamina';
-  else estado.braco = 'normal';
-
-  // PEITO: 1.DUAS MAOS JUNTAS=REATOR MAX 2.PUNHO NO PEITO=ARMADURA 3.ABRIR BRACOS=ESCUDO TOTAL
-  if(hand1 && hand2 && Math.hypot(hand1[9].x-hand2[9].x, hand1[9].y-hand2[9].y) < 0.1) estado.peito = 'reator';
-  else if(isMaoFechada(h) && h[9].y < 0.5) estado.peito = 'armadura';
-  else estado.peito = 'normal';
-
-  // PERNA: 1.CORRER NO LUGAR=TURBO 2.CHUTE=PROPULSOR 3.AGACHAR=ESTABILIZAR
-  if(poseLandmarks && poseLandmarks[27].y < 0.6) estado.perna = 'turbo'; // joelho levantado
-  else estado.perna = 'normal';
-}
-
-function isMaoFechada(h){
-  return Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y) < 0.08;
-}
-function isPinca(h){
-  return Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y) < 0.05;
-}
-
-// DESENHO MUDA CONFORME ESTADO
-function drawFrente(){
-  if(hand1) { drawHand(hand1, '#00ffff'); if(hologramasAtivos.has('luva')) drawHologramBase(hand1, estado.luva); }
-  if(hologramasAtivos.has('peito')) drawPeitoFrente(estado.peito);
-  if(hologramasAtivos.has('braco')) drawBracoFrente(estado.braco);
-  //... outras peças
-}
-
-function drawHologramBase(landmarks, estado){
-  const cx = landmarks[9].x * canvasElement.width; const cy = landmarks[9].y * canvasElement.height;
-  if(estado === 'escudo'){ // ESCUDO
-    canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 100, 0, 2*Math.PI);
-    canvasCtx.fillStyle = 'rgba(0,255,255,0.2)'; canvasCtx.fill();
-  }
-  else if(estado === 'tiro'){ // CANHAO
-    canvasCtx.beginPath(); canvasCtx.rect(cx-10, cy-40, 20, 40); canvasCtx.fillStyle = '#ff0000'; canvasCtx.fill();
-  }
-  else { // NORMAL
-    for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
-  }
-}
-
-function drawPeitoFrente(estado){
-  const cx = canvasElement.width/2; const cy = canvasElement.height*0.35;
-  if(estado === 'reator'){ canvasCtx.beginPath(); canvasCtx.arc(cx, cy-20, 30, 0, 2*Math.PI); canvasCtx.fillStyle='#fff'; canvasCtx.fill(); }
-  else if(estado === 'armadura'){ canvasCtx.lineWidth = 6; }
-  else { canvasCtx.lineWidth = 3; }
-  canvasCtx.beginPath(); canvasCtx.ellipse(cx, cy, 120, 150, 0, 0, Math.PI); canvasCtx.strokeStyle = '#00ffff'; canvasCtx.stroke();
-}
-
-function drawBracoFrente(estado){
-  if(estado === 'lamina'){
-    const cx = canvasElement.width/2 - 100;
-    canvasCtx.beginPath(); canvasCtx.moveTo(cx, canvasElement.height*0.3); canvasCtx.lineTo(cx, canvasElement.height*0.5);
-    canvasCtx.strokeStyle = '#ff0000'; canvasCtx.lineWidth = 5; canvasCtx.stroke(); // lamina
-  }
-}
-
-//... todas as outras funções de desenho iguais as anteriores...
-
-function drawHand(landmarks, color) {
+function drawHandSkeleton(landmarks, color) {
   window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
-  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 3});
+  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 4});
 }
 
-// CAMERA
+// 2. HOLOGRAMA NA PALMA
+function drawHologramBase(landmarks) {
+  const cx = landmarks[9].x * canvasElement.width;
+  const cy = landmarks[9].y * canvasElement.height;
+
+  for(let i=0; i<3; i++) {
+    canvasCtx.beginPath();
+    canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI);
+    canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`;
+    canvasCtx.lineWidth = 2;
+    canvasCtx.stroke();
+  }
+
+  // botoes do lado do polegar
+  const bx_base = landmarks[4].x * canvasElement.width + 80;
+  const by_base = landmarks[4].y * canvasElement.height;
+
+  buttons.forEach(b => {
+    b.x = bx_base;
+    b.y = by_base + b.y_offset;
+    drawHexagon(b.x, b.y, 25, b.active);
+    canvasCtx.fillStyle = '#fff';
+    canvasCtx.font = '18px sans-serif';
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillText(b.icon, b.x, b.y + 6);
+  });
+}
+
+function drawHexagon(x, y, radius, active) {
+  canvasCtx.beginPath();
+  for(let i=0; i<6; i++){
+    const angle = Math.PI / 3 * i - Math.PI/6;
+    const px = x + radius * Math.cos(angle);
+    const py = y + radius * Math.sin(angle);
+    if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
+  }
+  canvasCtx.closePath();
+  canvasCtx.fillStyle = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
+  canvasCtx.fill();
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.stroke();
+}
+
+// 3. TELA DE APP
+function drawAppScreen(landmarks) {
+  const x = landmarks[9].x * canvasElement.width - 180;
+  const y = landmarks[9].y * canvasElement.height - 120;
+  const w = 360; const h = 240;
+
+  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.7)';
+  canvasCtx.fillRect(x, y, w, h);
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.lineWidth = 2;
+  canvasCtx.strokeRect(x, y, w, h);
+
+  if(appScreen === 'loading') {
+    canvasCtx.fillStyle = '#00ffff';
+    canvasCtx.font = '28px Courier New';
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillText(`${loadingPercent}%`, x + w/2, y + h/2);
+    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
+    canvasCtx.fillRect(x + 40, y + h - 30, w - 80, 8);
+    canvasCtx.fillStyle = '#00ffff';
+    canvasCtx.fillRect(x + 40, y + h - 30, (w - 80) * (loadingPercent/100), 8);
+  }
+
+  if(appScreen === 'mapa') {
+    canvasCtx.fillStyle = 'rgba(0, 100, 50, 0.8)';
+    canvasCtx.fillRect(x + 10, y + 10, w - 20, h - 20);
+    canvasCtx.strokeStyle = '#00ff88';
+    for(let i=0; i<4; i++){
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(x + 10, y + 10 + i*50);
+      canvasCtx.lineTo(x + w - 10, y + 10 + i*50);
+      canvasCtx.stroke();
+    }
+    canvasCtx.fillStyle = '#ff0000';
+    canvasCtx.beginPath();
+    canvasCtx.arc(x + 80, y + 60, 5, 0, 2 * Math.PI); canvasCtx.fill();
+    canvasCtx.fillStyle = '#fff';
+    canvasCtx.font = '12px Courier New';
+    canvasCtx.fillText("3 km - 30 min", x + 180, y + 220);
+  }
+}
+
+function updateLoading() {
+  if(appScreen === 'loading' && loadingPercent < 100) {
+    loadingPercent += 3;
+  } else if(loadingPercent >= 100) {
+    appScreen = 'mapa';
+  }
+  requestAnimationFrame(updateLoading);
+}
+updateLoading();
+
+// 4. CLIQUE: SÓ COM PINCA POLEGAR + INDICADOR
+function checkButtonClick(clickHand, base_hand) {
+  if(!base_hand) return;
+  const thumb = clickHand[4];
+  const index = clickHand[8];
+  const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
+
+  // SÓ CLICA SE ESTIVER EM PINCA
+  if(pinchDist > 0.05) return;
+
+  const x = index.x * canvasElement.width;
+  const y = index.y * canvasElement.height;
+
+  buttons.forEach(b => {
+    const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
+    if(dist < 30 &&!b.active) {
+      b.active = true;
+      setTimeout(() => b.active = false, 300);
+
+      if(b.id === 'grid') {
+        appScreen = 'loading';
+        loadingPercent = 0;
+      }
+      if(b.id === 'power') {
+        appScreen = null;
+      }
+    }
+  })
+}
+
+// 5. LIGAR CAMERA AO CLICAR - DETECTA FRENTE/TRASEIRA
 startBtn.onclick = async () => {
-  if(cameraRunning) return; cameraRunning = true; startBtn.style.display = 'none';
+  if(cameraRunning) return;
+  cameraRunning = true;
+  startBtn.style.display = 'none';
+
   let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   videoElement.srcObject = stream;
+
   isFrontCamera = constraints.video.facingMode === 'user';
   videoElement.style.transform = isFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
-  const camera = new Camera(videoElement, { onFrame: async () => { await hands.send({image: videoElement}); await pose.send({image: videoElement}); }, width: 1280, height: 720 });
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => { await hands.send({image: videoElement}); },
+    width: 1280, height: 720
+  });
   camera.start();
 }
+
 </script>
 </body>
 </html>
