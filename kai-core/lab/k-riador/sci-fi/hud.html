@@ -2,23 +2,24 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visão Cibernética AI - Reconhecimento Facial & Gestos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visão Cibernética AI - Sistema HUD & Gestos Oculares</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React e ReactDOM -->
+  <!-- React & ReactDOM -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   
-  <!-- Babel para transpilar JSX -->
+  <!-- Babel Compiler -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- MediaPipe Face Mesh & Camera Utils -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
+  <!-- Custom HUD Styles & Animations -->
   <style>
     @keyframes scan {
       0% { top: 0%; opacity: 0.8; }
@@ -36,14 +37,14 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-cyan-400 font-mono overflow-hidden select-none">
+<body class="bg-[#020a12] text-cyan-300 font-mono overflow-hidden select-none">
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
     function CyberHUD() {
-      // Estados do HUD e Sistema
+      // Estados do HUD
       const [status, setStatus] = useState('INICIALIZANDO SISTEMA...');
       const [faceDetected, setFaceDetected] = useState(false);
       const [aimActive, setAimActive] = useState(false);
@@ -53,14 +54,14 @@
       const [awaitingVoice, setAwaitingVoice] = useState(false);
       const [selectedActionIndex, setSelectedActionIndex] = useState(null);
       const [feedbackMsg, setFeedbackMsg] = useState('Aguardando câmera e reconhecimento facial...');
-      const [eyeStatusText, setEyeStatusText] = useState('Analisando Visão...');
+      const [eyeStatusText, setEyeStatusText] = useState('Aguardando Detecção...');
 
-      // Refs de Câmera, Canvas e Detecção
+      // Refs
       const videoRef = useRef(null);
       const canvasRef = useRef(null);
       const blinkStateRef = useRef({ lastActionTime: 0 });
 
-      // Síntese de Voz (Text-to-Speech)
+      // Síntese de Voz (TTS)
       const speak = (text, callback) => {
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
@@ -72,7 +73,7 @@
         }
       };
 
-      // Inicializa MediaPipe Face Mesh & Câmera
+      // Inicialização da Câmera + MediaPipe Face Mesh
       useEffect(() => {
         let camera = null;
 
@@ -108,7 +109,7 @@
         };
       }, []);
 
-      // Leitura Facial e Gestos dos Olhos em Tempo Real
+      // Processamento Facial & Detecção dos Olhos
       const onFaceResults = (results) => {
         const canvasCtx = canvasRef.current?.getContext('2d');
         if (!canvasCtx || !canvasRef.current) return;
@@ -119,73 +120,74 @@
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
           if (!faceDetected) {
             setFaceDetected(true);
-            setStatus('SISTEMA OPERACIONAL');
-            setFeedbackMsg('Rosto reconhecido com sucesso. Pisque 1x o olho direito para ligar a mira.');
-            speak('Rosto reconhecido automaticamente.');
+            setStatus('OPERACIONAL // OPERADOR DETECTADO');
+            setFeedbackMsg('Operador reconhecido. Pisque 1x o olho direito para ligar a mira.');
+            speak('Rosto reconhecido.');
           }
 
           const landmarks = results.multiFaceLandmarks[0];
 
-          // Pontos de rastreio de interface no rosto
+          // Desenha os pontos de HUD no rosto
           canvasCtx.fillStyle = '#22d3ee';
           [33, 263, 1, 61, 291].forEach(idx => {
             const pt = landmarks[idx];
             canvasCtx.beginPath();
-            canvasCtx.arc(pt.x * canvasRef.current.width, pt.y * canvasRef.current.height, 3, 0, 2 * Math.PI);
+            canvasCtx.arc(pt.x * canvasRef.current.width, pt.y * canvasRef.current.height, 2, 0, 2 * Math.PI);
             canvasCtx.fill();
           });
 
-          // Cálculo simplificado de Eye Aspect Ratio (EAR)
+          // Pálpebra Olho Esquerdo
           const leftTop = landmarks[159].y;
           const leftBottom = landmarks[145].y;
           const leftDist = Math.abs(leftTop - leftBottom);
 
+          // Pálpebra Olho Direito
           const rightTop = landmarks[386].y;
           const rightBottom = landmarks[374].y;
           const rightDist = Math.abs(rightTop - rightBottom);
 
-          const threshold = 0.015; // Limiar de fechamento da pálpebra
+          const threshold = 0.015;
           const leftClosed = leftDist < threshold;
           const rightClosed = rightDist < threshold;
 
           const now = Date.now();
-          const cooldown = 900; // Cooldown entre gestos oculares (ms)
+          const cooldown = 900; // Cooldown em ms
 
           if (now - blinkStateRef.current.lastActionTime > cooldown) {
-            // Piscar 1x os DOIS OLHOS
+            // Piscar Dois Olhos
             if (leftClosed && rightClosed) {
               blinkStateRef.current.lastActionTime = now;
               setEyeStatusText('PISCADA DUPLA (AMBOS OS OLHOS)');
               handleBothEyesBlink();
             } 
-            // Piscar 1x só OLHO DIREITO
+            // Piscar Olho Direito
             else if (rightClosed && !leftClosed) {
               blinkStateRef.current.lastActionTime = now;
-              setEyeStatusText('OLHO DIREITO PISCOU (1X)');
+              setEyeStatusText('OLHO DIREITO PISCOU (MIRA)');
               handleRightEyeBlink();
             } 
-            // Piscar 1x só OLHO ESQUERDO
+            // Piscar Olho Esquerdo
             else if (leftClosed && !rightClosed) {
               blinkStateRef.current.lastActionTime = now;
-              setEyeStatusText('OLHO ESQUERDO PISCOU (1X)');
+              setEyeStatusText('OLHO ESQUERDO PISCOU (SCANNER)');
               handleLeftEyeBlink();
             }
           }
         } else {
           if (faceDetected) {
             setFaceDetected(false);
-            setStatus('PROCURANDO ROSTO...');
+            setStatus('PROCURANDO OPERADOR...');
           }
         }
         canvasCtx.restore();
       };
 
-      // 1. Piscar 1x Olho Direito -> Ativa Mira
+      // Piscar Olho Direito (1x)
       const handleRightEyeBlink = () => {
         setAimActive(prev => {
           const nextState = !prev;
           if (nextState) {
-            setFeedbackMsg('Mira ativada! Pisque 1x o olho ESQUERDO para escanear o ambiente.');
+            setFeedbackMsg('Mira ativada. Pisque 1x o olho ESQUERDO para iniciar o escaneamento.');
             speak('Mira ativada.');
           } else {
             setFeedbackMsg('Mira desativada.');
@@ -195,63 +197,60 @@
         });
       };
 
-      // 2. Piscar 1x Olho Esquerdo -> Mira faz escaner de tudo
+      // Piscar Olho Esquerdo (1x)
       const handleLeftEyeBlink = () => {
         setAimActive(currentAim => {
           if (!currentAim) {
-            setFeedbackMsg('Ative a mira primeiro piscando 1x o Olho DIREITO!');
+            setFeedbackMsg('Ative a mira primeiro piscando 1x o olho DIREITO!');
             speak('Ative a mira primeiro piscando o olho direito.');
             return false;
           }
-
           executeEnvironmentScan();
           return currentAim;
         });
       };
 
-      // Execução do Escaneamento e Áudio "O que quer fazer senhor?"
+      // Executa a varredura do ambiente
       const executeEnvironmentScan = () => {
         setScanning(true);
         setStatus('ESCANEANDO AMBIENTE...');
-        setFeedbackMsg('Escaner ativado. Lendo objetos, pessoas, animais e situações...');
-        speak('Escaneando todo o ambiente.');
+        setFeedbackMsg('Escaner em execução. Mapeando objetos e ambiente...');
+        speak('Escaneando o ambiente.');
 
         setTimeout(() => {
           setScanning(false);
           setStatus('ESCANEAMENTO CONCLUÍDO');
 
           const currentScan = {
-            objetos: 'Terminal Cyber, Tela Principal, Xícara de Café',
+            objetos: 'Terminal Cyber, Tela Principal, Dispositivos de E/S',
             pessoas: '1 Pessoa detectada (Operador Principal)',
-            animais: 'Nenhum animal detectado na área',
-            situacao: 'Ambiente seguro. Sessão de desenvolvimento ativa.'
+            animais: 'Nenhum animal detectado',
+            situacao: 'Ambiente seguro. Sessão ativa.'
           };
 
           const top3Priorities = [
-            'Executar otimização de rotina no terminal',
-            'Sincronizar dados de varredura com a nuvem',
+            'Otimizar rotina de execução no terminal',
+            'Sincronizar telemetria com a nuvem',
             'Realizar verificação preventiva de sistema'
           ];
 
           setScanResults(currentScan);
           setPriorities(top3Priorities);
           setAwaitingVoice(true);
+          setFeedbackMsg('Escaneamento concluído! O que quer fazer senhor?');
 
-          setFeedbackMsg('Varredura completa! Voz ativada. O que quer fazer senhor?');
-
-          // Mensagem de voz obrigatória após escanear
           speak('O que quer fazer senhor?', () => {
             listenVoiceResponse();
           });
         }, 3000);
       };
 
-      // Captura a opção por Voz
+      // Captura áudio/voz
       const listenVoiceResponse = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
           setSelectedActionIndex(0);
-          setFeedbackMsg('Voz não suportada. Opção 1 marcada. Pisque os dois olhos para executar.');
+          setFeedbackMsg('Comando de voz indisponível. Opção 1 pré-selecionada.');
           return;
         }
 
@@ -262,62 +261,62 @@
           recognition.interimResults = false;
 
           recognition.onstart = () => {
-            setFeedbackMsg('Escutando comando de voz... Fale: "Primeira", "Segunda" ou "Terceira".');
+            setFeedbackMsg('Escutando... Diga: "Primeira", "Segunda" ou "Terceira".');
           };
 
           recognition.onresult = (event) => {
             const speechResult = event.results[0][0].transcript.toLowerCase();
-            
-            if (speechResult.includes('1') || speechResult.includes('primeira') || speechResult.includes('otimização')) {
+
+            if (speechResult.includes('1') || speechResult.includes('primeira')) {
               setSelectedActionIndex(0);
-              speak('Primeira opção selecionada. Pisque os dois olhos para executar na hora.');
-            } else if (speechResult.includes('2') || speechResult.includes('segunda') || speechResult.includes('sincronizar')) {
+              speak('Primeira opção selecionada. Pisque os dois olhos para executar.');
+            } else if (speechResult.includes('2') || speechResult.includes('segunda')) {
               setSelectedActionIndex(1);
-              speak('Segunda opção selecionada. Pisque os dois olhos para executar na hora.');
-            } else if (speechResult.includes('3') || speechResult.includes('terceira') || speechResult.includes('verificação')) {
+              speak('Segunda opção selecionada. Pisque os dois olhos para executar.');
+            } else if (speechResult.includes('3') || speechResult.includes('terceira')) {
               setSelectedActionIndex(2);
-              speak('Terceira opção selecionada. Pisque os dois olhos para executar na hora.');
+              speak('Terceira opção selecionada. Pisque os dois olhos para executar.');
             } else {
               setSelectedActionIndex(0);
-              speak('Comando recebido. Primeira opção configurada. Pisque os dois olhos para executar.');
+              speak('Comando recebido. Primeira opção configurada.');
             }
           };
 
           recognition.onerror = () => {
             setSelectedActionIndex(0);
-            setFeedbackMsg('Opção 1 configurada. Pisque 1x com os dois olhos para executar.');
+            setFeedbackMsg('Opção 1 pré-selecionada. Pisque os dois olhos para confirmar.');
           };
 
           recognition.start();
-        } catch (err) {
-          console.error(err);
+        } catch (e) {
+          console.error(e);
         }
       };
 
-      // 3. Piscar 1x os Dois Olhos -> Executa a Ação Selecionada na Hora
+      // Piscar Ambos os Olhos
       const handleBothEyesBlink = () => {
         if (!aimActive) return;
 
         if (awaitingVoice || selectedActionIndex !== null) {
           const selectedIdx = selectedActionIndex !== null ? selectedActionIndex : 0;
-          const chosenTask = priorities[selectedIdx] || 'Ação do Escaneamento';
+          const chosenTask = priorities[selectedIdx] || 'Ação da Varredura';
 
-          setStatus('EXECUTANDO AÇÃO IMEDIATAMENTE');
-          setFeedbackMsg(`Ação acionada: "${chosenTask}"`);
+          setStatus('EXECUTANDO AÇÃO...');
+          setFeedbackMsg(`Executando: "${chosenTask}"`);
           speak(`Executando agora: ${chosenTask}`);
 
           setTimeout(() => {
             setAwaitingVoice(false);
             setSelectedActionIndex(null);
-            setStatus('SISTEMA OPERACIONAL');
+            setStatus('OPERACIONAL // AGUARDANDO');
           }, 3500);
         }
       };
 
       return (
-        <div className="relative w-screen h-screen bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
+        <div className="relative w-screen h-screen bg-[#020a12] flex flex-col items-center justify-center overflow-hidden">
           
-          {/* Câmera Real com Overlay HUD */}
+          {/* Câmera Real e Overlay do Canvas */}
           <div className="absolute inset-0 z-0">
             <video 
               ref={videoRef} 
@@ -333,35 +332,34 @@
             />
           </div>
 
-          {/* Moldura Cibernética HUD */}
-          <div className="absolute inset-0 z-10 pointer-events-none border-[12px] border-cyan-500/20 m-2 rounded-xl flex flex-col justify-between p-6">
+          {/* HUD Cyberpunk Frame */}
+          <div className="absolute inset-0 z-10 pointer-events-none border-[18px] border-cyan-400/20 m-2 rounded-[48px] flex flex-col justify-between p-6">
             
-            {/* Topo do Painel HUD */}
-            <div className="flex justify-between items-start bg-slate-900/80 p-4 rounded-lg border border-cyan-500/40 backdrop-blur-md pointer-events-auto">
+            {/* Cabeçalho */}
+            <div className="flex justify-between items-start bg-black/80 p-4 rounded-xl border border-cyan-400/40 backdrop-blur-md pointer-events-auto">
               <div>
-                <h1 className="text-xl font-bold tracking-widest text-cyan-300 flex items-center gap-2">
-                  <span className="inline-block w-3 h-3 bg-cyan-400 rounded-full animate-ping"></span>
-                  VISÃO CIBERNÉTICA AI // MIRA & SCANNER
+                <h1 className="text-lg font-bold tracking-[0.2em] text-cyan-300 flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 bg-cyan-400 rounded-full animate-ping"></span>
+                  CYBER VISION AI // INTERFACE DE COMANDO
                 </h1>
-                <p className="text-xs text-cyan-400/70 mt-1">RECONHECIMENTO FACIAL AUTÔNOMO & GESTOS OCULARES</p>
+                <p className="text-[10px] text-cyan-400/70 mt-0.5 tracking-wider">MIRA & ESCANER DE AMBIENTE REVOLUCIONÁRIO</p>
               </div>
 
               <div className="text-right">
-                <div className="text-xs text-slate-400">STATUS DO SISTEMA</div>
-                <div className={`text-sm font-bold tracking-wider ${faceDetected ? 'text-emerald-400' : 'text-amber-400'}`}>
+                <div className="text-[10px] text-cyan-200/60">STATUS DO SISTEMA</div>
+                <div className={`text-xs font-bold tracking-wider ${faceDetected ? 'text-cyan-300' : 'text-yellow-300'}`}>
                   {status}
                 </div>
-                <div className="text-[10px] text-cyan-400/80 mt-1">{eyeStatusText}</div>
+                <div className="text-[9px] text-cyan-400/80 mt-0.5">{eyeStatusText}</div>
               </div>
             </div>
 
-            {/* MIRA ATIVADA COM OLHO DIREITO */}
+            {/* Retícula de Mira HUD */}
             {aimActive && (
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center justify-center">
                 <div className={`relative w-72 h-72 border-2 rounded-full flex items-center justify-center transition-all duration-300 ${scanning ? 'border-red-500 animate-pulse hud-glow-red' : 'border-cyan-400 hud-glow'}`}>
-                  
                   <div className="absolute inset-2 border border-dashed border-cyan-300/40 rounded-full"></div>
-                  <div className="w-4 h-4 bg-cyan-400/80 rounded-full animate-ping"></div>
+                  <div className="w-3 h-3 bg-cyan-400/80 rounded-full animate-ping"></div>
                   <div className="absolute w-full h-[1px] bg-cyan-400/50"></div>
                   <div className="absolute h-full w-[1px] bg-cyan-400/50"></div>
                   
@@ -369,39 +367,39 @@
                     <div className="absolute w-full h-1 bg-red-500 shadow-[0_0_15px_#ef4444] animate-scan"></div>
                   )}
 
-                  <div className="absolute -top-7 text-xs font-bold text-cyan-300 bg-slate-900/90 px-3 py-1 rounded border border-cyan-400">
-                    {scanning ? 'ESCANEANDO TUDO NO AMBIENTE...' : 'MIRA ATIVADA (OLHO DIREITO)'}
+                  <div className="absolute -top-8 text-[11px] font-bold text-cyan-300 bg-black/90 px-3 py-1 rounded border border-cyan-400">
+                    {scanning ? 'ESCANEANDO AMBIENTE COMPLETO...' : 'MIRA ATIVADA (OLHO DIREITO)'}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* PAINEL DE RESULTADOS DO ESCANER E 3 AÇÕES PRIORITÁRIAS */}
+            {/* Painel com Diagnóstico e Ações */}
             {scanResults && (
-              <div className="absolute left-8 top-28 w-96 bg-slate-900/90 border border-cyan-500/50 rounded-lg p-5 backdrop-blur-md pointer-events-auto shadow-2xl space-y-4">
-                <div className="border-b border-cyan-500/30 pb-2 flex justify-between items-center">
-                  <h2 className="text-sm font-bold text-cyan-300 tracking-wider">DIAGNÓSTICO DO ESCANER</h2>
-                  <span className="text-[10px] bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/40">SITUAÇÃO ATIVA</span>
+              <div className="absolute left-8 top-28 w-96 bg-black/90 border border-cyan-400/50 rounded-xl p-5 backdrop-blur-md pointer-events-auto shadow-2xl space-y-4">
+                <div className="border-b border-cyan-400/30 pb-2 flex justify-between items-center">
+                  <h2 className="text-xs font-bold text-cyan-300 tracking-wider">DIAGNÓSTICO DO ESCANER</h2>
+                  <span className="text-[9px] bg-cyan-950/60 text-cyan-300 px-2 py-0.5 rounded border border-cyan-400/40">ATIVO</span>
                 </div>
 
-                <div className="space-y-1.5 text-xs">
-                  <p><span className="text-cyan-400 font-semibold">Objetos:</span> {scanResults.objetos}</p>
-                  <p><span className="text-cyan-400 font-semibold">Pessoas:</span> {scanResults.pessoas}</p>
-                  <p><span className="text-cyan-400 font-semibold">Animais:</span> {scanResults.animais}</p>
-                  <p><span className="text-cyan-400 font-semibold">Situação:</span> {scanResults.situacao}</p>
+                <div className="space-y-1.5 text-[11px] text-cyan-200/80">
+                  <p><strong className="text-cyan-300">Objetos:</strong> {scanResults.objetos}</p>
+                  <p><strong className="text-cyan-300">Pessoas:</strong> {scanResults.pessoas}</p>
+                  <p><strong className="text-cyan-300">Animais:</strong> {scanResults.animais}</p>
+                  <p><strong className="text-cyan-300">Situação:</strong> {scanResults.situacao}</p>
                 </div>
 
-                <div className="pt-2 border-t border-cyan-500/30">
-                  <h3 className="text-xs font-bold text-amber-400 mb-2 tracking-wider">3 COISAS PRIORITÁRIAS PARA FAZER:</h3>
+                <div className="pt-2 border-t border-cyan-400/30">
+                  <h3 className="text-[11px] font-bold text-yellow-300 mb-2 tracking-wider">3 AÇÕES PRIORITÁRIAS DETECTADAS:</h3>
                   <div className="space-y-2">
                     {priorities.map((item, idx) => (
                       <div 
                         key={idx}
-                        className={`p-2 rounded border text-xs flex items-center justify-between transition-all ${selectedActionIndex === idx ? 'bg-cyan-500/20 border-cyan-400 text-white font-bold' : 'bg-slate-800/60 border-slate-700 text-cyan-200'}`}
+                        className={`p-2 rounded border text-[11px] flex items-center justify-between transition-all ${selectedActionIndex === idx ? 'bg-cyan-400/30 border-cyan-300 text-white font-bold' : 'bg-black/50 border-cyan-400/20 text-cyan-200'}`}
                       >
                         <span>{idx + 1}. {item}</span>
                         {selectedActionIndex === idx && (
-                          <span className="text-[10px] bg-emerald-500 text-slate-950 font-extrabold px-1.5 py-0.5 rounded">PRONTO</span>
+                          <span className="text-[9px] bg-cyan-300 text-black font-extrabold px-1.5 py-0.5 rounded">SELECIONADO</span>
                         )}
                       </div>
                     ))}
@@ -409,40 +407,40 @@
                 </div>
 
                 {awaitingVoice && (
-                  <div className="p-3 bg-amber-500/10 border border-amber-500/40 rounded text-center">
-                    <p className="text-xs text-amber-300 font-bold animate-pulse">"O QUE QUER FAZER SENHOR?"</p>
-                    <p className="text-[10px] text-slate-400 mt-1">Responda em voz alta ou pisque os dois olhos para executar a opção.</p>
+                  <div className="p-3 bg-yellow-950/80 border border-yellow-400/50 rounded-lg text-center">
+                    <p className="text-xs text-yellow-300 font-bold animate-pulse">"O QUE QUER FAZER SENHOR?"</p>
+                    <p className="text-[10px] text-white/60 mt-1">Fale em voz alta ou pisque os dois olhos para confirmar.</p>
                   </div>
                 )}
               </div>
             )}
 
-            {/* PAINEL INFERIOR DE INSTRUÇÕES E LOG */}
+            {/* Painel Inferior */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-4 pointer-events-auto">
               
-              <div className="bg-slate-900/85 border border-cyan-500/40 rounded-lg p-4 backdrop-blur-md max-w-md w-full space-y-2">
-                <div className="text-xs font-bold text-cyan-300 border-b border-cyan-500/30 pb-1">
-                  COMANDOS DE GESTOS DOS OLHOS:
+              <div className="bg-black/80 border border-cyan-400/40 rounded-xl p-4 backdrop-blur-md max-w-md w-full space-y-2">
+                <div className="text-xs font-bold text-cyan-300 border-b border-cyan-400/30 pb-1">
+                  COMANDOS POR GESTO OCULAR:
                 </div>
-                <ul className="text-[11px] space-y-1 text-slate-300">
+                <ul className="text-[11px] space-y-1 text-white/80">
                   <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                    <span><strong className="text-cyan-200">Olho Direito (1x):</strong> Ativa a Mira Cibernética.</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>
+                    <span><strong className="text-cyan-300">Olho Direito (1x):</strong> Ativa / Desativa Mira.</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span><strong className="text-amber-200">Olho Esquerdo (1x):</strong> Mira escanear tudo e gera as 3 opções.</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-300"></span>
+                    <span><strong className="text-yellow-300">Olho Esquerdo (1x):</strong> Executa escaner do ambiente.</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span><strong className="text-emerald-200">Dois Olhos (1x):</strong> Confirma resposta por voz e executa a ação na hora.</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                    <span><strong className="text-cyan-200">Ambos os Olhos (1x):</strong> Confirma e executa a ação na hora.</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-slate-900/90 border border-cyan-400/60 rounded-lg p-4 backdrop-blur-md max-w-lg w-full">
-                <div className="text-[10px] text-cyan-500 font-bold tracking-widest uppercase mb-1">MENSAGEM DO SISTEMA</div>
-                <div className="text-sm font-semibold text-cyan-200 bg-slate-950 p-2.5 rounded border border-cyan-900/50 min-h-[48px] flex items-center">
+              <div className="bg-black/90 border border-cyan-400/60 rounded-xl p-4 backdrop-blur-md max-w-lg w-full">
+                <div className="text-[10px] text-cyan-400/70 font-bold tracking-widest uppercase mb-1">LOG DE TELEMETRIA</div>
+                <div className="text-xs font-semibold text-cyan-200 bg-[#021018] p-3 rounded-lg border border-cyan-900/50 min-h-[48px] flex items-center">
                   {feedbackMsg}
                 </div>
               </div>
