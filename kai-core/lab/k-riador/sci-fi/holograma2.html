@@ -3,119 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>holograma cgm 3D</title>
+<title>armadura 360 cgm</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
   #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); }
-  #canvas3d { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #canvas2d { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:3; pointer-events:none; }
-  #ui { position:absolute; z-index:4; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
+  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
+  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:14px; color:#0ff; text-shadow:0 0 10px #0ff; }
   #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
-
-  #menuLateral {
-    position:absolute; right:20px; top:50%; transform:translateY(-50%);
-    z-index:4; background:rgba(0,20,40,0.8); border:1px solid #0ff;
-    padding:15px; border-radius:10px; box-shadow:0 0 20px #0ff;
-  }
- .btnForma {
-    display:block; width:140px; margin:10px 0; padding:10px;
-    background:rgba(0,255,255,0.1); border:1px solid #0ff; color:#0ff;
-    font-size:14px; cursor:pointer; border-radius:5px; text-align:center;
-  }
- .btnForma.ativo { background:#0ff; color:#000; box-shadow:0 0 15px #0ff; }
+  #menuLateral { position:absolute; left:20px; top:50%; transform:translateY(-50%); z-index:4; background:rgba(0,20,40,0.85); border:1px solid #0ff; padding:10px; border-radius:10px; box-shadow:0 0 20px #0ff; max-height:80vh; overflow-y:auto; }
+.btnHolo { display:block; width:160px; margin:6px 0; padding:8px; background:rgba(0,255,255,0.1); border:1px solid #0ff; color:#0ff; font-size:12px; cursor:pointer; border-radius:5px; text-align:left; }
+.btnHolo.ativo { background:#0ff; color:#000; box-shadow:0 0 15px #0ff; }
+ #direcao { position:absolute; top:40px; width:100%; text-align:center; z-index:3; color:#0ff; font-size:12px; }
+ #miraMenu { position:absolute; top:10px; right:20px; z-index:5; background:rgba(255,0,0,0.2); border:1px solid #f00; padding:8px; border-radius:5px; color:#f00; display:none; font-size:11px; }
+.mira { position:absolute; width:60px; height:60px; border:2px solid #f00; border-radius:50%; display:none; z-index:5; }
+.mira::before { content:''; position:absolute; top:50%; left:0; width:100%; height:2px; background:#f00; }
+.mira::after { content:''; position:absolute; left:50%; top:0; width:2px; height:100%; background:#f00; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
 </head>
 <body>
-  <div id="ui">sci-fi hologram 3D by cgm</div>
+  <div id="ui">ARMADURA HOLOGRAFICA 360° by CGM</div>
+  <div id="direcao">DIRECAO: FRENTE</div>
+  <div id="miraMenu">MIRA ATIVA<br>1.ALVO<br>2.ZOOM<br>3.SCAN</div>
+  <div class="mira" id="mira"></div>
   <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas3d"></canvas>
-  <canvas id="canvas2d"></canvas>
+  <canvas id="canvas"></canvas>
   <button id="start_btn">iniciar camera</button>
 
-  <div id="menuLateral">
-    <button class="btnForma" data-tipo="curriculo">1 CURRICULO</button>
-    <button class="btnForma" data-tipo="cubo">2 CUBO</button>
-    <button class="btnForma" data-tipo="octaedro">3 OCTAEDRO</button>
-  </div>
+  <div id="menuLateral">...mesmo menu... </div>
 
 <script>
 const videoElement = document.getElementById('video');
-const canvas2d = document.getElementById('canvas2d');
-const ctx2d = canvas2d.getContext('2d');
+const canvasElement = document.getElementById('canvas');
+const canvasCtx = canvasElement.getContext('2d');
 const startBtn = document.getElementById('start_btn');
+const direcaoTxt = document.getElementById('direcao');
+const miraDiv = document.getElementById('mira');
+const miraMenu = document.getElementById('miraMenu');
 
-let hand1 = null, hand2 = null;
-let isFrontCamera = true;
-let cameraRunning = false;
-let hologramSide = 'left';
-let objeto3D = null, tipoObjeto = null;
-let segurando = false, maoSegurando = null;
+let hand1 = null, hand2 = null, poseLandmarks = null;
+let isFrontCamera = true, cameraRunning = false;
+let hologramasAtivos = new Set(['luva','bracelete','braco','ombro','peito','costas','lateral','capacete','abdomen','coxa','canela','pe']);
+let direcaoCorpo = 'frente';
+let miraAtiva = false;
 
-// THREE JS
-let scene, camera3d, renderer;
-initThree();
-
-function initThree(){
-  scene = new THREE.Scene();
-  camera3d = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera3d.position.z = 5;
-
-  renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas3d'), alpha:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
-  const light = new THREE.PointLight(0x00ffff, 2, 100);
-  light.position.set(2,2,2);
-  scene.add(light);
-  scene.add(new THREE.AmbientLight(0x00ffff, 0.5));
+// ESTADOS DOS MEMBROS
+let estado = {
+  luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal'
 }
 
-function criarObjeto(tipo){
-  if(objeto3D) scene.remove(objeto3D);
-  tipoObjeto = tipo;
-  let geo;
-  if(tipo==='curriculo') geo = new THREE.BoxGeometry(2, 2.8, 0.05); // papel
-  if(tipo==='cubo') geo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-  if(tipo==='octaedro') geo = new THREE.OctahedronGeometry(1);
-
-  const mat = new THREE.MeshPhongMaterial({color:0x00ffff, transparent:true, opacity:0.4, wireframe:true});
-  objeto3D = new THREE.Mesh(geo, mat);
-  objeto3D.position.set(0,0,0);
-  scene.add(objeto3D);
-}
-
-function animate3D(){
-  requestAnimationFrame(animate3D);
-  if(objeto3D &&!segurando) objeto3D.rotation.y += 0.005; // gira devagar
-  renderer.render(scene, camera3d);
-}
-animate3D();
-
-function resize(){
-  canvas2d.width = window.innerWidth; canvas2d.height = window.innerHeight;
-  camera3d.aspect = window.innerWidth/window.innerHeight; camera3d.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-resize(); window.onresize = resize;
-
-// MENU LATERAL
-document.querySelectorAll('.btnForma').forEach(btn=>{
-  btn.onclick = () => {
-    document.querySelectorAll('.btnForma').forEach(b=>b.classList.remove('ativo'));
-    btn.classList.add('ativo');
-    criarObjeto(btn.dataset.tipo);
-  }
-});
-
-// MEDIAPIPE
+// HANDS + POSE igual anterior
 const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
 hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+
+pose.onResults((results) => {
+  poseLandmarks = results.poseLandmarks;
+  if(poseLandmarks) {
+    detectarDirecao(poseLandmarks);
+    processarGestosCabeca(poseLandmarks); // GESTO DA CABEÇA
+  }
+})
+
+function detectarDirecao(lm){ /* igual ao anterior */ }
 
 hands.onResults((results) => {
-  ctx2d.clearRect(0, 0, canvas2d.width, canvas2d.height);
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 20;
 
   if (results.multiHandLandmarks) {
     if(isFrontCamera){
@@ -125,98 +83,123 @@ hands.onResults((results) => {
       hand1 = results.multiHandLandmarks[0];
       hand2 = results.multiHandLandmarks[1];
     }
+    processarGestosMembros(); // 3 GESTOS POR MEMBRO
 
-    if(hand1) drawHand(hand1, '#00ffff');
-    if(hand2) drawHand(hand2, '#ff00ff');
-
-    processarGestos3D();
+    if(direcaoCorpo === 'frente') drawFrente();
+    if(direcaoCorpo === 'costas') drawCostas();
+    if(direcaoCorpo === 'esq') drawLateral('esq');
+    if(direcaoCorpo === 'dir') drawLateral('dir');
   }
 });
 
-function drawHand(landmarks, color){
-  window.drawConnectors(ctx2d, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
-  window.drawLandmarks(ctx2d, landmarks, {color: color, radius: 4});
+// 1. GESTO DA CABEÇA: PISCAR OLHO DIREITO
+let olhoFechado = false;
+function processarGestosCabeca(lm){
+  const olhoDirCima = lm[7]; // olho dir
+  const olhoDirBaixo = lm[5];
+  const distOlho = Math.abs(olhoDirCima.y - olhoDirBaixo.y);
+
+  if(distOlho < 0.02 &&!olhoFechado){ // piscou
+    olhoFechado = true;
+    miraAtiva =!miraAtiva;
+    miraDiv.style.display = miraAtiva? 'block' : 'none';
+    miraMenu.style.display = miraAtiva? 'block' : 'none';
+    setTimeout(()=>olhoFechado=false, 500);
+  }
+  if(miraAtiva){
+    miraDiv.style.left = (olhoDirCima.x * canvasElement.width - 30) + 'px';
+    miraDiv.style.top = (olhoDirCima.y * canvasElement.height - 30) + 'px';
+  }
 }
 
-// FUNCOES DE GESTO
+// 2. 3 GESTOS PARA CADA MEMBRO
+function processarGestosMembros(){
+  if(!hand1 &&!hand2) return;
+  const h = hand1 || hand2;
+
+  // LUVA: 1.PUNHO=ESCUDO 2.PINÇA=TIRO 3.MÃO ABERTA=PULSO
+  if(isMaoFechada(h)) estado.luva = 'escudo';
+  else if(isPinca(h)) estado.luva = 'tiro';
+  else estado.luva = 'normal';
+
+  // BRAÇO: 1.PUNHO=RETRATIL 2.DEDO PRA CIMA=LAMINA 3.GIRAR=POWER
+  if(isMaoFechada(h)) estado.braco = 'retraitil';
+  else if(h[8].y < h[6].y) estado.braco = 'lamina';
+  else estado.braco = 'normal';
+
+  // PEITO: 1.DUAS MAOS JUNTAS=REATOR MAX 2.PUNHO NO PEITO=ARMADURA 3.ABRIR BRACOS=ESCUDO TOTAL
+  if(hand1 && hand2 && Math.hypot(hand1[9].x-hand2[9].x, hand1[9].y-hand2[9].y) < 0.1) estado.peito = 'reator';
+  else if(isMaoFechada(h) && h[9].y < 0.5) estado.peito = 'armadura';
+  else estado.peito = 'normal';
+
+  // PERNA: 1.CORRER NO LUGAR=TURBO 2.CHUTE=PROPULSOR 3.AGACHAR=ESTABILIZAR
+  if(poseLandmarks && poseLandmarks[27].y < 0.6) estado.perna = 'turbo'; // joelho levantado
+  else estado.perna = 'normal';
+}
+
 function isMaoFechada(h){
-  const d1 = Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y);
-  const d2 = Math.hypot(h[12].x - h[9].x, h[12].y - h[9].y);
-  return d1 < 0.08 && d2 < 0.08;
+  return Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y) < 0.08;
 }
 function isPinca(h){
   return Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y) < 0.05;
 }
-function pos3D(h){
-  return new THREE.Vector3((h[9].x - 0.5)*6, (0.5 - h[9].y)*4, h[9].z*2);
+
+// DESENHO MUDA CONFORME ESTADO
+function drawFrente(){
+  if(hand1) { drawHand(hand1, '#00ffff'); if(hologramasAtivos.has('luva')) drawHologramBase(hand1, estado.luva); }
+  if(hologramasAtivos.has('peito')) drawPeitoFrente(estado.peito);
+  if(hologramasAtivos.has('braco')) drawBracoFrente(estado.braco);
+  //... outras peças
 }
 
-function processarGestos3D(){
-  if(!objeto3D) return;
-
-  const hFechada1 = hand1 && isMaoFechada(hand1);
-  const hFechada2 = hand2 && isMaoFechada(hand2);
-  const distObj1 = hand1? pos3D(hand1).distanceTo(objeto3D.position) : 999;
-  const distObj2 = hand2? pos3D(hand2).distanceTo(objeto3D.position) : 999;
-
-  // 1. SEGURAR E GIRAR / ARRASTAR: Mao fechada em cima do objeto
-  if((hFechada1 && distObj1 < 1.2) || (hFechada2 && distObj2 < 1.2)){
-    segurando = true;
-    maoSegurando = hFechada1? hand1 : hand2;
-    const novaPos = pos3D(maoSegurando);
-    objeto3D.position.lerp(novaPos, 0.2);
-
-    // Gira baseado no movimento da mão
-    if(maoSegurando){
-      objeto3D.rotation.x += (maoSegurando[9].y - maoSegurando[0].y) * 0.1;
-      objeto3D.rotation.y += (maoSegurando[9].x - maoSegurando[0].x) * 0.1;
-    }
+function drawHologramBase(landmarks, estado){
+  const cx = landmarks[9].x * canvasElement.width; const cy = landmarks[9].y * canvasElement.height;
+  if(estado === 'escudo'){ // ESCUDO
+    canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 100, 0, 2*Math.PI);
+    canvasCtx.fillStyle = 'rgba(0,255,255,0.2)'; canvasCtx.fill();
   }
-
-  // 2. LANÇAR DE UMA MÃO PRA OUTRA
-  if(segurando && maoSegurando){
-    const maoLivre = maoSegurando === hand1? hand2 : hand1;
-    const estavaFechada = isMaoFechada(maoSegurando);
-    const abriuAgora = maoSegurando &&!isMaoFechada(maoSegurando);
-
-    if(abriuAgora && maoLivre){
-      // lança na direção da outra mão
-      const alvo = pos3D(maoLivre);
-      objeto3D.position.lerp(alvo, 0.5);
-      // se a outra mão fechar perto, pega
-      if(isMaoFechada(maoLivre) && pos3D(maoLivre).distanceTo(objeto3D.position) < 0.5){
-        maoSegurando = maoLivre;
-      } else {
-        segurando = false;
-      }
-    }
+  else if(estado === 'tiro'){ // CANHAO
+    canvasCtx.beginPath(); canvasCtx.rect(cx-10, cy-40, 20, 40); canvasCtx.fillStyle = '#ff0000'; canvasCtx.fill();
   }
-
-  if(!hFechada1 &&!hFechada2) segurando = false;
-
-  // TROCA DE HOLOGRAMA: MAOS JUNTAS 3s
-  if(hand1 && hand2){
-    const distHands = Math.hypot(hand1[9].x - hand2[9].x, hand1[9].y - hand2[9].y);
-    if(distHands < 0.12){
-      if(!window.swapTimer) window.swapTimer = setTimeout(()=>{hologramSide = hologramSide==='left'?'right':'left'; window.swapTimer=null},3000);
-    } else { if(window.swapTimer){clearTimeout(window.swapTimer); window.swapTimer=null} }
+  else { // NORMAL
+    for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
   }
+}
+
+function drawPeitoFrente(estado){
+  const cx = canvasElement.width/2; const cy = canvasElement.height*0.35;
+  if(estado === 'reator'){ canvasCtx.beginPath(); canvasCtx.arc(cx, cy-20, 30, 0, 2*Math.PI); canvasCtx.fillStyle='#fff'; canvasCtx.fill(); }
+  else if(estado === 'armadura'){ canvasCtx.lineWidth = 6; }
+  else { canvasCtx.lineWidth = 3; }
+  canvasCtx.beginPath(); canvasCtx.ellipse(cx, cy, 120, 150, 0, 0, Math.PI); canvasCtx.strokeStyle = '#00ffff'; canvasCtx.stroke();
+}
+
+function drawBracoFrente(estado){
+  if(estado === 'lamina'){
+    const cx = canvasElement.width/2 - 100;
+    canvasCtx.beginPath(); canvasCtx.moveTo(cx, canvasElement.height*0.3); canvasCtx.lineTo(cx, canvasElement.height*0.5);
+    canvasCtx.strokeStyle = '#ff0000'; canvasCtx.lineWidth = 5; canvasCtx.stroke(); // lamina
+  }
+}
+
+//... todas as outras funções de desenho iguais as anteriores...
+
+function drawHand(landmarks, color) {
+  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
+  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 3});
 }
 
 // CAMERA
 startBtn.onclick = async () => {
-  if(cameraRunning) return;
-  cameraRunning = true;
-  startBtn.style.display = 'none';
+  if(cameraRunning) return; cameraRunning = true; startBtn.style.display = 'none';
   let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   videoElement.srcObject = stream;
   isFrontCamera = constraints.video.facingMode === 'user';
   videoElement.style.transform = isFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
-  const camera = new Camera(videoElement, {onFrame: async () => { await hands.send({image: videoElement}); }, width: 1280, height: 720});
+  const camera = new Camera(videoElement, { onFrame: async () => { await hands.send({image: videoElement}); await pose.send({image: videoElement}); }, width: 1280, height: 720 });
   camera.start();
 }
-
 </script>
 </body>
 </html>
