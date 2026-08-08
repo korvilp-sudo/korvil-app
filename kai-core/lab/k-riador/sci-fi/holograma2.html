@@ -1,212 +1,1594 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>holograma cgm</title>
-<style>
-  body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); transform:scaleX(-1); }
-  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
-  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
-</style>
+<title>KORVIL — Holograma 3D/4D</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:"Courier New",monospace;
+}
+
+body{
+    position:relative;
+}
+
+/* CÂMERA */
+#video{
+    position:absolute;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    object-fit:cover;
+    z-index:1;
+
+    filter:
+        brightness(.32)
+        contrast(1.25)
+        saturate(.7);
+
+    transform:scaleX(-1);
+}
+
+/* CAMADA HOLOGRÁFICA */
+#canvas{
+    position:absolute;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    z-index:2;
+    pointer-events:none;
+}
+
+/* HUD */
+#ui{
+    position:absolute;
+    z-index:10;
+    top:16px;
+    left:50%;
+    transform:translateX(-50%);
+
+    color:#00ffff;
+    font-size:13px;
+    letter-spacing:3px;
+
+    text-shadow:
+        0 0 5px #00ffff,
+        0 0 15px #00ffff,
+        0 0 30px #00ffff;
+
+    padding:8px 18px;
+
+    border:1px solid rgba(0,255,255,.5);
+    background:rgba(0,20,30,.35);
+
+    backdrop-filter:blur(5px);
+}
+
+/* STATUS */
+#status{
+    position:absolute;
+    z-index:10;
+    left:20px;
+    bottom:20px;
+
+    color:#00ffff;
+    font-size:11px;
+    letter-spacing:2px;
+
+    text-shadow:0 0 10px #00ffff;
+}
+
+/* BOTÃO */
+#start_btn{
+    position:absolute;
+    z-index:20;
+
+    left:50%;
+    bottom:50px;
+
+    transform:translateX(-50%);
+
+    padding:16px 42px;
+
+    border:1px solid #00ffff;
+    border-radius:30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,255,255,.8),
+            rgba(0,80,100,.8)
+        );
+
+    color:#001014;
+
+    font-size:17px;
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+    box-shadow:
+        0 0 10px #00ffff,
+        0 0 30px rgba(0,255,255,.6),
+        inset 0 0 15px rgba(255,255,255,.4);
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+#start_btn:hover{
+    transform:translateX(-50%) scale(1.05);
+
+    box-shadow:
+        0 0 20px #00ffff,
+        0 0 60px #00ffff;
+}
+
+/* SCANLINES */
+body::after{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    z-index:8;
+
+    pointer-events:none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0,255,255,.025) 0px,
+            rgba(0,255,255,.025) 1px,
+            transparent 2px,
+            transparent 5px
+        );
+
+    mix-blend-mode:screen;
+}
+
+/* VINHETA */
+body::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    z-index:7;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 45%,
+            rgba(0,0,0,.7) 100%
+        );
+}
+</style>
+
 </head>
+
 <body>
-  <div id="ui">sci-fi hologram by cgm</div>
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas"></canvas>
-  <button id="start_btn">iniciar camera</button>
+
+<div id="ui">
+    KORVIL // HOLOGRAM SYSTEM // 3D • 4D • ULTRA
+</div>
+
+<div id="status">
+    SYSTEM: STANDBY
+</div>
+
+<video id="video" autoplay playsinline muted></video>
+
+<canvas id="canvas"></canvas>
+
+<button id="start_btn">
+    INICIAR CÂMERA
+</button>
 
 <script>
-const videoElement = document.getElementById('video');
-const canvasElement = document.getElementById('canvas');
-const canvasCtx = canvasElement.getContext('2d');
-const startBtn = document.getElementById('start_btn');
+
+/* =========================================================
+   SISTEMA PRINCIPAL
+========================================================= */
+
+const videoElement =
+    document.getElementById("video");
+
+const canvasElement =
+    document.getElementById("canvas");
+
+const canvasCtx =
+    canvasElement.getContext("2d", {
+        alpha:true,
+        desynchronized:true
+    });
+
+const startBtn =
+    document.getElementById("start_btn");
+
+const status =
+    document.getElementById("status");
+
+
+/* =========================================================
+   RESOLUÇÃO ULTRA
+========================================================= */
+
+let DPR =
+    Math.min(window.devicePixelRatio || 1, 4);
+
+function resize(){
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    DPR =
+        Math.min(window.devicePixelRatio || 1, 4);
+
+    /*
+      Render interno maior que a tela.
+      Em monitores compatíveis pode chegar
+      a uma densidade muito elevada.
+    */
+
+    canvasElement.width =
+        w * DPR;
+
+    canvasElement.height =
+        h * DPR;
+
+    canvasElement.style.width =
+        w + "px";
+
+    canvasElement.style.height =
+        h + "px";
+
+    canvasCtx.setTransform(
+        DPR,0,0,DPR,0,0
+    );
+}
+
+resize();
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+/* =========================================================
+   VARIÁVEIS
+========================================================= */
 
 let hand1 = null;
 let hand2 = null;
+
 let appScreen = null;
+
 let loadingPercent = 0;
+
 let cameraRunning = false;
 
+let time = 0;
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
 const buttons = [
-  {id: 'grid', icon: '■', y_offset: -50, active: false},
-  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
-  {id: 'power', icon: '⚡', y_offset: 50, active: false},
+
+    {
+        id:"grid",
+        icon:"◆",
+        y_offset:-55,
+        active:false
+    },
+
+    {
+        id:"settings",
+        icon:"⚙",
+        y_offset:0,
+        active:false
+    },
+
+    {
+        id:"power",
+        icon:"⚡",
+        y_offset:55,
+        active:false
+    }
+
 ];
 
-function resize() {
-  canvasElement.width = window.innerWidth;
-  canvasElement.height = window.innerHeight;
+
+/* =========================================================
+   PARTÍCULAS
+========================================================= */
+
+const particles = [];
+
+for(let i=0;i<180;i++){
+
+    particles.push({
+
+        angle:
+            Math.random() *
+            Math.PI * 2,
+
+        radius:
+            50 +
+            Math.random() * 220,
+
+        z:
+            Math.random(),
+
+        speed:
+            .0005 +
+            Math.random() * .002,
+
+        size:
+            .5 +
+            Math.random() * 2
+
+    });
+
 }
-resize();
-window.onresize = resize;
 
-// 1. MEDIAPIPE HANDS
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
-hands.onResults((results) => {
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.shadowColor = '#00ffff';
-  canvasCtx.shadowBlur = 25;
+/* =========================================================
+   MEDIAPIPE
+========================================================= */
 
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    // CORRECAO: INVERTER X PQ O VIDEO TA ESPELHADO
-    hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
-    hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
+const hands =
+    new Hands({
 
-    drawHandSkeleton(hand1, '#00ffff');
-    if(hand1) drawHologramBase(hand1);
-    if(appScreen && hand1) drawAppScreen(hand1);
+        locateFile:(file)=>{
 
-    if(hand2) {
-      drawHandSkeleton(hand2, '#ff00ff');
-      checkButtonClick(hand2[8], hand1);
-    }
-  }
+            return `
+            https://cdn.jsdelivr.net/npm/
+            @mediapipe/hands/${file}
+            `.replace(/\s/g,"");
+
+        }
+
+    });
+
+
+hands.setOptions({
+
+    maxNumHands:2,
+
+    modelComplexity:1,
+
+    minDetectionConfidence:.65,
+
+    minTrackingConfidence:.65
+
 });
 
-function drawHandSkeleton(landmarks, color) {
-  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
-  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 4});
-}
 
-// 2. HOLOGRAMA NA PALMA
-function drawHologramBase(landmarks) {
-  const cx = landmarks[9].x * canvasElement.width;
-  const cy = landmarks[9].y * canvasElement.height;
+/* =========================================================
+   RESULTADO DAS MÃOS
+========================================================= */
 
-  for(let i=0; i<3; i++) {
-    canvasCtx.beginPath();
-    canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI);
-    canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`;
-    canvasCtx.lineWidth = 2;
-    canvasCtx.stroke();
-  }
+hands.onResults((results)=>{
 
-  // botoes do lado do polegar
-  const bx_base = landmarks[4].x * canvasElement.width + 80;
-  const by_base = landmarks[4].y * canvasElement.height;
+    canvasCtx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
 
-  buttons.forEach(b => {
-    b.x = bx_base;
-    b.y = by_base + b.y_offset;
-    drawHexagon(b.x, b.y, 25, b.active);
-    canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '18px sans-serif';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(b.icon, b.x, b.y + 6);
-  });
-}
+    if(
+        results.multiHandLandmarks &&
+        results.multiHandLandmarks.length
+    ){
 
-function drawHexagon(x, y, radius, active) {
-  canvasCtx.beginPath();
-  for(let i=0; i<6; i++){
-    const angle = Math.PI / 3 * i - Math.PI/6;
-    const px = x + radius * Math.cos(angle);
-    const py = y + radius * Math.sin(angle);
-    if(i===0) canvasCtx.moveTo(px, py); else canvasCtx.lineTo(px, py);
-  }
-  canvasCtx.closePath();
-  canvasCtx.fillStyle = active? 'rgba(0,255,255,0.9)' : 'rgba(0,255,255,0.2)';
-  canvasCtx.fill();
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.stroke();
-}
+        hand1 =
+            results.multiHandLandmarks[0]
+            .map(lm=>({
 
-// 3. TELA DE APP
-function drawAppScreen(landmarks) {
-  const x = landmarks[9].x * canvasElement.width - 180;
-  const y = landmarks[9].y * canvasElement.height - 120;
-  const w = 360; const h = 240;
+                x:1-lm.x,
+                y:lm.y,
+                z:lm.z
 
-  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.7)';
-  canvasCtx.fillRect(x, y, w, h);
-  canvasCtx.strokeStyle = '#00ffff';
-  canvasCtx.lineWidth = 2;
-  canvasCtx.strokeRect(x, y, w, h);
+            }));
 
-  if(appScreen === 'loading') {
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.font = '28px Courier New';
-    canvasCtx.textAlign = 'center';
-    canvasCtx.fillText(`${loadingPercent}%`, x + w/2, y + h/2);
-    canvasCtx.fillStyle = 'rgba(0,255,255,0.3)';
-    canvasCtx.fillRect(x + 40, y + h - 30, w - 80, 8);
-    canvasCtx.fillStyle = '#00ffff';
-    canvasCtx.fillRect(x + 40, y + h - 30, (w - 80) * (loadingPercent/100), 8);
-  }
+        hand2 =
+            results.multiHandLandmarks[1]
+            ?
+            results.multiHandLandmarks[1]
+            .map(lm=>({
 
-  if(appScreen === 'mapa') {
-    canvasCtx.fillStyle = 'rgba(0, 100, 50, 0.8)';
-    canvasCtx.fillRect(x + 10, y + 10, w - 20, h - 20);
-    canvasCtx.strokeStyle = '#00ff88';
-    for(let i=0; i<4; i++){
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(x + 10, y + 10 + i*50);
-      canvasCtx.lineTo(x + w - 10, y + 10 + i*50);
-      canvasCtx.stroke();
+                x:1-lm.x,
+                y:lm.y,
+                z:lm.z
+
+            }))
+            :
+            null;
+
+
+        drawHandSkeleton(
+            hand1,
+            "#00ffff"
+        );
+
+        drawHologramBase(
+            hand1
+        );
+
+        if(appScreen){
+
+            drawAppScreen(
+                hand1
+            );
+
+        }
+
+
+        if(hand2){
+
+            drawHandSkeleton(
+                hand2,
+                "#ff00ff"
+            );
+
+            checkButtonClick(
+                hand2[8],
+                hand1
+            );
+
+        }
+
     }
-    canvasCtx.fillStyle = '#ff0000';
-    canvasCtx.beginPath();
-    canvasCtx.arc(x + 80, y + 60, 5, 0, 2 * Math.PI); canvasCtx.fill();
-    canvasCtx.fillStyle = '#fff';
-    canvasCtx.font = '12px Courier New';
-    canvasCtx.fillText("3 km - 30 min", x + 180, y + 220);
-  }
+
+});
+
+
+/* =========================================================
+   ESQUELETO DA MÃO
+========================================================= */
+
+function drawHandSkeleton(
+    landmarks,
+    color
+){
+
+    canvasCtx.save();
+
+    canvasCtx.shadowColor =
+        color;
+
+    canvasCtx.shadowBlur =
+        18;
+
+    drawConnectors(
+        canvasCtx,
+        landmarks,
+        HAND_CONNECTIONS,
+        {
+            color:color,
+            lineWidth:3
+        }
+    );
+
+    drawLandmarks(
+        canvasCtx,
+        landmarks,
+        {
+            color:color,
+            radius:5
+        }
+    );
+
+    canvasCtx.restore();
+
 }
 
-function updateLoading() {
-  if(appScreen === 'loading' && loadingPercent < 100) {
-    loadingPercent += 3;
-  } else if(loadingPercent >= 100) {
-    appScreen = 'mapa';
-  }
-  requestAnimationFrame(updateLoading);
+
+/* =========================================================
+   PROJEÇÃO 3D
+========================================================= */
+
+function project3D(
+    x,
+    y,
+    z,
+    cx,
+    cy,
+    scale
+){
+
+    const perspective =
+        1 /
+        (
+            1 +
+            z * .8
+        );
+
+    return {
+
+        x:
+            cx +
+            x *
+            scale *
+            perspective,
+
+        y:
+            cy +
+            y *
+            scale *
+            perspective
+
+    };
+
 }
+
+
+/* =========================================================
+   ANÉIS 3D
+========================================================= */
+
+function draw3DRings(
+    cx,
+    cy,
+    base
+){
+
+    canvasCtx.save();
+
+    canvasCtx.translate(
+        cx,
+        cy
+    );
+
+    for(
+        let layer=0;
+        layer<9;
+        layer++
+    ){
+
+        const rotation =
+            time*.0004*
+            (layer%2 ? -1 : 1);
+
+        const scale =
+            1 +
+            layer*.13;
+
+        const perspective =
+            .35 +
+            Math.sin(
+                time*.001+
+                layer
+            )*.08;
+
+        canvasCtx.save();
+
+        canvasCtx.rotate(
+            rotation
+        );
+
+        canvasCtx.scale(
+            scale,
+            perspective
+        );
+
+        canvasCtx.beginPath();
+
+        canvasCtx.arc(
+            0,
+            0,
+            base,
+            0,
+            Math.PI*2
+        );
+
+        canvasCtx.strokeStyle =
+            `rgba(
+                0,
+                255,
+                255,
+                ${.55-layer*.045}
+            )`;
+
+        canvasCtx.lineWidth =
+            layer%3===0 ? 3 : 1;
+
+        canvasCtx.shadowColor =
+            "#00ffff";
+
+        canvasCtx.shadowBlur =
+            20;
+
+        canvasCtx.stroke();
+
+        canvasCtx.restore();
+
+    }
+
+    canvasCtx.restore();
+
+}
+
+
+/* =========================================================
+   HEXÁGONO
+========================================================= */
+
+function drawHexagon(
+    x,
+    y,
+    radius,
+    active
+){
+
+    canvasCtx.save();
+
+    canvasCtx.translate(
+        x,
+        y
+    );
+
+    canvasCtx.rotate(
+        time*.001
+    );
+
+    canvasCtx.beginPath();
+
+    for(let i=0;i<6;i++){
+
+        const angle =
+            Math.PI/3*i -
+            Math.PI/6;
+
+        const px =
+            radius *
+            Math.cos(angle);
+
+        const py =
+            radius *
+            Math.sin(angle);
+
+        if(i===0)
+            canvasCtx.moveTo(px,py);
+        else
+            canvasCtx.lineTo(px,py);
+
+    }
+
+    canvasCtx.closePath();
+
+    canvasCtx.fillStyle =
+        active
+        ?
+        "rgba(0,255,255,.8)"
+        :
+        "rgba(0,255,255,.15)";
+
+    canvasCtx.shadowColor =
+        "#00ffff";
+
+    canvasCtx.shadowBlur =
+        active ? 40 : 18;
+
+    canvasCtx.fill();
+
+    canvasCtx.strokeStyle =
+        "#00ffff";
+
+    canvasCtx.lineWidth =
+        active ? 3 : 1;
+
+    canvasCtx.stroke();
+
+    canvasCtx.restore();
+
+}
+
+
+/* =========================================================
+   PARTÍCULAS 3D
+========================================================= */
+
+function drawParticles(
+    cx,
+    cy
+){
+
+    canvasCtx.save();
+
+    for(
+        const p of particles
+    ){
+
+        p.angle +=
+            p.speed;
+
+        const wave =
+            Math.sin(
+                time*.001 +
+                p.z*10
+            );
+
+        const radius =
+            p.radius +
+            wave*12;
+
+        const x =
+            Math.cos(
+                p.angle
+            ) *
+            radius;
+
+        const y =
+            Math.sin(
+                p.angle
+            ) *
+            radius *
+            .45;
+
+        const z =
+            p.z +
+            Math.sin(
+                time*.0005 +
+                p.angle
+            )*.1;
+
+        const point =
+            project3D(
+                x,
+                y,
+                z,
+                cx,
+                cy,
+                1
+            );
+
+        const alpha =
+            .2 +
+            p.z*.7;
+
+        canvasCtx.beginPath();
+
+        canvasCtx.arc(
+            point.x,
+            point.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        canvasCtx.fillStyle =
+            `rgba(
+                0,
+                255,
+                255,
+                ${alpha}
+            )`;
+
+        canvasCtx.fill();
+
+    }
+
+    canvasCtx.restore();
+
+}
+
+
+/* =========================================================
+   HOLOGRAMA PRINCIPAL
+========================================================= */
+
+function drawHologramBase(
+    landmarks
+){
+
+    const cx =
+        landmarks[9].x *
+        window.innerWidth;
+
+    const cy =
+        landmarks[9].y *
+        window.innerHeight;
+
+    /*
+      Profundidade baseada no Z
+    */
+
+    const depth =
+        Math.max(
+            -landmarks[9].z*500,
+            0
+        );
+
+    const base =
+        65 +
+        depth*.15;
+
+
+    /* GLOW CENTRAL */
+
+    const gradient =
+        canvasCtx.createRadialGradient(
+            cx,
+            cy,
+            0,
+            cx,
+            cy,
+            190
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(0,255,255,.25)"
+    );
+
+    gradient.addColorStop(
+        .4,
+        "rgba(0,255,255,.08)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,255,255,0)"
+    );
+
+    canvasCtx.fillStyle =
+        gradient;
+
+    canvasCtx.fillRect(
+        cx-220,
+        cy-220,
+        440,
+        440
+    );
+
+
+    /* PARTÍCULAS */
+
+    drawParticles(
+        cx,
+        cy
+    );
+
+
+    /* ANÉIS */
+
+    draw3DRings(
+        cx,
+        cy,
+        base
+    );
+
+
+    /* EIXOS */
+
+    drawAxis(
+        cx,
+        cy,
+        base
+    );
+
+
+    /* BOTÕES */
+
+    const bx_base =
+        landmarks[4].x *
+        window.innerWidth +
+        100;
+
+    const by_base =
+        landmarks[4].y *
+        window.innerHeight;
+
+
+    buttons.forEach(
+        b=>{
+
+            b.x =
+                bx_base;
+
+            b.y =
+                by_base +
+                b.y_offset;
+
+            drawHexagon(
+                b.x,
+                b.y,
+                27,
+                b.active
+            );
+
+            canvasCtx.save();
+
+            canvasCtx.fillStyle =
+                "#ffffff";
+
+            canvasCtx.shadowColor =
+                "#00ffff";
+
+            canvasCtx.shadowBlur =
+                15;
+
+            canvasCtx.font =
+                "18px sans-serif";
+
+            canvasCtx.textAlign =
+                "center";
+
+            canvasCtx.fillText(
+                b.icon,
+                b.x,
+                b.y+6
+            );
+
+            canvasCtx.restore();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EIXOS 3D
+========================================================= */
+
+function drawAxis(
+    cx,
+    cy,
+    radius
+){
+
+    canvasCtx.save();
+
+    canvasCtx.translate(
+        cx,
+        cy
+    );
+
+    canvasCtx.rotate(
+        time*.0003
+    );
+
+    canvasCtx.strokeStyle =
+        "rgba(0,255,255,.45)";
+
+    canvasCtx.lineWidth = 1;
+
+    for(let i=-2;i<=2;i++){
+
+        canvasCtx.beginPath();
+
+        canvasCtx.moveTo(
+            -radius*1.8,
+            i*18
+        );
+
+        canvasCtx.lineTo(
+            radius*1.8,
+            i*18
+        );
+
+        canvasCtx.stroke();
+
+    }
+
+    for(let i=-2;i<=2;i++){
+
+        canvasCtx.beginPath();
+
+        canvasCtx.moveTo(
+            i*18,
+            -radius*1.2
+        );
+
+        canvasCtx.lineTo(
+            i*18,
+            radius*1.2
+        );
+
+        canvasCtx.stroke();
+
+    }
+
+    canvasCtx.restore();
+
+}
+
+
+/* =========================================================
+   TELA HOLOGRÁFICA
+========================================================= */
+
+function drawAppScreen(
+    landmarks
+){
+
+    const cx =
+        landmarks[9].x *
+        window.innerWidth;
+
+    const cy =
+        landmarks[9].y *
+        window.innerHeight;
+
+    const w = 370;
+    const h = 245;
+
+    const x =
+        cx - w/2;
+
+    const y =
+        cy - 130;
+
+
+    canvasCtx.save();
+
+    /*
+      Parallax / perspectiva
+    */
+
+    const tilt =
+        (landmarks[9].x-.5)*.12;
+
+    canvasCtx.translate(
+        cx,
+        cy
+    );
+
+    canvasCtx.transform(
+        1,
+        tilt,
+        -tilt,
+        1,
+        -cx,
+        -cy
+    );
+
+
+    /* VIDRO HOLOGRÁFICO */
+
+    canvasCtx.shadowColor =
+        "#00ffff";
+
+    canvasCtx.shadowBlur =
+        30;
+
+    canvasCtx.fillStyle =
+        "rgba(0,20,40,.55)";
+
+    canvasCtx.fillRect(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    /* BORDA */
+
+    canvasCtx.strokeStyle =
+        "#00ffff";
+
+    canvasCtx.lineWidth =
+        2;
+
+    canvasCtx.strokeRect(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    /* CANTOS */
+
+    drawCorners(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    if(appScreen==="loading"){
+
+        canvasCtx.fillStyle =
+            "#00ffff";
+
+        canvasCtx.font =
+            "28px Courier New";
+
+        canvasCtx.textAlign =
+            "center";
+
+        canvasCtx.fillText(
+            `SYSTEM ${loadingPercent}%`,
+            cx,
+            cy
+        );
+
+
+        canvasCtx.fillStyle =
+            "rgba(0,255,255,.15)";
+
+        canvasCtx.fillRect(
+            x+40,
+            y+h-40,
+            w-80,
+            8
+        );
+
+
+        canvasCtx.fillStyle =
+            "#00ffff";
+
+        canvasCtx.fillRect(
+            x+40,
+            y+h-40,
+            (w-80) *
+            loadingPercent/100,
+            8
+        );
+
+    }
+
+
+    if(appScreen==="mapa"){
+
+        drawHolographicMap(
+            x,
+            y,
+            w,
+            h
+        );
+
+    }
+
+
+    canvasCtx.restore();
+
+}
+
+
+/* =========================================================
+   CANTOS DA TELA
+========================================================= */
+
+function drawCorners(
+    x,
+    y,
+    w,
+    h
+){
+
+    const s = 18;
+
+    canvasCtx.strokeStyle =
+        "#00ffff";
+
+    canvasCtx.lineWidth = 3;
+
+    /* superior esquerdo */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(x,y+s);
+    canvasCtx.lineTo(x,y);
+    canvasCtx.lineTo(x+s,y);
+
+    canvasCtx.stroke();
+
+
+    /* superior direito */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(x+w-s,y);
+    canvasCtx.lineTo(x+w,y);
+    canvasCtx.lineTo(x+w,y+s);
+
+    canvasCtx.stroke();
+
+
+    /* inferior esquerdo */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(x,y+h-s);
+    canvasCtx.lineTo(x,y+h);
+    canvasCtx.lineTo(x+s,y+h);
+
+    canvasCtx.stroke();
+
+
+    /* inferior direito */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(x+w-s,y+h);
+    canvasCtx.lineTo(x+w,y+h);
+    canvasCtx.lineTo(x+w,y+h-s);
+
+    canvasCtx.stroke();
+
+}
+
+
+/* =========================================================
+   MAPA HOLOGRÁFICO
+========================================================= */
+
+function drawHolographicMap(
+    x,
+    y,
+    w,
+    h
+){
+
+    canvasCtx.fillStyle =
+        "rgba(0,80,70,.35)";
+
+    canvasCtx.fillRect(
+        x+10,
+        y+10,
+        w-20,
+        h-20
+    );
+
+
+    /* GRID */
+
+    canvasCtx.strokeStyle =
+        "rgba(0,255,180,.35)";
+
+    canvasCtx.lineWidth = 1;
+
+    for(let i=0;i<7;i++){
+
+        canvasCtx.beginPath();
+
+        canvasCtx.moveTo(
+            x+10,
+            y+10+i*32
+        );
+
+        canvasCtx.lineTo(
+            x+w-10,
+            y+10+i*32
+        );
+
+        canvasCtx.stroke();
+
+    }
+
+
+    for(let i=0;i<9;i++){
+
+        canvasCtx.beginPath();
+
+        canvasCtx.moveTo(
+            x+10+i*43,
+            y+10
+        );
+
+        canvasCtx.lineTo(
+            x+10+i*43,
+            y+h-10
+        );
+
+        canvasCtx.stroke();
+
+    }
+
+
+    /* PULSO */
+
+    const pulse =
+        7 +
+        Math.sin(
+            time*.005
+        )*3;
+
+
+    canvasCtx.beginPath();
+
+    canvasCtx.arc(
+        x+w*.35,
+        y+h*.4,
+        pulse,
+        0,
+        Math.PI*2
+    );
+
+    canvasCtx.fillStyle =
+        "#ff0044";
+
+    canvasCtx.shadowColor =
+        "#ff0044";
+
+    canvasCtx.shadowBlur =
+        20;
+
+    canvasCtx.fill();
+
+
+    /* ROTA */
+
+    canvasCtx.shadowBlur = 0;
+
+    canvasCtx.fillStyle =
+        "#ffffff";
+
+    canvasCtx.font =
+        "12px Courier New";
+
+    canvasCtx.textAlign =
+        "left";
+
+    canvasCtx.fillText(
+        "KORVIL NAVIGATION",
+        x+20,
+        y+30
+    );
+
+    canvasCtx.fillText(
+        "3D POSITION LOCKED",
+        x+20,
+        y+50
+    );
+
+    canvasCtx.fillText(
+        "DISTANCE 3.0 KM",
+        x+20,
+        y+h-25
+    );
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function updateLoading(){
+
+    if(
+        appScreen==="loading" &&
+        loadingPercent<100
+    ){
+
+        loadingPercent += .7;
+
+    }
+
+    else if(
+        loadingPercent>=100
+    ){
+
+        appScreen="mapa";
+
+    }
+
+    requestAnimationFrame(
+        updateLoading
+    );
+
+}
+
 updateLoading();
 
-// 4. CLIQUE
-function checkButtonClick(landmark, base_hand) {
-  if(!base_hand) return;
-  const x = landmark.x * canvasElement.width;
-  const y = landmark.y * canvasElement.height;
 
-  buttons.forEach(b => {
-    const dist = Math.sqrt(Math.pow(x - b.x, 2) + Math.pow(y - b.y, 2));
-    if(dist < 30 &&!b.active) {
-      b.active = true;
-      setTimeout(() => b.active = false, 300);
+/* =========================================================
+   CLIQUE COM SEGUNDA MÃO
+========================================================= */
 
-      if(b.id === 'grid') {
-        appScreen = 'loading';
-        loadingPercent = 0;
-      }
-      if(b.id === 'power') {
-        appScreen = null;
-      }
+function checkButtonClick(
+    landmark,
+    base_hand
+){
+
+    if(!base_hand)
+        return;
+
+    const x =
+        landmark.x *
+        window.innerWidth;
+
+    const y =
+        landmark.y *
+        window.innerHeight;
+
+
+    buttons.forEach(
+        b=>{
+
+            const dx =
+                x-b.x;
+
+            const dy =
+                y-b.y;
+
+            const dist =
+                Math.sqrt(
+                    dx*dx+
+                    dy*dy
+                );
+
+
+            if(
+                dist<35 &&
+                !b.active
+            ){
+
+                b.active=true;
+
+                setTimeout(
+                    ()=>{
+                        b.active=false;
+                    },
+                    400
+                );
+
+
+                if(
+                    b.id==="grid"
+                ){
+
+                    appScreen =
+                        "loading";
+
+                    loadingPercent=0;
+
+                }
+
+
+                if(
+                    b.id==="power"
+                ){
+
+                    appScreen=null;
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOOP VISUAL 4D
+========================================================= */
+
+function animationLoop(){
+
+    time =
+        performance.now();
+
+    requestAnimationFrame(
+        animationLoop
+    );
+
+}
+
+animationLoop();
+
+
+/* =========================================================
+   CÂMERA
+========================================================= */
+
+startBtn.onclick =
+async function(){
+
+    if(cameraRunning)
+        return;
+
+    try{
+
+        cameraRunning=true;
+
+        startBtn.style.display=
+            "none";
+
+        status.textContent=
+            "SYSTEM: CAMERA ONLINE";
+
+        const camera =
+            new Camera(
+                videoElement,
+                {
+
+                    onFrame:
+                    async()=>{
+                        await hands.send({
+                            image:
+                            videoElement
+                        });
+                    },
+
+                    width:1920,
+                    height:1080
+
+                }
+            );
+
+        camera.start();
+
     }
-  })
-}
 
-// 5. LIGAR CAMERA AO CLICAR
-startBtn.onclick = async () => {
-  if(cameraRunning) return;
-  cameraRunning = true;
-  startBtn.style.display = 'none';
+    catch(error){
 
-  const camera = new Camera(videoElement, {
-    onFrame: async () => { await hands.send({image: videoElement}); },
-    width: 1280, height: 720
-  });
-  camera.start();
-}
+        console.error(error);
+
+        cameraRunning=false;
+
+        startBtn.style.display=
+            "block";
+
+        status.textContent=
+            "SYSTEM: CAMERA ERROR";
+
+    }
+
+};
+
+
+/* =========================================================
+   DETECÇÃO DE MOVIMENTO
+========================================================= */
+
+setInterval(()=>{
+
+    if(
+        hand1
+    ){
+
+        status.textContent =
+            "SYSTEM: HOLOGRAM ONLINE // HAND TRACKING";
+
+    }
+    else if(
+        cameraRunning
+    ){
+
+        status.textContent =
+            "SYSTEM: SEARCHING HAND...";
+
+    }
+
+},500);
 
 </script>
+
 </body>
 </html>
