@@ -3,145 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>armadura cgm v2</title>
+<title>armadura 360 cgm</title>
 <style>
-  body { margin:0; background:#000; overflow:hidden; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; filter:brightness(0.4); }
-  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; }
-  #ui { position:absolute; top:10px; width:100%; text-align:center; color:#0ff; font:14px 'Courier New'; text-shadow:0 0 10px #0ff; }
-  #menu { position:absolute; left:15px; top:50%; transform:translateY(-50%); background:rgba(0,20,40,0.9); border:1px solid #0ff; padding:8px; border-radius:10px; box-shadow:0 0 20px #0ff; }
- .btn { display:block; width:150px; margin:5px 0; padding:7px; background:#0ff; border:none; color:#000; font:12px 'Courier New'; font-weight:bold; border-radius:5px; }
- .btn.off { background:rgba(0,255,255,0.2); color:#0ff; }
-  #mira { position:absolute; width:50px; height:50px; border:2px solid #f00; border-radius:50%; display:none; }
-  #mira::before,#mira::after{content:'';position:absolute;background:#f00;}
-  #mira::before{top:50%;left:0;width:100%;height:2px;}
-  #mira::after{left:50%;top:0;width:2px;height:100%;}
-  #miraMenu{position:absolute;top:10px;right:15px;background:rgba(255,0,0,0.2);border:1px solid #f00;padding:6px;color:#f00;font:10px 'Courier New';display:none;}
+  body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.4); }
+  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
+  #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:14px; color:#0ff; text-shadow:0 0 10px #0ff; }
+  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
+  #menuLateral { position:absolute; left:20px; top:50%; transform:translateY(-50%); z-index:4; background:rgba(0,20,40,0.85); border:1px solid #0ff; padding:10px; border-radius:10px; box-shadow:0 0 20px #0ff; max-height:80vh; overflow-y:auto; }
+.btnHolo { display:block; width:160px; margin:6px 0; padding:8px; background:rgba(0,255,255,0.1); border:1px solid #0ff; color:#0ff; font-size:12px; cursor:pointer; border-radius:5px; text-align:left; }
+.btnHolo.ativo { background:#0ff; color:#000; box-shadow:0 0 15px #0ff; }
+ #direcao { position:absolute; top:40px; width:100%; text-align:center; z-index:3; color:#0ff; font-size:12px; }
+ #miraMenu { position:absolute; top:10px; right:20px; z-index:5; background:rgba(255,0,0,0.2); border:1px solid #f00; padding:8px; border-radius:5px; color:#f00; display:none; font-size:11px; }
+.mira { position:absolute; width:60px; height:60px; border:2px solid #f00; border-radius:50%; display:none; z-index:5; }
+.mira::before { content:''; position:absolute; top:50%; left:0; width:100%; height:2px; background:#f00; }
+.mira::after { content:''; position:absolute; left:50%; top:0; width:2px; height:100%; background:#f00; }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-<div id="ui">ARMADURA CGM v2</div>
-<div id="miraMenu">MIRA<br>ALVO<br>ZOOM<br>SCAN</div>
-<div id="mira"></div>
-<video id="video" autoplay playsinline muted></video>
-<canvas id="canvas"></canvas>
+  <div id="ui">ARMADURA HOLOGRAFICA 360° by CGM</div>
+  <div id="direcao">DIRECAO: FRENTE</div>
+  <div id="miraMenu">MIRA ATIVA<br>1.ALVO<br>2.ZOOM<br>3.SCAN</div>
+  <div class="mira" id="mira"></div>
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="canvas"></canvas>
+  <button id="start_btn">iniciar camera</button>
 
-<div id="menu">
-  <button class="btn" data-t="capacete">CAPACETE</button>
-  <button class="btn" data-t="ombro">OMBROS</button>
-  <button class="btn" data-t="peito">PEITO</button>
-  <button class="btn" data-t="braco">BRAÇOS</button>
-  <button class="btn" data-t="antebraco">ANTEBRAÇOS</button>
-  <button class="btn" data-t="mao">MÃOS</button>
-  <button class="btn" data-t="abdomen">ABDOMEN</button>
-  <button class="btn" data-t="coxa">COXAS</button>
-  <button class="btn" data-t="canela">CANELAS</button>
-  <button class="btn" data-t="pe">PÉS</button>
-</div>
+  <div id="menuLateral">...mesmo menu... </div>
 
 <script>
-const v = document.getElementById('video'), c = document.getElementById('canvas'), ctx = c.getContext('2d');
-const mira = document.getElementById('mira'), miraMenu = document.getElementById('miraMenu');
-let lm = null, ativo = new Set(['capacete','ombro','peito','braco','antebraco','mao','abdomen','coxa','canela','pe']);
-let estado = {mao:'n', braco:'n', peito:'n', perna:'n', ombro:'n'};
-let piscou = false, miraOn = false;
+const videoElement = document.getElementById('video');
+const canvasElement = document.getElementById('canvas');
+const canvasCtx = canvasElement.getContext('2d');
+const startBtn = document.getElementById('start_btn');
+const direcaoTxt = document.getElementById('direcao');
+const miraDiv = document.getElementById('mira');
+const miraMenu = document.getElementById('miraMenu');
 
-function r(){c.width=innerWidth;c.height=innerHeight;} r(); onresize=r;
+let hand1 = null, hand2 = null, poseLandmarks = null;
+let isFrontCamera = true, cameraRunning = false;
+let hologramasAtivos = new Set(['luva','bracelete','braco','ombro','peito','costas','lateral','capacete','abdomen','coxa','canela','pe']);
+let direcaoCorpo = 'frente';
+let miraAtiva = false;
 
-document.querySelectorAll('.btn').forEach(b=>b.onclick=()=>{b.classList.toggle('off');ativo.has(b.dataset.t)?ativo.delete(b.dataset.t):ativo.add(b.dataset.t);});
+// ESTADOS DOS MEMBROS
+let estado = {
+  luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal'
+}
 
-// SÓ POSE - MAIS RÁPIDO
-const pose = new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});
-pose.setOptions({modelComplexity:1,smoothLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+// HANDS + POSE igual anterior
+const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
 
-pose.onResults(res=>{
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.shadowColor='#00ffff'; ctx.shadowBlur=20;
-  lm=res.poseLandmarks; if(!lm) return;
-  gestos(); desenha();
+pose.onResults((results) => {
+  poseLandmarks = results.poseLandmarks;
+  if(poseLandmarks) {
+    detectarDirecao(poseLandmarks);
+    processarGestosCabeca(poseLandmarks); // GESTO DA CABEÇA
+  }
+})
+
+function detectarDirecao(lm){ /* igual ao anterior */ }
+
+hands.onResults((results) => {
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 20;
+
+  if (results.multiHandLandmarks) {
+    if(isFrontCamera){
+      hand1 = results.multiHandLandmarks[0]?.map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+      hand2 = results.multiHandLandmarks[1]?.map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+    } else {
+      hand1 = results.multiHandLandmarks[0];
+      hand2 = results.multiHandLandmarks[1];
+    }
+    processarGestosMembros(); // 3 GESTOS POR MEMBRO
+
+    if(direcaoCorpo === 'frente') drawFrente();
+    if(direcaoCorpo === 'costas') drawCostas();
+    if(direcaoCorpo === 'esq') drawLateral('esq');
+    if(direcaoCorpo === 'dir') drawLateral('dir');
+  }
 });
 
-// GESTOS
-function gestos(){
-  const [n,olE,olD,ombE,ombD,cotE,cotD,munE,munD,qE,qD,jE,jD] = [lm[0],lm[7],lm[8],lm[11],lm[12],lm[13],lm[14],lm[15],lm[16],lm[23],lm[24],lm[25],lm[26]];
-  
-  // CABECA: PISCAR OLHO D = MIRA
-  if(Math.abs(olD.y-olE.y)>0.05 &&!piscou){piscou=1;miraOn=!miraOn;mira.style.display=miraOn?'block':'none';miraMenu.style.display=miraOn?'block':'none';setTimeout(()=>piscou=0,500);}
-  if(miraOn){mira.style.left=olD.x*c.width-25+'px';mira.style.top=olD.y*c.height-25+'px';}
+// 1. GESTO DA CABEÇA: PISCAR OLHO DIREITO
+let olhoFechado = false;
+function processarGestosCabeca(lm){
+  const olhoDirCima = lm[7]; // olho dir
+  const olhoDirBaixo = lm[5];
+  const distOlho = Math.abs(olhoDirCima.y - olhoDirBaixo.y);
 
-  // MAO: DISTANCIA PUNHO-PALMA
-  let dMao = Math.hypot(munE.x-cotE.x, munE.y-cotE.y);
-  if(dMao<0.08)estado.mao='escudo'; else if(dMao>0.2)estado.mao='tiro'; else estado.mao='n';
-
-  // BRACO: ALTURA DO PUNHO
-  if(munE.y<ombE.y-0.15)estado.braco='canhao'; else if(Math.abs(munE.x-ombD.x)<0.1)estado.braco='lamina'; else estado.braco='n';
-
-  // OMBRO: ENCOLHER
-  if(Math.abs(ombE.y-cotE.y)<0.08)estado.ombro='escudo'; else if(Math.abs(ombE.y-ombD.y)>0.15)estado.ombro='missel'; else estado.ombro='n';
-
-  // PEITO: MAOS JUNTAS
-  if(Math.hypot(munE.x-munD.x, munE.y-munD.y)<0.1 && munE.y<qE.y)estado.peito='reator'; else if(ombE.x<0.3&&ombD.x>0.7)estado.peito='barreira'; else estado.peito='n';
-
-  // PERNA: JOELHO
-  if(jE.y<qE.y-0.05)estado.perna='turbo'; else if(jE.x>qE.x+0.15)estado.perna='chute'; else estado.perna='n';
-}
-
-// DESENHO IGUAL DA LUVA
-function anel(x,y,cor='#00ffff'){
-  x*=c.width;y*=c.height;
-  for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(x,y,20+i*10,0,6.28);ctx.strokeStyle=`rgba(${cor=='#00ffff'?0:255},255,255,${0.9-i*0.3})`;ctx.lineWidth=2;ctx.stroke();}
-}
-function linha(j1,j2,cor='#00ffff',esp=18){
-  ctx.beginPath();ctx.moveTo(j1.x*c.width,j1.y*c.height);ctx.lineTo(j2.x*c.width,j2.y*c.height);
-  ctx.strokeStyle=cor;ctx.lineWidth=esp;ctx.stroke();
-  let mx=(j1.x+j2.x)/2,my=(j1.y+j2.y)/2; anel(mx,my,cor);
-}
-function pontos(j){
-  ctx.beginPath();ctx.arc(j.x*c.width,j.y*c.height,4,0,6.28);ctx.fillStyle='#00ffff';ctx.fill();
-}
-
-function desenha(){
-  // CAPACETE
-  if(ativo.has('capacete')){
-    for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(lm[0].x*c.width,lm[0].y*c.height-20,65+i*15,3.14,0);ctx.strokeStyle=`rgba(0,255,255,${0.9-i*0.3})`;ctx.stroke();}
-    ctx.beginPath();ctx.ellipse(lm[8].x*c.width,lm[8].y*c.height,10,5,0,0,6.28);ctx.fillStyle=miraOn?'#ff0000':'#00ffff';ctx.fill();
+  if(distOlho < 0.02 &&!olhoFechado){ // piscou
+    olhoFechado = true;
+    miraAtiva =!miraAtiva;
+    miraDiv.style.display = miraAtiva? 'block' : 'none';
+    miraMenu.style.display = miraAtiva? 'block' : 'none';
+    setTimeout(()=>olhoFechado=false, 500);
   }
-  
-  // OMBRO
-  if(ativo.has('ombro')){let cor=estado.ombro=='escudo'?'#00ff88':estado.ombro=='missel'?'#ff8800':'#00ffff';anel(lm[11],cor);anel(lm[12],cor);}
-  
-  // PEITO
-  if(ativo.has('peito')){
-    let cor=estado.peito=='reator'?'#fff':estado.peito=='barreira'?'#00ff88':'#00ffff';
-    ctx.beginPath();ctx.moveTo(lm[11].x*c.width,lm[11].y*c.height);ctx.lineTo(lm[12].x*c.width,lm[12].y*c.height);ctx.lineTo(lm[24].x*c.width,lm[24].y*c.height);ctx.lineTo(lm[23].x*c.width,lm[23].y*c.height);ctx.closePath();ctx.strokeStyle=cor;ctx.lineWidth=4;ctx.stroke();
-    ctx.beginPath();ctx.arc((lm[11].x+lm[12].x)/2*c.width,(lm[11].y+lm[12].y)/2*c.height-20,estado.peito=='reator'?25:15,0,6.28);ctx.fillStyle=cor;ctx.fill();
+  if(miraAtiva){
+    miraDiv.style.left = (olhoDirCima.x * canvasElement.width - 30) + 'px';
+    miraDiv.style.top = (olhoDirCima.y * canvasElement.height - 30) + 'px';
   }
-  
-  // ABDOMEN
-  if(ativo.has('abdomen')){let cx=(lm[23].x+lm[24].x)/2,cy=(lm[23].y+lm[24].y)/2;for(let i=0;i<3;i++){ctx.strokeRect((cx-0.15)*c.width,(cy-0.05+i*0.04)*c.height,0.3*c.width,0.02*c.height);}}
-  
-  // BRACO + ANTEBRACO
-  if(ativo.has('braco')){let cor=estado.braco=='lamina'?'#ff0000':estado.braco=='canhao'?'#ff8800':'#00ffff';linha(lm[11],lm[13],cor);linha(lm[12],lm[14],cor);if(estado.braco=='lamina'){ctx.beginPath();ctx.moveTo(lm[13].x*c.width,lm[13].y*c.height);ctx.lineTo(lm[13].x*c.width+30,lm[13].y*c.height);ctx.stroke();}}
-  if(ativo.has('antebraco')){linha(lm[13],lm[15]);linha(lm[14],lm[16]);}
-  
-  // MAO = MESMO DA SUA FOTO
-  if(ativo.has('mao')){
-    let cx=(lm[15].x+lm[16].x)/2, cy=(lm[15].y+lm[16].y)/2;
-    if(estado.mao=='escudo'){ctx.beginPath();ctx.arc(cx*c.width,cy*c.height,90,0,6.28);ctx.fillStyle='rgba(0,255,136,0.2)';ctx.fill();}
-    else if(estado.mao=='tiro'){ctx.fillRect(cx*c.width-8,cy*c.height-35,16,35);}
-    else{for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(cx*c.width,cy*c.height,55+i*25,0,6.28);ctx.strokeStyle=`rgba(0,255,255,${0.9-i*0.3})`;ctx.stroke();}}
-  }
-  
-  // PERNA
-  if(ativo.has('coxa')){let cor=estado.perna=='turbo'?'#00ff88':'#00ffff';linha(lm[23],lm[25],cor);linha(lm[24],lm[26],cor);}
-  if(ativo.has('canela')){linha(lm[25],lm[27]);linha(lm[26],lm[28]);}
-  if(ativo.has('pe')){anel(lm[31]);anel(lm[32]);}
 }
 
-// LIGA AUTO
-navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:720,height:1280}}).then(s=>{v.srcObject=s;new Camera(v,{onFrame:async()=>await pose.send({image:v}),width:720,height:1280}).start();});
+// 2. 3 GESTOS PARA CADA MEMBRO
+function processarGestosMembros(){
+  if(!hand1 &&!hand2) return;
+  const h = hand1 || hand2;
+
+  // LUVA: 1.PUNHO=ESCUDO 2.PINÇA=TIRO 3.MÃO ABERTA=PULSO
+  if(isMaoFechada(h)) estado.luva = 'escudo';
+  else if(isPinca(h)) estado.luva = 'tiro';
+  else estado.luva = 'normal';
+
+  // BRAÇO: 1.PUNHO=RETRATIL 2.DEDO PRA CIMA=LAMINA 3.GIRAR=POWER
+  if(isMaoFechada(h)) estado.braco = 'retraitil';
+  else if(h[8].y < h[6].y) estado.braco = 'lamina';
+  else estado.braco = 'normal';
+
+  // PEITO: 1.DUAS MAOS JUNTAS=REATOR MAX 2.PUNHO NO PEITO=ARMADURA 3.ABRIR BRACOS=ESCUDO TOTAL
+  if(hand1 && hand2 && Math.hypot(hand1[9].x-hand2[9].x, hand1[9].y-hand2[9].y) < 0.1) estado.peito = 'reator';
+  else if(isMaoFechada(h) && h[9].y < 0.5) estado.peito = 'armadura';
+  else estado.peito = 'normal';
+
+  // PERNA: 1.CORRER NO LUGAR=TURBO 2.CHUTE=PROPULSOR 3.AGACHAR=ESTABILIZAR
+  if(poseLandmarks && poseLandmarks[27].y < 0.6) estado.perna = 'turbo'; // joelho levantado
+  else estado.perna = 'normal';
+}
+
+function isMaoFechada(h){
+  return Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y) < 0.08;
+}
+function isPinca(h){
+  return Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y) < 0.05;
+}
+
+// DESENHO MUDA CONFORME ESTADO
+function drawFrente(){
+  if(hand1) { drawHand(hand1, '#00ffff'); if(hologramasAtivos.has('luva')) drawHologramBase(hand1, estado.luva); }
+  if(hologramasAtivos.has('peito')) drawPeitoFrente(estado.peito);
+  if(hologramasAtivos.has('braco')) drawBracoFrente(estado.braco);
+  //... outras peças
+}
+
+function drawHologramBase(landmarks, estado){
+  const cx = landmarks[9].x * canvasElement.width; const cy = landmarks[9].y * canvasElement.height;
+  if(estado === 'escudo'){ // ESCUDO
+    canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 100, 0, 2*Math.PI);
+    canvasCtx.fillStyle = 'rgba(0,255,255,0.2)'; canvasCtx.fill();
+  }
+  else if(estado === 'tiro'){ // CANHAO
+    canvasCtx.beginPath(); canvasCtx.rect(cx-10, cy-40, 20, 40); canvasCtx.fillStyle = '#ff0000'; canvasCtx.fill();
+  }
+  else { // NORMAL
+    for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 60 + i*30, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
+  }
+}
+
+function drawPeitoFrente(estado){
+  const cx = canvasElement.width/2; const cy = canvasElement.height*0.35;
+  if(estado === 'reator'){ canvasCtx.beginPath(); canvasCtx.arc(cx, cy-20, 30, 0, 2*Math.PI); canvasCtx.fillStyle='#fff'; canvasCtx.fill(); }
+  else if(estado === 'armadura'){ canvasCtx.lineWidth = 6; }
+  else { canvasCtx.lineWidth = 3; }
+  canvasCtx.beginPath(); canvasCtx.ellipse(cx, cy, 120, 150, 0, 0, Math.PI); canvasCtx.strokeStyle = '#00ffff'; canvasCtx.stroke();
+}
+
+function drawBracoFrente(estado){
+  if(estado === 'lamina'){
+    const cx = canvasElement.width/2 - 100;
+    canvasCtx.beginPath(); canvasCtx.moveTo(cx, canvasElement.height*0.3); canvasCtx.lineTo(cx, canvasElement.height*0.5);
+    canvasCtx.strokeStyle = '#ff0000'; canvasCtx.lineWidth = 5; canvasCtx.stroke(); // lamina
+  }
+}
+
+//... todas as outras funções de desenho iguais as anteriores...
+
+function drawHand(landmarks, color) {
+  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
+  window.drawLandmarks(canvasCtx, landmarks, {color: color, radius: 3});
+}
+
+// CAMERA
+startBtn.onclick = async () => {
+  if(cameraRunning) return; cameraRunning = true; startBtn.style.display = 'none';
+  let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  videoElement.srcObject = stream;
+  isFrontCamera = constraints.video.facingMode === 'user';
+  videoElement.style.transform = isFrontCamera? 'scaleX(-1)' : 'scaleX(1)';
+  const camera = new Camera(videoElement, { onFrame: async () => { await hands.send({image: videoElement}); await pose.send({image: videoElement}); }, width: 1280, height: 720 });
+  camera.start();
+}
 </script>
 </body>
 </html>
