@@ -263,10 +263,13 @@
 <div id="pino2" class="pino"></div>
 <div id="cursor"></div>
 
+<!-- 1 CUBO NO CENTRO -->
+<div id="cubo1" class="cubo" style="left:calc(50% - 40px); top:calc(50% - 40px);"></div>
+
 <div id="status">
   <div>SISTEMA: <span id="st-text">AGUARDANDO CALIBRAGEM</span></div>
   <div>GESTO: <span id="st-gesto">NENHUM</span></div>
-  <div>OBJETOS: <span id="st-obj">0</span></div>
+  <div>OBJETOS: <span id="st-obj">1</span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
@@ -302,7 +305,7 @@ const pino1 = document.getElementById('pino1'); const pino2 = document.getElemen
 const stText = document.getElementById('st-text'); const stObj = document.getElementById('st-obj'); const stGesto = document.getElementById('st-gesto');
 const lixeira = document.getElementById('lixeira');
 
-let cubos = []; let segurado = null; let cooldownGesto=0;
+let cubos = [document.getElementById('cubo1')]; let segurado = null; let cooldownGesto=0;
 let posSuave = { x: -100, y: -100, cx: -100, cy: -100 };
 let cores = ['#00f0ff', '#ff00ea', '#ffe600', '#00ff66', '#ff3366']; let corAtual = 0;
 
@@ -386,12 +389,6 @@ hands.onResults(res => {
 // --- CONTROLES ---
 function criarCubo(x, y) {
   if(!calibrado)return; initAudio();
-  // BLOQUEIO: só 1 cubo na tela
-  if(cubos.length >= 1){
-    cubos[0].style.left = `${x || (window.innerWidth / 2 - 40)}px`;
-    cubos[0].style.top = `${y || (window.innerHeight / 2 - 40)}px`;
-    return;
-  }
   const c = document.createElement('div'); c.className = 'cubo';
   c.style.left = `${x || (window.innerWidth / 2 - 40)}px`; c.style.top = `${y || (window.innerHeight / 2 - 40)}px`;
   c.style.borderColor = cores[corAtual]; c.style.background = cores[corAtual] + '22'; c.style.boxShadow = `0 0 15px ${cores[corAtual]}`;
@@ -410,9 +407,7 @@ document.getElementById('voz').onclick = () => { vozLigada=!vozLigada; document.
 
 const camera = new Camera(video, { onFrame: async () => { await hands.send({ image: video }); }, width: 640, height: 480 });
 camera.start().then(() => { stText.textContent = "CLIQUE EM CALIBRAR"; }).catch(() => { stText.textContent = "MODO MANUAL"; });
-
-// CRIAR 1 CUBO INICIAL PRA TESTE
-criarCubo();
+// tirar o criarCubo() automatico
 </script>
 </body>
 </html>
