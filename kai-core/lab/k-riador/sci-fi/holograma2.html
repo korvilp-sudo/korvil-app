@@ -10,6 +10,7 @@
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
   #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:12px; color:#0ff; }
   #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
+  #cubo { position:absolute; z-index:3; width:120px; height:120px; left:50%; top:50%; transform:translate(-50%,-50%); border:3px solid #0ff; border-radius:20px; box-shadow:0 0 30px #0ff, inset 0 0 30px #0ff; background:rgba(0,255,255,0.1); pointer-events:none; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -17,6 +18,7 @@
 </head>
 <body>
   <div id="ui">sci-fi hologram by cgm</div>
+  <div id="cubo"></div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
   <button id="start_btn">iniciar camera</button>
@@ -56,13 +58,14 @@ hands.onResults((results) => {
   canvasCtx.shadowBlur = 25;
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    hand1 = results.multiHandLandmarks[0];
-    hand2 = results.multiHandLandmarks[1] || null;
+    // CORRECAO: INVERTER X PQ O VIDEO TA ESPELHADO
+    hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+    hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
 
     drawHandSkeleton(hand1, '#00ffff');
     if(hand1) drawHologramBase(hand1);
     if(appScreen && hand1) drawAppScreen(hand1);
-    
+
     if(hand2) {
       drawHandSkeleton(hand2, '#ff00ff');
       checkButtonClick(hand2[8], hand1);
@@ -198,7 +201,7 @@ startBtn.onclick = async () => {
   if(cameraRunning) return;
   cameraRunning = true;
   startBtn.style.display = 'none';
-  
+
   const camera = new Camera(videoElement, {
     onFrame: async () => { await hands.send({image: videoElement}); },
     width: 1280, height: 720
