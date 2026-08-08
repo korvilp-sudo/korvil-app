@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cgm iron ui</title>
+<title>cgm jarvis ui</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; }
-  #video { position:absolute; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.35); }
+  #video { position:absolute; width:100vw; height:100vh; object-fit:cover; z-index:1; transform:scaleX(-1); filter:brightness(0.3); }
   #canvas { position:absolute; width:100vw; height:100vh; z-index:2; }
-  #msg { position:absolute; z-index:3; top:15px; width:100%; text-align:center; color:#0ff; font-family:'Courier New'; font-size:14px; text-shadow:0 0 8px #0ff; }
- .btn { position:absolute; z-index:4; padding:10px 16px; background:rgba(0,255,255,0.15); border:2px solid #0ff; color:#0ff; border-radius:20px; font-family:'Courier New'; }
-  #btn_cap { bottom:20px; left:20px; }
-  #btn_luva { bottom:20px; right:20px; }
-  #btn_camera { bottom:70px; right:20px; }
- .btn.active { background:#0ff; color:#000; box-shadow:0 0 20px #0ff; }
+  #msg { position:absolute; z-index:3; top:15px; width:100%; text-align:center; color:#0ff; font-family:'Courier New'; font-size:16px; text-shadow:0 0 10px #0ff; }
+ .btn { position:absolute; z-index:4; bottom:20px; padding:12px 20px; background:rgba(0,255,255,0.1); border:2px solid #0ff; color:#0ff; border-radius:25px; font-family:'Courier New'; font-size:16px; }
+ .btn.active { background:#0ff; color:#000; box-shadow:0 0 25px #0ff; }
+  #btn_cap { left:20px; }
+  #btn_luva { right:20px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
@@ -25,7 +24,6 @@
   <canvas id="canvas"></canvas>
   <button id="btn_cap" class="btn">CAPACETE</button>
   <button id="btn_luva" class="btn">LUVAS</button>
-  <button id="btn_camera" class="btn">CAMERA</button>
 
 <script>
 const video = document.getElementById('video');
@@ -36,163 +34,210 @@ const msg = document.getElementById('msg');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let capAtivo = false;
-let luvaAtiva = false;
-let useFront = true;
-let face = null, hand1 = null, hand2 = null;
-let appScreen = null;
+let capAtivo = false, luvaAtiva = false;
+let face = null, hands = null;
+let luvaPega = false, luvaPos = {x: canvas.width/2, y: canvas.height/2};
+let contagem = 0, ultimoClique = 0;
+let telaAtiva = null;
 
-// 1. HANDS = LUVAS
-const hands = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-hands.setOptions({maxNumHands: 2});
-hands.onResults(r => {
-  if(r.multiHandLandmarks.length > 0){
-    hand1 = r.multiHandLandmarks[0];
-    hand2 = r.multiHandLandmarks[1] || null;
-  } else { hand1 = null; hand2 = null; }
-});
+// ESTADOS OLHO/BOCA
+let olhoE_piscou = false, olhoD_piscou = false, boca_abriu = false;
 
-// 2. FACEMESH = CAPACETE
-const faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
-faceMesh.setOptions({maxNumFaces: 1, refineLandmarks: true});
-faceMesh.onResults(r => {
-  face = r.multiFaceLandmarks[0] || null;
-});
+// 1. HANDS
+const handsDetector = new Hands({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+handsDetector.setOptions({maxNumHands: 2});
+handsDetector.onResults(r => { hands = r.multiHandLandmarks; });
 
-// LOOP PRINCIPAL
-function draw(){
+// 2. FACE
+const faceDetector = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+faceDetector.setOptions({maxNumFaces: 1, refineLandmarks: true});
+faceDetector.onResults(r => { face = r.multiFaceLandmarks[0]; });
+
+function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.shadowColor = '#00ffff';
-  ctx.shadowBlur = 25;
+  ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 20;
 
-  if(capAtivo && face) drawCapacete(face);
-  if(luvaAtiva && hand1) drawLuvas(hand1, hand2);
-  if(appScreen && hand1) drawTela(appScreen, hand1);
+  if(capAtivo && face) desenharCapacete(face);
+  if(luvaAtiva && hands) desenharLuvas(hands);
+  if(telaAtiva) desenharTela(telaAtiva);
 
-  requestAnimationFrame(draw);
+  requestAnimationFrame(loop);
 }
-draw();
+loop();
 
-// CAPACETE: VISOR + MIRA + PONTOS
-function drawCapacete(landmarks){
-  const olhoE = landmarks[159];
-  const olhoD = landmarks[386];
-  const boca = landmarks[13];
+// CAPACETE: VISOR + MIRA + COMANDOS DE OLHO/BOCA
+function desenharCapacete(landmarks){
+  const olhoE_topo = landmarks[159].y, olhoE_base = landmarks[145].y;
+  const olhoD_topo = landmarks[386].y, olhoD_base = landmarks[374].y;
+  const boca_topo = landmarks[13].y, boca_base = landmarks[14].y;
 
-  const ex = olhoE.x * canvas.width, ey = olhoE.y * canvas.height;
-  const dx = olhoD.x * canvas.width, dy = olhoD.y * canvas.height;
-  const bx = boca.x * canvas.width, by = boca.y * canvas.height;
+  const ex = landmarks[159].x * canvas.width, ey = landmarks[159].y * canvas.height;
+  const dx = landmarks[386].x * canvas.width, dy = landmarks[386].y * canvas.height;
+  const bx = landmarks[13].x * canvas.width, by = landmarks[13].y * canvas.height;
 
-  // VISOR
+  // DETECTAR PISCAR E BOCA
+  const piscouE = (olhoE_base - olhoE_topo) < 0.008;
+  const piscouD = (olhoD_base - olhoD_topo) < 0.008;
+  const abriuBoca = (boca_base - boca_topo) > 0.03;
+
+  // COMANDOS
+  if(piscouE &&!olhoE_piscou) { ativarCapacete('menu'); } // OLHO ESQ PISCAR = MINI MENU
+  if(piscouD &&!olhoD_piscou) { ativarCapacete('grafico'); } // OLHO DIR PISCAR = GRAFICO PIZZA
+  if(piscouE && piscouD) { ativarCapacete('octaedro'); } // OS DOIS = OCTAEDRO 3D
+  if(abriuBoca &&!boca_abriu) { ativarCapacete('comando'); } // BOCA ABRIR = COMANDOS
+
+  olhoE_piscou = piscouE; olhoD_piscou = piscouD; boca_abriu = abriuBoca;
+
+  // DESENHO VISOR
   ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(dx, dy); ctx.stroke();
 
   // MIRA OLHOS
   ctx.fillStyle = '#ff0000';
-  ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(dx, dy, 5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI*2); ctx.fill();
 
   // MIRA BOCA
   ctx.strokeStyle = '#00ff00';
-  ctx.beginPath(); ctx.arc(bx, by, 20, 0, Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(bx, by, 22, 0, Math.PI*2); ctx.stroke();
 
   // PONTOS CAPACETE
-  for(let i=0; i<468; i+=30){
+  for(let i=0; i<468; i+=25){
     const p = landmarks[i];
-    ctx.fillStyle = 'rgba(0,255,255,0.4)';
+    ctx.fillStyle = 'rgba(0,255,255,0.3)';
     ctx.beginPath(); ctx.arc(p.x*canvas.width, p.y*canvas.height, 2, 0, Math.PI*2); ctx.fill();
   }
 }
 
-// LUVAS: HOLOGRAMA + 3 BOTOES
-function drawLuvas(h1, h2){
-  const px = h1[9].x * canvas.width; // palma
-  const py = h1[9].y * canvas.height;
-  const tx = h1[4].x * canvas.width; // polegar
+// LUVAS: PEGAR 3S + SEGUIR MAO + PINÇAR
+function desenharLuvas(handsData){
+  const mao1 = handsData[0]; // segura
+  const mao2 = handsData[1] || null; // clica
 
-  // aneis
-  for(let i=0; i<3; i++){
-    ctx.beginPath();
-    ctx.arc(px, py, 50 + i*20, 0, Math.PI*2);
-    ctx.strokeStyle = `rgba(0,255,255,${1 - i*0.3})`;
-    ctx.lineWidth = 2;
-    ctx.stroke();
+  if(!mao1) { luvaPega = false; contagem = 0; return; }
+
+  const palmaX = mao1[9].x * canvas.width;
+  const palmaY = mao1[9].y * canvas.height;
+  const palmaZ = mao1[9].z;
+
+  const dist = Math.sqrt(Math.pow(palmaX - luvaPos.x, 2) + Math.pow(palmaY - luvaPos.y, 2));
+
+  // PEGAR COM 3S
+  if(!luvaPega && dist < 100 && palmaZ < -0.05){
+    contagem += 0.016;
+    msg.innerText = `pegando luva... ${Math.ceil(3 - contagem)}s`;
+    ctx.strokeStyle = '#ffff00';
+    ctx.beginPath(); ctx.arc(luvaPos.x, luvaPos.y, 60, 0, Math.PI*2 * (contagem/3)); ctx.stroke();
+    if(contagem >= 3){ luvaPega = true; contagem = 0; msg.innerText = "luva equipada"; }
+  } else if(luvaPega) {
+    luvaPos.x = palmaX; luvaPos.y = palmaY;
+    msg.innerText = "pinçar para clicar";
+  } else {
+    msg.innerText = "passe a mao por tras por 3s";
+    contagem = 0;
   }
 
-  // BOTOES DA LUVA
+  // HOLOGRAMA
+  for(let i=0; i<3; i++){
+    ctx.beginPath();
+    ctx.arc(luvaPos.x, luvaPos.y, 50 + i*20, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(0,255,255,${1 - i*0.3})`;
+    ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  // BOTOES LUVA
   const botoes = [
-    {id:'menu', text:'MENU', y:-50},
+    {id:'menu', text:'MENU', y:-60},
     {id:'mapa', text:'MAPA', y:0},
-    {id:'arma', text:'ARMA', y:50},
+    {id:'arma', text:'ARMA', y:60},
   ];
 
   botoes.forEach(b => {
-    b.x = tx + 90;
-    b.y = py + b.y;
+    b.x = luvaPos.x + 90; b.y = luvaPos.y + b.y;
     ctx.fillStyle = 'rgba(0,255,255,0.2)';
-    ctx.fillRect(b.x-30, b.y-15, 60, 30);
-    ctx.strokeStyle = '#00ffff';
-    ctx.strokeRect(b.x-30, b.y-15, 60, 30);
+    ctx.fillRect(b.x-35, b.y-18, 70, 36);
+    ctx.strokeStyle = '#00ffff'; ctx.strokeRect(b.x-35, b.y-18, 70, 36);
     ctx.fillStyle = '#fff'; ctx.font = '14px Courier New'; ctx.textAlign = 'center';
     ctx.fillText(b.text, b.x, b.y+5);
 
-    // CLIQUE COM OUTRA MAO
-    if(h2){
-      const cx = h2[8].x * canvas.width;
-      const cy = h2[8].y * canvas.height;
-      if(cx > b.x-30 && cx < b.x+30 && cy > b.y-15 && cy < b.y+15){
-        ativarFuncao(b.id);
-        // desenha dedo
-        ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI*2); ctx.fillStyle = '#ff00ff'; ctx.fill();
+    // CLIQUE PINÇA: indicador + polegar
+    if(mao2){
+      const ind = mao2[8], pole = mao2[4];
+      const distPinca = Math.sqrt(Math.pow(ind.x-pole.x,2) + Math.pow(ind.y-pole.y,2));
+      const dedoX = ind.x * canvas.width, dedoY = ind.y * canvas.height;
+
+      if(distPinca < 0.04 && Date.now() - ultimoClique > 500){
+        if(dedoX > b.x-35 && dedoX < b.x+35 && dedoY > b.y-18 && dedoY < b.y+18){
+          ultimoClique = Date.now(); ativarLuva(b.id);
+        }
       }
     }
   });
 }
 
-function ativarFuncao(id){
-  if(id === 'menu') { appScreen = 'menu'; msg.innerText = "MENU ATIVO"; }
-  if(id === 'mapa') { appScreen = 'mapa'; msg.innerText = "MAPA ATIVO"; }
-  if(id === 'arma') { appScreen = 'arma'; msg.innerText = "ARMA ATIVA"; }
-  setTimeout(()=> appScreen = null, 2000); // fecha tela em 2s
+function ativarCapacete(cmd){
+  telaAtiva = cmd;
+  if(cmd==='menu') msg.innerText = "MINI MENU CAPACETE";
+  if(cmd==='grafico') msg.innerText = "GRAFICO PIZZA CAPACETE";
+  if(cmd==='octaedro') msg.innerText = "OCTAEDRO 3D ATIVO";
+  if(cmd==='comando') msg.innerText = "COMANDO DE VOZ";
+  setTimeout(()=> telaAtiva = null, 2000);
 }
 
-function drawTela(tipo, hand){
-  const x = hand[9].x * canvas.width - 120;
-  const y = hand[9].y * canvas.height - 60;
+function ativarLuva(cmd){
+  telaAtiva = cmd;
+  msg.innerText = cmd.toUpperCase() + " LUVA";
+  setTimeout(()=> telaAtiva = null, 2000);
+}
+
+function desenharTela(tipo){
+  const cx = canvas.width/2, cy = canvas.height/2;
   ctx.fillStyle = 'rgba(0,10,30,0.9)';
-  ctx.fillRect(x,y,240,120);
-  ctx.strokeStyle = '#0ff'; ctx.strokeRect(x,y,240,120);
-  ctx.fillStyle = '#0ff'; ctx.font = '16px Courier New'; ctx.textAlign = 'center';
-  ctx.fillText(tipo.toUpperCase(), x+120, y+60);
+  ctx.fillRect(cx-150, cy-80, 300, 160);
+  ctx.strokeStyle = '#0ff'; ctx.strokeRect(cx-150, cy-80, 300, 160);
+  ctx.fillStyle = '#0ff'; ctx.font = '18px Courier New'; ctx.textAlign = 'center';
+
+  if(tipo==='menu') ctx.fillText("MINI MENU", cx, cy-40);
+  if(tipo==='grafico'){ // PIZZA
+    ctx.fillText("GRAFICO", cx, cy-50);
+    ctx.fillStyle='#ff00ff'; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,50,0,Math.PI*0.5); ctx.fill();
+    ctx.fillStyle='#00ff00'; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,50,Math.PI*0.5,Math.PI); ctx.fill();
+  }
+  if(tipo==='octaedro'){ // 3D
+    ctx.fillText("OCTAEDRO 3D", cx, cy-50);
+    let ang = Date.now()/1000;
+    ctx.strokeStyle='#00ffff';
+    for(let i=0;i<8;i++){
+      let a = ang + i*Math.PI/4;
+      let x = cx + 60*Math.cos(a), y = cy + 30*Math.sin(a);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath(); ctx.stroke();
+  }
+  if(tipo==='comando') ctx.fillText("COMANDO DE VOZ", cx, cy);
+  if(['menu','mapa','arma'].includes(tipo)) ctx.fillText(tipo.toUpperCase(), cx, cy);
 }
 
-// BOTOES DE ATIVAR
+// BOTOES ATIVAR
 document.getElementById('btn_cap').onclick = () => {
   capAtivo =!capAtivo;
   document.getElementById('btn_cap').classList.toggle('active');
-  msg.innerText = capAtivo? "CAPACETE ATIVADO" : "CAPACETE DESATIVADO";
 }
 
 document.getElementById('btn_luva').onclick = () => {
   luvaAtiva =!luvaAtiva;
   document.getElementById('btn_luva').classList.toggle('active');
-  msg.innerText = luvaAtiva? "LUVAS ATIVADAS" : "LUVAS DESATIVADAS";
+  luvaPos = {x: canvas.width/2, y: canvas.height/2};
+  luvaPega = false;
 }
 
-document.getElementById('btn_camera').onclick = async () => {
-  useFront =!useFront;
-  const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: useFront? "user":"environment"}});
-  video.srcObject = stream;
-  video.style.transform = useFront? 'scaleX(-1)' : 'scaleX(1)';
-}
-
-// LIGA CAMERA
-navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
+// CAMERA
+navigator.mediaDevices.getUserMedia({video:{width:1280, height:720}}).then(stream=>{
   video.srcObject = stream;
   const camera = new Camera(video, {
     onFrame: async () => {
-      await hands.send({image: video});
-      await faceMesh.send({image: video});
+      await handsDetector.send({image: video});
+      await faceDetector.send({image: video});
     }
   });
   camera.start();
