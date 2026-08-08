@@ -93,7 +93,7 @@
       const [chestIntegrity, setChestIntegrity] = useState(98);
       
       const [aimPos, setAimPos] = useState({ x: 50, y: 45 });
-      const [faceBox, setFaceBox] = useState({ x: 50, y: 42, w: 22, h: 28, locked: true });
+      const [faceBox, setFaceBox] = useState({ x: 50, y: 42, w: 24, h: 30, locked: false });
       const [flightEngaged, setFlightEngaged] = useState(false);
       const [camOffline, setCamOffline] = useState(false);
 
@@ -102,10 +102,10 @@
       const faceMeshRef = useRef(null);
       const visionTimerRef = useRef(null);
       const objectModelRef = useRef(null);
-      const lastEyeStateRef = useRef({ right:false, left:false });
-      const blinkStartedAtRef = useRef(0);
-      const handledBlinkRef = useRef(false);
-      const blinkTypeRef = useRef(null);
+      const lastEyeStateRef = useRef({ right:true, left:true });
+      const blinkStartedAtRef = useRef({ right:0, left:0 });
+      const blinkHandledRef = useRef({ right:false, left:false });
+      const blinkCooldownRef = useRef(0);
       const faceDetectedRef = useRef(false);
       const recognitionRef = useRef(null);
       const aimActiveRef = useRef(false);
@@ -155,7 +155,12 @@
       };
 
       const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-      const eyeRatio=(lm,a,b,c,d,e,f)=>((dist(lm[c],lm[d])+dist(lm[e],lm[f]))/2)/Math.max(dist(lm[a],lm[b]),.001);
+      // EAR robusto: cada olho é medido independentemente e calibrado para a câmera.
+      const eyeEAR=(lm,p1,p2,p3,p4,p5,p6)=>{
+        const vertical=(dist(lm[p3],lm[p4])+dist(lm[p5],lm[p6]))/2;
+        const horizontal=Math.max(dist(lm[p1],lm[p2]),0.001);
+        return vertical/horizontal;
+      };
 
       const runEnvironmentScan = async () => {
         if(isScanning) return; setIsScanning(true); setCommandLog('SCAN OCULAR ATIVADO // ANALISANDO AMBIENTE...'); setVoiceStatus('ESCANEANDO AMBIENTE'); speak('Iniciando escaneamento do ambiente.');
@@ -165,42 +170,111 @@
           if(objectModelRef.current && videoRef.current) detections=await objectModelRef.current.detect(videoRef.current,20,.35);
         } catch(e) { console.warn('Scanner:',e); }
         const mapped=detections.map((d,i)=>({id:i+1,className:d.class,score:Math.round(d.score*100),description:d.class==='person'?'Pessoa detectada no campo visual.':['dog','cat','bird','horse','sheep','cow'].includes(d.class)?`Animal detectado: ${d.class}.`:`Objeto detectado: ${d.class}.`,box:d.bbox}));
-        if(faceDetectedRef.current && !mapped.some(x=>x.className==='person')) mapped.unshift({id:1,className:'person',score:94,description:'Pessoa detectada e rosto localizado pela biometria visual.'});
+        if(faceDetectedRef.current && !mapped.some(x=>x.className==='person')) mapped.unshift({id:1,className:'person',score:94,description:'Pessoa detectada e rosto localizado pela visão computacional.'});
         if(!mapped.length) mapped.push({id:1,className:'environment',score:72,description:'Ambiente visível, sem objeto reconhecido com confiança suficiente.'});
         setScanResults(mapped.slice(0,12));
         const hasPerson=mapped.some(x=>x.className==='person'), animals=mapped.filter(x=>['dog','cat','bird','horse','sheep','cow'].includes(x.className)), objects=mapped.filter(x=>x.className!=='person'&&x.className!=='environment'&&!animals.includes(x));
         const p=[hasPerson?{title:'Avaliar pessoa detectada',detail:'Manter o rosto no campo visual e acompanhar a situação.',action:'person'}:null,animals.length?{title:'Verificar animal detectado',detail:`Há ${animals.length} animal(is) no campo visual.`,action:'details'}:null,objects.length?{title:'Analisar objetos do ambiente',detail:`Foram identificados ${objects.length} objeto(s) com confiança suficiente.`,action:'details'}:null,{title:'Registrar panorama do ambiente',detail:'Conservar o estado atual para análise visual.',action:'record'}].filter(Boolean).slice(0,3);
-        setPriorities(p); setSelectedPriority(0); setIsScanning(false); setVoiceStatus('O QUE QUER FAZER, SENHOR?'); setCommandLog('SCAN CONCLUÍDO // 3 PRIORIDADES GERADAS // AGUARDANDO ESCOLHA'); speak('O que quer fazer, senhor.'); setTimeout(startVoiceChoice,500);
+        setPriorities(p); setSelectedPriority(0); setIsScanning(false); setVoiceStatus('O QUE QUER FAZER, SENHOR?'); setCommandLog('SCAN CONCLUÍDO // 3 PRIORIDADES GERADAS // AGUARDANDO ESCOLHA'); speak('O que quer fazer, senhor.'); setTimeout(startVoiceChoice,700);
       };
 
-      // Face Mesh localiza o rosto automaticamente assim que a câmera fica disponível.
+      // Reconhecimento contínuo do rosto + detecção de piscadas.
+      // O visor é espelhado, portanto o X do rosto também é espelhado.
       useEffect(() => {
+        let cancelled=false;
         if(!window.FaceMesh) return;
         const mesh=new window.FaceMesh({locateFile:file=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-        mesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:.6,minTrackingConfidence:.6});
+        mesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:.55,minTrackingConfidence:.55});
         mesh.onResults(results=>{
+          if(cancelled) return;
           const face=results.multiFaceLandmarks?.[0];
-          if(!face){setFaceDetected(false);setFaceBox(prev=>({...prev,locked:false}));return;}
-          setFaceDetected(true);
-          const xs=face.map(p=>p.x),ys=face.map(p=>p.y),minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-          setFaceBox({x:(minX+maxX)/2*100,y:(minY+maxY)/2*100,w:Math.min(45,(maxX-minX)*100*1.35),h:Math.min(55,(maxY-minY)*100*1.35),locked:true});
-          const rr=eyeRatio(face,33,133,159,145,158,153),lr=eyeRatio(face,362,263,386,374,385,380),rc=rr<.21,lc=lr<.21;
-          const wasOpen=!lastEyeStateRef.current.right&&!lastEyeStateRef.current.left;
-          if((rc||lc)&&wasOpen){blinkStartedAtRef.current=performance.now();handledBlinkRef.current=false;blinkTypeRef.current=rc&&lc?'both':rc?'right':'left';}
-          if(!rc&&!lc&&!handledBlinkRef.current&&blinkStartedAtRef.current){
-            const dur=performance.now()-blinkStartedAtRef.current;
-            if(dur>=60&&dur<=900){handledBlinkRef.current=true;
-              if(blinkTypeRef.current==='right'){setAimActive(prev=>{const next=!prev;setCommandLog(next?'MIRA OCULAR DIREITA ATIVADA // TRAVA DE ALVO PRONTA':'MIRA OCULAR DIREITA DESATIVADA');speak(next?'Mira ativada, senhor.':'Mira desativada, senhor.');return next;});}
-              else if(blinkTypeRef.current==='left'){if(aimActiveRef.current) runEnvironmentScan();}
-              else if(blinkTypeRef.current==='both'){if(aimActiveRef.current&&prioritiesRef.current.length) executePriority(prioritiesRef.current[selectedPriorityRef.current]);}
-            }
-            blinkStartedAtRef.current=0; blinkTypeRef.current=null;
+          if(!face){
+            setFaceDetected(false);
+            setFaceBox(prev=>({...prev,locked:false}));
+            lastEyeStateRef.current={right:true,left:true};
+            return;
           }
-          lastEyeStateRef.current={right:rc,left:lc};
+          setFaceDetected(true);
+          faceDetectedRef.current=true;
+
+          const xs=face.map(p=>p.x), ys=face.map(p=>p.y);
+          const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+          const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
+          const fw=Math.min(50,Math.max(18,(maxX-minX)*100*1.45));
+          const fh=Math.min(58,Math.max(24,(maxY-minY)*100*1.45));
+
+          // O vídeo está scaleX(-1), então o quadro precisa acompanhar a imagem espelhada.
+          setFaceBox({x:(1-cx)*100,y:cy*100,w:fw,h:fh,locked:true});
+          setAimPos({x:(1-cx)*100,y:cy*100});
+
+          // Landmarks MediaPipe: olho direito da pessoa e olho esquerdo da pessoa.
+          const rightEAR=eyeEAR(face,33,133,159,145,158,153);
+          const leftEAR =eyeEAR(face,362,263,386,374,385,380);
+          // Threshold mais tolerante para webcam: aberto ~0.25-0.35, fechado geralmente <0.20-0.22.
+          const rightClosed=rightEAR<0.205;
+          const leftClosed=leftEAR<0.205;
+          const now=performance.now();
+          const wasRightOpen=lastEyeStateRef.current.right;
+          const wasLeftOpen=lastEyeStateRef.current.left;
+
+          // Inicia o evento no fechamento e confirma ao reabrir o olho.
+          if(rightClosed && wasRightOpen){ blinkStartedAtRef.current.right=now; blinkHandledRef.current.right=false; }
+          if(leftClosed && wasLeftOpen){ blinkStartedAtRef.current.left=now; blinkHandledRef.current.left=false; }
+
+          const rightReleased=!rightClosed && !blinkHandledRef.current.right && blinkStartedAtRef.current.right>0;
+          const leftReleased =!leftClosed  && !blinkHandledRef.current.left  && blinkStartedAtRef.current.left>0;
+
+          if(rightReleased){
+            const duration=now-blinkStartedAtRef.current.right;
+            if(duration>=45 && duration<=650 && now-blinkCooldownRef.current>350){
+              blinkHandledRef.current.right=true; blinkCooldownRef.current=now;
+              // Se os dois olhos também estavam fechados neste ciclo, o evento duplo será tratado pelo olho esquerdo.
+              if(!leftClosed){
+                setAimActive(prev=>{
+                  const next=!prev; aimActiveRef.current=next;
+                  setCommandLog(next?'MIRA OCULAR DIREITA ATIVADA // TRAVA NO ROSTO':'MIRA OCULAR DIREITA DESATIVADA');
+                  speak(next?'Mira ativada, senhor.':'Mira desativada, senhor.');
+                  return next;
+                });
+              }
+            }
+            blinkStartedAtRef.current.right=0;
+          }
+
+          if(leftReleased){
+            const duration=now-blinkStartedAtRef.current.left;
+            if(duration>=45 && duration<=650 && now-blinkCooldownRef.current>350){
+              blinkHandledRef.current.left=true; blinkCooldownRef.current=now;
+              if(!rightClosed){
+                if(aimActiveRef.current) runEnvironmentScan();
+                else {setCommandLog('OLHO ESQUERDO DETECTADO // ATIVE A MIRA COM O OLHO DIREITO'); speak('Ative a mira primeiro com o olho direito.');}
+              }
+            }
+            blinkStartedAtRef.current.left=0;
+          }
+
+          // Piscada dos dois olhos: detecta o fechamento simultâneo e executa a prioridade escolhida.
+          if(rightClosed && leftClosed && wasRightOpen && wasLeftOpen && now-blinkCooldownRef.current>500){
+            blinkCooldownRef.current=now;
+            blinkHandledRef.current={right:true,left:true};
+            blinkStartedAtRef.current={right:0,left:0};
+            if(aimActiveRef.current && prioritiesRef.current.length){
+              executePriority(prioritiesRef.current[selectedPriorityRef.current] || prioritiesRef.current[0]);
+            } else {
+              setCommandLog('PISCADA DUPLA DETECTADA // NENHUMA OPÇÃO PRONTA PARA EXECUÇÃO');
+              speak('Nenhuma opção pronta para execução, senhor.');
+            }
+          }
+
+          lastEyeStateRef.current={right:!rightClosed,left:!leftClosed};
         });
         faceMeshRef.current=mesh;
-        const timer=setInterval(async()=>{const v=videoRef.current;if(v&&v.readyState>=2){try{await mesh.send({image:v});}catch(e){}}},90); visionTimerRef.current=timer;
-        return()=>{clearInterval(timer);try{mesh.close();}catch(e){}};
+        const timer=setInterval(async()=>{
+          const v=videoRef.current;
+          if(v&&v.readyState>=2){try{await mesh.send({image:v});}catch(e){}}
+        },70);
+        visionTimerRef.current=timer;
+        return()=>{cancelled=true;clearInterval(timer);try{mesh.close();}catch(e){}};
       },[]);
 
       // Sequência de Inicialização (Boot)
