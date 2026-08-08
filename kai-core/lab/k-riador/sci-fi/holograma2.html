@@ -1,184 +1,193 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>CGM - SISTEMA DE ARMADURA 4D</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-        body { margin:0; background:#000; overflow:hidden; font-family:'Orbitron', sans-serif; color:#0ff; }
-        #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; filter:brightness(0.3) contrast(1.2); }
-        #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-        
-        /* UI E HUD */
-        #hud { position:absolute; z-index:10; left:20px; top:100px; background:rgba(0,20,30,0.6); backdrop-filter:blur(10px); padding:20px; border-left:4px solid #0ff; color:#fff; font-size:12px; box-shadow:0 0 20px rgba(0,255,255,0.3); }
-        .cmd { margin-bottom:8px; display:flex; align-items:center; }
-        .active { color:#ff00ff; text-shadow:0 0 10px #ff00ff; }
-
-        #menuLateral { position:absolute; right:20px; top:50%; transform:translateY(-50%); z-index:10; background:rgba(0,0,0,0.7); padding:10px; border:1px solid #0ff; border-radius:10px; }
-        .btnHolo { display:block; width:140px; margin:5px 0; padding:8px; background:transparent; border:1px solid #0ff; color:#0ff; cursor:pointer; font-size:10px; transition:0.3s; }
-        .btnHolo.ativo { background:#0ff; color:#000; }
-        
-        #start_btn { position:absolute; z-index:11; bottom:50px; left:50%; transform:translateX(-50%); padding:20px 50px; background:#0ff; color:#000; font-weight:bold; cursor:pointer; border:none; border-radius:50px; box-shadow:0 0 30px #0ff; }
-    </style>
-    <!-- MediaPipe -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holograma 4D Ultra Realista</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+  body { margin:0; background:#000; overflow:hidden; color:#0ff; font-family:'Orbitron', sans-serif; }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3) contrast(1.2); }
+  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
+  #ui { position:absolute; z-index:3; top:20px; width:100%; text-align:center; font-size:14px; letter-spacing:4px; text-shadow:0 0 10px #0ff; }
+  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:transparent; color:#0ff; border:2px solid #0ff; border-radius:5px; font-size:18px; cursor:pointer; text-transform:uppercase; transition:0.3s; }
+  #start_btn:hover { background:#0ff; color:#000; box-shadow:0 0 20px #0ff; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-    <div id="hud">
-        <h3 style="margin:0 0 10px 0; color:#0ff;">SISTEMA GESTUAL 4D</h3>
-        <div class="cmd">○ Juntar Mãos: Alternar HUD</div>
-        <div class="cmd">○ Shake 3x: Bloco Escrita</div>
-        <div class="cmd">○ Palma 1x: Reator (Energia)</div>
-        <div class="cmd">○ Palma 2x: Limpar Tela</div>
-        <div class="cmd">○ Rotacionar: Zoom (4D)</div>
-    </div>
-
-    <div id="menuLateral">
-        <button class="btnHolo ativo" data-tipo="capacete">CAPACETE</button>
-        <button class="btnHolo ativo" data-tipo="peito">PEITO</button>
-        <button class="btnHolo ativo" data-tipo="braco">BRAÇOS</button>
-    </div>
-
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-    <button id="start_btn">INICIALIZAR SISTEMA</button>
+  <div id="ui">SYSTEM // INTERFACE 4D</div>
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="canvas"></canvas>
+  <button id="start_btn">Inicializar Holograma</button>
 
 <script>
 const videoElement = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const canvasElement = document.getElementById('canvas');
+const canvasCtx = canvasElement.getContext('2d');
+const startBtn = document.getElementById('start_btn');
 
-let state = { 
-    zoom: 1, hudVisible: true, writingMode: false, energy: false, 
-    hologramas: new Set(['capacete', 'peito', 'braco']),
-    trace: [] 
-};
-let shakeBuffer = [];
-let clapBuffer = 0;
-let lastClap = 0;
+let hand1 = null, hand2 = null;
+let appScreen = null, loadingPercent = 0, cameraRunning = false, isFrontCamera = true;
+let swapTimer = null, hologramSide = 'left', time = 0;
 
-// Modelos
-const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+const buttons = [
+  {id: 'grid', icon: '■', y_offset: -60, active: false},
+  {id: 'settings', icon: '⚙', y_offset: 0, active: false},
+  {id: 'power', icon: '⚡', y_offset: 60, active: false},
+];
+
+function resize() { canvasElement.width = window.innerWidth; canvasElement.height = window.innerHeight; }
+resize(); window.onresize = resize;
+
 const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-pose.setOptions({ modelComplexity: 1, minDetectionConfidence: 0.5 });
-hands.setOptions({ maxNumHands: 2, minDetectionConfidence: 0.6 });
+hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
 
-// Engine de Renderização
-function render(poseRes, handsRes) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = state.energy ? '#ff00ff' : '#00ffff';
+hands.onResults((results) => {
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  time += 0.05; // Contador para animação
 
-    // 1. Armadura (Pose)
-    if(poseRes.poseLandmarks) {
-        if(state.hologramas.has('capacete')) drawCapacete(poseRes.poseLandmarks[0]);
-        if(state.hologramas.has('peito')) drawReator(poseRes.poseLandmarks[11], poseRes.poseLandmarks[12]);
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    if(isFrontCamera){
+      hand1 = results.multiHandLandmarks[0].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z}));
+      hand2 = results.multiHandLandmarks[1]? results.multiHandLandmarks[1].map(lm => ({x: 1 - lm.x, y: lm.y, z: lm.z})) : null;
+    } else {
+      hand1 = results.multiHandLandmarks[0];
+      hand2 = results.multiHandLandmarks[1] || null;
     }
 
-    // 2. Luva (Mãos)
-    if(handsRes.multiHandLandmarks) {
-        handsRes.multiHandLandmarks.forEach(hand => drawLuva(hand, state.energy ? 'scanner' : 'normal'));
-        processarGestos(handsRes.multiHandLandmarks[0]);
+    // Desenhar Mãos com efeito "Neural"
+    if(hand1) drawHandSkeleton(hand1, '#00ffff');
+    if(hand2) drawHandSkeleton(hand2, '#ff00ff');
+
+    // Troca de lado
+    if(hand1 && hand2) {
+      if(Math.hypot(hand1[9].x - hand2[9].x, hand1[9].y - hand2[9].y) < 0.15) {
+        if(!swapTimer) swapTimer = setTimeout(() => { hologramSide = hologramSide === 'left'? 'right' : 'left'; swapTimer = null; }, 1000);
+      } else { if(swapTimer) { clearTimeout(swapTimer); swapTimer = null; } }
     }
 
-    // 3. Escrita
-    if(state.writingMode) {
-        drawWritingBox();
-        if(handsRes.multiHandLandmarks && handsRes.multiHandLandmarks[0]) {
-            processarEscrita(handsRes.multiHandLandmarks[0][8]);
-        }
+    const hologramHand = hologramSide === 'left'? hand1 : hand2;
+    const clickHand = hologramSide === 'left'? hand2 : hand1;
+
+    if(hologramHand) {
+      drawHologram4D(hologramHand);
+      if(appScreen) drawAppScreen(hologramHand);
     }
-}
-
-// Lógica de Gestos
-function processarGestos(h1) {
-    if(!h1) return;
-    
-    // Shake Detect (3x rápido)
-    shakeBuffer.push(h1[0].x);
-    if(shakeBuffer.length > 20) shakeBuffer.shift();
-    let diff = 0;
-    for(let i=1; i<shakeBuffer.length; i++) if(Math.abs(shakeBuffer[i] - shakeBuffer[i-1]) > 0.15) diff++;
-    if(diff > 5) { state.writingMode = !state.writingMode; shakeBuffer = []; }
-
-    // Rotação (Zoom)
-    if(h1[0].y < h1[9].y - 0.1) state.zoom = Math.min(state.zoom + 0.05, 3);
-    if(h1[0].y > h1[9].y + 0.1) state.zoom = Math.max(1, state.zoom - 0.05);
-}
-
-// Funções de Desenho
-function drawLuva(landmarks, estado) {
-    const cx = landmarks[9].x * canvas.width;
-    const cy = landmarks[9].y * canvas.height;
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = '#00ffff';
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#00ffff';
-
-    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {color: '#00ffff', lineWidth: 2});
-
-    if(estado === 'scanner') {
-        let radius = 40 + (Math.sin(Date.now() * 0.01) * 10);
-        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.stroke();
-    }
-    ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-}
-
-function drawCapacete(nose) {
-    ctx.beginPath(); ctx.arc(nose.x * canvas.width, nose.y * canvas.height - 40 * state.zoom, 60 * state.zoom, 0, Math.PI*2);
-    ctx.stroke();
-}
-
-function drawReator(o1, o2) {
-    const cx = (o1.x + o2.x)/2 * canvas.width;
-    const cy = (o1.y + o2.y)/2 * canvas.height;
-    ctx.beginPath(); ctx.arc(cx, cy, 50 * state.zoom, 0, Math.PI*2);
-    ctx.fillStyle = state.energy ? 'rgba(255,0,255,0.2)' : 'rgba(0,255,255,0.2)';
-    ctx.fill(); ctx.stroke();
-}
-
-function processarEscrita(indexFinger) {
-    const x = indexFinger.x * canvas.width;
-    const y = indexFinger.y * canvas.height;
-    if(x > 200 && x < 800) state.trace.push({x, y});
-    ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
-    for(let p of state.trace) ctx.lineTo(p.x, p.y);
-    ctx.stroke();
-}
-
-function drawWritingBox() {
-    ctx.fillStyle = 'rgba(0,40,60,0.8)'; ctx.fillRect(200, 100, 600, 400);
-    ctx.strokeStyle = '#0ff'; ctx.strokeRect(200, 100, 600, 400);
-    ctx.fillStyle = '#fff'; ctx.fillText("PAINEL 4D ATIVO", 220, 130);
-}
-
-// Inicialização
-document.getElementById('start_btn').onclick = async () => {
-    document.getElementById('start_btn').style.display = 'none';
-    const camera = new Camera(videoElement, {
-        onFrame: async () => {
-            await pose.send({image: videoElement});
-            await hands.send({image: videoElement});
-        }
-    });
-    camera.start();
-};
-
-pose.onResults(res => { 
-    // Lógica para sincronizar pose e hands
-    window.lastPose = res; 
-    if(window.lastHands) render(res, window.lastHands);
-});
-hands.onResults(res => { 
-    window.lastHands = res; 
-    if(window.lastPose) render(window.lastPose, res);
+    if(clickHand) checkButtonClick(clickHand, hologramHand);
+  }
 });
 
-window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-window.onresize();
+function drawHandSkeleton(landmarks, color) {
+  canvasCtx.save();
+  canvasCtx.shadowBlur = 10;
+  canvasCtx.shadowColor = color;
+  window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
+  window.drawLandmarks(canvasCtx, landmarks, {color: '#ffffff', radius: 3});
+  canvasCtx.restore();
+}
+
+// HOLOGRAMA 4D (Rotativo e Pulsante)
+function drawHologram4D(landmarks) {
+  const cx = landmarks[9].x * canvasElement.width;
+  const cy = landmarks[9].y * canvasElement.height;
+
+  canvasCtx.save();
+  canvasCtx.shadowBlur = 20;
+  canvasCtx.shadowColor = '#00ffff';
+  
+  // Anéis rotativos
+  for(let i=0; i<3; i++) {
+    canvasCtx.beginPath();
+    const radius = 60 + i*30;
+    const angle = time * (i%2 === 0 ? 1 : -1);
+    canvasCtx.arc(cx, cy, radius, angle, angle + Math.PI);
+    canvasCtx.strokeStyle = `rgba(0, 255, 255, ${0.4 - i*0.1})`;
+    canvasCtx.lineWidth = 3;
+    canvasCtx.stroke();
+  }
+
+  // Botoes HUD
+  const bx_base = landmarks[4].x * canvasElement.width + 80;
+  const by_base = landmarks[4].y * canvasElement.height;
+  buttons.forEach(b => {
+    b.x = bx_base; b.y = by_base + b.y_offset;
+    drawSciFiButton(b.x, b.y, b.active, b.icon);
+  });
+  canvasCtx.restore();
+}
+
+function drawSciFiButton(x, y, active, icon) {
+  canvasCtx.beginPath();
+  canvasCtx.arc(x, y, 25, 0, Math.PI*2);
+  canvasCtx.fillStyle = active ? 'rgba(0, 255, 255, 0.8)' : 'rgba(0, 50, 50, 0.4)';
+  canvasCtx.fill();
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.lineWidth = 2;
+  canvasCtx.stroke();
+  canvasCtx.fillStyle = '#fff';
+  canvasCtx.font = '20px Orbitron';
+  canvasCtx.textAlign = 'center';
+  canvasCtx.fillText(icon, x, y + 7);
+}
+
+// TELA DE APP "GLASS"
+function drawAppScreen(landmarks) {
+  const x = landmarks[9].x * canvasElement.width - 150;
+  const y = landmarks[9].y * canvasElement.height - 180;
+  
+  // Efeito Glassmorphism
+  canvasCtx.save();
+  canvasCtx.fillStyle = 'rgba(0, 20, 40, 0.6)';
+  canvasCtx.fillRect(x, y, 300, 200);
+  canvasCtx.strokeStyle = '#00ffff';
+  canvasCtx.lineWidth = 2;
+  canvasCtx.strokeRect(x, y, 300, 200);
+  
+  if(appScreen === 'loading') {
+    canvasCtx.fillStyle = '#fff';
+    canvasCtx.font = '20px Orbitron';
+    canvasCtx.fillText(`SYNC: ${loadingPercent}%`, x + 150, y + 100);
+  } else if(appScreen === 'mapa') {
+    canvasCtx.strokeStyle = '#0f0';
+    canvasCtx.strokeRect(x+20, y+20, 260, 160);
+    canvasCtx.fillStyle = '#0f0';
+    canvasCtx.fillText("TERRENO: 4K", x+150, y+100);
+  }
+  canvasCtx.restore();
+}
+
+function updateLoading() {
+  if(appScreen === 'loading' && loadingPercent < 100) loadingPercent += 2;
+  else if(loadingPercent >= 100) appScreen = 'mapa';
+  requestAnimationFrame(updateLoading);
+}
+updateLoading();
+
+function checkButtonClick(clickHand, base_hand) {
+  const dist = Math.hypot(clickHand[4].x - clickHand[8].x, clickHand[4].y - clickHand[8].y);
+  if(dist > 0.05) return;
+  const x = clickHand[8].x * canvasElement.width;
+  const y = clickHand[8].y * canvasElement.height;
+  buttons.forEach(b => {
+    if(Math.hypot(x - b.x, y - b.y) < 30 && !b.active) {
+      b.active = true;
+      if(b.id === 'grid') { appScreen = 'loading'; loadingPercent = 0; }
+      else if(b.id === 'power') appScreen = null;
+      setTimeout(() => b.active = false, 300);
+    }
+  });
+}
+
+startBtn.onclick = async () => {
+  startBtn.style.display = 'none';
+  const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user'}});
+  videoElement.srcObject = stream;
+  const camera = new Camera(videoElement, { onFrame: async () => await hands.send({image: videoElement}) });
+  camera.start();
+}
 </script>
 </body>
 </html>
