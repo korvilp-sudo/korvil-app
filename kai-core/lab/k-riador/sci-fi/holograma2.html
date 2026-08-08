@@ -1,112 +1,55 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Holograma 4D - Escrita Gestual</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-  body { margin:0; background:#000; overflow:hidden; color:#0ff; font-family:'Orbitron', sans-serif; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3); }
-  #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
-  #hud-commands { position:absolute; z-index:3; left:20px; top:100px; background:rgba(0,20,30,0.7); padding:15px; border-left:3px solid #0ff; font-size:12px; pointer-events:none; }
-</style>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-</head>
-<body>
-  <div id="hud-commands">
-    <h3>SYSTEM PROTOCOLS</h3>
-    <div>○ Shake (3x): Abrir Painel de Escrita</div>
-    <div>○ Dedo Indicador: Escrever no ar</div>
-  </div>
-  
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas"></canvas>
+function drawLuva(landmarks, estado) {
+    const cx = landmarks[9].x * canvasElement.width;
+    const cy = landmarks[9].y * canvasElement.height;
+    
+    // Configuração de Estilo "4D"
+    canvasCtx.shadowBlur = 20;
+    canvasCtx.shadowColor = (estado === 'tiro') ? '#ff0000' : '#00ffff';
+    canvasCtx.lineWidth = 4;
+    canvasCtx.strokeStyle = (estado === 'tiro') ? '#ff0000' : '#00ffff';
 
-<script>
-const videoElement = document.getElementById('video');
-const canvasElement = document.getElementById('canvas');
-const canvasCtx = canvasElement.getContext('2d');
+    // 1. DESENHO DA ESTRUTURA (MESH)
+    window.drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+        color: (estado === 'tiro') ? '#ff4444' : '#00ffff',
+        lineWidth: 2
+    });
 
-let drawing = false; // Estado do modo escrita
-let tracePoints = []; // Buffer para suavizar a escrita
-let shakeBuffer = []; // Buffer para detectar o shake
+    // 2. EFEITOS DE ESTADO (VISUALIZAÇÃO 4D)
+    if (estado === 'escudo') {
+        // Campo de Força Esférico
+        canvasCtx.beginPath();
+        canvasCtx.arc(cx, cy, 70, 0, Math.PI * 2);
+        canvasCtx.fillStyle = 'rgba(0, 255, 255, 0.15)';
+        canvasCtx.fill();
+        canvasCtx.stroke();
+    } 
+    
+    else if (estado === 'tiro') {
+        // Feixe de Plasma
+        const ponta = landmarks[8]; // Indicador
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(cx, cy);
+        canvasCtx.lineTo(ponta.x * canvasElement.width, ponta.y * canvasElement.height);
+        canvasCtx.strokeStyle = '#ff0000';
+        canvasCtx.lineWidth = 15; // Feixe grosso
+        canvasCtx.stroke();
+    } 
+    
+    else if (estado === 'scanner') {
+        // Ondas de Pulso (Concentric Rings)
+        const time = Date.now() * 0.005;
+        for(let i=0; i<3; i++) {
+            let radius = (40 + (i * 20)) + (Math.sin(time) * 10);
+            canvasCtx.beginPath();
+            canvasCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            canvasCtx.strokeStyle = `rgba(0, 255, 255, ${0.6 - i*0.2})`;
+            canvasCtx.stroke();
+        }
+    }
 
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
-
-function resize() { canvasElement.width = window.innerWidth; canvasElement.height = window.innerHeight; }
-resize();
-
-hands.onResults((results) => {
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) return;
-
-  const hand = results.multiHandLandmarks[0];
-  
-  // 1. DETECTOR DE SHAKE (Eixo X)
-  detectShake(hand[0].x); 
-
-  // 2. MODO ESCRITA
-  if (drawing) {
-    desenharPainel();
-    processarEscrita(hand[8]); // Usa a ponta do indicador (landmark 8)
-  }
-});
-
-function detectShake(x) {
-  shakeBuffer.push(x);
-  if(shakeBuffer.length > 20) shakeBuffer.shift();
-  
-  // Lógica simples de detectar oscilação rápida
-  let diffs = 0;
-  for(let i=1; i<shakeBuffer.length; i++) {
-    if(Math.abs(shakeBuffer[i] - shakeBuffer[i-1]) > 0.15) diffs++;
-  }
-  
-  if(diffs > 5) { // Se chacoalhou o suficiente
-    drawing = !drawing; 
-    shakeBuffer = [];
-  }
+    // 3. NÚCLEO (PALMA)
+    canvasCtx.beginPath();
+    canvasCtx.arc(cx, cy, 10, 0, Math.PI * 2);
+    canvasCtx.fillStyle = (estado === 'tiro') ? '#ff0000' : '#ffffff';
+    canvasCtx.fill();
 }
-
-function processarEscrita(indexFinger) {
-  const x = indexFinger.x * canvasElement.width;
-  const y = indexFinger.y * canvasElement.height;
-  
-  // Só escreve se estiver dentro da área do painel (exemplo: centro da tela)
-  if(x > 200 && x < 800 && y > 150 && y < 450) {
-    tracePoints.push({x, y});
-  }
-  
-  // Desenha o rastro (suavizado)
-  canvasCtx.beginPath();
-  canvasCtx.strokeStyle = '#fff';
-  canvasCtx.lineWidth = 4;
-  for(let i=1; i<tracePoints.length; i++) {
-    canvasCtx.moveTo(tracePoints[i-1].x, tracePoints[i-1].y);
-    canvasCtx.lineTo(tracePoints[i].x, tracePoints[i].y);
-  }
-  canvasCtx.stroke();
-}
-
-function desenharPainel() {
-  canvasCtx.fillStyle = 'rgba(0, 50, 80, 0.5)';
-  canvasCtx.fillRect(200, 150, 600, 300);
-  canvasCtx.strokeStyle = '#0ff';
-  canvasCtx.strokeRect(200, 150, 600, 300);
-  canvasCtx.fillStyle = '#0ff';
-  canvasCtx.fillText("MODO ESCRITA ATIVO - Mova o indicador para escrever", 220, 180);
-}
-
-// Iniciar
-navigator.mediaDevices.getUserMedia({video: true}).then(stream => {
-  videoElement.srcObject = stream;
-  const camera = new Camera(videoElement, { onFrame: async () => await hands.send({image: videoElement}) });
-  camera.start();
-});
-</script>
-</body>
-</html>
