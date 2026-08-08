@@ -1,175 +1,458 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<title>GENTOTAL - HUB K-RIADOR 4D</title>
-<style>
-* {margin:0;padding:0;box-sizing:border-box}
-body {
-  background:#000;display:flex;justify-content:center;align-items:center;height:100vh;
-  overflow:hidden;perspective:2500px;font-family:'Orbitron',sans-serif;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-RIADOR OMNI-GEN 1000000% - MULTIVERSE SYSTEM</title>
 
-/* MENU SELEÇÃO UNIVERSO */
-.menu-universo {
-  position:absolute;top:20px;width:95%;display:flex;justify-content:center;gap:15px;z-index:999
-}
-.btn-universo {
-  padding:15px 25px;border:3px solid;color:#FFF;background:rgba(0,0,0,0.6);
-  border-radius:15px;font-weight:900;cursor:pointer;font-size:14px;backdrop-filter:blur(10px);
-  transition:0.3s
-}
-.btn-universo:hover {transform:scale(1.1)}
-.btn-ben {border-color:#00FF00;box-shadow:0 0 30px #00FF00}
-.btn-rex {border-color:#00CCFF;box-shadow:0 0 30px #00CCFF}
-.btn-max {border-color:#FF6600;box-shadow:0 0 30px #FF6600}
-.btn-pr {border-color:#FFF;box-shadow:0 0 30px #FFF}
+  <!-- Bibliotecas 3D, Visão Computacional e Fontes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@700;900&display=swap" rel="stylesheet">
 
-/* CONTAINER GERAL */
-.universo {position:absolute;width:100%;height:100%;display:none;justify-content:center;align-items:center}
-.universo.ativo {display:flex}
+  <style>
+    :root {
+      --primary-color: #00FF66;
+      --bg-theme: radial-gradient(circle at center, #001A0A 0%, #000000 100%);
+      --glow-shadow: 0 0 50px #00FF66;
+    }
 
-/* === BEN 10 === */
-.ben-bg {background:radial-gradient(circle, #001100 0%, #000 100%)}
-.ben-omni {width:400px;height:400px;border-radius:50%;background:radial-gradient(circle, #00FF00 0%, #008800 50%, #000 80%);
-  border:8px solid #00FF00;box-shadow:0 0 400px #00FF00;cursor:pointer;animation:pulseGreen 3s infinite}
-.ben-core {width:200px;height:200px;border-radius:50%;background:#000;position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);color:#00FF00;font-size:40px;display:flex;align-items:center;justify-content:center}
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    body {
+      background: #000;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Rajdhani', 'Orbitron', sans-serif;
+      color: #FFF;
+      perspective: 2000px;
+    }
 
-/* === GENERATOR REX === */
-.rex-bg {background:radial-gradient(circle, #001828 0%, #000 100%)}
-.rex-console {width:400px;height:400px;border-radius:50%;background:radial-gradient(circle, #00CCFF 0%, #003344 80%);
-  border:8px solid #00CCFF;box-shadow:0 0 400px #00CCFF;cursor:pointer}
-.rex-core {width:200px;height:200px;border-radius:50%;background:conic-gradient(#00CCFF, #88EEFF, #00CCFF);
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#000;font-size:24px;
-  display:flex;align-items:center;justify-content:center;font-weight:900}
+    /* WEBCAM & CANVAS 3D */
+    #webcam {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      object-fit: cover; transform: scaleX(-1); opacity: 0.25; z-index: 1;
+    }
+    #canvas3d {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2;
+    }
 
-/* === MAX STEEL === */
-.max-bg {background:radial-gradient(circle, #1a0800 0%, #000 100%)}
-.max-watch {width:450px;height:450px;border-radius:50%;background:conic-gradient(#FFCC00, #FF6600, #FF0000, #FFCC00);
-  border:10px solid #FF6600;box-shadow:0 0 500px #FF6600;cursor:pointer;animation:spin 8s linear infinite}
-.max-core {width:250px;height:250px;border-radius:50%;background:#000;position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);color:#FFCC00;font-size:40px;display:flex;align-items:center;justify-content:center;
-  font-weight:900;border:6px solid #FF6600}
-.steel-holo {position:absolute;left:100px;bottom:150px;width:350px;height:350px;opacity:0;transition:1.5s;
-  transform:scale(0.5)}
-.steel-holo.ativo {opacity:1;transform:scale(1)}
-.steel-avatar {width:100%;height:100%;border-radius:50%;background:radial-gradient(circle, rgba(0,200,255,0.3) 0%, transparent 70%);
-  border:4px solid #00CCFF;box-shadow:0 0 150px #00CCFF;display:flex;align-items:center;justify-content:center;font-size:120px}
+    /* GRID CIBERNÉTICO REATIVO */
+    .cyber-grid {
+      position: absolute; width: 300%; height: 300%; top: -100%; left: -100%;
+      background-image: linear-gradient(var(--primary-color) 1px, transparent 1px),
+                       linear-gradient(90deg, var(--primary-color) 1px, transparent 1px);
+      background-size: 80px 80px; opacity: 0.15;
+      transform: rotateX(75deg) translateZ(-600px);
+      animation: gridMove 20s linear infinite; z-index: 1;
+    }
+    @keyframes gridMove { 100% { transform: rotateX(75deg) translateZ(-600px) translateY(80px); } }
 
-/* === POWER RANGERS === */
-.pr-bg {background:radial-gradient(circle, #000011 0%, #000 100%)}
-.pr-morpher {width:420px;height:420px;border-radius:50%;background:radial-gradient(circle, #FFF 0%, #222 80%);
-  border:10px solid #FFF;box-shadow:0 0 400px #FFF;cursor:pointer}
-.pr-core {width:220px;height:220px;border-radius:50%;background:#000;position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);color:#FFF;font-size:32px;display:flex;align-items:center;justify-content:center;
-  font-weight:900;border:6px solid #FFF}
+    /* SELETOR DE UNIVERSO */
+    .universe-selector {
+      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 10; background: rgba(0,0,0,0.85);
+      padding: 10px 18px; border-radius: 20px; border: 2px solid var(--primary-color);
+      box-shadow: var(--glow-shadow); backdrop-filter: blur(10px); flex-wrap: wrap; justify-content: center;
+    }
+    .u-btn {
+      padding: 8px 14px; border: 2px solid transparent; background: rgba(255,255,255,0.05);
+      color: #FFF; font-family: 'Orbitron'; font-weight: 900; font-size: 11px;
+      border-radius: 8px; cursor: pointer; transition: 0.3s;
+    }
+    .u-btn:hover, .u-btn.active {
+      border-color: var(--primary-color); background: var(--primary-color);
+      color: #000; box-shadow: 0 0 15px var(--primary-color);
+    }
 
-/* HOLOGRAMAS GERAIS */
-.holo {position:absolute;bottom:500px;width:700px;height:700px;opacity:0;transition:1.5s}
-.holo.ativo {opacity:1}
-.tela {position:absolute;top:0;left:0;width:100%;height:100%;background:#000;display:none;justify-content:center;
-  align-items:center;flex-direction:column;z-index:99}
-.tela.ativo {display:flex}
-.tela h1 {font-size:90px;text-shadow:0 0 100px currentColor}
+    /* HUD STATUS */
+    .hud-overlay {
+      position: absolute; top: 90px; left: 20px; z-index: 10;
+      background: rgba(0,0,0,0.75); border: 1px solid var(--primary-color);
+      padding: 15px; border-radius: 12px; width: 280px;
+      backdrop-filter: blur(15px); box-shadow: var(--glow-shadow);
+    }
+    .hud-overlay h3 { font-family: 'Orbitron'; color: var(--primary-color); margin-bottom: 8px; font-size: 16px; }
+    .hud-status { display: inline-block; padding: 4px 8px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 13px; margin-bottom: 10px; }
 
-@keyframes pulseGreen {50%{box-shadow:0 0 500px #00FF00}}
-@keyframes spin {100%{transform:rotateZ(360deg)}}
-</style>
+    /* PAINEL DE AÇÕES E BOTÃO CÓDIGO GEN INOVADOR */
+    .action-panel {
+      position: absolute; right: 20px; top: 90px; z-index: 10; width: 320px;
+      background: rgba(0,0,0,0.85); border: 2px solid var(--primary-color);
+      border-radius: 15px; padding: 20px; backdrop-filter: blur(20px);
+      box-shadow: var(--glow-shadow); display: flex; flex-direction: column; gap: 10px;
+      max-height: calc(100vh - 120px); overflow-y: auto;
+    }
+    .action-btn {
+      width: 100%; padding: 10px; border: 1px solid var(--primary-color);
+      background: rgba(255,255,255,0.05); color: #FFF; font-weight: 700;
+      border-radius: 8px; cursor: pointer; font-family: 'Rajdhani'; font-size: 14px;
+      transition: 0.2s; display: flex; align-items: center; justify-content: space-between; text-align: left;
+    }
+    .action-btn:hover { background: var(--primary-color); color: #000; transform: translateX(-4px); }
+
+    /* BOTÃO INOVADOR OMNI-GEN 1000000% */
+    .omni-gen-btn {
+      margin-top: 10px; padding: 14px; border: 2px solid #FFF;
+      background: linear-gradient(135deg, #FF0055, #9D00FF, #00CCFF, #00FF66);
+      background-size: 300% 300%; animation: gradientMove 4s ease infinite;
+      color: #FFF; font-family: 'Orbitron'; font-weight: 900; font-size: 12px;
+      border-radius: 10px; cursor: pointer; text-shadow: 0 0 8px #000;
+      box-shadow: 0 0 25px rgba(255,255,255,0.6); transition: 0.3s;
+    }
+    .omni-gen-btn:hover { transform: scale(1.03); box-shadow: 0 0 40px #FFF; }
+    @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    /* OVERLAYS E TELAS */
+    #flash-overlay {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #FFF; opacity: 0; z-index: 100; pointer-events: none; transition: opacity 0.15s ease-out;
+    }
+
+    .build-screen {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.92); display: none; justify-content: center;
+      align-items: center; flex-direction: column; z-index: 90;
+    }
+    .build-screen.active { display: flex; }
+    .build-screen h1 { font-family: 'Orbitron'; font-size: 36px; color: var(--primary-color); text-shadow: var(--glow-shadow); text-align: center; line-height: 1.3; }
+    .build-screen p { font-family: 'Rajdhani'; font-size: 18px; color: #AAA; margin-top: 8px; text-align: center; }
+    .build-bar { width: 60%; height: 16px; background: #111; border: 2px solid var(--primary-color); border-radius: 8px; margin-top: 20px; overflow: hidden; }
+    .build-fill { height: 100%; width: 0%; background: var(--primary-color); animation: fillProgress 1.8s forwards linear; }
+
+    @keyframes fillProgress { 100% { width: 100%; } }
+  </style>
 </head>
 <body>
 
-<!-- MENU -->
-<div class="menu-universo">
-  <button class="btn-universo btn-ben" onclick="trocarUniverso('ben')">BEN 10</button>
-  <button class="btn-universo btn-rex" onclick="trocarUniverso('rex')">GENERATOR REX</button>
-  <button class="btn-universo btn-max" onclick="trocarUniverso('max')">MAX STEEL</button>
-  <button class="btn-universo btn-pr" onclick="trocarUniverso('pr')">POWER RANGERS</button>
-</div>
+  <div class="cyber-grid" id="grid"></div>
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="canvas3d"></canvas>
+  <div id="flash-overlay"></div>
 
-<!-- BEN 10 -->
-<div class="universo ben-bg" id="ben">
-  <div class="holo" id="benHolo"></div>
-  <div class="tela" id="benTela"><h1 style="color:#00FF00">IT'S HERO TIME!</h1></div>
-  <div class="ben-omni" onclick="ativarBen()">
-    <div class="ben-core">OMNI</div>
+  <!-- SELETOR DE UNIVERSOS -->
+  <div class="universe-selector">
+    <button class="u-btn active" onclick="switchUniverse('ben10')">BEN 10</button>
+    <button class="u-btn" onclick="switchUniverse('rex')">GEN REX</button>
+    <button class="u-btn" onclick="switchUniverse('omega')">CORE OMEGA</button>
+    <button class="u-btn" onclick="switchUniverse('maxsteel')">MAX STEEL</button>
+    <button class="u-btn" onclick="switchUniverse('rangers')">POWER RANGERS</button>
   </div>
-</div>
 
-<!-- GENERATOR REX -->
-<div class="universo rex-bg" id="rex">
-  <div class="holo" id="rexHolo"></div>
-  <div class="tela" id="rexTela"><h1 style="color:#00CCFF">CONSTRUINDO ARMA</h1></div>
-  <div class="rex-console" onclick="ativarRex()">
-    <div class="rex-core">REX</div>
+  <!-- HUD STATUS -->
+  <div class="hud-overlay">
+    <h3 id="hud-title">OMNITRIX OS v6.0</h3>
+    <div>Status: <span id="gesto-info" class="hud-status">Aguardando Mão...</span></div>
+    <div style="font-size: 11px; opacity: 0.8; margin-top: 5px;">
+      • <b>Pinça (👌):</b> Disparar Efeito 3D<br>
+      • <b>Mão Aberta (✋):</b> Rotacionar Modelo<br>
+      • <b>CÓDIGO GEN:</b> Ativação Multiverso Total
+    </div>
   </div>
-</div>
 
-<!-- MAX STEEL -->
-<div class="universo max-bg" id="max">
-  <div class="steel-holo" id="steelHolo"><div class="steel-avatar">🤖</div></div>
-  <div class="holo" id="maxHolo"></div>
-  <div class="tela" id="maxTela"><h1 style="color:#FF6600">TURBO ATIVADO</h1></div>
-  <div class="max-watch" onclick="ativarMax()">
-    <div class="max-core">N-TECH</div>
+  <!-- PAINEL DINÂMICO DE AÇÕES -->
+  <div class="action-panel" id="action-panel">
+    <!-- Gerado dinamicamente via JavaScript -->
   </div>
-</div>
 
-<!-- POWER RANGERS -->
-<div class="universo pr-bg" id="pr">
-  <div class="holo" id="prHolo"></div>
-  <div class="tela" id="prTela">
-    <h1 style="color:#FFF">IT'S MORPHIN TIME!</h1>
-    <div style="color:#FFD700;font-size:50px">GO GO POWER RANGERS!</div>
+  <!-- OVERLAY DE TRANSFORMAÇÃO -->
+  <div class="build-screen" id="buildScreen">
+    <h1 id="buildText">INICIANDO...</h1>
+    <p id="buildSubText">Sincronizando Nanites e Código Genético...</p>
+    <div class="build-bar"><div class="build-fill" id="buildFill"></div></div>
   </div>
-  <div class="pr-morpher" onclick="ativarPR()">
-    <div class="pr-core">MORPH</div>
-  </div>
-</div>
 
-<script>
-let universoAtual = 'ben';
+  <script>
+    let currentUniverse = 'ben10';
+    let scene, camera, renderer, coreGroup, holoGroup;
+    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function trocarUniverso(univ) {
-  document.querySelectorAll('.universo').forEach(u=>u.classList.remove('ativo'));
-  document.getElementById(univ).classList.add('ativo');
-  universoAtual = univ;
-}
-trocarUniverso('ben'); // começa no Ben
+    // CONFIGURAÇÃO DOS UNIVERSOS E ITENS INDIVIDUAIS
+    const UNIVERSE_CONFIGS = {
+      ben10: {
+        name: "OMNITRIX OS", primary: "#00FF66",
+        items: [
+          { id: "chama", name: "Chama (Pyronita)", shape: "cone", color: 0xFF4400, icon: "🔥", desc: "Controle Térmico e Plasma" },
+          { id: "xlr8", name: "XLR8 (Kinecelereano)", shape: "torus", color: 0x00CCFF, icon: "⚡", desc: "Velocidade Hiper-sônica" },
+          { id: "quatrobracos", name: "Quatro Braços (Tetramand)", shape: "box", color: 0xFF0033, icon: "💪", desc: "Força Bruta Quântica" },
+          { id: "diamante", name: "Diamante (Petrosettita)", shape: "octahedron", color: 0x00FFCC, icon: "💎", desc: "Projeção de Cristais Orgânicos" }
+        ]
+      },
+      rex: {
+        name: "NANITE CONSTRUCTOR", primary: "#00CCFF",
+        items: [
+          { id: "espada", name: "Espada de Nanite", shape: "octahedron", color: 0x00EEFF, icon: "⚔️", desc: "Lâmina de Alta Frequência" },
+          { id: "canhao", name: "Canhão Sonoro", shape: "cone", color: 0xFF9900, icon: "💥", desc: "Propulsor de Ondas de Choque" },
+          { id: "smackhand", name: "Smack Hand", shape: "box", color: 0x777777, icon: "✋", desc: "Punho Mecânico de Carga Heavy" }
+        ]
+      },
+      omega: {
+        name: "HOLOGRAM CORE OMEGA", primary: "#9D00FF",
+        items: [
+          { id: "dna", name: "Estrutura DNA Matrix", shape: "torus", color: 0xCC00FF, icon: "🧬", desc: "Sequenciamento Genético Multiverso" },
+          { id: "sintetizador", name: "Matriz Binária", shape: "box", color: 0x9D00FF, icon: "💻", desc: "Compilador de Dados Holográficos" },
+          { id: "galaxia", name: "Núcleo Estelar", shape: "sphere", color: 0xFF00AA, icon: "🌌", desc: "Vórtice Espacial Espiral" }
+        ]
+      },
+      maxsteel: {
+        name: "TURBO N-TECH", primary: "#FF6600",
+        items: [
+          { id: "turbovel", name: "Modo Turbo Velocidade", shape: "torus", color: 0xFF8800, icon: "💨", desc: "Aceleração de Partículas Turbo" },
+          { id: "turboforca", name: "Modo Turbo Força", shape: "box", color: 0xFF3300, icon: "🛡️", desc: "Exoesqueleto Densificado" },
+          { id: "turbovoode", name: "Modo Turbo Voo", shape: "cone", color: 0xFFBB00, icon: "🚀", desc: "Propulsão Gravitacional N-Tech" }
+        ]
+      },
+      rangers: {
+        name: "COMMAND MORPHER", primary: "#FF0055",
+        items: [
+          { id: "redranger", name: "Poder Tiranossauro", shape: "cone", color: 0xFF0033, icon: "🦖", desc: "Moeda do Poder Vermelho" },
+          { id: "blueranger", name: "Poder Triceratops", shape: "octahedron", color: 0x0055FF, icon: "🦣", desc: "Moeda do Poder Azul" },
+          { id: "megazord", name: "Junção Megazord", shape: "box", color: 0xFFFF00, icon: "🤖", desc: "Sincronização Total Zord" }
+        ]
+      }
+    };
 
-// BEN 10
-function ativarBen() {
-  document.getElementById('benTela').classList.add('ativo');
-  document.getElementById('benHolo').classList.add('ativo');
-  document.getElementById('benHolo').innerHTML = '<div style="font-size:200px">👽</div>';
-  setTimeout(()=>{document.getElementById('benTela').classList.remove('ativo')},3000);
-}
+    // ÁUDIO SINTETIZADO
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
 
-// GENERATOR REX
-function ativarRex() {
-  document.getElementById('rexTela').classList.add('ativo');
-  document.getElementById('rexHolo').classList.add('ativo');
-  document.getElementById('rexHolo').innerHTML = '<div style="font-size:200px">⚔️</div>';
-  setTimeout(()=>{document.getElementById('rexTela').classList.remove('ativo')},3000);
-}
+      if (type === 'beep') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+        gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+        osc.start(now); osc.stop(now + 0.08);
+      } else if (type === 'transform') {
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(900, now + 0.3);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.6);
+        gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+        osc.start(now); osc.stop(now + 0.6);
+      } else if (type === 'omni') {
+        osc.type = 'square'; osc.frequency.setValueAtTime(100, now);
+        osc.frequency.linearRampToValueAtTime(1500, now + 0.8);
+        gain.gain.setValueAtTime(0.5, now); gain.gain.linearRampToValueAtTime(0.01, now + 1.2);
+        osc.start(now); osc.stop(now + 1.2);
+      }
+    }
 
-// MAX STEEL
-function ativarMax() {
-  document.getElementById('steelHolo').classList.add('ativo');
-  document.getElementById('maxTela').classList.add('ativo');
-  document.getElementById('maxHolo').classList.add('ativo');
-  document.getElementById('maxHolo').innerHTML = '<div style="font-size:200px">🔥</div>';
-  setTimeout(()=>{document.getElementById('maxTela').classList.remove('ativo')},3000);
-}
+    // INICIALIZAÇÃO 3D (THREE.JS)
+    function init3D() {
+      const canvas = document.getElementById('canvas3d');
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
 
-// POWER RANGERS
-function ativarPR() {
-  document.getElementById('prTela').classList.add('ativo');
-  document.getElementById('prHolo').classList.add('ativo');
-  document.getElementById('prHolo').innerHTML = '<div style="font-size:200px">🦸</div>';
-  setTimeout(()=>{document.getElementById('prTela').classList.remove('ativo')},3000);
-}
-</script>
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, 8);
 
-</body></html>
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+      coreGroup = new THREE.Group();
+      holoGroup = new THREE.Group();
+      scene.add(coreGroup);
+      scene.add(holoGroup);
+
+      buildCore3D();
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function buildCore3D() {
+      coreGroup.clear();
+      const config = UNIVERSE_CONFIGS[currentUniverse];
+      const glowMat = new THREE.MeshBasicMaterial({ color: config.primary, wireframe: true });
+
+      const ringGeo = new THREE.TorusGeometry(1.5, 0.06, 16, 100);
+      const ringMesh = new THREE.Mesh(ringGeo, glowMat);
+      coreGroup.add(ringMesh);
+
+      const sphereGeo = new THREE.OctahedronGeometry(0.8, 2);
+      const sphereMesh = new THREE.Mesh(sphereGeo, glowMat);
+      coreGroup.add(sphereMesh);
+    }
+
+    // TROCA DE UNIVERSO E PAINEL
+    function switchUniverse(univKey) {
+      currentUniverse = univKey;
+      const config = UNIVERSE_CONFIGS[univKey];
+
+      document.documentElement.style.setProperty('--primary-color', config.primary);
+      document.getElementById('hud-title').innerText = config.name;
+
+      document.querySelectorAll('.u-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.replace(/\s+/g, '').toLowerCase().includes(univKey));
+      });
+
+      renderActionPanel();
+      buildCore3D();
+      playSound('beep');
+    }
+
+    // MONTA PAINEL DE AÇÕES INDIVIDUAIS + BOTÃO CÓDIGO GEN
+    function renderActionPanel() {
+      const config = UNIVERSE_CONFIGS[currentUniverse];
+      const panel = document.getElementById('action-panel');
+      panel.innerHTML = `<h4 style="color:${config.primary}; font-family:'Orbitron'; font-size:13px;">MÓDULOS DE ACTIVATION:</h4>`;
+
+      // 1. Mostrar Todos os Itens Individuais
+      config.items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.innerHTML = `<span>${item.icon} <b>${item.name}</b></span> <span>►</span>`;
+        btn.onclick = () => triggerIndividualItem(item);
+        panel.appendChild(btn);
+      });
+
+      // 2. Botão Inovador CÓDIGO GEN (Ativação Todos Juntos)
+      const omniBtn = document.createElement('button');
+      omniBtn.className = 'omni-gen-btn';
+      omniBtn.innerHTML = `⚡ CÓDIGO GEN 1000000%<br><span style="font-size:10px; font-weight:normal;">FUSÃO MULTIVERSAL TOTAL</span>`;
+      omniBtn.onclick = () => triggerOmniGenAll();
+      panel.appendChild(omniBtn);
+    }
+
+    // ATIVAÇÃO INDIVIDUAL DE ITEM (GERA MODELO 3D EXCLUSIVO)
+    function triggerIndividualItem(item) {
+      playSound('transform');
+      flashEffect();
+
+      showScreen(item.name.toUpperCase(), item.desc);
+
+      // Renderiza Objeto 3D Específico
+      holoGroup.clear();
+      let geo;
+      if (item.shape === 'cone') geo = new THREE.ConeGeometry(1.2, 2, 16);
+      else if (item.shape === 'box') geo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+      else if (item.shape === 'octahedron') geo = new THREE.OctahedronGeometry(1.4, 0);
+      else if (item.shape === 'torus') geo = new THREE.TorusGeometry(1.2, 0.4, 16, 50);
+      else geo = new THREE.SphereGeometry(1.3, 16, 16);
+
+      const mat = new THREE.MeshBasicMaterial({ color: item.color, wireframe: true });
+      const mesh = new THREE.Mesh(geo, mat);
+      holoGroup.add(mesh);
+    }
+
+    // BOTÃO CÓDIGO GEN 1000000% (TODOS JUNTOS / FUSÃO INOVADORA)
+    function triggerOmniGenAll() {
+      playSound('omni');
+      flashEffect();
+
+      showScreen("CÓDIGO GEN 1000000%", "FUSÃO MULTIVERSAL - TODOS OS SISTEMAS CONVERGIDOS!");
+
+      // Cria Estrutura 3D Complexa Combinando Todos os Elementos dos Universos
+      holoGroup.clear();
+      const colors = [0x00FF66, 0x00CCFF, 0x9D00FF, 0xFF6600, 0xFF0055];
+
+      colors.forEach((col, index) => {
+        const geo = new THREE.TorusGeometry(0.8 + (index * 0.35), 0.05, 12, 60);
+        const mat = new THREE.MeshBasicMaterial({ color: col, wireframe: true });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.rotation.x = Math.PI / (index + 1);
+        mesh.rotation.y = Math.PI / (index + 2);
+        holoGroup.add(mesh);
+      });
+
+      // Núcleo Central da Fusão
+      const coreGeo = new THREE.IcosahedronGeometry(0.9, 1);
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true });
+      holoGroup.add(new THREE.Mesh(coreGeo, coreMat));
+    }
+
+    function flashEffect() {
+      const flash = document.getElementById('flash-overlay');
+      flash.style.opacity = '0.9';
+      setTimeout(() => flash.style.opacity = '0', 200);
+    }
+
+    function showScreen(title, sub) {
+      const screen = document.getElementById('buildScreen');
+      document.getElementById('buildText').innerText = title;
+      document.getElementById('buildSubText').innerText = sub;
+      screen.classList.add('active');
+
+      const fill = document.getElementById('buildFill');
+      fill.style.animation = 'none';
+      fill.offsetHeight; // trigger reflow
+      fill.style.animation = 'fillProgress 1.8s forwards linear';
+
+      setTimeout(() => screen.classList.remove('active'), 1800);
+    }
+
+    // LOOP DE ANIMAÇÃO
+    function animate() {
+      requestAnimationFrame(animate);
+
+      coreGroup.rotation.y += 0.01;
+      coreGroup.rotation.x += 0.005;
+
+      holoGroup.rotation.y -= 0.02;
+      holoGroup.rotation.z += 0.01;
+
+      renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // VISÃO COMPUTACIONAL (MEDIAPIPE)
+    function initCamera() {
+      const videoElement = document.getElementById('webcam');
+      const gestoInfo = document.getElementById('gesto-info');
+
+      const hands = new Hands({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+      });
+
+      hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.6,
+        minTrackingConfidence: 0.6
+      });
+
+      hands.onResults(results => {
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+          const landmarks = results.multiHandLandmarks[0];
+          const thumb = landmarks[4];
+          const index = landmarks[8];
+          const distance = Math.hypot(thumb.x - index.x, thumb.y - index.y);
+
+          if (distance < 0.05) {
+            gestoInfo.innerText = "Gesto: PINÇA (Ativado)";
+            coreGroup.scale.set(1.3, 1.3, 1.3);
+          } else {
+            gestoInfo.innerText = "Mão Detectada";
+            coreGroup.scale.set(1.0, 1.0, 1.0);
+          }
+
+          coreGroup.position.x = (0.5 - index.x) * 5;
+          coreGroup.position.y = (0.5 - index.y) * 3;
+        } else {
+          gestoInfo.innerText = "Aguardando Mão...";
+          coreGroup.position.set(0, 0, 0);
+        }
+      });
+
+      const cameraUtils = new Camera(videoElement, {
+        onFrame: async () => { await hands.send({ image: videoElement }); },
+        width: 640,
+        height: 480
+      });
+      cameraUtils.start();
+    }
+
+    window.onload = () => {
+      init3D();
+      animate();
+      switchUniverse('ben10');
+      initCamera();
+    };
+  </script>
+</body>
+</html>
