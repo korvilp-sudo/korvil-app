@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>armadura fullbody gestos cgm</title>
+<title>armadura fullbody cgm</title>
 <style>
   body { margin:0; background:#000; overflow:hidden; color:#fff; font-family:'Courier New', monospace; }
-  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.3); }
+  #video { position:absolute; top:0; left:0; width:100vw; height:100vh; object-fit:cover; z-index:1; filter:brightness(0.35); }
   #canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; z-index:2; pointer-events:none; }
   #ui { position:absolute; z-index:3; top:10px; width:100%; text-align:center; font-size:14px; color:#0ff; text-shadow:0 0 10px #0ff; }
-  #start_btn { position:absolute; z-index:4; bottom:50px; left:50%; transform:translateX(-50%); padding:15px 40px; background:#0ff; color:#000; border:none; border-radius:20px; font-size:18px; }
-  #menuLateral { position:absolute; left:20px; top:50%; transform:translateY(-50%); z-index:4; background:rgba(0,20,40,0.85); border:1px solid #0ff; padding:10px; border-radius:10px; box-shadow:0 0 20px #0ff; }
-.btnHolo { display:block; width:160px; margin:6px 0; padding:8px; background:rgba(0,255,255,0.1); border:1px solid #0ff; color:#0ff; font-size:12px; cursor:pointer; border-radius:5px; text-align:left; }
-.btnHolo.ativo { background:#0ff; color:#000; }
+  #menuLateral { position:absolute; left:20px; top:50%; transform:translateY(-50%); z-index:4; background:rgba(0,20,40,0.9); border:1px solid #0ff; padding:10px; border-radius:10px; box-shadow:0 0 20px #0ff; }
+.btnHolo { display:block; width:160px; margin:6px 0; padding:8px; background:#00ffff; border:none; color:#000; font-size:12px; cursor:pointer; border-radius:5px; text-align:left; font-weight:bold; }
+.btnHolo.desativo { background:rgba(0,255,255,0.2); color:#0ff; }
  #miraMenu { position:absolute; top:10px; right:20px; z-index:5; background:rgba(255,0,0,0.2); border:1px solid #f00; padding:8px; border-radius:5px; color:#f00; display:none; font-size:11px; }
 .mira { position:absolute; width:60px; height:60px; border:2px solid #f00; border-radius:50%; display:none; z-index:5; }
 .mira::before,.mira::after { content:''; position:absolute; background:#f00; }
@@ -25,31 +24,29 @@
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 </head>
 <body>
-  <div id="ui">ARMADURA FULLBODY GESTOS by CGM</div>
+  <div id="ui">ARMADURA FULLBODY CGM</div>
   <div id="miraMenu">MIRA ATIVA<br>1.ALVO<br>2.ZOOM<br>3.SCAN</div>
   <div class="mira" id="mira"></div>
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
-  <button id="start_btn">iniciar camera</button>
 
   <div id="menuLateral">
-    <button class="btnHolo ativo" data-tipo="capacete">CAPACETE</button>
-    <button class="btnHolo ativo" data-tipo="ombro">OMBROS</button>
-    <button class="btnHolo ativo" data-tipo="peito">PEITO/COSTAS</button>
-    <button class="btnHolo ativo" data-tipo="braco">BRAÇOS</button>
-    <button class="btnHolo ativo" data-tipo="antebraco">ANTEBRAÇOS</button>
-    <button class="btnHolo ativo" data-tipo="luva">LUVAS</button>
-    <button class="btnHolo ativo" data-tipo="abdomen">ABDOMEN</button>
-    <button class="btnHolo ativo" data-tipo="coxa">COXAS</button>
-    <button class="btnHolo ativo" data-tipo="canela">CANELAS</button>
-    <button class="btnHolo ativo" data-tipo="pe">PÉS</button>
+    <button class="btnHolo" data-tipo="capacete">CAPACETE</button>
+    <button class="btnHolo" data-tipo="ombro">OMBROS</button>
+    <button class="btnHolo" data-tipo="peito">PEITO/COSTAS</button>
+    <button class="btnHolo" data-tipo="braco">BRAÇOS</button>
+    <button class="btnHolo" data-tipo="antebraco">ANTEBRAÇOS</button>
+    <button class="btnHolo" data-tipo="luva">LUVAS</button>
+    <button class="btnHolo" data-tipo="abdomen">ABDOMEN</button>
+    <button class="btnHolo" data-tipo="coxa">COXAS</button>
+    <button class="btnHolo" data-tipo="canela">CANELAS</button>
+    <button class="btnHolo" data-tipo="pe">PÉS</button>
   </div>
 
 <script>
 const videoElement = document.getElementById('video');
 const canvasElement = document.getElementById('canvas');
 const canvasCtx = canvasElement.getContext('2d');
-const startBtn = document.getElementById('start_btn');
 const miraDiv = document.getElementById('mira');
 const miraMenu = document.getElementById('miraMenu');
 
@@ -58,16 +55,18 @@ let handLandmarks = [];
 let hologramasAtivos = new Set(['capacete','ombro','peito','braco','antebraco','luva','abdomen','coxa','canela','pe']);
 let miraAtiva = false;
 
-let estado = {
-  luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal', ombro: 'normal'
-}
+let estado = { luva: 'normal', braco: 'normal', peito: 'normal', perna: 'normal', ombro: 'normal' }
 
 function resize() { canvasElement.width = window.innerWidth; canvasElement.height = window.innerHeight; }
 resize(); window.onresize = resize;
 
-// MENU
+// MENU LIGA/DESLIGA
 document.querySelectorAll('.btnHolo').forEach(btn=>{
-  btn.onclick = () => { btn.classList.toggle('ativo'); const tipo = btn.dataset.tipo; if(hologramasAtivos.has(tipo)) hologramasAtivos.delete(tipo); else hologramasAtivos.add(tipo); }
+  btn.onclick = () => { 
+    btn.classList.toggle('desativo');
+    const tipo = btn.dataset.tipo;
+    if(hologramasAtivos.has(tipo)) hologramasAtivos.delete(tipo); else hologramasAtivos.add(tipo);
+  }
 })
 
 // POSE + HANDS
@@ -78,7 +77,7 @@ hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0
 
 pose.onResults((results) => {
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 20;
+  canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 25;
   poseLandmarks = results.poseLandmarks;
   if(poseLandmarks) {
     processarGestos(poseLandmarks, handLandmarks);
@@ -90,12 +89,11 @@ hands.onResults((results) => { handLandmarks = results.multiHandLandmarks || [];
 // 3 GESTOS PARA CADA MEMBRO
 function processarGestos(pose, hands){
   if(!pose) return;
-
   const maoE = hands[0]; const maoD = hands[1];
   const pulsoE = pose[15]; const pulsoD = pose[16];
   const ombroE = pose[11]; const ombroD = pose[12];
   const quadril = {x:(pose[23].x+pose[24].x)/2, y:(pose[23].y+pose[24].y)/2};
-  const joelhoE = pose[25]; const joelhoD = pose[26];
+  const joelhoE = pose[25];
 
   // CABECA: PISCAR OLHO DIREITO = MIRA
   const olhoD = pose[8]; const sobrancelhaD = pose[7];
@@ -109,17 +107,17 @@ function processarGestos(pose, hands){
   // LUVA: 1.PUNHO=ESCUDO 2.PINÇA=TIRO 3.MÃO ABERTA=SCANNER
   if(maoE){ if(isPunho(maoE)) estado.luva='escudo'; else if(isPinca(maoE)) estado.luva='tiro'; else estado.luva='scanner'; }
 
-  // BRAÇO: 1.BRAÇO CRUZADO=LAMINA 2.BRAÇO PRA CIMA=CANHAO 3.GIRAR PUNHO=POWER
+  // BRAÇO: 1.BRAÇO PRA CIMA=CANHAO 2.BRAÇO CRUZADO=LAMINA 3.NORMAL
   if(pulsoE.y < ombroE.y - 0.1) estado.braco='canhao';
   else if(Math.abs(pulsoE.x - ombroD.x) < 0.1) estado.braco='lamina';
   else estado.braco='normal';
 
-  // OMBRO: 1.ENCOHER OMBRO=ESCUDO 2.GIRAR OMBRO=MISSEIS 3.BATER PALMA=IMPULSO
+  // OMBRO: 1.ENCOLHER OMBRO=ESCUDO 2.OMBROS DIFERENTES=MISSEIS 3.NORMAL
   if(Math.abs(ombroE.y - pose[13].y) < 0.1) estado.ombro='escudo';
-  else if(Math.abs(ombroE.y - ombroD.y) > 0.2) estado.ombro='misseis';
+  else if(Math.abs(ombroE.y - ombroD.y) > 0.15) estado.ombro='misseis';
   else estado.ombro='normal';
 
-  // PEITO: 1.DUAS MAOS NO PEITO=REATOR MAX 2.BRACOS ABERTOS=BARREIRA 3.PUNHO NO PEITO=ARMADURA
+  // PEITO: 1.DUAS MAOS NO PEITO=REATOR 2.BRACOS ABERTOS=BARREIRA 3.PUNHO NO PEITO=ARMADURA
   if(maoE && maoD && Math.hypot(maoE[9].x-maoD[9].x, maoE[9].y-maoD[9].y) < 0.1 && maoE[9].y < quadril.y) estado.peito='reator';
   else if(pose[11].x < 0.3 && pose[12].x > 0.7) estado.peito='barreira';
   else if(maoE && isPunho(maoE) && maoE[9].y < quadril.y) estado.peito='armadura';
@@ -135,25 +133,25 @@ function processarGestos(pose, hands){
 function isPunho(h){ return Math.hypot(h[8].x - h[5].x, h[8].y - h[5].y) < 0.08; }
 function isPinca(h){ return Math.hypot(h[4].x - h[8].x, h[4].y - h[8].y) < 0.05; }
 
-// DESENHAR TUDO SEGUINDO O CORPO
+// DESENHAR TUDO IGUAL ESTILO DA LUVA
 function desenharArmaturaCompleta(lm){
-  if(hologramasAtivos.has('capacete')) drawCapacete(lm[0], lm[8], estado.peito);
+  if(hologramasAtivos.has('capacete')) drawCapacete(lm[0], lm[8]);
   if(hologramasAtivos.has('ombro')) { drawAnel(lm[11], estado.ombro); drawAnel(lm[12], estado.ombro); }
   if(hologramasAtivos.has('peito')) drawPlaca(lm[11], lm[12], lm[23], lm[24], estado.peito);
   if(hologramasAtivos.has('abdomen')) drawFaixas(lm[23], lm[24]);
-  if(hologramasAtivos.has('braco')) { drawTubo(lm[11], lm[13], estado.braco); drawTubo(lm[12], lm[14], estado.braco); }
-  if(hologramasAtivos.has('antebraco')) { drawTubo(lm[13], lm[15], 'normal'); drawTubo(lm[14], lm[16], 'normal'); }
-  if(hologramasAtivos.has('coxa')) { drawTubo(lm[23], lm[25], estado.perna); drawTubo(lm[24], lm[26], estado.perna); }
-  if(hologramasAtivos.has('canela')) { drawTubo(lm[25], lm[27], estado.perna); drawTubo(lm[26], lm[28], estado.perna); }
+  if(hologramasAtivos.has('braco')) { drawMembro(lm[11], lm[13], estado.braco); drawMembro(lm[12], lm[14], estado.braco); }
+  if(hologramasAtivos.has('antebraco')) { drawMembro(lm[13], lm[15], 'normal'); drawMembro(lm[14], lm[16], 'normal'); }
+  if(hologramasAtivos.has('coxa')) { drawMembro(lm[23], lm[25], estado.perna); drawMembro(lm[24], lm[26], estado.perna); }
+  if(hologramasAtivos.has('canela')) { drawMembro(lm[25], lm[27], estado.perna); drawMembro(lm[26], lm[28], estado.perna); }
   if(hologramasAtivos.has('pe')) { drawAnel(lm[31], estado.perna); drawAnel(lm[32], estado.perna); }
   if(hologramasAtivos.has('luva') && handLandmarks[0]) drawLuva(handLandmarks[0], estado.luva);
   if(hologramasAtivos.has('luva') && handLandmarks[1]) drawLuva(handLandmarks[1], estado.luva);
 }
 
-// FUNCOES DE DESENHO
-function drawCapacete(nariz, olhoD, estado){
+// ESTILO IGUAL DA LUVA: PONTOS + ANEIS
+function drawCapacete(nariz, olhoD){
   const cx = nariz.x * canvasElement.width; const cy = nariz.y * canvasElement.height;
-  canvasCtx.beginPath(); canvasCtx.arc(cx, cy-20, 70, Math.PI, 0); canvasCtx.strokeStyle = '#00ffff'; canvasCtx.lineWidth = 3; canvasCtx.stroke();
+  for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(cx, cy-20, 70 + i*15, Math.PI, 0); canvasCtx.strokeStyle = `rgba(0,255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
   canvasCtx.beginPath(); canvasCtx.ellipse(olhoD.x*canvasElement.width, olhoD.y*canvasElement.height, 12, 6, 0, 0, 2*Math.PI);
   canvasCtx.fillStyle = miraAtiva? '#ff0000' : '#00ffff'; canvasCtx.fill();
 }
@@ -161,15 +159,20 @@ function drawCapacete(nariz, olhoD, estado){
 function drawAnel(joint, estado){
   const x = joint.x * canvasElement.width; const y = joint.y * canvasElement.height;
   let cor = '#00ffff'; if(estado==='escudo') cor='#00ff88'; if(estado==='misseis') cor='#ff8800';
-  for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(x, y, 25 + i*10, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(${cor===' #00ffff'?0:cor==='#00ff88'?0:255},255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
+  for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(x, y, 25 + i*10, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(${cor==='#00ffff'?0:cor==='#00ff88'?0:255},255,255,${0.9 - i*0.3})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
 }
 
-function drawTubo(j1, j2, estado){
+function drawMembro(j1, j2, estado){
   const x1 = j1.x * canvasElement.width; const y1 = j1.y * canvasElement.height;
   const x2 = j2.x * canvasElement.width; const y2 = j2.y * canvasElement.height;
-  let cor='#00ffff'; let esp=18; if(estado==='lamina'){cor='#ff0000'; esp=5;} if(estado==='canhao'){cor='#ff8800'; esp=25;} if(estado==='turbo'){cor='#00ff88';}
-  canvasCtx.beginPath(); canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); canvasCtx.strokeStyle=cor; canvasCtx.lineWidth=esp; canvasCtx.stroke();
-  if(estado==='lamina'){ canvasCtx.beginPath(); canvasCtx.moveTo(x2,y2); canvasCtx.lineTo(x2+20,y2); canvasCtx.strokeStyle='#ff0000'; canvasCtx.lineWidth=4; canvasCtx.stroke(); }
+  let cor='#00ffff'; if(estado==='lamina')cor='#ff0000'; if(estado==='canhao')cor='#ff8800'; if(estado==='turbo')cor='#00ff88';
+  // Tubo
+  canvasCtx.beginPath(); canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); canvasCtx.strokeStyle=cor; canvasCtx.lineWidth=20; canvasCtx.stroke();
+  // Anéis no meio igual luva
+  const mx = (x1+x2)/2; const my = (y1+y2)/2;
+  for(let i=0; i<3; i++) { canvasCtx.beginPath(); canvasCtx.arc(mx, my, 15 + i*8, 0, 2 * Math.PI); canvasCtx.strokeStyle = `rgba(${cor==='#00ffff'?0:cor==='#00ff88'?0:255},255,255,${0.8 - i*0.2})`; canvasCtx.lineWidth = 2; canvasCtx.stroke(); }
+  // Lamina
+  if(estado==='lamina'){ canvasCtx.beginPath(); canvasCtx.moveTo(x2,y2); canvasCtx.lineTo(x2+25,y2); canvasCtx.strokeStyle='#ff0000'; canvasCtx.lineWidth=4; canvasCtx.stroke(); }
 }
 
 function drawPlaca(oE, oD, qE, qD, estado){
@@ -177,9 +180,9 @@ function drawPlaca(oE, oD, qE, qD, estado){
   const x2=oD.x*canvasElement.width, y2=oD.y*canvasElement.height;
   const x3=qE.x*canvasElement.width, y3=qE.y*canvasElement.height;
   const x4=qD.x*canvasElement.width, y4=qD.y*canvasElement.height;
-  let cor='#00ffff'; let esp=3; if(estado==='reator'){cor='#ffffff'; esp=6;} if(estado==='barreira'){cor='#00ff88'; esp=8;} if(estado==='armadura'){cor='#ff8800'; esp=6;}
+  let cor='#00ffff'; if(estado==='reator')cor='#ffffff'; if(estado==='barreira')cor='#00ff88'; if(estado==='armadura')cor='#ff8800';
   canvasCtx.beginPath(); canvasCtx.moveTo(x1,y1); canvasCtx.lineTo(x2,y2); canvasCtx.lineTo(x4,y4); canvasCtx.lineTo(x3,y3); canvasCtx.closePath();
-  canvasCtx.strokeStyle=cor; canvasCtx.lineWidth=esp; canvasCtx.stroke();
+  canvasCtx.strokeStyle=cor; canvasCtx.lineWidth=4; canvasCtx.stroke();
   canvasCtx.beginPath(); canvasCtx.arc((x1+x2)/2, (y1+y2)/2 - 20, estado==='reator'?25:15, 0, 2*Math.PI); canvasCtx.fillStyle=cor; canvasCtx.fill();
 }
 
@@ -188,6 +191,7 @@ function drawFaixas(qE, qD){
   for(let i=0; i<3; i++){ canvasCtx.beginPath(); canvasCtx.rect(cx-80, cy + i*15 - 20, 160, 10); canvasCtx.strokeStyle = '#00ffff'; canvasCtx.stroke(); }
 }
 
+// LUVA EXATA IGUAL A SUA FOTO
 function drawLuva(landmarks, estado){
   const cx = landmarks[9].x * canvasElement.width; const cy = landmarks[9].y * canvasElement.height;
   if(estado==='escudo'){ canvasCtx.beginPath(); canvasCtx.arc(cx, cy, 100, 0, 2*Math.PI); canvasCtx.fillStyle = 'rgba(0,255,136,0.2)'; canvasCtx.fill(); }
@@ -198,9 +202,8 @@ function drawLuva(landmarks, estado){
   window.drawLandmarks(canvasCtx, landmarks, {color: '#00ffff', radius: 4});
 }
 
-// CAMERA
-startBtn.onclick = async () => {
-  startBtn.style.display = 'none';
+// LIGA CAMERA AUTOMATICO
+window.onload = async () => {
   let constraints = {video: {facingMode: 'user', width: 1280, height: 720}};
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
   videoElement.srcObject = stream;
