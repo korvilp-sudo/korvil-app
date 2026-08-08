@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Holograma Capacete KORVIL</title>
+
+<style>
+body {
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+}
+
+#video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+    filter: brightness(0.42);
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#ui {
+    position: absolute;
+    z-index: 3;
+    top: 12px;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+#status {
+    margin-top: 6px;
+    font-size: 10px;
+    color: #fff;
+}
+
+#start_btn {
+    position: absolute;
+    z-index: 4;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 15px 40px;
+
+    background: #00ffff;
+    color: #000;
+
+    border: none;
+    border-radius: 20px;
+
+    font-size: 17px;
+    font-family: 'Courier New', monospace;
+
+    box-shadow:
+        0 0 15px #00ffff,
+        0 0 35px rgba(0,255,255,.5);
+
+    cursor: pointer;
+}
+
+#camera_btn {
+    position: absolute;
+    z-index: 4;
+
+    top: 45px;
+    right: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    border: 1px solid #00ffff;
+
+    background: rgba(0,20,30,.75);
+
+    color: #00ffff;
+
+    font-size: 24px;
+
+    box-shadow:
+        0 0 12px #00ffff;
+
+    cursor: pointer;
+}
+</style>
+
+<!-- FACE MESH -->
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+
+<!-- HANDS PARA CONTROLE POR PINÇA -->
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+</head>
+
+<body>
+
+<div id="ui">
+
+```
+KORVIL — HOLOGRAMA CAPACETE
+
+<div id="status">
+    AGUARDANDO CÂMERA
+</div>
+```
+
+</div>
+
+<video
+ id="video"
+ autoplay
+ playsinline
+ muted> </video>
+
+<canvas id="canvas"></canvas>
+
+<button id="camera_btn">↻</button>
+
+<button id="start_btn">
+    INICIAR CÂMERA
+</button>
+
+<script>
+
+/* ============================================================
+   ELEMENTOS
+============================================================ */
+
+const videoElement =
+    document.getElementById('video');
+
+const canvasElement =
+    document.getElementById('canvas');
+
+const canvasCtx =
+    canvasElement.getContext('2d');
+
+const startBtn =
+    document.getElementById('start_btn');
+
+const cameraBtn =
+    document.getElementById('camera_btn');
+
+const status =
+    document.getElementById('status');
+
+
+/* ============================================================
+   ESTADO
+============================================================ */
+
+let cameraRunning = false;
+
+let isFrontCamera = true;
+
+let faceDetected = false;
+
+let currentFace = null;
+
+let currentHand = null;
+
+let activeCommand = null;
+
+
+/* ============================================================
+   COMANDOS DO CAPACETE
+============================================================ */
+
+const buttons = [
+
+    {
+        id: 'scan',
+        icon: '◇',
+        label: 'SCAN',
+        y_offset: -65,
+        active: false
+    },
+
+    {
+        id: 'track',
+        icon: '◎',
+        label: 'TRACK',
+        y_offset: 0,
+        active: false
+    },
+
+    {
+        id: 'focus',
+        icon: '✦',
+        label: 'FOCUS',
+        y_offset: 65,
+        active: false
+    }
+
+];
+
+
+/* ============================================================
+   TAMANHO CANVAS
+============================================================ */
+
+function resize() {
+
+    canvasElement.width =
+        window.innerWidth;
+
+    canvasElement.height =
+        window.innerHeight;
+}
+
+resize();
+
+window.addEventListener(
+    'resize',
+    resize
+);
+
+
+/* ============================================================
+   MEDIAPIPE FACE MESH
+============================================================ */
+
+const faceMesh =
+    new FaceMesh({
+
+        locateFile: (file) => {
+
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+
+        }
+
+    });
+
+
+faceMesh.setOptions({
+
+    maxNumFaces: 1,
+
+    refineLandmarks: true,
+
+    minDetectionConfidence: 0.6,
+
+    minTrackingConfidence: 0.6
+
+});
+
+
+faceMesh.onResults((results) => {
+
+    if (
+        results.multiFaceLandmarks &&
+        results.multiFaceLandmarks.length > 0
+    ) {
+
+        currentFace =
+            results.multiFaceLandmarks[0];
+
+        faceDetected = true;
+
+        status.textContent =
+            'CAPACETE — ROSTO DETECTADO';
+
+    }
+
+    else {
+
+        currentFace = null;
+
+        faceDetected = false;
+
+        status.textContent =
+            'PROCURANDO ROSTO...';
+    }
+
+});
+
+
+/* ============================================================
+   MEDIAPIPE HANDS
+============================================================ */
+
+const hands =
+    new Hands({
+
+        locateFile: (file) => {
+
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+
+        }
+
+    });
+
+
+hands.setOptions({
+
+    maxNumHands: 1,
+
+    modelComplexity: 1,
+
+    minDetectionConfidence: 0.6,
+
+    minTrackingConfidence: 0.6
+
+});
+
+
+hands.onResults((results) => {
+
+    if (
+        results.multiHandLandmarks &&
+        results.multiHandLandmarks.length > 0
+    ) {
+
+        currentHand =
+            results.multiHandLandmarks[0];
+
+    }
+
+    else {
+
+        currentHand = null;
+
+    }
+
+});
+
+
+/* ============================================================
+   CONVERTER COORDENADA
+============================================================ */
+
+function point(lm) {
+
+    let x = lm.x;
+
+    /*
+     * Como a câmera frontal é espelhada,
+     * corrigimos o X do holograma.
+     */
+
+    if (isFrontCamera) {
+
+        x = 1 - x;
+
+    }
+
+    return {
+
+        x: x * canvasElement.width,
+
+        y: lm.y * canvasElement.height,
+
+        z: lm.z
+
+    };
+}
+
+
+/* ============================================================
+   PONTO HOLOGRÁFICO
+============================================================ */
+
+function drawHoloPoint(
+    x,
+    y,
+    size = 12,
+    active = true
+) {
+
+    if (!active)
+        return;
+
+
+    canvasCtx.save();
+
+    canvasCtx.translate(x, y);
+
+    canvasCtx.rotate(
+        Math.PI / 4
+    );
+
+
+    /*
+     * OCTAEDRO / NÚCLEO CENTRAL
+     */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(
+        0,
+        -size
+    );
+
+    canvasCtx.lineTo(
+        size,
+        0
+    );
+
+    canvasCtx.lineTo(
+        0,
+        size
+    );
+
+    canvasCtx.lineTo(
+        -size,
+        0
+    );
+
+    canvasCtx.closePath();
+
+
+    canvasCtx.strokeStyle =
+        '#00ffff';
+
+    canvasCtx.lineWidth =
+        2;
+
+    canvasCtx.shadowColor =
+        '#00ffff';
+
+    canvasCtx.shadowBlur =
+        15;
+
+    canvasCtx.stroke();
+
+
+    /*
+     * SEGUNDO LOSANGO
+     */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(
+        0,
+        -size * 0.45
+    );
+
+    canvasCtx.lineTo(
+        size * 0.45,
+        0
+    );
+
+    canvasCtx.lineTo(
+        0,
+        size * 0.45
+    );
+
+    canvasCtx.lineTo(
+        -size * 0.45,
+        0
+    );
+
+    canvasCtx.closePath();
+
+    canvasCtx.strokeStyle =
+        'rgba(0,255,255,.65)';
+
+    canvasCtx.stroke();
+
+
+    canvasCtx.restore();
+
+
+    /*
+     * PULSO
+     */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.arc(
+        x,
+        y,
+        size * 1.8,
+        0,
+        Math.PI * 2
+    );
+
+    canvasCtx.strokeStyle =
+        'rgba(0,255,255,.35)';
+
+    canvasCtx.lineWidth =
+        1;
+
+    canvasCtx.stroke();
+}
+
+
+/* ============================================================
+   LINHA HOLOGRÁFICA
+============================================================ */
+
+function holoLine(a, b) {
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(a.x, a.y);
+
+    canvasCtx.lineTo(b.x, b.y);
+
+    canvasCtx.strokeStyle =
+        'rgba(0,255,255,.42)';
+
+    canvasCtx.lineWidth =
+        1.5;
+
+    canvasCtx.shadowColor =
+        '#00ffff';
+
+    canvasCtx.shadowBlur =
+        8;
+
+    canvasCtx.stroke();
+}
+
+
+/* ============================================================
+   HOLOGRAMA DO CAPACETE
+============================================================ */
+
+function drawHelmet(face) {
+
+    if (!face)
+        return;
+
+
+    /*
+     * PRINCIPAIS LANDMARKS DO FACE MESH
+     */
+
+    const leftEye =
+        point(face[468]);
+
+    const rightEye =
+        point(face[473]);
+
+    const nose =
+        point(face[1]);
+
+    const mouth =
+        point(face[13]);
+
+    const forehead =
+        point(face[168]);
+
+
+    /*
+     * ORELHAS — pontos laterais aproximados
+     */
+
+    const leftEar =
+        point(face[234]);
+
+    const rightEar =
+        point(face[454]);
+
+
+    /*
+     * CENTRO DA CABEÇA
+     */
+
+    const centerX =
+        (leftEar.x + rightEar.x) / 2;
+
+    const centerY =
+        (forehead.y + mouth.y) / 2;
+
+
+    /*
+     * TAMANHO BASEADO NA CABEÇA
+     */
+
+    const headWidth =
+        Math.abs(
+            rightEar.x -
+            leftEar.x
+        );
+
+    const radius =
+        Math.max(
+            50,
+            headWidth * 0.65
+        );
+
+
+    /* ========================================================
+       ANEL EXTERNO DO CAPACETE
+    ======================================================== */
+
+    for (let i = 0; i < 4; i++) {
+
+        canvasCtx.beginPath();
+
+        canvasCtx.ellipse(
+
+            centerX,
+
+            centerY - 10,
+
+            radius + i * 10,
+
+            radius * 1.22 + i * 10,
+
+            0,
+
+            0,
+
+            Math.PI * 2
+
+        );
+
+        canvasCtx.strokeStyle =
+            `rgba(0,255,255,${0.55 - i * 0.1})`;
+
+        canvasCtx.lineWidth =
+            1.5;
+
+        canvasCtx.shadowColor =
+            '#00ffff';
+
+        canvasCtx.shadowBlur =
+            18;
+
+        canvasCtx.stroke();
+    }
+
+
+    /* ========================================================
+       LINHAS FACIAIS
+    ======================================================== */
+
+    holoLine(
+        leftEye,
+        rightEye
+    );
+
+    holoLine(
+        leftEar,
+        leftEye
+    );
+
+    holoLine(
+        rightEye,
+        rightEar
+    );
+
+    holoLine(
+        leftEye,
+        nose
+    );
+
+    holoLine(
+        rightEye,
+        nose
+    );
+
+    holoLine(
+        nose,
+        mouth
+    );
+
+    holoLine(
+        leftEar,
+        rightEar
+    );
+
+
+    /* ========================================================
+       HOLOGRAMAS PRINCIPAIS
+    ======================================================== */
+
+    drawHoloPoint(
+        leftEye.x,
+        leftEye.y,
+        10
+    );
+
+    drawHoloPoint(
+        rightEye.x,
+        rightEye.y,
+        10
+    );
+
+    drawHoloPoint(
+        leftEar.x,
+        leftEar.y,
+        12
+    );
+
+    drawHoloPoint(
+        rightEar.x,
+        rightEar.y,
+        12
+    );
+
+    drawHoloPoint(
+        nose.x,
+        nose.y,
+        14
+    );
+
+    drawHoloPoint(
+        mouth.x,
+        mouth.y,
+        11
+    );
+
+    drawHoloPoint(
+        forehead.x,
+        forehead.y,
+        13
+    );
+
+
+    /* ========================================================
+       NÚCLEO DO CAPACETE
+    ======================================================== */
+
+    drawHoloPoint(
+        centerX,
+        centerY - 20,
+        20
+    );
+
+
+    /*
+     * CÍRCULO DE ENERGIA
+     */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.arc(
+        centerX,
+        centerY - 20,
+        30,
+        0,
+        Math.PI * 2
+    );
+
+    canvasCtx.strokeStyle =
+        'rgba(0,255,255,.7)';
+
+    canvasCtx.lineWidth =
+        2;
+
+    canvasCtx.stroke();
+
+
+    /*
+     * LINHAS VERTICAIS
+     */
+
+    canvasCtx.beginPath();
+
+    canvasCtx.moveTo(
+        centerX,
+        centerY - radius * 1.25
+    );
+
+    canvasCtx.lineTo(
+        centerX,
+        centerY + radius * 1.15
+    );
+
+    canvasCtx.strokeStyle =
+        'rgba(0,255,255,.3)';
+
+    canvasCtx.stroke();
+
+
+    /*
+     * BOTÕES
+     */
+
+    drawHelmetButtons(
+        rightEar.x + 70,
+        rightEar.y
+    );
+}
+
+
+/* ============================================================
+   BOTÕES DO CAPACETE
+============================================================ */
+
+function drawHelmetButtons(
+    bx,
+    by
+) {
+
+    buttons.forEach(button => {
+
+        button.x = bx;
+
+        button.y =
+            by +
+            button.y_offset;
+
+
+        drawHexagon(
+            button.x,
+            button.y,
+            25,
+            button.active
+        );
+
+
+        canvasCtx.fillStyle =
+            '#ffffff';
+
+        canvasCtx.font =
+            '18px sans-serif';
+
+        canvasCtx.textAlign =
+            'center';
+
+        canvasCtx.textBaseline =
+            'middle';
+
+        canvasCtx.fillText(
+            button.icon,
+            button.x,
+            button.y
+        );
+
+
+        /*
+         * NOME DO COMANDO
+         */
+
+        canvasCtx.fillStyle =
+            'rgba(0,255,255,.8)';
+
+        canvasCtx.font =
+            '9px Courier New';
+
+        canvasCtx.fillText(
+            button.label,
+            button.x,
+            button.y + 39
+        );
+
+    });
+}
+
+
+/* ============================================================
+   HEXÁGONO
+============================================================ */
+
+function drawHexagon(
+    x,
+    y,
+    radius,
+    active
+) {
+
+    canvasCtx.beginPath();
+
+    for (
+        let i = 0;
+        i < 6;
+        i++
+    ) {
+
+        const angle =
+            Math.PI / 3 * i -
+            Math.PI / 6;
+
+        const px =
+            x +
+            radius *
+            Math.cos(angle);
+
+        const py =
+            y +
+            radius *
+            Math.sin(angle);
+
+        if (i === 0)
+            canvasCtx.moveTo(px, py);
+        else
+            canvasCtx.lineTo(px, py);
+    }
+
+    canvasCtx.closePath();
+
+
+    canvasCtx.fillStyle =
+        active
+        ? 'rgba(0,255,255,.9)'
+        : 'rgba(0,255,255,.16)';
+
+    canvasCtx.fill();
+
+
+    canvasCtx.strokeStyle =
+        '#00ffff';
+
+    canvasCtx.lineWidth =
+        2;
+
+    canvasCtx.shadowColor =
+        '#00ffff';
+
+    canvasCtx.shadowBlur =
+        active ? 20 : 10;
+
+    canvasCtx.stroke();
+}
+
+
+/* ============================================================
+   CONTROLE POR PINÇA
+============================================================ */
+
+function checkButtonClick() {
+
+    if (!currentHand)
+        return;
+
+
+    /*
+     * POLEGAR
+     */
+
+    const thumb =
+        currentHand[4];
+
+
+    /*
+     * INDICADOR
+     */
+
+    const index =
+        currentHand[8];
+
+
+    let thumbX =
+        thumb.x;
+
+    let indexX =
+        index.x;
+
+
+    if (isFrontCamera) {
+
+        thumbX =
+            1 - thumbX;
+
+        indexX =
+            1 - indexX;
+    }
+
+
+    const pinchDist =
+        Math.hypot(
+
+            thumbX - indexX,
+
+            thumb.y - index.y
+
+        );
+
+
+    /*
+     * NÃO É PINÇA
+     */
+
+    if (pinchDist > 0.055)
+        return;
+
+
+    const x =
+        indexX *
+        canvasElement.width;
+
+    const y =
+        index.y *
+        canvasElement.height;
+
+
+    buttons.forEach(button => {
+
+        if (!button.x)
+            return;
+
+
+        const dist =
+            Math.hypot(
+
+                x - button.x,
+
+                y - button.y
+
+            );
+
+
+        if (dist < 35) {
+
+            if (!button.active) {
+
+                button.active = true;
+
+                activeCommand =
+                    button.id;
+
+
+                setTimeout(() => {
+
+                    button.active =
+                        false;
+
+                }, 400);
+
+
+                executeHelmetCommand(
+                    button.id
+                );
+            }
+
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+   COMANDOS
+============================================================ */
+
+function executeHelmetCommand(
+    command
+) {
+
+    if (command === 'scan') {
+
+        status.textContent =
+            'CAPACETE — SCAN ATIVO';
+
+    }
+
+
+    if (command === 'track') {
+
+        status.textContent =
+            'CAPACETE — TRACK ATIVO';
+
+    }
+
+
+    if (command === 'focus') {
+
+        status.textContent =
+            'CAPACETE — FOCUS ATIVO';
+
+    }
+
+}
+
+
+/* ============================================================
+   RENDERIZAÇÃO
+============================================================ */
+
+function render() {
+
+    canvasCtx.clearRect(
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+    );
+
+
+    canvasCtx.shadowColor =
+        '#00ffff';
+
+    canvasCtx.shadowBlur =
+        12;
+
+
+    if (faceDetected) {
+
+        drawHelmet(
+            currentFace
+        );
+
+    }
+
+
+    /*
+     * CONTROLE POR PINÇA
+     */
+
+    checkButtonClick();
+
+
+    requestAnimationFrame(
+        render
+    );
+}
+
+render();
+
+
+/* ============================================================
+   INICIAR CÂMERA
+============================================================ */
+
+async function startCamera() {
+
+    if (cameraRunning)
+        return;
+
+
+    cameraRunning = true;
+
+    startBtn.style.display =
+        'none';
+
+
+    const constraints = {
+
+        video: {
+
+            facingMode:
+                isFrontCamera
+                ? 'user'
+                : 'environment',
+
+            width: 1280,
+
+            height: 720
+
+        },
+
+        audio: false
+
+    };
+
+
+    try {
+
+        const stream =
+            await navigator
+                .mediaDevices
+                .getUserMedia(
+                    constraints
+                );
+
+
+        videoElement.srcObject =
+            stream;
+
+
+        videoElement.style.transform =
+            isFrontCamera
+            ? 'scaleX(-1)'
+            : 'scaleX(1)';
+
+
+        status.textContent =
+            'CÂMERA ATIVA — PROCURANDO ROSTO';
+
+
+        const camera =
+            new Camera(
+                videoElement,
+                {
+
+                    onFrame:
+                        async () => {
+
+                            await Promise.all([
+
+                                faceMesh.send({
+                                    image:
+                                        videoElement
+                                }),
+
+                                hands.send({
+                                    image:
+                                        videoElement
+                                })
+
+                            ]);
+
+                        },
+
+                    width: 1280,
+
+                    height: 720
+
+                }
+            );
+
+
+        camera.start();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            'ERRO AO ACESSAR CÂMERA';
+
+        startBtn.style.display =
+            'block';
+
+        cameraRunning =
+            false;
+    }
+
+}
+
+
+/* ============================================================
+   TROCAR CÂMERA
+============================================================ */
+
+cameraBtn.onclick =
+    async () => {
+
+        if (!cameraRunning)
+            return;
+
+
+        /*
+         * Reinicia com a outra câmera.
+         */
+
+        isFrontCamera =
+            !isFrontCamera;
+
+
+        const oldStream =
+            videoElement.srcObject;
+
+
+        if (oldStream) {
+
+            oldStream
+                .getTracks()
+                .forEach(
+                    track =>
+                        track.stop()
+                );
+        }
+
+
+        cameraRunning =
+            false;
+
+
+        await startCamera();
+    };
+
+
+/* ============================================================
+   BOTÃO INICIAR
+============================================================ */
+
+startBtn.onclick =
+    startCamera;
+
+</script>
+
+</body>
+</html>
